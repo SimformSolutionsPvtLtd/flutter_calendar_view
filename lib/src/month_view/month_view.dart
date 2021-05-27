@@ -84,7 +84,7 @@ class MonthView<T> extends StatefulWidget {
     Key? key,
     this.weekCellAspectRatio = 1.5,
     this.showBorder = true,
-    this.borderColor = Colors.blue,
+    this.borderColor = Constants.defaultBorderColor,
     this.cellBuilder,
     this.minMonth,
     this.maxMonth,

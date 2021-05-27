@@ -59,7 +59,7 @@ class HourLinePainter extends CustomPainter {
 }
 
 /// Paints a single horizontal line at [offset].
-class CurrentTimeIndicatorPainter extends CustomPainter {
+class CurrentTimeLinePainter extends CustomPainter {
   /// Color of time indicator.
   final Color color;
 
@@ -76,7 +76,7 @@ class CurrentTimeIndicatorPainter extends CustomPainter {
   final double bulletRadius;
 
   /// Paints a single horizontal line at [offset].
-  CurrentTimeIndicatorPainter({
+  CurrentTimeLinePainter({
     this.showBullet = true,
     required this.color,
     required this.height,
@@ -101,7 +101,7 @@ class CurrentTimeIndicatorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is CurrentTimeIndicatorPainter &&
+      oldDelegate is CurrentTimeLinePainter &&
       (this.color != oldDelegate.color ||
           this.height != oldDelegate.height ||
           this.offset != oldDelegate.offset);

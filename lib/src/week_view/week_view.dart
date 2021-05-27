@@ -74,8 +74,8 @@ class WeekView<T> extends StatefulWidget {
   /// Main widget for week view.
   const WeekView({
     Key? key,
-    required this.eventTileBuilder,
     required this.controller,
+    this.eventTileBuilder,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
     this.heightPerMinute = 1,
@@ -94,8 +94,7 @@ class WeekView<T> extends StatefulWidget {
     this.eventArranger,
     this.weekTitleHeight = 50,
     this.weekDayBuilder,
-  })  : assert(eventTileBuilder != null, "Cell builder is required"),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   WeekViewState<T> createState() => WeekViewState<T>();
@@ -176,7 +175,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         HourIndicatorSettings(
-          color: Theme.of(context).errorColor,
+          color: Constants.defaultLiveTimeIndicatorColor,
           height: widget.heightPerMinute,
           offset: 5,
         );
@@ -187,7 +186,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Theme.of(context).primaryColor,
+          color: Constants.defaultBorderColor,
           offset: 5,
         );
 
@@ -228,6 +227,15 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         .add(Duration(days: (index - 1) * _weekDays))
                         .datesOfWeek;
 
+                    bool showLiveTimeIndicator = false;
+
+                    dates.forEach(
+                      (date) => showLiveTimeIndicator = showLiveTimeIndicator ||
+                          date.compareWithoutTime(
+                            DateTime.now(),
+                          ),
+                    );
+
                     return InternalWeekViewPage<T>(
                       key: ValueKey(
                           _hourHeight.toString() + dates[0].toString()),
@@ -243,7 +251,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                       hourIndicatorSettings: _hourIndicatorSettings,
                       dates: dates,
                       showLiveLine: widget.showLiveTimeLineInAllDays ||
-                          dates[0].compareWithoutTime(DateTime.now()),
+                          showLiveTimeIndicator,
                       timeLineOffset: _timeLineOffset,
                       timeLineWidth: _timeLineWidth,
                       verticalLineOffset: 0,
@@ -309,8 +317,13 @@ class WeekViewState<T> extends State<WeekView<T>> {
       date, events, boundary, startDuration, endDuration) {
     if (events.isNotEmpty)
       return RoundedEventTile(
-        title: events[0].title,
-        description: events[0].description,
+        borderRadius: BorderRadius.circular(10.0),
+        title: events[0]?.title ?? "",
+        extraEvents: events.length - 1,
+        description: events[0]?.description ?? "",
+        padding: EdgeInsets.all(10.0),
+        backgroundColor: events[0]?.eventColor ?? Colors.blue,
+        margin: EdgeInsets.all(2.0),
       );
     else
       return Container();

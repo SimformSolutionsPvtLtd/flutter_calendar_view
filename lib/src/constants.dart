@@ -16,6 +16,8 @@ class Constants {
 
   static final List<String> weekTitles = ["M", "T", "W", "T", "F", "S", "S"];
 
+  static const Color defaultLiveTimeIndicatorColor = const Color(0xff444444);
+  static const Color defaultBorderColor = const Color(0xffdddddd);
   static Color get randomColor {
     return Color.fromRGBO(_random.nextInt(_maxColor),
         _random.nextInt(_maxColor), _random.nextInt(_maxColor), 1);

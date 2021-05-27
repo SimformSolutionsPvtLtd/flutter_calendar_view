@@ -4,6 +4,7 @@ import 'package:example/event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_page/flutter_calendar_page.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'extension.dart';
 
@@ -25,6 +26,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   DateTime? _endTime;
   String _title = "";
   String _description = "";
+  Color _color = Colors.blue;
 
   late FocusNode _titleNode;
   late FocusNode _descriptionNode;
@@ -46,6 +48,56 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _dateNode.dispose();
 
     super.dispose();
+  }
+
+  void _displayColorPicker() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black26,
+      builder: (_) => Dialog(
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          side: BorderSide(
+            color: Constants.defaultBorderColor,
+            width: 2,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Event Color",
+                style: TextStyle(
+                  color: Constants.defaultBorderColor.withOpacity(1),
+                  fontSize: 20.0,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 20.0),
+                height: 1.0,
+                color: Constants.defaultBorderColor,
+              ),
+              ColorPicker(
+                displayThumbColor: true,
+                enableAlpha: false,
+                showLabel: true,
+                paletteType: PaletteType.hsv,
+                pickerColor: _color,
+                onColorChanged: (color) {
+                  _color = color;
+                  if (mounted) setState(() {});
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -171,6 +223,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
               onSaved: (value) => _description = value ?? "",
             ),
             SizedBox(
+              height: 15.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Event Color: "),
+                GestureDetector(
+                  onTap: _displayColorPicker,
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundColor: _color,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
               height: 50.0,
             ),
             ElevatedButton(
@@ -184,6 +254,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     description: _description,
                     startTime: _startTime,
                     endTime: _endTime,
+                    eventColor: _color,
                   );
                   context.popRoute(event);
                 }

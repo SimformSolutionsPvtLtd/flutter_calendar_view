@@ -4,45 +4,37 @@ import 'package:flutter_calendar_page/src/components/day_view_components.dart';
 import 'package:flutter_calendar_page/src/constants.dart';
 import 'package:flutter_calendar_page/src/extensions.dart';
 
+import '../calendar_event_data.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../modals.dart';
 import '_internal_day_view_page.dart';
 
 class DayView<T> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each cell in day calendar.
-  ///
   final EventTileBuilder<T>? eventTileBuilder;
 
   /// A function that returns a [Widget] that will be displayed left side of day view.
-  ///
-  /// If null is provided then no time line will be visible.
-  ///
   final DateWidgetBuilder? timeLineBuilder;
 
   /// Builds day title bar.
-  ///
   final DateWidgetBuilder? dayTitleBuilder;
 
   /// Defines how events are arranged in day view.
   /// User can define custom event arranger by implementing [EventArranger] class
   /// and pass object of that class as argument.
-  ///
   final EventArranger<T>? eventArranger;
 
   /// This callback will run whenever page will change.
-  ///
   final CalendarPageChangeCallBack? onPageChange;
 
   /// Determines the lower boundary user can scroll.
   ///
   /// If not provided [Constants.epochDate] is default.
-  ///
   final DateTime? minDay;
 
   /// Determines upper boundary user can scroll.
   ///
   /// If not provided [Constants.maxDate] is default.
-  ///
   final DateTime? maxDay;
 
   /// Defines initial display day.
@@ -109,7 +101,7 @@ class DayView<T> extends StatefulWidget {
   /// Main widget for day view.
   const DayView({
     Key? key,
-    required this.eventTileBuilder,
+    this.eventTileBuilder,
     required this.controller,
     this.showVerticalLine = true,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
@@ -203,7 +195,7 @@ class DayViewState<T> extends State<DayView<T>> {
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         HourIndicatorSettings(
-          color: Theme.of(context).errorColor,
+          color: Constants.defaultLiveTimeIndicatorColor,
           height: widget.heightPerMinute,
           offset: 5 + widget.verticalLineOffset,
         );
@@ -214,7 +206,7 @@ class DayViewState<T> extends State<DayView<T>> {
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Theme.of(context).primaryColor,
+          color: Constants.defaultBorderColor,
           offset: 5,
         );
 
@@ -308,11 +300,21 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Default timeline builder. This builder will be used if [widget.eventTileBuilder] is null
   ///
   Widget _defaultEventTileBuilder(
-      date, events, boundary, startDuration, endDuration) {
+    DateTime date,
+    List<CalendarEventData<T>?> events,
+    Rect boundary,
+    DateTime startDuration,
+    DateTime endDuration,
+  ) {
     if (events.isNotEmpty)
       return RoundedEventTile(
-        title: events[0].title,
-        description: events[0].description,
+        borderRadius: BorderRadius.circular(10.0),
+        title: events[0]?.title ?? "",
+        extraEvents: events.length - 1,
+        description: events[0]?.description ?? "",
+        padding: EdgeInsets.all(10.0),
+        backgroundColor: events[0]?.eventColor ?? Colors.blue,
+        margin: EdgeInsets.all(2.0),
       );
     else
       return Container();

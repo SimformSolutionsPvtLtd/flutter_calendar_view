@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'extensions.dart';
 
@@ -24,6 +25,8 @@ class CalendarEventData<T> {
   /// Description of the event.
   final String description;
 
+  final Color eventColor;
+
   /// List of events on [date].
   final T event;
 
@@ -31,6 +34,7 @@ class CalendarEventData<T> {
   CalendarEventData({
     required this.date,
     required this.event,
+    this.eventColor = Colors.blue,
     this.title = "Title",
     this.description = "Description",
     this.startTime,
