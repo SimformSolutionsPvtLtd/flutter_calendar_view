@@ -5,10 +5,10 @@ import 'package:flutter_calendar_page/src/calendar_event_data.dart';
 import 'package:flutter_calendar_page/src/event_arrangers/event_arrangers.dart';
 import 'package:flutter_calendar_page/src/extensions.dart';
 import 'package:flutter_calendar_page/src/modals.dart';
-import 'package:flutter_calendar_page/src/painters.dart';
 
 import '../constants.dart';
 import '../extensions.dart';
+import '../painters.dart';
 
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {

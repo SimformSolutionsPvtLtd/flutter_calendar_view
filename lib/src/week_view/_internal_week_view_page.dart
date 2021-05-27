@@ -128,14 +128,6 @@ class InternalWeekViewPage<T> extends StatelessWidget {
             width: width,
             child: Stack(
               children: [
-                if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-                  LiveTimeIndicator(
-                    liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                    width: width,
-                    height: height,
-                    heightPerMinute: heightPerMinute,
-                    timeLineWidth: timeLineWidth,
-                  ),
                 CustomPaint(
                   size: Size(width, height),
                   painter: HourLinePainter(
@@ -147,6 +139,14 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                     showVerticalLine: showVerticalLine,
                   ),
                 ),
+                if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                  LiveTimeIndicator(
+                    liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                    width: width,
+                    height: height,
+                    heightPerMinute: heightPerMinute,
+                    timeLineWidth: timeLineWidth,
+                  ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: SizedBox(

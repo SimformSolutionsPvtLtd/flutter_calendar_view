@@ -76,17 +76,25 @@ class FilledCell<T> extends StatelessWidget {
   /// Called when user taps on any event tile.
   final void Function(CalendarEventData<T> event, DateTime date)? onTileTap;
 
+  /// defines that [date] is in current month or not.
+  final bool isInMonth;
+
+  /// defines radius of highlighted date.
+  final double highlightRadius;
+
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({
     Key? key,
     required this.date,
     required this.events,
+    this.isInMonth = false,
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightColor = Colors.blue,
     this.onTileTap,
     this.tileColor = Colors.blue,
+    this.highlightRadius = 11,
   }) : super(key: key);
 
   @override
@@ -102,13 +110,19 @@ class FilledCell<T> extends StatelessWidget {
             height: 5.0,
           ),
           CircleAvatar(
-            radius: 15,
+            radius: highlightRadius,
             backgroundColor:
                 shouldHighlight ? highlightColor : Colors.transparent,
             child: Text(
               "${date.day}",
               style: TextStyle(
-                  color: shouldHighlight ? Colors.white : Colors.black),
+                color: shouldHighlight
+                    ? Colors.white
+                    : isInMonth
+                        ? Colors.black
+                        : Colors.black38,
+                fontSize: 12,
+              ),
             ),
           ),
           if (events.isNotEmpty)
@@ -130,7 +144,7 @@ class FilledCell<T> extends StatelessWidget {
                             onTileTap?.call(events[index], events[index].date),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: highlightColor,
+                            color: events[index].eventColor,
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           margin: EdgeInsets.symmetric(
