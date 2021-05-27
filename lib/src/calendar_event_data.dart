@@ -8,28 +8,54 @@ class CalendarEventData<T> {
   /// Specifies date on which all these events are.
   final DateTime date;
 
-  /// List of events on [CalendarEventData.date].
+  /// Defines the start time of the event.
+  /// [endTime] and [startTime] will defines time on same day.
+  /// This is required when you are using [CalendarEventData] for [DayView]
+  final DateTime? startTime;
+
+  /// Defines the end time of the event.
+  /// [endTime] and [startTime] defines time on same day.
+  /// This is required when you are using [CalendarEventData] for [DayView]
+  final DateTime? endTime;
+
+  /// Title of the event.
+  final String title;
+
+  /// Description of the event.
+  final String description;
+
+  /// List of events on [date].
   final T event;
 
   /// Stores all the events on [date]
   CalendarEventData({
-    @required this.date,
-    @required this.event,
+    required this.date,
+    required this.event,
+    this.title = "Title",
+    this.description = "Description",
+    this.startTime,
+    this.endTime,
   });
 
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "startTime": startTime,
+        "endTime": endTime,
+        "event": event,
+        "title": title,
+        "description": description,
+      };
+
   @override
-  String toString() {
-    return <String, dynamic>{
-      "date": date,
-      "events": event,
-    }.toString();
-  }
+  String toString() => this.toJson().toString();
 
   @override
   bool operator ==(Object other) {
-    if (this.runtimeType != other.runtimeType) return false;
-    CalendarEventData<T> obj = other;
-    return this.date.compareWithoutTime(obj.date) && this.event == obj.event;
+    return other is CalendarEventData<T> &&
+        this.date.compareWithoutTime(other.date) &&
+        this.event == other.event &&
+        this.title == other.title &&
+        this.description == other.description;
   }
 
   @override
