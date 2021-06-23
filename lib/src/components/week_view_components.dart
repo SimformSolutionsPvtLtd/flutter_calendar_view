@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'common_components.dart';
 
 class WeekPageHeader extends CalendarPageHeader {
-  /// A header widget to display on day view.
+  /// A header widget to display on week view.
   const WeekPageHeader({
     Key? key,
     VoidCallback? onNextDay,

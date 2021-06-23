@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_page/src/calendar_controller.dart';
-import 'package:flutter_calendar_page/src/components/day_view_components.dart';
-import 'package:flutter_calendar_page/src/components/week_view_components.dart';
+import 'package:flutter_calendar_page/src/components/components.dart';
 import 'package:flutter_calendar_page/src/constants.dart';
 import 'package:flutter_calendar_page/src/extensions.dart';
 import 'package:flutter_calendar_page/src/modals.dart';
@@ -10,41 +9,78 @@ import 'package:flutter_calendar_page/src/modals.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '_internal_week_view_page.dart';
 
+/// [Widget] to display week view.
 class WeekView<T> extends StatefulWidget {
+  /// Builder to build tile for events.
   final EventTileBuilder<T>? eventTileBuilder;
+
+  /// Builder for timeline.
   final DateWidgetBuilder? timeLineBuilder;
+
+  /// Header builder for week page header.
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
+
+  /// Arrange events.
   final EventArranger<T>? eventArranger;
+
+  /// Called whenever user changes week.
   final CalendarPageChangeCallBack? onPageChange;
+
+  /// Minimum day to display in week view.
   final DateTime? minDay;
+
+  /// Maximum day to display in week view.
   final DateTime? maxDay;
+
+  /// Initial week to display in week view.
   final DateTime? initialDay;
+
+  /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
+
+  /// Settings for live time indicator settings.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
+
+  /// duration for page transition while changing the week.
   final Duration pageTransitionDuration;
+
+  /// Transition curve for transition.
   final Curve pageTransitionCurve;
+
+  /// Controller for Week view thia will refresh view when user adds or removes event from controller.
   final CalendarController<T> controller;
+
+  /// Defines height occupied by one minute of time span. This parameter will be used to calculate total height of Week view.
   final double heightPerMinute;
+
+  /// Width of time line.
   final double? timeLineWidth;
+
+  /// Flag to show live time indicator in all day or only [initialDay]
   final bool showLiveTimeLineInAllDays;
+
+  /// Offset of time line
   final double timeLineOffset;
+
+  /// Width of week view. If null provided device width will be considered.
   final double? width;
-  final bool showVerticalLine;
-  final double verticalLineOffset;
+
+  /// Height of week day title,
   final double weekTitleHeight;
+
+  /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
+  /// Main widget for week view.
   const WeekView({
     Key? key,
     required this.eventTileBuilder,
     required this.controller,
-    this.showVerticalLine = true,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
     this.heightPerMinute = 1,
     this.timeLineOffset = 0,
     this.showLiveTimeLineInAllDays = false,
-    this.verticalLineOffset = 0,
     this.width,
     this.minDay,
     this.maxDay,
@@ -142,7 +178,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
         HourIndicatorSettings(
           color: Theme.of(context).errorColor,
           height: widget.heightPerMinute,
-          offset: 5 + widget.verticalLineOffset,
+          offset: 5,
         );
 
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
@@ -210,8 +246,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
                           dates[0].compareWithoutTime(DateTime.now()),
                       timeLineOffset: _timeLineOffset,
                       timeLineWidth: _timeLineWidth,
-                      verticalLineOffset: widget.verticalLineOffset,
-                      showVerticalLine: widget.showVerticalLine,
+                      verticalLineOffset: 0,
+                      showVerticalLine: true,
                       controller: widget.controller,
                       hourHeight: _hourHeight,
                       eventArranger: _eventArranger,

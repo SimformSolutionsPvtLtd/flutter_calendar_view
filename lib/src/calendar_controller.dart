@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../flutter_calendar_page.dart';
 
 class CalendarController<T> extends ChangeNotifier {
+  /// Calendar controller to control all the events related operations like, adding event, removing event, etc.
   CalendarController();
 
   List<_YearEvent<T>> _events = [];
@@ -33,6 +34,8 @@ class CalendarController<T> extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  /// TODO: Add method to remove events.
 
   void _addEvent(CalendarEventData<T> event) {
     for (int i = 0; i < _events.length; i++) {

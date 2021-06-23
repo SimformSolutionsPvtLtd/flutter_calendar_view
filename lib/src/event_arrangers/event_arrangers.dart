@@ -29,12 +29,25 @@ abstract class EventArranger<T> {
 
 /// Provides event data with its [left], [right], [top], and [bottom] boundary.
 class OrganizedCalendarEventData<T> {
+  /// Top position from where event tile will start.
   final double top;
+
+  /// End position from where event tile will end.
   final double bottom;
+
+  /// Left position from where event tile will start.
   final double left;
+
+  /// Right position where event tile will end.
   final double right;
+
+  /// List of events to display in given tile.
   final List<CalendarEventData<T>?> events;
+
+  /// Start duration of event/event list.
   final DateTime? startDuration;
+
+  /// End duration of event/event list.
   final DateTime? endDuration;
 
   /// Provides event data with its [left], [right], [top], and [bottom] boundary.

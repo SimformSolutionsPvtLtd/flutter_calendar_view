@@ -5,27 +5,66 @@ import 'package:flutter_calendar_page/src/extensions.dart';
 
 import '../painters.dart';
 
+/// A single page for week view.
 class InternalWeekViewPage<T> extends StatelessWidget {
+  /// Width of the page.
   final double width;
+
+  /// Height of the page.
   final double height;
+
+  /// Dates to display on page.
   final List<DateTime> dates;
+
+  /// Builds tile for a single event.
   final EventTileBuilder<T> eventTileBuilder;
+
+  /// A calendar controller that controls all the events and rebuilds widget if event(s) are added or removed.
   final CalendarController<T> controller;
+
+  /// A builder to build time line.
   final DateWidgetBuilder timeLineBuilder;
+
+  /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
+
+  /// Flag to display live line.
   final bool showLiveLine;
+
+  /// Settings for live time indicator.
   final HourIndicatorSettings liveTimeIndicatorSettings;
+
+  ///  Height occupied by one minute time span.
   final double heightPerMinute;
+
+  /// Width of timeline.
   final double timeLineWidth;
+
+  /// Offset of timeline.
   final double timeLineOffset;
+
+  /// Height occupied by one hour time span.
   final double hourHeight;
+
+  /// Arranger to arrange events.
   final EventArranger<T> eventArranger;
+
+  /// Flag to display vertical line or not.
   final bool showVerticalLine;
+
+  /// Offset for vertical line offset.
   final double verticalLineOffset;
+
+  /// Builder for week day title.
   final DateWidgetBuilder weekDayBuilder;
+
+  /// Height of week title.
   final double weekTitleHeight;
+
+  /// Width of week title.
   final double weekTitleWidth;
 
+  /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
     required this.showVerticalLine,
@@ -146,7 +185,6 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                   hourHeight: hourHeight,
                   height: height,
                   timeLineOffset: timeLineOffset,
-                  heightPerMinute: heightPerMinute,
                   timeLineBuilder: timeLineBuilder,
                 ),
               ],

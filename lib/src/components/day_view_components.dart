@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'common_components.dart';
 
 /// This class defines default tile to display in day view.
-///
 class RoundedEventTile extends StatelessWidget {
   /// Title of the tile.
   final String title;
@@ -33,7 +32,6 @@ class RoundedEventTile extends StatelessWidget {
   final BorderRadius borderRadius;
 
   /// This is default tile to display in day view.
-  ///
   const RoundedEventTile({
     Key? key,
     required this.title,
@@ -93,6 +91,7 @@ class RoundedEventTile extends StatelessWidget {
   }
 }
 
+/// A header widget to display on day view.
 class DayPageHeader extends CalendarPageHeader {
   /// A header widget to display on day view.
   const DayPageHeader({

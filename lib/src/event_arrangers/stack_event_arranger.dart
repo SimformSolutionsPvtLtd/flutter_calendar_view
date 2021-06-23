@@ -5,7 +5,6 @@ class StackEventArranger<T> extends EventArranger<T> {
   final double topOffset;
 
   /// This class will provide method that wil arrange all the events on each other.
-  ///
   const StackEventArranger({this.leftOffset = 5, this.topOffset = 10})
       : assert(topOffset > 0, "Top offset must be grater than 0.");
 

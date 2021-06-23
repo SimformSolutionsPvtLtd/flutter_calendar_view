@@ -47,51 +47,42 @@ class DayView<T> extends StatefulWidget {
 
   /// Defines initial display day.
   ///
-  /// If not provided current date is default date.
-  ///
+  /// If not provided [DateTime.now] is default date.
   final DateTime? initialDay;
 
   /// Defines settings for hour indication lines.
   ///
-  /// If null or [HourIndicatorSettings.none()] provided no lines will be displayed or provide to remove lines.
-  ///
+  /// Pass [HourIndicatorSettings.none] to remove Hour lines.
   final HourIndicatorSettings? hourIndicatorSettings;
 
   /// Defines settings for live time indicator.
   ///
-  /// If null or [HourIndicatorSettings.none()] provided no lines will be displayed or provide to remove lines.
-  ///
+  /// Pass [HourIndicatorSettings.none] to remove live time indicator.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
-  /// Page transition duration used when user try to change page using [DayView.nextPage] or [DayView.previousPage]
-  ///
+  /// Page transition duration used when user try to change page using [DayViewState.nextPage] or [DayViewState.previousPage]
   final Duration pageTransitionDuration;
 
-  /// Page transition curve used when user try to change page using [DayView.nextPage] or [DayView.previousPage]
-  ///
+  /// Page transition curve used when user try to change page using [DayViewState.nextPage] or [DayViewState.previousPage]
   final Curve pageTransitionCurve;
 
   /// A required parameters that controls events for day view.
   ///
   /// This will auto update day view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  ///
   final CalendarController<T> controller;
 
-  /// Defines aspect ratio of day cells in day calendar page.
-  ///
+  /// Defines height occupied by one minute of interval. This will be used to calculate total height of day view.
   final double heightPerMinute;
 
-  /// Defines the width of timeline.
-  ///
+  /// Defines the width of timeline. If null then it will occupies 13% of [width].
   final double? timeLineWidth;
 
   /// if parsed true then live time line will be displayed in all days.
   /// else it will be displayed in [DateTime.now] only.
   ///
-  /// Parse [HourIndicatorSettings.none()] as argument in [DayView.liveTimeIndicatorSettings]
+  /// Parse [HourIndicatorSettings.none] as argument in [DayView.liveTimeIndicatorSettings]
   /// to remove time line completely.
-  ///
   final bool showLiveTimeLineInAllDays;
 
   /// Defines offset for timeline.
@@ -101,13 +92,12 @@ class DayView<T> extends StatefulWidget {
   /// If offset is positive all the widgets will be translated up.
   ///
   /// If offset is negative all the widgets will be translated down.
-  ///
+  /// Default value is 0.
   final double timeLineOffset;
 
   /// Width of day page.
   ///
   /// if null provided then device width will be considered.
-  ///
   final double? width;
 
   /// If true this will display vertical line in day view.

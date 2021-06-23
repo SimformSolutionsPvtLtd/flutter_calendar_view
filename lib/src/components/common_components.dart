@@ -23,7 +23,6 @@ class CalendarPageHeader extends StatelessWidget {
 
   /// Common header for month and day view In this header user can define format
   /// in which date will be displayed by providing [dateStringBuilder] function.
-  ///
   const CalendarPageHeader({
     Key? key,
     required this.date,

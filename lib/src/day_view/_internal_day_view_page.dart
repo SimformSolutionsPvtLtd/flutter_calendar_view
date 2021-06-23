@@ -8,21 +8,53 @@ import '../painters.dart';
 
 /// Defines a single day page.
 class InternalDayViewPage<T> extends StatelessWidget {
+  /// Width of the page
   final double width;
+
+  /// Height of the page.
   final double height;
+
+  /// Date for which we are displaying page.
   final DateTime date;
+
+  /// A builder that returns a widget to show event on screen.
   final EventTileBuilder<T> eventTileBuilder;
+
+  /// Controller for calendar
   final CalendarController<T> controller;
+
+  /// A builder that builds time line.
   final DateWidgetBuilder timeLineBuilder;
+
+  /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
+
+  /// Flag to display live time indicator.
+  /// If true then indicator will be displayed else not.
   final bool showLiveLine;
+
+  /// Settings for live time indicator.
   final HourIndicatorSettings liveTimeIndicatorSettings;
+
+  /// Height occupied by one minute of time span.
   final double heightPerMinute;
+
+  /// Width of time line.
   final double timeLineWidth;
+
+  /// Offset for time line widgets.
   final double timeLineOffset;
+
+  /// Height occupied by one hour of time span.
   final double hourHeight;
+
+  /// event arranger to arrange events.
   final EventArranger<T> eventArranger;
+
+  /// Flag to display vertical line.
   final bool showVerticalLine;
+
+  /// Offset  of vertical line.
   final double verticalLineOffset;
 
   /// Defines a single day page.
@@ -89,7 +121,6 @@ class InternalDayViewPage<T> extends StatelessWidget {
           ),
           TimeLine(
             height: height,
-            heightPerMinute: heightPerMinute,
             hourHeight: hourHeight,
             timeLineBuilder: timeLineBuilder,
             timeLineOffset: timeLineOffset,
