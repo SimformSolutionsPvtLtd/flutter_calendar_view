@@ -25,7 +25,7 @@ class CalendarEventData<T> {
   /// Description of the event.
   final String description;
 
-  final Color eventColor;
+  final Color color;
 
   /// List of events on [date].
   final T event;
@@ -34,7 +34,7 @@ class CalendarEventData<T> {
   CalendarEventData({
     required this.date,
     required this.event,
-    this.eventColor = Colors.blue,
+    this.color = Colors.blue,
     this.title = "Title",
     this.description = "Description",
     this.startTime,

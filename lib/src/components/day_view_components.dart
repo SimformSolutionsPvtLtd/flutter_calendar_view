@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
+import '../extensions.dart';
 import 'common_components.dart';
 
 /// This class defines default tile to display in day view.
@@ -31,6 +33,12 @@ class RoundedEventTile extends StatelessWidget {
   /// Border radius of tile.
   final BorderRadius borderRadius;
 
+  /// Style for title
+  final TextStyle? titleStyle;
+
+  /// Style for description
+  final TextStyle? descriptionStyle;
+
   /// This is default tile to display in day view.
   const RoundedEventTile({
     Key? key,
@@ -42,6 +50,8 @@ class RoundedEventTile extends StatelessWidget {
     this.onTap,
     this.extraEvents = 0,
     this.backgroundColor = Colors.blue,
+    this.titleStyle,
+    this.descriptionStyle,
   }) : super(key: key);
 
   @override
@@ -63,10 +73,11 @@ class RoundedEventTile extends StatelessWidget {
             if (title != "")
               Text(
                 title,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+                style: titleStyle ??
+                    TextStyle(
+                      fontSize: 20,
+                      color: backgroundColor.accent,
+                    ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -76,14 +87,25 @@ class RoundedEventTile extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 15.0),
                   child: Text(
                     description,
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.white.withAlpha(200),
-                    ),
+                    style: descriptionStyle ??
+                        TextStyle(
+                          fontSize: 17,
+                          color: backgroundColor.accent.withAlpha(200),
+                        ),
                   ),
                 ),
               ),
-            if (extraEvents > 0) Expanded(child: Text("+$extraEvents more")),
+            if (extraEvents > 0)
+              Expanded(
+                child: Text(
+                  "+$extraEvents more",
+                  style: (descriptionStyle ??
+                          TextStyle(
+                            color: backgroundColor.accent.withAlpha(200),
+                          ))
+                      .copyWith(fontSize: 17),
+                ),
+              ),
           ],
         ),
       ),
@@ -99,10 +121,14 @@ class DayPageHeader extends CalendarPageHeader {
     VoidCallback? onNextDay,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousDay,
+    Color iconColor = Constants.black,
+    Color backgroundColor = Constants.headerBackground,
     required DateTime date,
   }) : super(
           key: key,
           date: date,
+          backgroundColor: backgroundColor,
+          iconColor: iconColor,
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,
@@ -110,4 +136,33 @@ class DayPageHeader extends CalendarPageHeader {
         );
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
+}
+
+class DefaultTimeLineMark extends StatelessWidget {
+  final DateTime date;
+  final TextStyle? markingStyle;
+
+  const DefaultTimeLineMark({
+    Key? key,
+    required this.date,
+    this.markingStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(0, -7.5),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 7.0),
+        child: Text(
+          "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+          textAlign: TextAlign.right,
+          style: markingStyle ??
+              TextStyle(
+                fontSize: 15.0,
+              ),
+        ),
+      ),
+    );
+  }
 }

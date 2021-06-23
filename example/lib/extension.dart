@@ -1,5 +1,8 @@
+import 'package:example/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'enumerations.dart';
 
 enum TimeStampFormat { parse_12, parse_24 }
 
@@ -12,7 +15,7 @@ extension NavigatorExtention on BuildContext {
   Future<T?> pushRoute<T>(Widget page) async => await Navigator.of(this)
       .push<T>(MaterialPageRoute(builder: (context) => page));
 
-  void popRoute([dynamic value]) => Navigator.of(this).pop(value);
+  void pop([dynamic value]) => Navigator.of(this).pop(value);
 
   void showSnackBarWithText(String text) => ScaffoldMessenger.of(this)
     ..hideCurrentSnackBar()
@@ -111,4 +114,20 @@ extension DateUtils on DateTime {
       this.hour == date.hour &&
       this.minute == date.minute &&
       this.second == date.second;
+}
+
+extension ColorExtension on Color {
+  Color get accentColor => (this.blue / 2 >= 255 / 2 ||
+          this.red / 2 >= 255 / 2 ||
+          this.green / 2 >= 255 / 2)
+      ? AppColors.black
+      : AppColors.white;
+}
+
+extension StringExt on String {
+  String get capitalized => toBeginningOfSentenceCase(this) ?? "";
+}
+
+extension ViewNameExt on CalendarView {
+  String get name => this.toString().split(".").last;
 }

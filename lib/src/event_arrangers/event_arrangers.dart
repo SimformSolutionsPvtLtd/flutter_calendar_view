@@ -42,7 +42,7 @@ class OrganizedCalendarEventData<T> {
   final double right;
 
   /// List of events to display in given tile.
-  final List<CalendarEventData<T>?> events;
+  final List<CalendarEventData<T>> events;
 
   /// Start duration of event/event list.
   final DateTime? startDuration;

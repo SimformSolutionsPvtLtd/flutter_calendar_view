@@ -71,6 +71,8 @@ class WeekView<T> extends StatefulWidget {
   /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
+  final Color backgroundColor;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -94,6 +96,7 @@ class WeekView<T> extends StatefulWidget {
     this.eventArranger,
     this.weekTitleHeight = 50,
     this.weekDayBuilder,
+    this.backgroundColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -123,7 +126,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
   late DateWidgetBuilder _timeLineBuilder;
   late EventTileBuilder<T> _eventTileBuilder;
-  late WeekPageHeaderBuilder _dayTitleBuilder;
+  late WeekPageHeaderBuilder _weekHeaderBuilder;
   late DateWidgetBuilder _weekDayBuilder;
 
   late double _weekTitleWidth;
@@ -144,7 +147,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       _initialDay = _maxDate;
     }
 
-    List<DateTime> dates = _initialDay.datesOfWeek;
+    List<DateTime> dates = _initialDay.datesOfWeek();
     _currentStartDate = dates.first;
     _currentEndDate = dates.last;
 
@@ -158,7 +161,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
     _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _dayTitleBuilder =
+    _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
   }
@@ -166,8 +169,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _width = widget.width ?? MediaQuery.of(context).size.width;
+
     assert(_width != 0, "Calendar width can not be 0.");
 
     _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
@@ -207,71 +210,67 @@ class WeekViewState<T> extends State<WeekView<T>> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _dayTitleBuilder(_currentStartDate, _currentEndDate),
-          Expanded(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: _height + widget.weekTitleHeight,
-                width: _width,
-                child: PageView.builder(
-                  itemCount: _totalWeeks,
-                  controller: _pageController,
-                  onPageChanged: _onPageChange,
-                  itemBuilder: (_, index) {
-                    List<DateTime> dates = _minDate
-                        .add(Duration(days: (index - 1) * _weekDays))
-                        .datesOfWeek;
+      child: SizedBox(
+        width: _width,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: widget.backgroundColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _weekHeaderBuilder(_currentStartDate, _currentEndDate),
+              Expanded(
+                child: SizedBox(
+                  height: _height,
+                  width: _width,
+                  child: PageView.builder(
+                    itemCount: _totalWeeks,
+                    controller: _pageController,
+                    onPageChanged: _onPageChange,
+                    itemBuilder: (_, index) {
+                      List<DateTime> dates = _minDate
+                          .add(Duration(days: (index - 1) * _weekDays))
+                          .datesOfWeek();
 
-                    bool showLiveTimeIndicator = false;
-
-                    dates.forEach(
-                      (date) => showLiveTimeIndicator = showLiveTimeIndicator ||
-                          date.compareWithoutTime(
-                            DateTime.now(),
-                          ),
-                    );
-
-                    return InternalWeekViewPage<T>(
-                      key: ValueKey(
-                          _hourHeight.toString() + dates[0].toString()),
-                      height: _height,
-                      width: _width,
-                      weekTitleWidth: _weekTitleWidth,
-                      weekTitleHeight: widget.weekTitleHeight,
-                      weekDayBuilder: _weekDayBuilder,
-                      liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                      timeLineBuilder: _timeLineBuilder,
-                      eventTileBuilder: _eventTileBuilder,
-                      heightPerMinute: widget.heightPerMinute,
-                      hourIndicatorSettings: _hourIndicatorSettings,
-                      dates: dates,
-                      showLiveLine: widget.showLiveTimeLineInAllDays ||
-                          showLiveTimeIndicator,
-                      timeLineOffset: _timeLineOffset,
-                      timeLineWidth: _timeLineWidth,
-                      verticalLineOffset: 0,
-                      showVerticalLine: true,
-                      controller: widget.controller,
-                      hourHeight: _hourHeight,
-                      eventArranger: _eventArranger,
-                    );
-                  },
+                      return InternalWeekViewPage<T>(
+                        key: ValueKey(
+                            _hourHeight.toString() + dates[0].toString()),
+                        height: _height,
+                        width: _width,
+                        weekTitleWidth: _weekTitleWidth,
+                        weekTitleHeight: widget.weekTitleHeight,
+                        weekDayBuilder: _weekDayBuilder,
+                        liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
+                        timeLineBuilder: _timeLineBuilder,
+                        eventTileBuilder: _eventTileBuilder,
+                        heightPerMinute: widget.heightPerMinute,
+                        hourIndicatorSettings: _hourIndicatorSettings,
+                        dates: dates,
+                        showLiveLine: widget.showLiveTimeLineInAllDays ||
+                            _showLiveTimeIndicator(dates),
+                        timeLineOffset: _timeLineOffset,
+                        timeLineWidth: _timeLineWidth,
+                        verticalLineOffset: 0,
+                        showVerticalLine: true,
+                        controller: widget.controller,
+                        hourHeight: _hourHeight,
+                        eventArranger: _eventArranger,
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   /// Reloads page.
-  ///
   void _reload() {
     if (mounted) {
       setState(() {});
@@ -312,7 +311,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   }
 
   /// Default timeline builder. This builder will be used if [widget.eventTileBuilder] is null
-  ///
   Widget _defaultEventTileBuilder(
       date, events, boundary, startDuration, endDuration) {
     if (events.isNotEmpty)
@@ -322,7 +320,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
         extraEvents: events.length - 1,
         description: events[0]?.description ?? "",
         padding: EdgeInsets.all(10.0),
-        backgroundColor: events[0]?.eventColor ?? Colors.blue,
+        backgroundColor: events[0]?.color ?? Colors.blue,
         margin: EdgeInsets.all(2.0),
       );
     else
@@ -330,7 +328,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   }
 
   /// Default view header builder. This builder will be used if [widget.dayTitleBuilder] is null.
-  ///
   Widget _defaultWeekPageHeaderBuilder(DateTime startDate, DateTime endDate) {
     return WeekPageHeader(
       startDate: _currentStartDate,
@@ -352,7 +349,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   }
 
   /// Called when user change page using any gesture or inbuilt functions.
-  ///
   void _onPageChange(int index) {
     if (mounted) {
       setState(() {
@@ -372,8 +368,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
-  ///
-  ///
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -385,8 +379,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
-  ///
-  ///
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -403,8 +395,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
-  ///
-  ///
   Future<void> animateToPage(int page,
       {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
@@ -413,13 +403,9 @@ class WeekViewState<T> extends State<WeekView<T>> {
   }
 
   /// Returns current page number.
-  ///
-  ///
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives day calendar for [date]
-  ///
-  ///
   void jumpToWeek(DateTime date) {
     if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
       throw "Invalid date selected.";
@@ -431,8 +417,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [WeekView.pageTransitionDuration] and [WeekView.pageTransitionCurve] respectively.
-  ///
-  ///
   Future<void> animateToWeek(DateTime date,
       {Duration? duration, Curve? curve}) async {
     if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
@@ -448,4 +432,9 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Returns the current visible date in day view.
   DateTime get currentDate => DateTime(
       _currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
+
+  /// check if any dates contains current date or not.
+  /// Returns true if it does else false.
+  bool _showLiveTimeIndicator(List<DateTime> dates) =>
+      dates.any((date) => date.compareWithoutTime(DateTime.now()));
 }

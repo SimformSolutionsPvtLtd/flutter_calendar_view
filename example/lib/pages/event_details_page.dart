@@ -1,8 +1,7 @@
-import 'package:example/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
-import 'extension.dart';
+import '../extension.dart';
 
 class DetailsPage extends StatelessWidget {
   final CalendarEventData event;
@@ -12,22 +11,22 @@ class DetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: event.color,
         elevation: 0,
         centerTitle: false,
         title: Text(
           event.title,
           style: TextStyle(
-            color: AppConstants.black,
+            color: event.color.accentColor,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          onPressed: context.popRoute,
+          onPressed: context.pop,
           icon: Icon(
             Icons.arrow_back,
-            color: AppConstants.black,
+            color: event.color.accentColor,
           ),
         ),
       ),
