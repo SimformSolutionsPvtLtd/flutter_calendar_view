@@ -3,11 +3,22 @@ import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
 /// Paints 24 hour lines.
 class HourLinePainter extends CustomPainter {
+  /// Color of hour line
   final Color lineColor;
+
+  /// Height of hour line
   final double lineHeight;
+
+  /// Offset of hour line from left.
   final double offset;
+
+  /// Height occupied by one minute of time stamp.
   final double minuteHeight;
+
+  /// Flag to display vertical line at left or not.
   final bool showVerticalLine;
+
+  /// left offset of vertical line.
   final double verticalLineOffset;
 
   /// Paints 24 hour lines.
@@ -48,15 +59,24 @@ class HourLinePainter extends CustomPainter {
 }
 
 /// Paints a single horizontal line at [offset].
-class CurrentTimeLinePainter extends CustomPainter {
+class CurrentTimeIndicatorPainter extends CustomPainter {
+  /// Color of time indicator.
   final Color color;
+
+  /// Height of time indicator.
   final double height;
+
+  /// offset of time indicator.
   final Offset offset;
+
+  /// Flag to show bullet at left side or not.
   final bool showBullet;
+
+  /// Radius of bullet.
   final double bulletRadius;
 
   /// Paints a single horizontal line at [offset].
-  CurrentTimeLinePainter({
+  CurrentTimeIndicatorPainter({
     this.showBullet = true,
     required this.color,
     required this.height,
@@ -81,7 +101,7 @@ class CurrentTimeLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is CurrentTimeLinePainter &&
+      oldDelegate is CurrentTimeIndicatorPainter &&
       (this.color != oldDelegate.color ||
           this.height != oldDelegate.height ||
           this.offset != oldDelegate.offset);

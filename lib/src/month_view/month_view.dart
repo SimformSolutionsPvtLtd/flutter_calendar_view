@@ -11,6 +11,7 @@ class MonthView<T> extends StatefulWidget {
   /// Used default title builder if null.
   final DateWidgetBuilder? headerBuilder;
 
+  /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;
 
   /// Builds the name of the weeks.
@@ -32,7 +33,7 @@ class MonthView<T> extends StatefulWidget {
 
   /// Defines initial display month.
   ///
-  /// If not provided current date is default date.
+  /// If not provided [DateTime.now] is default date.
   final DateTime? initialMonth;
 
   /// Defines whether to show default borders or not.
@@ -51,18 +52,15 @@ class MonthView<T> extends StatefulWidget {
   final Color borderColor;
 
   /// Page transition duration used when user try to change page using [MonthView.nextPage] or [MonthView.previousPage]
-  ///
   final Duration pageTransitionDuration;
 
   /// Page transition curve used when user try to change page using [MonthView.nextPage] or [MonthView.previousPage]
-  ///
   final Curve pageTransitionCurve;
 
   /// A required parameters that controls events for month view.
   ///
   /// This will auto update month view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  ///
   final CalendarController<T> controller;
 
   /// Defines width of default border
@@ -81,7 +79,7 @@ class MonthView<T> extends StatefulWidget {
 
   final double? width;
 
-  /// Here T determines Type of your event class. You can specify Type of class in which you are storing your event data.
+  /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
     this.weekCellAspectRatio = 1.5,
@@ -106,6 +104,7 @@ class MonthView<T> extends StatefulWidget {
   MonthViewState<T> createState() => MonthViewState<T>();
 }
 
+/// State of month view.
 class MonthViewState<T> extends State<MonthView<T>> {
   late DateTime _minDate;
   late DateTime _maxDate;
@@ -290,7 +289,6 @@ class MonthViewState<T> extends State<MonthView<T>> {
   }
 
   /// Default cell builder. Used when [widget.cellBuilder] is null
-  ///
   Widget _defaultCellBuilder<T>(
       date, List<CalendarEventData<T>> events, isToday, isInMonth) {
     return FilledCell(
@@ -392,8 +390,8 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.cellBuilder,
     required this.date,
     required this.controller,
-    this.width = 0,
-    this.height = 0,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   @override

@@ -1,15 +1,19 @@
 export 'typedefs.dart';
 
 extension DateTimeExtensions on DateTime {
+  /// Compares only [day], [month] and [year] of [DateTime].
   bool compareWithoutTime(DateTime date) {
     return this.day == date.day &&
         this.month == date.month &&
         this.year == date.year;
   }
 
+  /// Checks if time stamp of [date] is same as [this].
+  /// This method only checks hours and minutes.
   bool hasSameTimeAs(DateTime date) =>
       this.getTotalMinutes == date.getTotalMinutes;
 
+  /// Gets difference of months between [date] and calling object.
   int getMonthDifference(DateTime date) {
     if (this.year == date.year) return ((date.month - this.month).abs() + 1);
 
@@ -24,7 +28,10 @@ extension DateTimeExtensions on DateTime {
     return months;
   }
 
+  /// Gets difference of days between [date] and calling object.
   int getDayDifference(DateTime date) => this.difference(date).inDays.abs();
+
+  /// Gets difference of weeks between [date] and calling object.
   int getWeekDifference(DateTime date) =>
       (this.difference(date).inDays.abs() / 7).ceil();
 
@@ -49,6 +56,9 @@ extension DateTimeExtensions on DateTime {
     ];
   }
 
+  /// Returns list of all dates of [month].
+  /// All the dates are week based that means it will return array of size 42
+  /// which will contain 6 weeks that is the maximum number of weeks a month can have.
   List<DateTime> get datesOfMonths {
     List<DateTime> monthDays = [];
     for (int i = 1, start = 1; i < 7; i++, start += 7) {
@@ -57,10 +67,15 @@ extension DateTimeExtensions on DateTime {
     return monthDays;
   }
 
+  /// Gives formatted date in form of 'month - year'.
   String get formatted => "${this.month}-${this.year}";
 
+  /// Returns total minutes this date is pointing at.
+  /// if [DateTime] object is, DateTime(2021, 5, 13, 12, 4, 5)
+  /// Then this getter will return 12*60 + 4 which evaluates to 724.
   int get getTotalMinutes => this.hour * 60 + this.minute;
 
+  /// Returns a new [DateTime] object with hour and minutes calculated from [totalMinutes].
   DateTime copyFromMinutes([int totalMinutes = 0]) => DateTime(
         this.year,
         this.month,

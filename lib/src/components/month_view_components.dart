@@ -70,6 +70,7 @@ class FilledCell<T> extends StatelessWidget {
   /// Defines highlight color.
   final Color highlightColor;
 
+  /// Color for event tile.
   final Color tileColor;
 
   /// Called when user taps on any event tile.
@@ -77,7 +78,6 @@ class FilledCell<T> extends StatelessWidget {
 
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
-  ///
   const FilledCell({
     Key? key,
     required this.date,

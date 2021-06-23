@@ -1,19 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 import 'package:flutter_calendar_page/src/calendar_event_data.dart';
 import 'package:flutter_calendar_page/src/event_arrangers/event_arrangers.dart';
 import 'package:flutter_calendar_page/src/extensions.dart';
 import 'package:flutter_calendar_page/src/modals.dart';
 import 'package:flutter_calendar_page/src/painters.dart';
 
+import '../constants.dart';
+import '../extensions.dart';
+
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {
+  /// Width of indicator
   final double width;
+
+  /// Height of total display area indicator will be displayed within this height.
   final double height;
+
+  /// Width of time line use to calculate offset of indicator.
   final double timeLineWidth;
+
+  /// settings for time line. Defines color, extra offset, and height of indicator.
   final HourIndicatorSettings liveTimeIndicatorSettings;
+
+  /// Defines height occupied by one minute.
   final double heightPerMinute;
 
   /// Widget to display tile line according to current time.
@@ -27,10 +38,10 @@ class LiveTimeIndicator extends StatefulWidget {
       : super(key: key);
 
   @override
-  LiveTimeIndicatorState createState() => LiveTimeIndicatorState();
+  _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
 }
 
-class LiveTimeIndicatorState extends State<LiveTimeIndicator> {
+class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   late Timer _timer;
   late DateTime _currentDate;
 
@@ -52,7 +63,7 @@ class LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     if (mounted) {
       setState(() {
         _currentDate = DateTime.now();
-        _timer = Timer(Duration(minutes: 1), setTimer);
+        _timer = Timer(Duration(seconds: 1), setTimer);
       });
     }
   }
@@ -61,7 +72,7 @@ class LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(widget.width, widget.height),
-      painter: CurrentTimeLinePainter(
+      painter: CurrentTimeIndicatorPainter(
         color: widget.liveTimeIndicatorSettings.color,
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
@@ -75,11 +86,17 @@ class LiveTimeIndicatorState extends State<LiveTimeIndicator> {
 
 /// Time line to display time at left side of day or week view.
 class TimeLine extends StatelessWidget {
+  /// Width of timeline
   final double timeLineWidth;
+
+  /// Height for one hour.
   final double hourHeight;
+
+  /// Total height of timeline.
   final double height;
+
+  /// Offset for time line
   final double timeLineOffset;
-  final double heightPerMinute;
 
   final DateWidgetBuilder timeLineBuilder;
 
@@ -92,14 +109,13 @@ class TimeLine extends StatelessWidget {
       required this.hourHeight,
       required this.height,
       required this.timeLineOffset,
-      required this.heightPerMinute,
       required this.timeLineBuilder})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      key: ValueKey(this.heightPerMinute),
+      key: ValueKey(this.hourHeight),
       constraints: BoxConstraints(
         maxWidth: timeLineWidth,
         minWidth: timeLineWidth,
@@ -133,15 +149,30 @@ class TimeLine extends StatelessWidget {
   }
 }
 
+/// A widget that display event tiles in day/week view.
 class EventGenerator<T> extends StatelessWidget {
+  /// Height of display area
   final double height;
+
+  /// width of display area
   final double width;
+
+  /// List of events to display.
   final List<CalendarEventData<T>> events;
+
+  /// Defines height of single minute in day/week view page.
   final double heightPerMinute;
+
+  /// Defines how to arrange events.
   final EventArranger<T> eventArranger;
+
+  /// Defines how event tile will be displayed.
   final EventTileBuilder<T> eventTileBuilder;
+
+  /// Defines date for which events will be displayed in given display area.
   final DateTime date;
 
+  /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
     required this.height,
@@ -153,6 +184,8 @@ class EventGenerator<T> extends StatelessWidget {
     required this.date,
   }) : super(key: key);
 
+  /// Arrange events and returns list of [Widget] that displays event tile on display area.
+  /// This method uses [eventArranger] to get position of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents() {
     List<OrganizedCalendarEventData<T>> events = eventArranger.arrange(
       events: this.events,
