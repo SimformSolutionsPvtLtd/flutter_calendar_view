@@ -53,12 +53,12 @@ class CircularCell extends StatelessWidget {
   }
 }
 
-class FilledCell extends StatelessWidget {
+class FilledCell<T> extends StatelessWidget {
   /// Date of current cell.
   final DateTime date;
 
   /// List of events on for current date.
-  final List<CalendarEventData> events;
+  final List<CalendarEventData<T>> events;
 
   /// Defines if cell should be highlighted or not.
   /// If true it will display date title in a circle.
@@ -70,8 +70,10 @@ class FilledCell extends StatelessWidget {
   /// Defines highlight color.
   final Color highlightColor;
 
+  final Color tileColor;
+
   /// Called when user taps on any event tile.
-  final void Function(CalendarEventData event, DateTime date)? onTileTap;
+  final void Function(CalendarEventData<T> event, DateTime date)? onTileTap;
 
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
@@ -84,11 +86,13 @@ class FilledCell extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.highlightColor = Colors.blue,
     this.onTileTap,
+    this.tileColor = Colors.blue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: backgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +130,7 @@ class FilledCell extends StatelessWidget {
                             onTileTap?.call(events[index], events[index].date),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: backgroundColor,
+                            color: highlightColor,
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           margin: EdgeInsets.symmetric(
@@ -178,6 +182,6 @@ class MonthPageHeader extends CalendarPageHeader {
           onTitleTapped: onTitleTapped,
           dateStringBuilder: MonthPageHeader._monthStringBuilder,
         );
-  static String _monthStringBuilder(DateTime date) =>
+  static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
 }

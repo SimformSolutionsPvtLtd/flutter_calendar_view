@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
 /// Paints 24 hour lines.
 class HourLinePainter extends CustomPainter {
@@ -25,14 +26,14 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (int i = 1; i < 24; i++) {
+    for (int i = 1; i < Constants.hoursADay; i++) {
       double dy = i * minuteHeight * 60;
       canvas.drawLine(Offset(offset, dy), Offset(size.width, dy), paint);
     }
 
     if (showVerticalLine)
       canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + 10, size.height), paint);
+          Offset(offset + verticalLineOffset, size.height), paint);
   }
 
   @override
