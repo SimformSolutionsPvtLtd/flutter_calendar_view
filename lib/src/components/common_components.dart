@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_page/src/constants.dart';
 
 import '../extensions.dart';
 
@@ -21,6 +22,9 @@ class CalendarPageHeader extends StatelessWidget {
   /// Provides string to display as title.
   final StringProvider dateStringBuilder;
 
+  final Color backgroundColor;
+  final Color iconColor;
+
   /// Common header for month and day view In this header user can define format
   /// in which date will be displayed by providing [dateStringBuilder] function.
   const CalendarPageHeader({
@@ -31,13 +35,15 @@ class CalendarPageHeader extends StatelessWidget {
     this.onTitleTapped,
     this.onPreviousDay,
     this.secondaryDate,
+    this.backgroundColor = Constants.headerBackground,
+    this.iconColor = Constants.black,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFDCF0FF),
+        color: backgroundColor,
       ),
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -57,6 +63,7 @@ class CalendarPageHeader extends StatelessWidget {
             icon: Icon(
               Icons.chevron_left,
               size: 30,
+              color: iconColor,
             ),
           ),
           Expanded(
@@ -80,6 +87,7 @@ class CalendarPageHeader extends StatelessWidget {
             icon: Icon(
               Icons.chevron_right,
               size: 30,
+              color: iconColor,
             ),
           ),
         ],

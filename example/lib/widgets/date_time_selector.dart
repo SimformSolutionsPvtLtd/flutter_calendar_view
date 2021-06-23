@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
-import 'extension.dart';
+import '../extension.dart';
 
 typedef Validator = String? Function(String? value);
 
@@ -17,6 +17,7 @@ class DateTimeSelectorFormField extends StatefulWidget {
   final TextStyle? textStyle;
   final void Function(DateTime date)? onSave;
   final InputDecoration? decoration;
+  final TextEditingController controller;
 
   const DateTimeSelectorFormField({
     this.onSelect,
@@ -28,6 +29,7 @@ class DateTimeSelectorFormField extends StatefulWidget {
     this.validator,
     this.displayDefault = false,
     this.textStyle,
+    required this.controller,
   });
 
   @override
@@ -45,7 +47,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   void initState() {
     super.initState();
 
-    _textEditingController = TextEditingController();
+    _textEditingController = widget.controller;
     _focusNode = FocusNode();
 
     _selectedDate = widget.minimumDateTime ?? DateTime.now();
@@ -66,7 +68,6 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   @override
   void dispose() {
     _focusNode.dispose();
-    _textEditingController.dispose();
     super.dispose();
   }
 

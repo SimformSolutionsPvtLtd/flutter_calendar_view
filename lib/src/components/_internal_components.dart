@@ -133,14 +133,16 @@ class TimeLine extends StatelessWidget {
               child: Container(
                 height: hourHeight,
                 width: timeLineWidth,
-                child: timeLineBuilder.call(DateTime(
-                  _date.year,
-                  _date.month,
-                  _date.day,
-                  i,
-                  0,
-                  0,
-                )),
+                child: timeLineBuilder.call(
+                  DateTime(
+                    _date.year,
+                    _date.month,
+                    _date.day,
+                    i,
+                    0,
+                    0,
+                  ),
+                ),
               ),
             ),
         ],

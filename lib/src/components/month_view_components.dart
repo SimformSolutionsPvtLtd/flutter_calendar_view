@@ -21,6 +21,10 @@ class CircularCell extends StatelessWidget {
   /// Background color of circle around date title.
   final Color backgroundColor;
 
+  final Color highlightedTitleColor;
+
+  final Color titleColor;
+
   /// This class will defines how cell will be displayed.
   /// To get proper view user [CircularCell] with 1 [MonthView.cellAspectRatio].
   const CircularCell({
@@ -30,6 +34,8 @@ class CircularCell extends StatelessWidget {
     this.onTap,
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
+    this.highlightedTitleColor = Constants.white,
+    this.titleColor = Constants.black,
   }) : super(key: key);
 
   @override
@@ -44,7 +50,7 @@ class CircularCell extends StatelessWidget {
             "${date.day}",
             style: TextStyle(
               fontSize: 20,
-              color: shouldHighlight ? Colors.white : Colors.black,
+              color: shouldHighlight ? highlightedTitleColor : titleColor,
             ),
           ),
         ),
@@ -82,6 +88,12 @@ class FilledCell<T> extends StatelessWidget {
   /// defines radius of highlighted date.
   final double highlightRadius;
 
+  /// color of cell title
+  final Color titleColor;
+
+  /// color of highlighted cell title
+  final Color highlightedTitleColor;
+
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({
@@ -95,6 +107,8 @@ class FilledCell<T> extends StatelessWidget {
     this.onTileTap,
     this.tileColor = Colors.blue,
     this.highlightRadius = 11,
+    this.titleColor = Constants.black,
+    this.highlightedTitleColor = Constants.white,
   }) : super(key: key);
 
   @override
@@ -117,10 +131,10 @@ class FilledCell<T> extends StatelessWidget {
               "${date.day}",
               style: TextStyle(
                 color: shouldHighlight
-                    ? Colors.white
+                    ? highlightedTitleColor
                     : isInMonth
-                        ? Colors.black
-                        : Colors.black38,
+                        ? titleColor
+                        : titleColor.withOpacity(0.4),
                 fontSize: 12,
               ),
             ),
@@ -144,7 +158,7 @@ class FilledCell<T> extends StatelessWidget {
                             onTileTap?.call(events[index], events[index].date),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: events[index].eventColor,
+                            color: events[index].color,
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           margin: EdgeInsets.symmetric(
@@ -160,7 +174,7 @@ class FilledCell<T> extends StatelessWidget {
                                   overflow: TextOverflow.clip,
                                   maxLines: 1,
                                   style: TextStyle(
-                                    color: Colors.white.withAlpha(240),
+                                    color: events[index].color.accent,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -187,6 +201,8 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onNextMonth,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousMonth,
+    Color iconColor = Constants.black,
+    Color backgroundColor = Constants.headerBackground,
     required DateTime date,
   }) : super(
           key: key,
@@ -194,8 +210,49 @@ class MonthPageHeader extends CalendarPageHeader {
           onNextDay: onNextMonth,
           onPreviousDay: onPreviousMonth,
           onTitleTapped: onTitleTapped,
+          iconColor: iconColor,
+          backgroundColor: backgroundColor,
           dateStringBuilder: MonthPageHeader._monthStringBuilder,
         );
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
+}
+
+class WeekDayTile extends StatelessWidget {
+  final int dayIndex;
+  final Color backgroundColor;
+  final bool displayBorder;
+  final TextStyle? textStyle;
+
+  const WeekDayTile({
+    Key? key,
+    required this.dayIndex,
+    this.backgroundColor = Constants.white,
+    this.displayBorder = true,
+    this.textStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(
+          color: Constants.defaultBorderColor,
+          width: displayBorder ? 0.5 : 0,
+        ),
+      ),
+      child: Text(
+        Constants.weekTitles[dayIndex],
+        style: textStyle ??
+            TextStyle(
+              fontSize: 17,
+              color: Constants.black,
+            ),
+      ),
+    );
+  }
 }

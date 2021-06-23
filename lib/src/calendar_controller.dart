@@ -30,6 +30,12 @@ class CalendarController<T> extends ChangeNotifier {
 
   /// Adds a single event in [_events]
   void addEvent(CalendarEventData<T> event) {
+    if (event.startTime != null &&
+        event.endTime != null &&
+        event.startTime!.isAfter(event.endTime!)) {
+      throw "Start time should not exceed end time.";
+    }
+
     _addEvent(event);
 
     notifyListeners();

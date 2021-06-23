@@ -14,6 +14,9 @@ class DayView<T> extends StatefulWidget {
   final EventTileBuilder<T>? eventTileBuilder;
 
   /// A function that returns a [Widget] that will be displayed left side of day view.
+  ///
+  /// If null is provided then no time line will be visible.
+  ///
   final DateWidgetBuilder? timeLineBuilder;
 
   /// Builds day title bar.
@@ -98,6 +101,8 @@ class DayView<T> extends StatefulWidget {
   /// Defines offset of vertical line from hour line starts.
   final double verticalLineOffset;
 
+  final Color? backgroundColor;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -121,6 +126,7 @@ class DayView<T> extends StatefulWidget {
     this.dayTitleBuilder,
     this.eventArranger,
     this.verticalLineOffset = 10,
+    this.backgroundColor = Colors.white,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         super(key: key);
@@ -224,51 +230,59 @@ class DayViewState<T> extends State<DayView<T>> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _dayTitleBuilder(_currentDate),
-          Expanded(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: _height,
-                width: _width,
-                child: PageView.builder(
-                  itemCount: _totalDays,
-                  controller: _pageController,
-                  onPageChanged: _onPageChange,
-                  itemBuilder: (_, index) {
-                    DateTime date = DateTime(
-                        _minDate.year, _minDate.month, _minDate.day + index);
+      child: SizedBox(
+        width: _width,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: widget.backgroundColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _dayTitleBuilder(_currentDate),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: SizedBox(
+                    height: _height,
+                    child: PageView.builder(
+                      itemCount: _totalDays,
+                      controller: _pageController,
+                      onPageChanged: _onPageChange,
+                      itemBuilder: (_, index) {
+                        DateTime date = DateTime(_minDate.year, _minDate.month,
+                            _minDate.day + index);
 
-                    return InternalDayViewPage<T>(
-                      key: ValueKey(_hourHeight.toString() + date.toString()),
-                      width: _width,
-                      liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                      timeLineBuilder: _timeLineBuilder,
-                      eventTileBuilder: _eventTileBuilder,
-                      heightPerMinute: widget.heightPerMinute,
-                      hourIndicatorSettings: _hourIndicatorSettings,
-                      date: date,
-                      showLiveLine: widget.showLiveTimeLineInAllDays ||
-                          date.compareWithoutTime(DateTime.now()),
-                      timeLineOffset: _timeLineOffset,
-                      timeLineWidth: _timeLineWidth,
-                      verticalLineOffset: widget.verticalLineOffset,
-                      showVerticalLine: widget.showVerticalLine,
-                      height: _height,
-                      controller: widget.controller,
-                      hourHeight: _hourHeight,
-                      eventArranger: _eventArranger,
-                    );
-                  },
+                        return InternalDayViewPage<T>(
+                          key: ValueKey(
+                              _hourHeight.toString() + date.toString()),
+                          width: _width,
+                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
+                          timeLineBuilder: _timeLineBuilder,
+                          eventTileBuilder: _eventTileBuilder,
+                          heightPerMinute: widget.heightPerMinute,
+                          hourIndicatorSettings: _hourIndicatorSettings,
+                          date: date,
+                          showLiveLine: widget.showLiveTimeLineInAllDays ||
+                              date.compareWithoutTime(DateTime.now()),
+                          timeLineOffset: _timeLineOffset,
+                          timeLineWidth: _timeLineWidth,
+                          verticalLineOffset: widget.verticalLineOffset,
+                          showVerticalLine: widget.showVerticalLine,
+                          height: _height,
+                          controller: widget.controller,
+                          hourHeight: _hourHeight,
+                          eventArranger: _eventArranger,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -283,25 +297,13 @@ class DayViewState<T> extends State<DayView<T>> {
 
   /// Default timeline builder this builder will be used if [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) => Transform.translate(
-        offset: Offset(0, -7.5),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 7.0),
-          child: Text(
-            "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 15.0,
-            ),
-          ),
-        ),
-      );
+  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(date: date);
 
   /// Default timeline builder. This builder will be used if [widget.eventTileBuilder] is null
   ///
   Widget _defaultEventTileBuilder(
     DateTime date,
-    List<CalendarEventData<T>?> events,
+    List<CalendarEventData<T>> events,
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
@@ -309,11 +311,11 @@ class DayViewState<T> extends State<DayView<T>> {
     if (events.isNotEmpty)
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
-        title: events[0]?.title ?? "",
+        title: events[0].title,
         extraEvents: events.length - 1,
-        description: events[0]?.description ?? "",
+        description: events[0].description,
         padding: EdgeInsets.all(10.0),
-        backgroundColor: events[0]?.eventColor ?? Colors.blue,
+        backgroundColor: events[0].color,
         margin: EdgeInsets.all(2.0),
       );
     else
@@ -331,9 +333,11 @@ class DayViewState<T> extends State<DayView<T>> {
         DateTime? selectedDate = await showDatePicker(
           context: context,
           initialDate: date,
-          firstDate: Constants.minDate,
-          lastDate: Constants.maxDate,
+          firstDate: _minDate,
+          lastDate: _maxDate,
         );
+
+        print(selectedDate);
 
         if (selectedDate == null) return;
         this.jumpToDate(selectedDate);

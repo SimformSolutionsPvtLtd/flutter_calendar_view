@@ -99,7 +99,6 @@ class InternalWeekViewPage<T> extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
-            height: weekTitleHeight,
             width: width,
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -123,71 +122,78 @@ class InternalWeekViewPage<T> extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            height: height,
-            width: width,
-            child: Stack(
-              children: [
-                CustomPaint(
-                  size: Size(width, height),
-                  painter: HourLinePainter(
-                    lineColor: hourIndicatorSettings.color,
-                    lineHeight: hourIndicatorSettings.height,
-                    offset: timeLineWidth + hourIndicatorSettings.offset,
-                    minuteHeight: heightPerMinute,
-                    verticalLineOffset: verticalLineOffset,
-                    showVerticalLine: showVerticalLine,
-                  ),
-                ),
-                if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-                  LiveTimeIndicator(
-                    liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                    width: width,
-                    height: height,
-                    heightPerMinute: heightPerMinute,
-                    timeLineWidth: timeLineWidth,
-                  ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    width: weekTitleWidth * dates.length,
-                    height: height,
-                    child: Row(
-                      children: [
-                        ...List.generate(
-                          dates.length,
-                          (index) => Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    right: BorderSide(
-                              color: hourIndicatorSettings.color,
-                              width: hourIndicatorSettings.height,
-                            ))),
-                            height: height,
-                            width: weekTitleWidth,
-                            child: EventGenerator<T>(
-                              height: height,
-                              date: dates[index],
-                              width: weekTitleWidth,
-                              eventArranger: eventArranger,
-                              eventTileBuilder: eventTileBuilder,
-                              events: controller.getEventsOnDay(dates[index]),
-                              heightPerMinute: heightPerMinute,
-                            ),
-                          ),
-                        )
-                      ],
+          Expanded(
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: height,
+                width: width,
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: Size(width, height),
+                      painter: HourLinePainter(
+                        lineColor: hourIndicatorSettings.color,
+                        lineHeight: hourIndicatorSettings.height,
+                        offset: timeLineWidth + hourIndicatorSettings.offset,
+                        minuteHeight: heightPerMinute,
+                        verticalLineOffset: verticalLineOffset,
+                        showVerticalLine: showVerticalLine,
+                      ),
                     ),
-                  ),
+                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                      LiveTimeIndicator(
+                        liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                        width: width,
+                        height: height,
+                        heightPerMinute: heightPerMinute,
+                        timeLineWidth: timeLineWidth,
+                      ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: SizedBox(
+                        width: weekTitleWidth * dates.length,
+                        height: height,
+                        child: Row(
+                          children: [
+                            ...List.generate(
+                              dates.length,
+                              (index) => Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: hourIndicatorSettings.color,
+                                      width: hourIndicatorSettings.height,
+                                    ),
+                                  ),
+                                ),
+                                height: height,
+                                width: weekTitleWidth,
+                                child: EventGenerator<T>(
+                                  height: height,
+                                  date: dates[index],
+                                  width: weekTitleWidth,
+                                  eventArranger: eventArranger,
+                                  eventTileBuilder: eventTileBuilder,
+                                  events:
+                                      controller.getEventsOnDay(dates[index]),
+                                  heightPerMinute: heightPerMinute,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    TimeLine(
+                      timeLineWidth: timeLineWidth,
+                      hourHeight: hourHeight,
+                      height: height,
+                      timeLineOffset: timeLineOffset,
+                      timeLineBuilder: timeLineBuilder,
+                    ),
+                  ],
                 ),
-                TimeLine(
-                  timeLineWidth: timeLineWidth,
-                  hourHeight: hourHeight,
-                  height: height,
-                  timeLineOffset: timeLineOffset,
-                  timeLineBuilder: timeLineBuilder,
-                ),
-              ],
+              ),
             ),
           ),
         ],

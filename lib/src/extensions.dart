@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_calendar_page/src/enumerations.dart';
+
 export 'typedefs.dart';
 
 extension DateTimeExtensions on DateTime {
@@ -41,9 +44,9 @@ extension DateTimeExtensions on DateTime {
   /// ex: if Current Date instance is 8th and day is wednesday then weekDates will return dates
   /// [6,7,8,9,10,11,12]
   /// Where on 6th there will be monday and on 12th there will be Sunday
-  List<DateTime> get datesOfWeek {
+  List<DateTime> datesOfWeek({WeekDays startDay = WeekDays.monday}) {
     int day = this.weekday;
-    DateTime start = this.subtract(Duration(days: day - 1));
+    DateTime start = this.subtract(Duration(days: day - startDay.index));
 
     return [
       start,
@@ -62,7 +65,7 @@ extension DateTimeExtensions on DateTime {
   List<DateTime> get datesOfMonths {
     List<DateTime> monthDays = [];
     for (int i = 1, start = 1; i < 7; i++, start += 7) {
-      monthDays.addAll(DateTime(this.year, this.month, start).datesOfWeek);
+      monthDays.addAll(DateTime(this.year, this.month, start).datesOfWeek());
     }
     return monthDays;
   }
@@ -84,4 +87,12 @@ extension DateTimeExtensions on DateTime {
         totalMinutes % 60,
         0,
       );
+}
+
+extension ColorExtension on Color {
+  Color get accent => (this.blue / 2 >= 255 / 2 ||
+          this.red / 2 >= 255 / 2 ||
+          this.green / 2 >= 255 / 2)
+      ? Colors.black
+      : Colors.white;
 }

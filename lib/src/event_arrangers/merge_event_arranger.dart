@@ -100,7 +100,7 @@ class MergeEventArranger<T> extends EventArranger<T> {
       }
     }
 
-    print("Skipped Event... Total: ${skippedEvents.length}");
+    print("Total Skipped Events... : ${skippedEvents.length}");
     print(skippedEvents);
     print("End Skipped Event....");
 

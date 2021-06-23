@@ -11,7 +11,7 @@ typedef CellBuilder<T> = Widget Function(
 
 typedef EventTileBuilder<T> = Widget Function(
   DateTime date,
-  List<CalendarEventData<T>?> events,
+  List<CalendarEventData<T>> events,
   Rect boundary,
   DateTime startDuration,
   DateTime endDuration,

@@ -73,16 +73,11 @@ class MonthView<T> extends StatefulWidget {
   /// Defines aspect ratio of day cells in month calendar page.
   final double cellAspectRatio;
 
-  /// Defines aspect ratio of week cells in month calendar page.
-  /// This ratio is for week titles.
-  final double weekCellAspectRatio;
-
   final double? width;
 
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
-    this.weekCellAspectRatio = 1.5,
     this.showBorder = true,
     this.borderColor = Constants.defaultBorderColor,
     this.cellBuilder,
@@ -108,7 +103,9 @@ class MonthView<T> extends StatefulWidget {
 class MonthViewState<T> extends State<MonthView<T>> {
   late DateTime _minDate;
   late DateTime _maxDate;
+
   late DateTime _currentDate;
+
   late int _currentIndex;
 
   int _totalMonths = 0;
@@ -116,11 +113,13 @@ class MonthViewState<T> extends State<MonthView<T>> {
   late PageController _pageController;
 
   late double _width;
-  late double _cellWidth;
-  late double _cellHeight;
   late double _height;
 
+  late double _cellWidth;
+  late double _cellHeight;
+
   late CellBuilder<T> _cellBuilder;
+
   late WeekDayBuilder _weekBuilder;
 
   late DateWidgetBuilder _headerBuilder;
@@ -129,32 +128,56 @@ class MonthViewState<T> extends State<MonthView<T>> {
   void initState() {
     super.initState();
 
+    // Initialize minimum date.
     _minDate = widget.minMonth ?? Constants.epochDate;
+
+    // Initialize maximum date.
     _maxDate = widget.maxMonth ?? Constants.maxDate;
 
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
+
+    // Initialize current date.
     _currentDate = widget.initialMonth ?? DateTime.now();
 
+    // make sure that _currentDate is between _minDate and _maxDate.
     if (_currentDate.isBefore(_minDate)) {
       _currentDate = _minDate;
     } else if (_currentDate.isAfter(_maxDate)) {
       _currentDate = _maxDate;
     }
 
+    // Get number of months between _minDate and _maxDate.
+    // This number will be number of page in page view.
     _totalMonths = _maxDate.getMonthDifference(_minDate);
 
-    widget.controller.addListener(_reload);
-
+    // Calculate the current index of page view.
     _currentIndex = _minDate.getMonthDifference(_currentDate) - 1;
 
+    // Initialize page controller to control page actions.
     _pageController = PageController(initialPage: _currentIndex);
 
+    // Initialize cell builder. Assign default if widget.cellBuilder is null.
     _cellBuilder = widget.cellBuilder ?? _defaultCellBuilder;
+
+    // Initialize week builder. Assign default if widget.weekBuilder is null.
+    // This widget will come under header this will display week days.
     _weekBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+
+    // Initialize header builder. Assign default if widget.headerBuilder is null.
+    // This widget will be displayed on top of the page. from where user can see month and change month.
     _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
+
+    // Reloads the view if there is any change in controller or user adds new events.
+    widget.controller.addListener(_reload);
   }
 
   @override
   void dispose() {
+    widget.controller.removeListener(_reload);
     _pageController.dispose();
     super.dispose();
   }
@@ -166,75 +189,75 @@ class MonthViewState<T> extends State<MonthView<T>> {
     _width = widget.width ?? MediaQuery.of(context).size.width;
     _cellWidth = _width / 7;
     _cellHeight = _cellWidth / widget.cellAspectRatio;
-    _height = _cellHeight * 6 + (_cellWidth / widget.weekCellAspectRatio);
+    _height = _cellHeight * 6;
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: _width,
-            child: _headerBuilder(_currentDate),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                width: _width,
-                height: _height,
-                child: PageView.builder(
-                  scrollDirection: Axis.horizontal,
-                  controller: _pageController,
-                  onPageChanged: _onPageChange,
-                  itemBuilder: (_, index) {
-                    DateTime date =
-                        DateTime(_minDate.year, _minDate.month + index, 1);
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: _width,
-                          child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 7,
-                              childAspectRatio: widget.weekCellAspectRatio,
+      child: SizedBox(
+        width: _width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: _width,
+              child: _headerBuilder(_currentDate),
+            ),
+            Expanded(
+              child: PageView.builder(
+                scrollDirection: Axis.horizontal,
+                controller: _pageController,
+                onPageChanged: _onPageChange,
+                itemBuilder: (_, index) {
+                  DateTime date =
+                      DateTime(_minDate.year, _minDate.month + index, 1);
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: _width,
+                        child: Row(
+                          children: List.generate(
+                            7,
+                            (index) => SizedBox(
+                              width: _cellWidth,
+                              child: _weekBuilder(index),
                             ),
-                            shrinkWrap: true,
-                            itemCount: 7,
-                            itemBuilder: (_, index) {
-                              return _weekBuilder(index);
-                            },
                           ),
                         ),
-                        Expanded(
-                          child: _MonthPageBuilder<T>(
-                            key: ValueKey(date.toIso8601String()),
-                            width: _width,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: SizedBox(
                             height: _height,
-                            controller: widget.controller,
-                            borderColor: widget.borderColor,
-                            borderSize: widget.borderSize,
-                            cellBuilder: _cellBuilder,
-                            cellRatio: widget.cellAspectRatio,
-                            date: date,
-                            showBorder: widget.showBorder,
+                            width: _width,
+                            child: _MonthPageBuilder<T>(
+                              key: ValueKey(date.toIso8601String()),
+                              width: _width,
+                              height: _height,
+                              controller: widget.controller,
+                              borderColor: widget.borderColor,
+                              borderSize: widget.borderSize,
+                              cellBuilder: _cellBuilder,
+                              cellRatio: widget.cellAspectRatio,
+                              date: date,
+                              showBorder: widget.showBorder,
+                            ),
                           ),
                         ),
-                      ],
-                    );
-                  },
-                  itemCount: _totalMonths,
-                ),
+                      ),
+                    ],
+                  );
+                },
+                itemCount: _totalMonths,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -267,8 +290,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
         DateTime? selectedDate = await showDatePicker(
           context: context,
           initialDate: date,
-          firstDate: Constants.minDate,
-          lastDate: Constants.maxDate,
+          firstDate: _minDate,
+          lastDate: _maxDate,
         );
 
         if (selectedDate == null) return;
@@ -282,9 +305,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
 
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(int index) {
-    return Container(
-      alignment: Alignment.center,
-      child: Text(Constants.weekTitles[index]),
+    return WeekDayTile(
+      dayIndex: index,
     );
   }
 
@@ -294,7 +316,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
     return FilledCell(
       date: date,
       shouldHighlight: isToday,
-      backgroundColor: isInMonth ? Color(0xffffffff) : Color(0xffdedede),
+      backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
       events: events,
     );
   }

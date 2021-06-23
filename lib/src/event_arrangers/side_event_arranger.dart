@@ -57,12 +57,12 @@ class SideEventArranger<T> extends EventArranger<T> {
       CalendarEventData<T>? event;
       for (int j = 0; j < durations.length; j++) {
         if (table[i][j] != null && (event == null || table[i][j] != event)) {
-          event = table[i][j];
+          event = table[i][j]!;
 
           double top =
-              (event?.startTime?.getTotalMinutes ?? 0) * heightPerMinute;
+              (event.startTime?.getTotalMinutes ?? 0) * heightPerMinute;
           double bottom = height -
-              ((event?.endTime?.getTotalMinutes ?? 0) * heightPerMinute);
+              ((event.endTime?.getTotalMinutes ?? 0) * heightPerMinute);
           double left = widthPerCol * (i);
           double right = width - (left + widthPerCol);
 
@@ -76,8 +76,8 @@ class SideEventArranger<T> extends EventArranger<T> {
               events: [event],
               left: left,
               right: right,
-              endDuration: event?.startTime ?? DateTime.now(),
-              startDuration: event?.endTime ?? DateTime.now(),
+              endDuration: event.startTime ?? DateTime.now(),
+              startDuration: event.endTime ?? DateTime.now(),
             );
             arrangedEvent.add(eventData);
           } else {
