@@ -16,6 +16,8 @@ class CalendarPageHeader extends StatelessWidget {
   /// Date of month/day.
   final DateTime date;
 
+  final DateTime? secondaryDate;
+
   /// Provides string to display as title.
   final StringProvider dateStringBuilder;
 
@@ -29,6 +31,7 @@ class CalendarPageHeader extends StatelessWidget {
     this.onNextDay,
     this.onTitleTapped,
     this.onPreviousDay,
+    this.secondaryDate,
   }) : super(key: key);
 
   @override
@@ -61,7 +64,7 @@ class CalendarPageHeader extends StatelessWidget {
             child: InkWell(
               onTap: onTitleTapped,
               child: Text(
-                dateStringBuilder(date),
+                dateStringBuilder(date, secondaryDate: secondaryDate),
                 textAlign: TextAlign.center,
               ),
             ),

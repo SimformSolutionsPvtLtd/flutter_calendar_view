@@ -32,4 +32,8 @@ typedef PageChangeCallback = void Function(
   CalendarEventData event,
 );
 
-typedef StringProvider = String Function(DateTime date);
+typedef StringProvider = String Function(DateTime date,
+    {DateTime? secondaryDate});
+
+typedef WeekPageHeaderBuilder = Widget Function(
+    DateTime startDate, DateTime endDate);

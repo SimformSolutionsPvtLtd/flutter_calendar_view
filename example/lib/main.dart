@@ -1,5 +1,6 @@
 import 'package:example/constants.dart';
 import 'package:example/month_view_page.dart';
+import 'package:example/week_view_page.dart';
 import 'package:flutter/material.dart';
 
 import 'day_view_page.dart';
@@ -64,8 +65,7 @@ class HomePage extends StatelessWidget {
               child: Text("Day View"),
             ),
             ElevatedButton(
-              onPressed: () =>
-                  context.showSnackBarWithText("Not Implemented..."),
+              onPressed: () => context.pushRoute(WeekViewDemo()),
               child: Text("Week View"),
             ),
           ],

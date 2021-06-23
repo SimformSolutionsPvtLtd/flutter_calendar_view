@@ -69,18 +69,23 @@ class RoundedEventTile extends StatelessWidget {
                   fontSize: 20,
                   color: Colors.white,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            if (description != "") ...[
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white.withAlpha(200),
+            if (description != "")
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white.withAlpha(200),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(height: 15.0),
-            ],
-            if (extraEvents > 0) Text("+$extraEvents more"),
+            if (extraEvents > 0) Expanded(child: Text("+$extraEvents more")),
           ],
         ),
       ),
@@ -104,6 +109,6 @@ class DayPageHeader extends CalendarPageHeader {
           onTitleTapped: onTitleTapped,
           dateStringBuilder: DayPageHeader._dayStringBuilder,
         );
-  static String _dayStringBuilder(DateTime date) =>
+  static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }

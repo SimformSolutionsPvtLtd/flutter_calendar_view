@@ -15,8 +15,6 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
   CalendarController<Event> _controller = CalendarController();
   GlobalKey<MonthViewState> _monthViewState = GlobalKey();
 
-  DateTime date = DateTime(2021, 6, 28);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
