@@ -1,6 +1,6 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:example/widgets/day_view_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
 import '../extension.dart';
 import '../model/event.dart';
@@ -13,7 +13,7 @@ class DayViewPageDemo extends StatefulWidget {
 }
 
 class _DayViewPageDemoState extends State<DayViewPageDemo> {
-  late CalendarController<Event> _controller;
+  late EventController<Event> _controller;
 
   DateTime date = DateTime(2021, 5, 31);
 
@@ -35,7 +35,7 @@ class _DayViewPageDemoState extends State<DayViewPageDemo> {
             withDuration: true,
           ));
           if (event == null) return;
-          _controller.addEvent(event);
+          _controller.add(event);
         },
       ),
       body: DayViewWidget(),

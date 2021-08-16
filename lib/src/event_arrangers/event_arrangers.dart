@@ -5,7 +5,6 @@ import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
 part 'side_event_arranger.dart';
-part 'stack_event_arranger.dart';
 
 abstract class EventArranger<T> {
   /// [EventArranger] defines how simultaneous events will be arranged.
@@ -13,7 +12,7 @@ abstract class EventArranger<T> {
   ///
   /// There are three predefined class that implements of [EventArranger].
   ///
-  /// [StackEventArranger], [SideEventArranger] and [MergeEventArranger].
+  /// [_StackEventArranger], [SideEventArranger] and [MergeEventArranger].
   ///
   const EventArranger();
 

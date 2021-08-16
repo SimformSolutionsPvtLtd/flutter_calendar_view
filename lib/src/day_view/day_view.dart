@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/src/calendar_controller.dart';
-import 'package:flutter_calendar_page/src/components/day_view_components.dart';
-import 'package:flutter_calendar_page/src/constants.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
 
+import '../calendar_constants.dart';
 import '../calendar_event_data.dart';
+import '../components/day_view_components.dart';
+import '../constants.dart';
 import '../event_arrangers/event_arrangers.dart';
+import '../event_controller.dart';
+import '../extensions.dart';
 import '../modals.dart';
 import '_internal_day_view_page.dart';
 
@@ -32,12 +33,12 @@ class DayView<T> extends StatefulWidget {
 
   /// Determines the lower boundary user can scroll.
   ///
-  /// If not provided [Constants.epochDate] is default.
+  /// If not provided [CalendarConstants.epochDate] is default.
   final DateTime? minDay;
 
   /// Determines upper boundary user can scroll.
   ///
-  /// If not provided [Constants.maxDate] is default.
+  /// If not provided [CalendarConstants.maxDate] is default.
   final DateTime? maxDay;
 
   /// Defines initial display day.
@@ -65,7 +66,7 @@ class DayView<T> extends StatefulWidget {
   ///
   /// This will auto update day view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  final CalendarController<T> controller;
+  final EventController<T> controller;
 
   /// Defines height occupied by one minute of interval. This will be used to calculate total height of day view.
   final double heightPerMinute;
@@ -116,7 +117,7 @@ class DayView<T> extends StatefulWidget {
     this.maxDay,
     this.initialDay,
     this.hourIndicatorSettings,
-    this.heightPerMinute = 1,
+    this.heightPerMinute = 0.7,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.timeLineOffset = 0,
@@ -165,8 +166,8 @@ class DayViewState<T> extends State<DayView<T>> {
   void initState() {
     super.initState();
 
-    _minDate = widget.minDay ?? Constants.epochDate;
-    _maxDate = widget.maxDay ?? Constants.maxDate;
+    _minDate = widget.minDay ?? CalendarConstants.epochDate;
+    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
 
     _initialDay = widget.initialDay ?? DateTime.now();
 
@@ -312,7 +313,7 @@ class DayViewState<T> extends State<DayView<T>> {
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
         title: events[0].title,
-        extraEvents: events.length - 1,
+        totalEvents: events.length - 1,
         description: events[0].description,
         padding: EdgeInsets.all(10.0),
         backgroundColor: events[0].color,

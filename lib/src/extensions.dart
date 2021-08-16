@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/src/enumerations.dart';
+
+import 'enumerations.dart';
 
 export 'typedefs.dart';
 
@@ -90,6 +91,14 @@ extension DateTimeExtensions on DateTime {
 }
 
 extension ColorExtension on Color {
+  Color get accent => (this.blue / 2 >= 255 / 2 ||
+          this.red / 2 >= 255 / 2 ||
+          this.green / 2 >= 255 / 2)
+      ? Colors.black
+      : Colors.white;
+}
+
+extension MaterialColorExtension on MaterialColor {
   Color get accent => (this.blue / 2 >= 255 / 2 ||
           this.red / 2 >= 255 / 2 ||
           this.green / 2 >= 255 / 2)

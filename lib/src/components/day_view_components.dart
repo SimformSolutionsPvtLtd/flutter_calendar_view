@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
+import '../constants.dart';
 import '../extensions.dart';
 import 'common_components.dart';
 
@@ -22,7 +22,7 @@ class RoundedEventTile extends StatelessWidget {
 
   /// If same tile can have multiple events.
   /// In most cases this value will be 1 less than total events.
-  final int extraEvents;
+  final int totalEvents;
 
   /// Padding of the tile. Default padding is [EdgeInsets.zero]
   final EdgeInsets padding;
@@ -43,12 +43,12 @@ class RoundedEventTile extends StatelessWidget {
   const RoundedEventTile({
     Key? key,
     required this.title,
-    this.padding = const EdgeInsets.all(0),
-    this.margin = const EdgeInsets.all(0),
+    this.padding = EdgeInsets.zero,
+    this.margin = EdgeInsets.zero,
     this.description = "",
     this.borderRadius = BorderRadius.zero,
     this.onTap,
-    this.extraEvents = 0,
+    this.totalEvents = 1,
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
@@ -71,15 +71,17 @@ class RoundedEventTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (title != "")
-              Text(
-                title,
-                style: titleStyle ??
-                    TextStyle(
-                      fontSize: 20,
-                      color: backgroundColor.accent,
-                    ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  title,
+                  style: titleStyle ??
+                      TextStyle(
+                        fontSize: 20,
+                        color: backgroundColor.accent,
+                      ),
+                  softWrap: true,
+                  overflow: TextOverflow.fade,
+                ),
               ),
             if (description != "")
               Expanded(
@@ -95,10 +97,10 @@ class RoundedEventTile extends StatelessWidget {
                   ),
                 ),
               ),
-            if (extraEvents > 0)
+            if (totalEvents > 1)
               Expanded(
                 child: Text(
-                  "+$extraEvents more",
+                  "+${totalEvents - 1} more",
                   style: (descriptionStyle ??
                           TextStyle(
                             color: backgroundColor.accent.withAlpha(200),
@@ -139,9 +141,13 @@ class DayPageHeader extends CalendarPageHeader {
 }
 
 class DefaultTimeLineMark extends StatelessWidget {
+  /// Defines time to display
   final DateTime date;
+
+  /// Text style for time string.
   final TextStyle? markingStyle;
 
+  /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
     Key? key,
     required this.date,

@@ -1,5 +1,5 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
 import '../extension.dart';
 

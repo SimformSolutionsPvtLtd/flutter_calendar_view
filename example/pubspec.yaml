@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl:
   flutter_colorpicker: 0.4.0
-  flutter_calendar_page:
+  calendar_view:
     path: ../
 
 dev_dependencies:

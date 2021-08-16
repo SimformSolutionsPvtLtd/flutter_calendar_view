@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
-import 'package:flutter_calendar_page/src/calendar_event_data.dart';
 
+import '../calendar_event_data.dart';
+import '../constants.dart';
+import '../extensions.dart';
 import 'common_components.dart';
 
 class CircularCell extends StatelessWidget {
@@ -21,8 +22,10 @@ class CircularCell extends StatelessWidget {
   /// Background color of circle around date title.
   final Color backgroundColor;
 
+  /// Title color when title is highlighted.
   final Color highlightedTitleColor;
 
+  /// Color of cell title.
   final Color titleColor;
 
   /// This class will defines how cell will be displayed.
@@ -219,11 +222,19 @@ class MonthPageHeader extends CalendarPageHeader {
 }
 
 class WeekDayTile extends StatelessWidget {
+  /// Index of week day.
   final int dayIndex;
+
+  /// Background color of single week day tile.
   final Color backgroundColor;
+
+  /// Should display border or not.
   final bool displayBorder;
+
+  /// Style for week day string.
   final TextStyle? textStyle;
 
+  /// Title for week day in month view.
   const WeekDayTile({
     Key? key,
     required this.dayIndex,

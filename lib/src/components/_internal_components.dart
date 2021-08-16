@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/src/calendar_event_data.dart';
-import 'package:flutter_calendar_page/src/event_arrangers/event_arrangers.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
-import 'package:flutter_calendar_page/src/modals.dart';
 
+import '../calendar_event_data.dart';
 import '../constants.dart';
+import '../event_arrangers/event_arrangers.dart';
 import '../extensions.dart';
+import '../modals.dart';
 import '../painters.dart';
 
 /// Widget to display tile line according to current time.
@@ -59,6 +58,8 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     super.dispose();
   }
 
+  /// Creates an recursive call that runs every 1 seconds.
+  /// This will rebuild TimeLineIndicator every second. This will allow us to indicate live time in Week and Day view.
   void setTimer() {
     if (mounted) {
       setState(() {
@@ -98,6 +99,7 @@ class TimeLine extends StatelessWidget {
   /// Offset for time line
   final double timeLineOffset;
 
+  /// This will display time string in timeline.
   final DateWidgetBuilder timeLineBuilder;
 
   static DateTime get _date => DateTime.now();

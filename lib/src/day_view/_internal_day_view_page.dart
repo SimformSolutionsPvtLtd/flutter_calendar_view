@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
-import 'package:flutter_calendar_page/src/components/_internal_components.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
 
+import '../components/_internal_components.dart';
+import '../event_arrangers/event_arrangers.dart';
+import '../event_controller.dart';
+import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 
@@ -21,7 +22,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
   final EventTileBuilder<T> eventTileBuilder;
 
   /// Controller for calendar
-  final CalendarController<T> controller;
+  final EventController<T> controller;
 
   /// A builder that builds time line.
   final DateWidgetBuilder timeLineBuilder;

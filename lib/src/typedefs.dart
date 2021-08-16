@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../flutter_calendar_page.dart';
+import 'calendar_event_data.dart';
 
 typedef CellBuilder<T> = Widget Function(
   DateTime date,
