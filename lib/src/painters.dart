@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../src/constants.dart';
+import 'constants.dart';
 
 /// Paints 24 hour lines.
 class HourLinePainter extends CustomPainter {

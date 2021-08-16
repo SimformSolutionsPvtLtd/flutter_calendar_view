@@ -1,8 +1,8 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:example/extension.dart';
 import 'package:example/model/event.dart';
 import 'package:example/widgets/event_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../app_colors.dart';
@@ -265,7 +265,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
           side: BorderSide(
-            color: Constants.defaultBorderColor,
+            color: AppColors.bluishGrey,
             width: 2,
           ),
         ),
@@ -281,7 +281,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             height: 1.0,
-            color: Constants.defaultBorderColor,
+            color: AppColors.bluishGrey,
           ),
           ColorPicker(
             displayThumbColor: true,

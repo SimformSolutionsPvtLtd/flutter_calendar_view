@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
-import 'package:flutter_calendar_page/src/components/_internal_components.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
 
+import '../components/_internal_components.dart';
+import '../event_arrangers/event_arrangers.dart';
+import '../event_controller.dart';
+import '../extensions.dart';
+import '../modals.dart';
 import '../painters.dart';
 
 /// A single page for week view.
@@ -20,7 +22,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   final EventTileBuilder<T> eventTileBuilder;
 
   /// A calendar controller that controls all the events and rebuilds widget if event(s) are added or removed.
-  final CalendarController<T> controller;
+  final EventController<T> controller;
 
   /// A builder to build time line.
   final DateWidgetBuilder timeLineBuilder;

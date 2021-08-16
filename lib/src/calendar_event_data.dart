@@ -25,6 +25,8 @@ class CalendarEventData<T> {
   /// Description of the event.
   final String description;
 
+  /// Defines color of event.
+  /// This color will be used in default widgets provided by plugin.
   final Color color;
 
   /// List of events on [date].

@@ -9,11 +9,6 @@ class Constants {
 
   static const int hoursADay = 24;
 
-  /// minimum and maximum dates are approx. 100,000,000 days before and after epochDate
-  static final DateTime epochDate = DateTime(1970, 1, 1);
-  static final DateTime maxDate = DateTime(275759, 1, 1);
-  static final DateTime minDate = DateTime(-271819, 1, 1);
-
   static final List<String> weekTitles = ["M", "T", "W", "T", "F", "S", "S"];
 
   static const Color defaultLiveTimeIndicatorColor = const Color(0xff444444);

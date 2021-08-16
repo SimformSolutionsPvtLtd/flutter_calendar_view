@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/src/constants.dart';
 
+import '../constants.dart';
 import '../extensions.dart';
 
 class CalendarPageHeader extends StatelessWidget {
@@ -17,12 +17,17 @@ class CalendarPageHeader extends StatelessWidget {
   /// Date of month/day.
   final DateTime date;
 
+  /// Secondary date. This date will be used when we need to define a range of dates.
+  /// [date] can be starting date and [secondaryDate] can be end date.
   final DateTime? secondaryDate;
 
   /// Provides string to display as title.
   final StringProvider dateStringBuilder;
 
+  /// backgeound color of header.
   final Color backgroundColor;
+
+  /// Color of icons at both sides of header.
   final Color iconColor;
 
   /// Common header for month and day view In this header user can define format

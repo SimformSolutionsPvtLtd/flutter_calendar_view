@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
+
+import '../calendar_constants.dart';
+import '../calendar_event_data.dart';
+import '../components/components.dart';
+import '../constants.dart';
+import '../event_controller.dart';
+import '../extensions.dart';
 
 class MonthView<T> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each cell in month calendar.
@@ -23,12 +28,12 @@ class MonthView<T> extends StatefulWidget {
 
   /// Determines the lower boundary user can scroll.
   ///
-  /// If not provided [Constants.epochDate] is default.
+  /// If not provided [CalendarConstants.epochDate] is default.
   final DateTime? minMonth;
 
   /// Determines upper boundary user can scroll.
   ///
-  /// If not provided [Constants.maxDate] is default.
+  /// If not provided [CalendarConstants.maxDate] is default.
   final DateTime? maxMonth;
 
   /// Defines initial display month.
@@ -61,7 +66,7 @@ class MonthView<T> extends StatefulWidget {
   ///
   /// This will auto update month view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  final CalendarController<T> controller;
+  final EventController<T> controller;
 
   /// Defines width of default border
   ///
@@ -129,10 +134,10 @@ class MonthViewState<T> extends State<MonthView<T>> {
     super.initState();
 
     // Initialize minimum date.
-    _minDate = widget.minMonth ?? Constants.epochDate;
+    _minDate = widget.minMonth ?? CalendarConstants.epochDate;
 
     // Initialize maximum date.
-    _maxDate = widget.maxMonth ?? Constants.maxDate;
+    _maxDate = widget.maxMonth ?? CalendarConstants.maxDate;
 
     assert(
       _minDate.isBefore(_maxDate),
@@ -295,7 +300,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
         );
 
         if (selectedDate == null) return;
-        this.jumpToDate(selectedDate);
+        this.jumpToMonth(selectedDate);
       },
       onPreviousMonth: previousPage,
       date: date,
@@ -362,25 +367,25 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Returns current page number.
   int get currentPage => _currentIndex;
 
-  /// Jumps to page which gives month calendar for [date]
-  void jumpToDate(DateTime date) {
-    if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
+  /// Jumps to page which gives month calendar for [month]
+  void jumpToMonth(DateTime month) {
+    if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController.jumpToPage(_minDate.getMonthDifference(date) - 1);
+    _pageController.jumpToPage(_minDate.getMonthDifference(month) - 1);
   }
 
-  /// Animate to page which gives month calendar for [date].
+  /// Animate to page which gives month calendar for [month].
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve] respectively.
-  Future<void> animateToDate(DateTime date,
+  Future<void> animateToMonth(DateTime month,
       {Duration? duration, Curve? curve}) async {
-    if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
+    if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getMonthDifference(date) - 1,
+      _minDate.getMonthDifference(month) - 1,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );
@@ -399,7 +404,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final Color borderColor;
   final CellBuilder<T> cellBuilder;
   final DateTime date;
-  final CalendarController<T> controller;
+  final EventController<T> controller;
   final double width;
   final double height;
 

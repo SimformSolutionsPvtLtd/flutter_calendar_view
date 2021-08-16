@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
+import 'package:calendar_view/calendar_view.dart';
 
 import '../extension.dart';
 
@@ -100,7 +100,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
       context: context,
       initialDate: now,
       firstDate: widget.minimumDateTime ?? now,
-      lastDate: Constants.maxDate,
+      lastDate: CalendarConstants.maxDate,
     );
 
     if (date == null) return null;

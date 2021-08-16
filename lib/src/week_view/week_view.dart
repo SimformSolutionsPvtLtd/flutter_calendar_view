@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/src/calendar_controller.dart';
-import 'package:flutter_calendar_page/src/components/components.dart';
-import 'package:flutter_calendar_page/src/constants.dart';
-import 'package:flutter_calendar_page/src/extensions.dart';
-import 'package:flutter_calendar_page/src/modals.dart';
 
+import '../calendar_constants.dart';
+import '../components/components.dart';
+import '../constants.dart';
 import '../event_arrangers/event_arrangers.dart';
+import '../event_controller.dart';
+import '../extensions.dart';
+import '../modals.dart';
 import '_internal_week_view_page.dart';
 
 /// [Widget] to display week view.
@@ -48,7 +49,7 @@ class WeekView<T> extends StatefulWidget {
   final Curve pageTransitionCurve;
 
   /// Controller for Week view thia will refresh view when user adds or removes event from controller.
-  final CalendarController<T> controller;
+  final EventController<T> controller;
 
   /// Defines height occupied by one minute of time span. This parameter will be used to calculate total height of Week view.
   final double heightPerMinute;
@@ -136,8 +137,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   void initState() {
     super.initState();
 
-    _minDate = widget.minDay ?? Constants.epochDate;
-    _maxDate = widget.maxDay ?? Constants.maxDate;
+    _minDate = widget.minDay ?? CalendarConstants.epochDate;
+    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
 
     _initialDay = widget.initialDay ?? DateTime.now();
 
@@ -315,13 +316,15 @@ class WeekViewState<T> extends State<WeekView<T>> {
       date, events, boundary, startDuration, endDuration) {
     if (events.isNotEmpty)
       return RoundedEventTile(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(6.0),
         title: events[0]?.title ?? "",
-        extraEvents: events.length - 1,
-        description: events[0]?.description ?? "",
-        padding: EdgeInsets.all(10.0),
+        titleStyle: TextStyle(
+          fontSize: 12,
+          color: ((events[0]?.color ?? Colors.blue) as Color).accent,
+        ),
+        totalEvents: events.length,
+        padding: EdgeInsets.all(7.0),
         backgroundColor: events[0]?.color ?? Colors.blue,
-        margin: EdgeInsets.all(2.0),
       );
     else
       return Container();
@@ -338,8 +341,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
         DateTime? selectedDate = await showDatePicker(
           context: context,
           initialDate: startDate,
-          firstDate: Constants.minDate,
-          lastDate: Constants.maxDate,
+          firstDate: CalendarConstants.minDate,
+          lastDate: CalendarConstants.maxDate,
         );
 
         if (selectedDate == null) return;
@@ -405,31 +408,31 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Returns current page number.
   int get currentPage => _currentIndex;
 
-  /// Jumps to page which gives day calendar for [date]
-  void jumpToWeek(DateTime date) {
-    if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
+  /// Jumps to page which gives day calendar for [week]
+  void jumpToWeek(DateTime week) {
+    if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController.jumpToPage(_minDate.getWeekDifference(date) + 1);
+    _pageController.jumpToPage(_minDate.getWeekDifference(week) + 1);
   }
 
-  /// Animate to page which gives day calendar for [date].
+  /// Animate to page which gives day calendar for [week].
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [WeekView.pageTransitionDuration] and [WeekView.pageTransitionCurve] respectively.
-  Future<void> animateToWeek(DateTime date,
+  Future<void> animateToWeek(DateTime week,
       {Duration? duration, Curve? curve}) async {
-    if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
+    if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getWeekDifference(date) + 1,
+      _minDate.getWeekDifference(week) + 1,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );
   }
 
-  /// Returns the current visible date in day view.
+  /// Returns the current visible date in week view.
   DateTime get currentDate => DateTime(
       _currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
 

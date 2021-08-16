@@ -1,7 +1,7 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:example/widgets/event_provider.dart';
 import 'package:example/widgets/week_view_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_page/flutter_calendar_page.dart';
 
 import '../extension.dart';
 import '../model/event.dart';
@@ -15,7 +15,7 @@ class WeekViewDemo extends StatefulWidget {
 }
 
 class _WeekViewDemoState extends State<WeekViewDemo> {
-  late CalendarController<Event> _controller;
+  late EventController<Event> _controller;
 
   @override
   void didChangeDependencies() {
@@ -41,6 +41,6 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
       withDuration: true,
     ));
     if (event == null) return;
-    _controller.addEvent(event);
+    _controller.add(event);
   }
 }

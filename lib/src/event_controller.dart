@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../flutter_calendar_page.dart';
+import 'calendar_event_data.dart';
 
-class CalendarController<T> extends ChangeNotifier {
+class EventController<T> extends ChangeNotifier {
   /// Calendar controller to control all the events related operations like, adding event, removing event, etc.
-  CalendarController();
+  EventController();
 
   List<_YearEvent<T>> _events = [];
 
@@ -20,7 +20,7 @@ class CalendarController<T> extends ChangeNotifier {
 
   /// Add all the events in the list
   /// If there is an event with same date then
-  void addAllEvents(List<CalendarEventData<T>> events) {
+  void addAll(List<CalendarEventData<T>> events) {
     for (CalendarEventData<T> event in events) {
       _addEvent(event);
     }
@@ -29,7 +29,7 @@ class CalendarController<T> extends ChangeNotifier {
   }
 
   /// Adds a single event in [_events]
-  void addEvent(CalendarEventData<T> event) {
+  void add(CalendarEventData<T> event) {
     if (event.startTime != null &&
         event.endTime != null &&
         event.startTime!.isAfter(event.endTime!)) {
@@ -41,7 +41,16 @@ class CalendarController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// TODO: Add method to remove events.
+  /// Removes [event] from this controller.
+  void remove(CalendarEventData<T> event) {
+    for (var e in _events) {
+      if (e.year == event.date.year) {
+        e.removeEvent(event);
+        notifyListeners();
+        break;
+      }
+    }
+  }
 
   void _addEvent(CalendarEventData<T> event) {
     for (int i = 0; i < _events.length; i++) {
@@ -124,6 +133,14 @@ class _YearEvent<T> {
     }
     return totalEvents;
   }
+
+  void removeEvent(CalendarEventData<T> event) {
+    for (var e in _months) {
+      if (e.month == event.date.month) {
+        e.removeEvent(event);
+      }
+    }
+  }
 }
 
 class _MonthEvent<T> {
@@ -144,6 +161,14 @@ class _MonthEvent<T> {
   void addEvent(CalendarEventData<T> event) {
     if (!_events.contains(event)) {
       _events.add(event);
+    }
+  }
+
+  void removeEvent(CalendarEventData<T> event) {
+    for (var e in _events) {
+      if (e == event) {
+        _events.remove(e);
+      }
     }
   }
 }

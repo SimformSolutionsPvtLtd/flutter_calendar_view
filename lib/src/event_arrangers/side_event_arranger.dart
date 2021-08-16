@@ -50,9 +50,6 @@ class SideEventArranger<T> extends EventArranger<T> {
 
     double widthPerCol = width / rowCounter;
 
-    // TODO: Rearrange events in table to fill empty space once table is created.
-    // TODO: Solve scenario when start time of a event is same as end time of other event.
-
     for (int i = 0; i < rowCounter; i++) {
       CalendarEventData<T>? event;
       for (int j = 0; j < durations.length; j++) {
@@ -90,21 +87,6 @@ class SideEventArranger<T> extends EventArranger<T> {
       }
     }
     return arrangedEvent;
-  }
-
-  /// Prints the table.
-  void _printTable(
-      List<List<CalendarEventData<T>?>> table, int row, int column) {
-    for (int i = 0; i < row; i++) {
-      String data = "$i. ";
-      for (int j = 0; j < column; j++) {
-        if (table[i][j] == null)
-          data += "null ";
-        else
-          data += "${table[i][j]?.event?.toString().split(" ").last} ";
-      }
-      print(data);
-    }
   }
 
   int _containsEvent(
