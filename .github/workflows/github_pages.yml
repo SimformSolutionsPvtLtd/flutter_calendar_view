@@ -17,6 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Show Paths
+        run: ls -l
 
       - name: Installing Flutter
         uses: britannio/action-install-flutter@v1.1
@@ -25,3 +28,9 @@ jobs:
           
       - name: Installing dependencies
         run: flutter pub get
+        
+      - name: Build Artifect
+        run: flutter build web -t example/lib/main.dart
+        
+      - name: Show Build Paths
+        run: ls -l
