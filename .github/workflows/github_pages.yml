@@ -26,11 +26,14 @@ jobs:
         with:
           version: 2.0.4
           
+      - name: Go To Directory
+        run: cd ./example
+        
       - name: Installing dependencies
         run: flutter pub get
         
       - name: Build Artifect
-        run: flutter build web -t example/lib/main.dart
+        run: flutter build web
         
       - name: Show Build Paths
         run: ls -l
