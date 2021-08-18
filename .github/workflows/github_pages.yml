@@ -17,7 +17,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: Update Flutter
+        uses: geowatson/flutter-latest@1.0.1
+        with:
+          args: upgrade
+
       - name: Get packages
         uses: geowatson/flutter-latest@1.0.1
         with:
