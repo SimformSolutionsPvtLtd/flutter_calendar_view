@@ -18,21 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Update Flutter
-        uses: geowatson/flutter-latest@1.0.1
+      - name: Installing Flutter
+        uses: britannio/action-install-flutter@v1.1
         with:
-          args: upgrade
-
-      - name: Get packages
-        uses: geowatson/flutter-latest@1.0.1
-        with:
-          args: pub get
+          version: 2.0.4
           
-      - name: Build artifect
-        uses: geowatson/flutter-latest@1.0.1
-        with:
-          args: build web -t example/lib.main.dart
-          
-          
-      - name: Print path
-        run: ls -a
+      - name: Installing dependencies
+        run: flutter pub get
