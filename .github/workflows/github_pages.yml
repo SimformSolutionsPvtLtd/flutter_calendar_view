@@ -25,15 +25,12 @@ jobs:
         uses: britannio/action-install-flutter@v1.1
         with:
           version: 2.0.4
-          
-      - name: Go To Directory
-        run: cd ./example
         
       - name: Installing dependencies
         run: flutter pub get
         
       - name: Build Artifect
-        run: flutter build web
+        run: cd example && flutter build web
         
       - name: Show Build Paths
-        run: ls -l
+        run: cd example && ls -l
