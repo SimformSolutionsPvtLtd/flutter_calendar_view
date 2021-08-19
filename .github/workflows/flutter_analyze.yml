@@ -6,7 +6,7 @@
 name: Dart
 
 on:
-  push:
+  pull_request:
     branches: [ develop ]
 
 jobs:
@@ -21,18 +21,9 @@ jobs:
         uses: britannio/action-install-flutter@v1.1
         with:
           version: 2.0.4
-        
+
       - name: Install dependencies
         run: flutter pub get
-        
-      - name: Build Artifect
-        run: cd example && flutter build web
 
-      - name: Deploy to GitHub Pages
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v2
-        with:
-          target_branch: gh-pages
-          build_dir: example/build/web
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Analyse
+        run: flutter analyze
