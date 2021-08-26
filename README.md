@@ -1,22 +1,22 @@
-
-![Team Banner](readme_assets/team_banner.png)
-
-![Plugin Banner](readme_assets/plugin_banner.png)
+![Plugin Banner](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_calendar_view/master/readme_assets/plugin_banner.png)
 
 # calendar_view
 
 [![Build](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/workflows/Build/badge.svg?branch=master)](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/actions) [![calendar_view](https://img.shields.io/pub/v/calendar_view?label=calendar_view)](https://pub.dev/packages/calendar_view)
 
-
 A Flutter package allows you to easily implement all calendar UI and calendar event functionality.
 
-For web demo visit [Demo](https://simformsolutionspvtltd.github.io/flutter_calendar_view/).
+For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github.io/flutter_calendar_view/).
+
+## Preview
+
+![Preview](https://raw.githubusercontent.com/SimformSolutionsPvtLtd/flutter_calendar_view/master/readme_assets/demo.gif)
 
 ## Installing
 
 1. Add dependencies to `pubspec.yaml`
 
-    Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/)
+    Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/calendar_view/install)
 
     ```yaml
     dependencies:
@@ -97,7 +97,7 @@ For web demo visit [Demo](https://simformsolutionspvtltd.github.io/flutter_calen
     );
     ```
 
-    For more info on parameters visit [documentation](#).
+    For more info on parameters visit [documentation](https://pub.dev/documentation/calendar_view/latest/index.html).
 
 4. Use `controller` to add or remove events.
 
