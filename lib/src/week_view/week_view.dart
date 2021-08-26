@@ -6,12 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
+import '../calendar_controller_provider.dart';
 import '../components/components.dart';
 import '../constants.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
 /// [Widget] to display week view.
@@ -53,7 +55,7 @@ class WeekView<T> extends StatefulWidget {
   final Curve pageTransitionCurve;
 
   /// Controller for Week view thia will refresh view when user adds or removes event from controller.
-  final EventController<T> controller;
+  final EventController<T>? controller;
 
   /// Defines height occupied by one minute of time span. This parameter will be used to calculate total height of Week view.
   final double heightPerMinute;
@@ -76,12 +78,16 @@ class WeekView<T> extends StatefulWidget {
   /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
+  /// Background color of week view page.
   final Color backgroundColor;
+
+  /// Called when user taps on event tile.
+  final CellTapCallback<T>? onEventTap;
 
   /// Main widget for week view.
   const WeekView({
     Key? key,
-    required this.controller,
+    this.controller,
     this.eventTileBuilder,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
@@ -102,6 +108,7 @@ class WeekView<T> extends StatefulWidget {
     this.weekTitleHeight = 50,
     this.weekDayBuilder,
     this.backgroundColor = Colors.white,
+    this.onEventTap,
   }) : super(key: key);
 
   @override
@@ -137,9 +144,17 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late double _weekTitleWidth;
   int _weekDays = 7;
 
+  bool _controllerAdded = false;
+
+  late VoidCallback _reloadCallback;
+
+  late EventController<T> _controller;
+
   @override
   void initState() {
     super.initState();
+
+    _reloadCallback = _reload;
 
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
@@ -157,7 +172,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _currentEndDate = dates.last;
 
     _totalWeeks = _maxDate.getWeekDifference(_minDate) + 1;
-    widget.controller.addListener(_reload);
     _currentIndex = _currentStartDate.getWeekDifference(_minDate) + 1;
     _hourHeight = widget.heightPerMinute * 60;
     _height = _hourHeight * Constants.hoursADay;
@@ -174,6 +188,17 @@ class WeekViewState<T> extends State<WeekView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (!_controllerAdded) {
+      _controller = widget.controller ??
+          CalendarControllerProvider.of<T>(context).controller;
+
+      // Reloads the view if there is any change in controller or user adds new events.
+      _controller.addListener(_reloadCallback);
+
+      _controllerAdded = true;
+    }
+
     _width = widget.width ?? MediaQuery.of(context).size.width;
 
     assert(_width != 0, "Calendar width can not be 0.");
@@ -207,7 +232,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
   @override
   void dispose() {
-    widget.controller.removeListener(_reload);
+    _controller.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -250,6 +275,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         weekDayBuilder: _weekDayBuilder,
                         liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                         timeLineBuilder: _timeLineBuilder,
+                        onTileTap: widget.onEventTap,
                         eventTileBuilder: _eventTileBuilder,
                         heightPerMinute: widget.heightPerMinute,
                         hourIndicatorSettings: _hourIndicatorSettings,
@@ -260,7 +286,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         timeLineWidth: _timeLineWidth,
                         verticalLineOffset: 0,
                         showVerticalLine: true,
-                        controller: widget.controller,
+                        controller: _controller,
                         hourHeight: _hourHeight,
                         eventArranger: _eventArranger,
                       );
@@ -273,6 +299,12 @@ class WeekViewState<T> extends State<WeekView<T>> {
         ),
       ),
     );
+  }
+
+  EventController<T> get controller {
+    assert(_controllerAdded, "EventController is not initialized yet.");
+
+    return _controller;
   }
 
   /// Reloads page.

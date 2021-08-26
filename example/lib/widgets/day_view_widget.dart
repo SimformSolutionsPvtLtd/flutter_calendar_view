@@ -1,6 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:example/model/event.dart';
-import 'package:example/widgets/event_provider.dart';
 import 'package:flutter/material.dart';
 
 class DayViewWidget extends StatelessWidget {
@@ -18,7 +17,6 @@ class DayViewWidget extends StatelessWidget {
     return DayView<Event>(
       key: state,
       width: width,
-      controller: DataProvider.of(context).controller,
     );
   }
 }

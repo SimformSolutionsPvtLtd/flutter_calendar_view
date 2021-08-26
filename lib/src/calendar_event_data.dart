@@ -33,16 +33,16 @@ class CalendarEventData<T> {
   /// This color will be used in default widgets provided by plugin.
   final Color color;
 
-  /// List of events on [date].
-  final T event;
+  /// Event on [date].
+  final T? event;
 
   /// Stores all the events on [date]
   CalendarEventData({
     required this.date,
-    required this.event,
+    required this.title,
+    this.description = "",
+    this.event,
     this.color = Colors.blue,
-    this.title = "Title",
-    this.description = "Description",
     this.startTime,
     this.endTime,
   });

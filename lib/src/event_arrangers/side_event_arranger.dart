@@ -119,8 +119,17 @@ class SideEventArranger<T> extends EventArranger<T> {
   List<int> _getEventsDuration(List<CalendarEventData<T>> events) {
     List<int> durations = [];
     for (CalendarEventData event in events) {
-      int start = event.startTime?.getTotalMinutes ?? 0;
-      int end = event.endTime?.getTotalMinutes ?? 0;
+      DateTime startTime = event.startTime ?? DateTime.now();
+      DateTime endTime = event.endTime ?? startTime;
+      assert(
+          !(endTime.getTotalMinutes <= startTime.getTotalMinutes),
+          "Assertion fail for event: \n$event\n"
+          "startDate must be less than endDate.\n"
+          "This error occurs when you does not provide startDate or endDate in "
+          "CalendarEventDate or provided endDate occurs before startDate.");
+
+      int start = startTime.getTotalMinutes;
+      int end = endTime.getTotalMinutes;
       int i;
 
       /// Get position where we can add start duration

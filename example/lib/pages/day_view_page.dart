@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../extension.dart';
 import '../model/event.dart';
-import '../widgets/event_provider.dart';
 import 'create_event_page.dart';
 
 class DayViewPageDemo extends StatefulWidget {
@@ -13,16 +12,6 @@ class DayViewPageDemo extends StatefulWidget {
 }
 
 class _DayViewPageDemoState extends State<DayViewPageDemo> {
-  late EventController<Event> _controller;
-
-  DateTime date = DateTime(2021, 5, 31);
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _controller = DataProvider.of(context).controller;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +24,7 @@ class _DayViewPageDemoState extends State<DayViewPageDemo> {
             withDuration: true,
           ));
           if (event == null) return;
-          _controller.add(event);
+          CalendarControllerProvider.of(context).controller.add(event);
         },
       ),
       body: DayViewWidget(),

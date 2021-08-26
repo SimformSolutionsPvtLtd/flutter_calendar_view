@@ -1,10 +1,11 @@
+import 'package:calendar_view/calendar_view.dart';
+import 'package:example/model/event.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
 import 'add_event_widget.dart';
-import 'event_provider.dart';
 
 class CalendarConfig extends StatelessWidget {
   final void Function(CalendarView view) onViewChange;
@@ -103,7 +104,9 @@ class CalendarConfig extends StatelessWidget {
                 ),
                 AddEventWidget(
                   onEventAdd: (event) {
-                    DataProvider.of(context).controller.add(event);
+                    CalendarControllerProvider.of<Event>(context)
+                        .controller
+                        .add(event);
                   },
                 ),
               ],

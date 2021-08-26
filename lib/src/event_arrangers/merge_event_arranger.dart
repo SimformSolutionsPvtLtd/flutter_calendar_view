@@ -26,10 +26,14 @@ class MergeEventArranger<T> extends EventArranger<T> {
       // If event has null start time or null end time or end time is earlier than start time or end time and tart time is same.
       // Skip that event.
       //
-      if (endTime.getTotalMinutes <= startTime.getTotalMinutes) {
-        skippedEvents.add(event);
-        continue;
-      }
+
+      assert(
+          !(endTime.getTotalMinutes <= startTime.getTotalMinutes),
+          "Assertion fail for event: \n$event\n"
+          "startDate must be less than endDate.\n"
+          "This error occurs when you does not provide startDate or endDate in "
+          "CalendarEventDate or provided endDate occurs before startDate.");
+
       int eventStart = startTime.getTotalMinutes;
       int eventEnd = endTime.getTotalMinutes;
 

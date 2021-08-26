@@ -21,9 +21,6 @@ class RoundedEventTile extends StatelessWidget {
   /// Default color is [Colors.blue]
   final Color backgroundColor;
 
-  /// Called when user taps on tile.
-  final VoidCallback? onTap;
-
   /// If same tile can have multiple events.
   /// In most cases this value will be 1 less than total events.
   final int totalEvents;
@@ -51,7 +48,6 @@ class RoundedEventTile extends StatelessWidget {
     this.margin = EdgeInsets.zero,
     this.description = "",
     this.borderRadius = BorderRadius.zero,
-    this.onTap,
     this.totalEvents = 1,
     this.backgroundColor = Colors.blue,
     this.titleStyle,
@@ -60,60 +56,56 @@ class RoundedEventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: this.onTap,
-      child: Container(
-        padding: padding,
-        margin: margin,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: borderRadius,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (title != "")
-              Expanded(
+    return Container(
+      padding: padding,
+      margin: margin,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: borderRadius,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (title.isNotEmpty)
+            Expanded(
+              child: Text(
+                title,
+                style: titleStyle ??
+                    TextStyle(
+                      fontSize: 20,
+                      color: backgroundColor.accent,
+                    ),
+                softWrap: true,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          if (description.isNotEmpty)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
                 child: Text(
-                  title,
-                  style: titleStyle ??
+                  description,
+                  style: descriptionStyle ??
                       TextStyle(
-                        fontSize: 20,
-                        color: backgroundColor.accent,
+                        fontSize: 17,
+                        color: backgroundColor.accent.withAlpha(200),
                       ),
-                  softWrap: true,
-                  overflow: TextOverflow.fade,
                 ),
               ),
-            if (description != "")
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: Text(
-                    description,
-                    style: descriptionStyle ??
+            ),
+          if (totalEvents > 1)
+            Expanded(
+              child: Text(
+                "+${totalEvents - 1} more",
+                style: (descriptionStyle ??
                         TextStyle(
-                          fontSize: 17,
                           color: backgroundColor.accent.withAlpha(200),
-                        ),
-                  ),
-                ),
+                        ))
+                    .copyWith(fontSize: 17),
               ),
-            if (totalEvents > 1)
-              Expanded(
-                child: Text(
-                  "+${totalEvents - 1} more",
-                  style: (descriptionStyle ??
-                          TextStyle(
-                            color: backgroundColor.accent.withAlpha(200),
-                          ))
-                      .copyWith(fontSize: 17),
-                ),
-              ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

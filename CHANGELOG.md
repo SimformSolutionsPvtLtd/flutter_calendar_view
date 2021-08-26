@@ -3,6 +3,11 @@
 - Update `README.md` file.
 - Add license information in package files.
 - Update project description in `pubspec.yaml`
+- Update documentation.
+- Add `CalendarControllerProvider`.
+- Add `onEventTap` callback in `WeekView` and `DayView`.
+- Add `onCellTap` callback in `MonthView`.
+- Make `controller` optional parameter in all views where `CalendarControllerProvider` is provided.
 
 # 0.0.1
 

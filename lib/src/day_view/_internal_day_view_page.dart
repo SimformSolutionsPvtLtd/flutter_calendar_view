@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import '../components/_internal_components.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
-import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
+import '../typedefs.dart';
 
 /// Defines a single day page.
 class InternalDayViewPage<T> extends StatelessWidget {
@@ -62,6 +62,9 @@ class InternalDayViewPage<T> extends StatelessWidget {
   /// Offset  of vertical line.
   final double verticalLineOffset;
 
+  /// Called when user taps on event tile.
+  final CellTapCallback<T>? onTileTap;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -81,6 +84,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
     required this.hourHeight,
     required this.eventArranger,
     required this.verticalLineOffset,
+    required this.onTileTap,
   }) : super(key: key);
 
   @override
@@ -114,6 +118,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
             child: EventGenerator<T>(
               height: height,
               date: date,
+              onTileTap: onTileTap,
               eventArranger: eventArranger,
               events: controller.getEventsOnDay(date),
               heightPerMinute: heightPerMinute,
