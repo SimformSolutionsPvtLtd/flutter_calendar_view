@@ -10,7 +10,7 @@
 
 A Flutter package allows you to easily implement all calendar UI and calendar event functionality.
 
-For web demo visit [Demo](https://simformsolutionspvtltd.github.io/calendar_view/#/).
+For web demo visit [Demo](https://simformsolutionspvtltd.github.io/flutter_calendar_view/).
 
 ## Installing
 
