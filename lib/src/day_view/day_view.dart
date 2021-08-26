@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
+import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/day_view_components.dart';
 import '../constants.dart';
@@ -12,6 +13,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
 class DayView<T> extends StatefulWidget {
@@ -70,7 +72,7 @@ class DayView<T> extends StatefulWidget {
   ///
   /// This will auto update day view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  final EventController<T> controller;
+  final EventController<T>? controller;
 
   /// Defines height occupied by one minute of interval. This will be used to calculate total height of day view.
   final double heightPerMinute;
@@ -106,13 +108,17 @@ class DayView<T> extends StatefulWidget {
   /// Defines offset of vertical line from hour line starts.
   final double verticalLineOffset;
 
+  /// Background colour of day view page.
   final Color? backgroundColor;
+
+  /// This method will be called when user taps on event tile.
+  final CellTapCallback<T>? onEventTap;
 
   /// Main widget for day view.
   const DayView({
     Key? key,
     this.eventTileBuilder,
-    required this.controller,
+    this.controller,
     this.showVerticalLine = true,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
@@ -132,6 +138,7 @@ class DayView<T> extends StatefulWidget {
     this.eventArranger,
     this.verticalLineOffset = 10,
     this.backgroundColor = Colors.white,
+    this.onEventTap,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         super(key: key);
@@ -166,9 +173,17 @@ class DayViewState<T> extends State<DayView<T>> {
 
   late DateWidgetBuilder _dayTitleBuilder;
 
+  late EventController<T> _controller;
+
+  bool _controllerAdded = false;
+
+  late VoidCallback _reloadCallback;
+
   @override
   void initState() {
     super.initState();
+
+    _reloadCallback = _reload;
 
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
@@ -182,7 +197,6 @@ class DayViewState<T> extends State<DayView<T>> {
     }
     _currentDate = _initialDay;
     _totalDays = _maxDate.getDayDifference(_minDate) + 1;
-    widget.controller.addListener(_reload);
     _currentIndex = _currentDate.getDayDifference(_minDate);
     _hourHeight = widget.heightPerMinute * 60;
     _height = _hourHeight * Constants.hoursADay;
@@ -197,6 +211,16 @@ class DayViewState<T> extends State<DayView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (!_controllerAdded) {
+      _controller = widget.controller ??
+          CalendarControllerProvider.of<T>(context).controller;
+
+      // Reloads the view if there is any change in controller or user adds new events.
+      _controller.addListener(_reloadCallback);
+
+      _controllerAdded = true;
+    }
 
     _width = widget.width ?? MediaQuery.of(context).size.width;
     assert(_width != 0, "Calendar width can not be 0.");
@@ -227,7 +251,7 @@ class DayViewState<T> extends State<DayView<T>> {
 
   @override
   void dispose() {
-    widget.controller.removeListener(_reload);
+    _controller.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -269,6 +293,7 @@ class DayViewState<T> extends State<DayView<T>> {
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
                           date: date,
+                          onTileTap: widget.onEventTap,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               date.compareWithoutTime(DateTime.now()),
                           timeLineOffset: _timeLineOffset,
@@ -276,7 +301,7 @@ class DayViewState<T> extends State<DayView<T>> {
                           verticalLineOffset: widget.verticalLineOffset,
                           showVerticalLine: widget.showVerticalLine,
                           height: _height,
-                          controller: widget.controller,
+                          controller: _controller,
                           hourHeight: _hourHeight,
                           eventArranger: _eventArranger,
                         );
@@ -290,6 +315,12 @@ class DayViewState<T> extends State<DayView<T>> {
         ),
       ),
     );
+  }
+
+  EventController<T> get controller {
+    assert(_controllerAdded, "EventController is not initialized yet.");
+
+    return _controller;
   }
 
   /// Reloads page.

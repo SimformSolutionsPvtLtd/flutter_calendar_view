@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-import '../extensions.dart';
+import '../typedefs.dart';
 
 class CalendarPageHeader extends StatelessWidget {
   /// When user taps on right arrow.

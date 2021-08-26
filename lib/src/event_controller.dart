@@ -2,25 +2,33 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
 
 class EventController<T> extends ChangeNotifier {
+  /// This method will provide list of events on particular date.
+  ///
+  /// This method is use full when you have recurring events.
+  /// As of now this library does not support recurring events.
+  /// You can implement same behaviour in this function.
+  /// This function will overwrite default behaviour of [getEventsOnDay] function
+  /// which will be used to display events on given day in [MonthView], [DayView] and [WeekView].
+  ///
+  final EventFilter<T>? eventFilter;
+
   /// Calendar controller to control all the events related operations like, adding event, removing event, etc.
-  EventController();
+  EventController({
+    this.eventFilter,
+  });
 
   List<_YearEvent<T>> _events = [];
 
-  List<CalendarEventData<T>> get events {
-    List<CalendarEventData<T>> totalEvents = [];
+  List<CalendarEventData<T>> _eventList = [];
 
-    for (int i = 0; i < _events.length; i++) {
-      totalEvents.addAll(_events[i].getAllEvents());
-    }
-
-    return totalEvents;
-  }
+  /// Returns list of [CalendarEventData<T>] stored in this controller.
+  List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
 
   /// Add all the events in the list
   /// If there is an event with same date then
@@ -34,12 +42,6 @@ class EventController<T> extends ChangeNotifier {
 
   /// Adds a single event in [_events]
   void add(CalendarEventData<T> event) {
-    if (event.startTime != null &&
-        event.endTime != null &&
-        event.startTime!.isAfter(event.endTime!)) {
-      throw "Start time should not exceed end time.";
-    }
-
     _addEvent(event);
 
     notifyListeners();
@@ -59,18 +61,27 @@ class EventController<T> extends ChangeNotifier {
   void _addEvent(CalendarEventData<T> event) {
     for (int i = 0; i < _events.length; i++) {
       if (_events[i].year == event.date.year) {
-        _events[i].addEvent(event);
+        if (_events[i].addEvent(event)) {
+          _eventList.add(event);
+        }
         return;
       }
     }
 
     _YearEvent<T> newEvent = _YearEvent(year: event.date.year);
-    newEvent.addEvent(event);
-    _events.add(newEvent);
+    if (newEvent.addEvent(event)) {
+      _events.add(newEvent);
+      _eventList.add(event);
+    }
   }
 
-  /// Returns event on given day
+  /// Returns events on given day.
+  ///
+  /// To overwrite default behaviour of this function,
+  /// provide [eventFilter] argument in [EventController] constructor.
   List<CalendarEventData<T>> getEventsOnDay(DateTime date) {
+    if (eventFilter != null) return eventFilter!.call(date, this.events);
+
     List<CalendarEventData<T>> events = [];
 
     // Iterate through all year events
@@ -118,16 +129,16 @@ class _YearEvent<T> {
     return -1;
   }
 
-  void addEvent(CalendarEventData<T> event) {
+  bool addEvent(CalendarEventData<T> event) {
     for (int i = 0; i < _months.length; i++) {
       if (_months[i].month == event.date.month) {
-        _months[i].addEvent(event);
-        return;
+        return _months[i].addEvent(event);
       }
     }
     _MonthEvent<T> newEvent = _MonthEvent(month: event.date.month);
     newEvent.addEvent(event);
     _months.add(newEvent);
+    return true;
   }
 
   List<CalendarEventData<T>> getAllEvents() {
@@ -162,10 +173,12 @@ class _MonthEvent<T> {
     return -1;
   }
 
-  void addEvent(CalendarEventData<T> event) {
+  bool addEvent(CalendarEventData<T> event) {
     if (!_events.contains(event)) {
       _events.add(event);
+      return true;
     }
+    return false;
   }
 
   void removeEvent(CalendarEventData<T> event) {

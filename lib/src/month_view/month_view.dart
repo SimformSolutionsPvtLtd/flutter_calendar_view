@@ -5,11 +5,13 @@
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
+import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
 import '../constants.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
+import '../typedefs.dart';
 
 class MonthView<T> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each cell in month calendar.
@@ -22,6 +24,14 @@ class MonthView<T> extends StatefulWidget {
 
   /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;
+
+  /// This function will be called when user taps on month view cell.
+  final CellTapCallback<T>? onCellTap;
+
+  /// This function will be called when user will tap on a single event tile inside a cell.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileTapCallback<T>? onEventTap;
 
   /// Builds the name of the weeks.
   ///
@@ -70,7 +80,9 @@ class MonthView<T> extends StatefulWidget {
   ///
   /// This will auto update month view when user adds events in controller.
   /// This controller will store all the events. And returns events for particular day.
-  final EventController<T> controller;
+  ///
+  /// If [controller] is null it will take controller from [CalendarControllerProvider.controller].
+  final EventController<T>? controller;
 
   /// Defines width of default border
   ///
@@ -82,6 +94,9 @@ class MonthView<T> extends StatefulWidget {
   /// Defines aspect ratio of day cells in month calendar page.
   final double cellAspectRatio;
 
+  /// Width of month view.
+  ///
+  /// If null is provided then It will take width of closest [MediaQuery].
   final double? width;
 
   /// Main [Widget] to display month view.
@@ -92,7 +107,7 @@ class MonthView<T> extends StatefulWidget {
     this.cellBuilder,
     this.minMonth,
     this.maxMonth,
-    required this.controller,
+    this.controller,
     this.initialMonth,
     this.borderSize = 1,
     this.cellAspectRatio = 0.55,
@@ -102,6 +117,8 @@ class MonthView<T> extends StatefulWidget {
     this.pageTransitionCurve = Curves.ease,
     this.width,
     this.onPageChange,
+    this.onCellTap,
+    this.onEventTap,
   }) : super(key: key);
 
   @override
@@ -133,9 +150,17 @@ class MonthViewState<T> extends State<MonthView<T>> {
 
   late DateWidgetBuilder _headerBuilder;
 
+  late EventController<T> _controller;
+
+  bool _controllerAdded = false;
+
+  late VoidCallback _reloadCallback;
+
   @override
   void initState() {
     super.initState();
+
+    _reloadCallback = _reload;
 
     // Initialize minimum date.
     _minDate = widget.minMonth ?? CalendarConstants.epochDate;
@@ -179,14 +204,11 @@ class MonthViewState<T> extends State<MonthView<T>> {
     // Initialize header builder. Assign default if widget.headerBuilder is null.
     // This widget will be displayed on top of the page. from where user can see month and change month.
     _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
-
-    // Reloads the view if there is any change in controller or user adds new events.
-    widget.controller.addListener(_reload);
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_reload);
+    _controller.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -194,6 +216,16 @@ class MonthViewState<T> extends State<MonthView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (!_controllerAdded) {
+      _controller = widget.controller ??
+          CalendarControllerProvider.of<T>(context).controller;
+
+      // Reloads the view if there is any change in controller or user adds new events.
+      _controller.addListener(_reloadCallback);
+
+      _controllerAdded = true;
+    }
 
     _width = widget.width ?? MediaQuery.of(context).size.width;
     _cellWidth = _width / 7;
@@ -246,9 +278,10 @@ class MonthViewState<T> extends State<MonthView<T>> {
                             width: _width,
                             child: _MonthPageBuilder<T>(
                               key: ValueKey(date.toIso8601String()),
+                              onCellTap: widget.onCellTap,
                               width: _width,
                               height: _height,
-                              controller: widget.controller,
+                              controller: _controller,
                               borderColor: widget.borderColor,
                               borderSize: widget.borderSize,
                               cellBuilder: _cellBuilder,
@@ -269,6 +302,12 @@ class MonthViewState<T> extends State<MonthView<T>> {
         ),
       ),
     );
+  }
+
+  EventController<T> get controller {
+    assert(_controllerAdded, "EventController is not initialized yet.");
+
+    return _controller;
   }
 
   void _reload() {
@@ -322,11 +361,12 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Default cell builder. Used when [widget.cellBuilder] is null
   Widget _defaultCellBuilder<T>(
       date, List<CalendarEventData<T>> events, isToday, isInMonth) {
-    return FilledCell(
+    return FilledCell<T>(
       date: date,
       shouldHighlight: isToday,
       backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
       events: events,
+      onTileTap: widget.onEventTap as TileTapCallback<T>?,
     );
   }
 
@@ -411,6 +451,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final EventController<T> controller;
   final double width;
   final double height;
+  final CellTapCallback<T>? onCellTap;
 
   const _MonthPageBuilder({
     Key? key,
@@ -423,6 +464,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.controller,
     required this.width,
     required this.height,
+    required this.onCellTap,
   }) : super(key: key);
 
   @override
@@ -442,20 +484,24 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         itemCount: 42,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              border: showBorder
-                  ? Border.all(
-                      color: borderColor,
-                      width: borderSize,
-                    )
-                  : null,
-            ),
-            child: cellBuilder(
-              monthDays[index],
-              controller.getEventsOnDay(monthDays[index]),
-              monthDays[index].compareWithoutTime(DateTime.now()),
-              monthDays[index].month == date.month,
+          final events = controller.getEventsOnDay(monthDays[index]);
+          return GestureDetector(
+            onTap: () => onCellTap?.call(events, monthDays[index]),
+            child: Container(
+              decoration: BoxDecoration(
+                border: showBorder
+                    ? Border.all(
+                        color: borderColor,
+                        width: borderSize,
+                      )
+                    : null,
+              ),
+              child: cellBuilder(
+                monthDays[index],
+                events,
+                monthDays[index].compareWithoutTime(DateTime.now()),
+                monthDays[index].month == date.month,
+              ),
             ),
           );
         },

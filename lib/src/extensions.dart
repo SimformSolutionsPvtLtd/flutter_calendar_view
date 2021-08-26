@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'enumerations.dart';
 
-export 'typedefs.dart';
-
 extension DateTimeExtensions on DateTime {
   /// Compares only [day], [month] and [year] of [DateTime].
   bool compareWithoutTime(DateTime date) {

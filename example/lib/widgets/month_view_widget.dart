@@ -2,8 +2,6 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:example/model/event.dart';
 import 'package:flutter/material.dart';
 
-import 'event_provider.dart';
-
 class MonthViewWidget extends StatelessWidget {
   final GlobalKey<MonthViewState>? state;
   final double? width;
@@ -19,7 +17,6 @@ class MonthViewWidget extends StatelessWidget {
     return MonthView<Event>(
       key: state,
       width: width,
-      controller: DataProvider.of(context).controller,
     );
   }
 }

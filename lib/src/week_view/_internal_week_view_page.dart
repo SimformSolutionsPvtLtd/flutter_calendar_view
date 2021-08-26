@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import '../components/_internal_components.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
-import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
+import '../typedefs.dart';
 
 /// A single page for week view.
 class InternalWeekViewPage<T> extends StatelessWidget {
@@ -70,6 +70,9 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   /// Width of week title.
   final double weekTitleWidth;
 
+  /// Called when user taps on event tile.
+  final CellTapCallback<T>? onTileTap;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -92,6 +95,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.weekTitleWidth,
+    required this.onTileTap,
   }) : super(key: key);
 
   @override
@@ -177,6 +181,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                                 child: EventGenerator<T>(
                                   height: height,
                                   date: dates[index],
+                                  onTileTap: onTileTap,
                                   width: weekTitleWidth,
                                   eventArranger: eventArranger,
                                   eventTileBuilder: eventTileBuilder,

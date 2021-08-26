@@ -12,6 +12,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
+import '../typedefs.dart';
 
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {
@@ -180,6 +181,9 @@ class EventGenerator<T> extends StatelessWidget {
   /// Defines date for which events will be displayed in given display area.
   final DateTime date;
 
+  /// Called when user taps on event tile.
+  final CellTapCallback<T>? onTileTap;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -190,6 +194,7 @@ class EventGenerator<T> extends StatelessWidget {
     required this.eventArranger,
     required this.eventTileBuilder,
     required this.date,
+    required this.onTileTap,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event tile on display area.
@@ -208,16 +213,19 @@ class EventGenerator<T> extends StatelessWidget {
         bottom: events[index].bottom,
         left: events[index].left,
         right: events[index].right,
-        child: eventTileBuilder(
-          date,
-          events[index].events,
-          Rect.fromLTWH(
-              events[index].left,
-              events[index].top,
-              width - events[index].right - events[index].left,
-              height - events[index].bottom - events[index].top),
-          events[index].startDuration ?? DateTime.now(),
-          events[index].endDuration ?? DateTime.now(),
+        child: GestureDetector(
+          onTap: () => onTileTap?.call(events[index].events, date),
+          child: eventTileBuilder(
+            date,
+            events[index].events,
+            Rect.fromLTWH(
+                events[index].left,
+                events[index].top,
+                width - events[index].right - events[index].left,
+                height - events[index].bottom - events[index].top),
+            events[index].startDuration ?? DateTime.now(),
+            events[index].endDuration ?? DateTime.now(),
+          ),
         ),
       );
     });

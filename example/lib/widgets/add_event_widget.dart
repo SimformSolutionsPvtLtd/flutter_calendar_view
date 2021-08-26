@@ -1,7 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/constants.dart';
 import 'package:example/extension.dart';
 import 'package:example/model/event.dart';
-import 'package:example/widgets/event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -79,9 +79,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
-            decoration: DataProvider.of(context).inputDecoration.copyWith(
-                  labelText: "Event Title",
-                ),
+            decoration: AppConstants.inputDecoration.copyWith(
+              labelText: "Event Title",
+            ),
             style: TextStyle(
               color: AppColors.black,
               fontSize: 17.0,
@@ -102,9 +102,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
           ),
           DateTimeSelectorFormField(
             controller: _dateController,
-            decoration: DataProvider.of(context).inputDecoration.copyWith(
-                  labelText: "Select Date",
-                ),
+            decoration: AppConstants.inputDecoration.copyWith(
+              labelText: "Select Date",
+            ),
             validator: (value) {
               if (value == null || value == "") return "Please select date.";
 
@@ -126,9 +126,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   controller: _startTimeController,
-                  decoration: DataProvider.of(context).inputDecoration.copyWith(
-                        labelText: "Start Time",
-                      ),
+                  decoration: AppConstants.inputDecoration.copyWith(
+                    labelText: "Start Time",
+                  ),
                   validator: (value) {
                     if (value == null || value == "")
                       return "Please select start time.";
@@ -147,9 +147,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   controller: _endTimeController,
-                  decoration: DataProvider.of(context).inputDecoration.copyWith(
-                        labelText: "End Time",
-                      ),
+                  decoration: AppConstants.inputDecoration.copyWith(
+                    labelText: "End Time",
+                  ),
                   validator: (value) {
                     if (value == null || value == "")
                       return "Please select end time.";
@@ -188,9 +188,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
               return null;
             },
             onSaved: (value) => _description = value?.trim() ?? "",
-            decoration: DataProvider.of(context).inputDecoration.copyWith(
-                  hintText: "Event Description",
-                ),
+            decoration: AppConstants.inputDecoration.copyWith(
+              hintText: "Event Description",
+            ),
           ),
           SizedBox(
             height: 15.0,

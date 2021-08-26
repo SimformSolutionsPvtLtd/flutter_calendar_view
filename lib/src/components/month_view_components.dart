@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
+import '../typedefs.dart';
 import 'common_components.dart';
 
 class CircularCell extends StatelessWidget {
@@ -19,9 +20,6 @@ class CircularCell extends StatelessWidget {
 
   /// Defines if [date] is [DateTime.now] or not.
   final bool shouldHighlight;
-
-  /// Called when user taps on cell.
-  final VoidCallback? onTap;
 
   /// Background color of circle around date title.
   final Color backgroundColor;
@@ -38,7 +36,6 @@ class CircularCell extends StatelessWidget {
     Key? key,
     required this.date,
     this.events = const [],
-    this.onTap,
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightedTitleColor = Constants.white,
@@ -48,17 +45,13 @@ class CircularCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: GestureDetector(
-        onTap: onTap,
-        child: CircleAvatar(
-          backgroundColor:
-              shouldHighlight ? backgroundColor : Colors.transparent,
-          child: Text(
-            "${date.day}",
-            style: TextStyle(
-              fontSize: 20,
-              color: shouldHighlight ? highlightedTitleColor : titleColor,
-            ),
+      child: CircleAvatar(
+        backgroundColor: shouldHighlight ? backgroundColor : Colors.transparent,
+        child: Text(
+          "${date.day}",
+          style: TextStyle(
+            fontSize: 20,
+            color: shouldHighlight ? highlightedTitleColor : titleColor,
           ),
         ),
       ),
@@ -87,7 +80,7 @@ class FilledCell<T> extends StatelessWidget {
   final Color tileColor;
 
   /// Called when user taps on any event tile.
-  final void Function(CalendarEventData<T> event, DateTime date)? onTileTap;
+  final TileTapCallback<T>? onTileTap;
 
   /// defines that [date] is in current month or not.
   final bool isInMonth;

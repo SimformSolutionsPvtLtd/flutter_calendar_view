@@ -1,6 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:example/pages/create_event_page.dart';
-import 'package:example/widgets/event_provider.dart';
 import 'package:example/widgets/month_view_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,14 +16,6 @@ class MonthViewPageDemo extends StatefulWidget {
 }
 
 class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
-  late EventController<Event> _controller;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _controller = DataProvider.of(context).controller;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +36,6 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
       ),
     );
     if (event == null) return;
-    _controller.add(event);
+    CalendarControllerProvider.of(context).controller.add(event);
   }
 }

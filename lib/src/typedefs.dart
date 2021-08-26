@@ -41,3 +41,12 @@ typedef StringProvider = String Function(DateTime date,
 
 typedef WeekPageHeaderBuilder = Widget Function(
     DateTime startDate, DateTime endDate);
+
+typedef TileTapCallback<T> = void Function(
+    CalendarEventData<T> event, DateTime date);
+
+typedef CellTapCallback<T> = void Function(
+    List<CalendarEventData<T>> events, DateTime date);
+
+typedef EventFilter<T> = List<CalendarEventData<T>> Function(
+    DateTime date, List<CalendarEventData<T>> events);
