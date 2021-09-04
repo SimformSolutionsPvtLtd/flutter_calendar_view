@@ -1,10 +1,10 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/model/event.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
+import '../model/event.dart';
 import 'add_event_widget.dart';
 
 class CalendarConfig extends StatelessWidget {
@@ -51,13 +51,10 @@ class CalendarConfig extends StatelessWidget {
                   ),
                 ),
                 Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  alignment: WrapAlignment.start,
-                  direction: Axis.horizontal,
                   children: List.generate(
                     CalendarView.values.length,
                     (index) {
-                      var view = CalendarView.values[index];
+                      final view = CalendarView.values[index];
                       return GestureDetector(
                         onTap: () => onViewChange(view),
                         child: Container(

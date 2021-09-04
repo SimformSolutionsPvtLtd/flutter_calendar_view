@@ -19,13 +19,15 @@ class LiveTimeIndicator extends StatefulWidget {
   /// Width of indicator
   final double width;
 
-  /// Height of total display area indicator will be displayed within this height.
+  /// Height of total display area indicator will be displayed
+  /// within this height.
   final double height;
 
   /// Width of time line use to calculate offset of indicator.
   final double timeLineWidth;
 
-  /// settings for time line. Defines color, extra offset, and height of indicator.
+  /// settings for time line. Defines color, extra offset,
+  /// and height of indicator.
   final HourIndicatorSettings liveTimeIndicatorSettings;
 
   /// Defines height occupied by one minute.
@@ -64,7 +66,8 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   }
 
   /// Creates an recursive call that runs every 1 seconds.
-  /// This will rebuild TimeLineIndicator every second. This will allow us to indicate live time in Week and Day view.
+  /// This will rebuild TimeLineIndicator every second. This will allow us
+  /// to indicate live time in Week and Day view.
   void setTimer() {
     if (mounted) {
       setState(() {
@@ -122,7 +125,7 @@ class TimeLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      key: ValueKey(this.hourHeight),
+      key: ValueKey(hourHeight),
       constraints: BoxConstraints(
         maxWidth: timeLineWidth,
         minWidth: timeLineWidth,
@@ -146,8 +149,6 @@ class TimeLine extends StatelessWidget {
                     _date.month,
                     _date.day,
                     i,
-                    0,
-                    0,
                   ),
                 ),
               ),
@@ -197,10 +198,11 @@ class EventGenerator<T> extends StatelessWidget {
     required this.onTileTap,
   }) : super(key: key);
 
-  /// Arrange events and returns list of [Widget] that displays event tile on display area.
-  /// This method uses [eventArranger] to get position of events and [eventTileBuilder] to display events.
+  /// Arrange events and returns list of [Widget] that displays event
+  /// tile on display area. This method uses [eventArranger] to get position
+  /// of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents() {
-    List<OrganizedCalendarEventData<T>> events = eventArranger.arrange(
+    final events = eventArranger.arrange(
       events: this.events,
       height: height,
       width: width,

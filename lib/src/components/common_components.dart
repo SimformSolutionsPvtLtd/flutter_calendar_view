@@ -21,7 +21,8 @@ class CalendarPageHeader extends StatelessWidget {
   /// Date of month/day.
   final DateTime date;
 
-  /// Secondary date. This date will be used when we need to define a range of dates.
+  /// Secondary date. This date will be used when we need to define a
+  /// range of dates.
   /// [date] can be starting date and [secondaryDate] can be end date.
   final DateTime? secondaryDate;
 
@@ -57,12 +58,9 @@ class CalendarPageHeader extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
         children: [
           IconButton(
             onPressed: onPreviousDay,
-            enableFeedback: true,
             splashColor: Colors.transparent,
             focusColor: Colors.transparent,
             hoverColor: Colors.transparent,
@@ -86,7 +84,6 @@ class CalendarPageHeader extends StatelessWidget {
           ),
           IconButton(
             onPressed: onNextDay,
-            enableFeedback: true,
             splashColor: Colors.transparent,
             focusColor: Colors.transparent,
             hoverColor: Colors.transparent,

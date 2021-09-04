@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:calendar_view/calendar_view.dart';
+import 'package:flutter/material.dart';
 
 import '../extension.dart';
 
@@ -94,9 +94,9 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   }
 
   Future<DateTime?> _showDateSelector() async {
-    DateTime now = widget.minimumDateTime ?? DateTime.now();
+    final now = widget.minimumDateTime ?? DateTime.now();
 
-    DateTime? date = await showDatePicker(
+    final date = await showDatePicker(
       context: context,
       initialDate: now,
       firstDate: widget.minimumDateTime ?? now,
@@ -109,8 +109,8 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   }
 
   Future<DateTime?> _showTimeSelector() async {
-    DateTime now = widget.minimumDateTime ?? DateTime.now();
-    TimeOfDay? time = await showTimePicker(
+    final now = widget.minimumDateTime ?? DateTime.now();
+    final time = await showTimePicker(
       context: context,
       builder: (context, widget) {
         return widget ?? Container();
@@ -120,7 +120,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
 
     if (time == null) return null;
 
-    DateTime? date = now.copyWith(
+    final date = now.copyWith(
       hour: time.hour,
       minute: time.minute,
     );

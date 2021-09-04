@@ -1,9 +1,10 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/model/event.dart';
-import 'package:example/pages/mobile/mobile_home_page.dart';
-import 'package:example/pages/web/web_home_page.dart';
-import 'package:example/widgets/responsive_widget.dart';
 import 'package:flutter/material.dart';
+
+import 'model/event.dart';
+import 'pages/mobile/mobile_home_page.dart';
+import 'pages/web/web_home_page.dart';
+import 'widgets/responsive_widget.dart';
 
 DateTime get _now => DateTime.now();
 
@@ -57,18 +58,10 @@ List<CalendarEventData<Event>> _events = [
   ),
   CalendarEventData(
     date: _now.add(Duration(days: 3)),
-    startTime: DateTime(
-        _now.add(Duration(days: 3)).year,
-        _now.add(Duration(days: 3)).month,
-        _now.add(Duration(days: 3)).day,
-        10,
-        0),
-    endTime: DateTime(
-        _now.add(Duration(days: 3)).year,
-        _now.add(Duration(days: 3)).month,
-        _now.add(Duration(days: 3)).day,
-        14,
-        0),
+    startTime: DateTime(_now.add(Duration(days: 3)).year,
+        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 10),
+    endTime: DateTime(_now.add(Duration(days: 3)).year,
+        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 14),
     event: Event(title: "Sprint Meeting."),
     title: "Sprint Meeting.",
     description: "Last day of project submission for last year.",
@@ -79,14 +72,12 @@ List<CalendarEventData<Event>> _events = [
         _now.subtract(Duration(days: 2)).year,
         _now.subtract(Duration(days: 2)).month,
         _now.subtract(Duration(days: 2)).day,
-        14,
-        0),
+        14),
     endTime: DateTime(
         _now.subtract(Duration(days: 2)).year,
         _now.subtract(Duration(days: 2)).month,
         _now.subtract(Duration(days: 2)).day,
-        16,
-        0),
+        16),
     event: Event(title: "Team Meeting"),
     title: "Team Meeting",
     description: "Team Meeting",
@@ -97,14 +88,12 @@ List<CalendarEventData<Event>> _events = [
         _now.subtract(Duration(days: 2)).year,
         _now.subtract(Duration(days: 2)).month,
         _now.subtract(Duration(days: 2)).day,
-        10,
-        0),
+        10),
     endTime: DateTime(
         _now.subtract(Duration(days: 2)).year,
         _now.subtract(Duration(days: 2)).month,
         _now.subtract(Duration(days: 2)).day,
-        12,
-        0),
+        12),
     event: Event(title: "Chemistry Viva"),
     title: "Chemistry Viva",
     description: "Today is Joe's birthday.",

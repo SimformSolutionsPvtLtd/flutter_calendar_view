@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
+import '../calendar_event_data.dart';
 import '../components/components.dart';
 import '../constants.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -54,10 +55,12 @@ class WeekView<T> extends StatefulWidget {
   /// Transition curve for transition.
   final Curve pageTransitionCurve;
 
-  /// Controller for Week view thia will refresh view when user adds or removes event from controller.
+  /// Controller for Week view thia will refresh view when user adds or removes
+  /// event from controller.
   final EventController<T>? controller;
 
-  /// Defines height occupied by one minute of time span. This parameter will be used to calculate total height of Week view.
+  /// Defines height occupied by one minute of time span. This parameter will
+  /// be used to calculate total height of Week view.
   final double heightPerMinute;
 
   /// Width of time line.
@@ -142,7 +145,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late DateWidgetBuilder _weekDayBuilder;
 
   late double _weekTitleWidth;
-  int _weekDays = 7;
+  final _weekDays = 7;
 
   bool _controllerAdded = false;
 
@@ -167,7 +170,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       _initialDay = _maxDate;
     }
 
-    List<DateTime> dates = _initialDay.datesOfWeek();
+    final dates = _initialDay.datesOfWeek();
     _currentStartDate = dates.first;
     _currentEndDate = dates.last;
 
@@ -192,11 +195,11 @@ class WeekViewState<T> extends State<WeekView<T>> {
     if (!_controllerAdded) {
       _controller = widget.controller ??
           CalendarControllerProvider.of<T>(context).controller;
-
-      // Reloads the view if there is any change in controller or user adds new events.
-      _controller.addListener(_reloadCallback);
-
       _controllerAdded = true;
+
+      // Reloads the view if there is any change in controller or user
+      // adds new events.
+      _controller.addListener(_reloadCallback);
     }
 
     _width = widget.width ?? MediaQuery.of(context).size.width;
@@ -247,7 +250,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
             color: widget.backgroundColor,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -261,7 +263,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                     controller: _pageController,
                     onPageChanged: _onPageChange,
                     itemBuilder: (_, index) {
-                      List<DateTime> dates = _minDate
+                      final dates = _minDate
                           .add(Duration(days: (index - 1) * _weekDays))
                           .datesOfWeek();
 
@@ -320,7 +322,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(Constants.weekTitles[date.weekday - 1]),
           Text(date.day.toString()),
@@ -329,9 +330,10 @@ class WeekViewState<T> extends State<WeekView<T>> {
     );
   }
 
-  /// Default timeline builder this builder will be used if [widget.eventTileBuilder] is null
+  /// Default timeline builder this builder will be used if
+  /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) {
+  Widget _defaultTimeLineBuilder(DateTime date) {
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
@@ -347,26 +349,32 @@ class WeekViewState<T> extends State<WeekView<T>> {
     );
   }
 
-  /// Default timeline builder. This builder will be used if [widget.eventTileBuilder] is null
-  Widget _defaultEventTileBuilder(
-      date, events, boundary, startDuration, endDuration) {
+  /// Default timeline builder. This builder will be used if
+  /// [widget.eventTileBuilder] is null
+  Widget _defaultEventTileBuilder<T>(
+      DateTime date,
+      List<CalendarEventData<T>> events,
+      Rect boundary,
+      DateTime startDuration,
+      DateTime endDuration) {
     if (events.isNotEmpty)
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
-        title: events[0]?.title ?? "",
+        title: events[0].title,
         titleStyle: TextStyle(
           fontSize: 12,
-          color: ((events[0]?.color ?? Colors.blue) as Color).accent,
+          color: events[0].color.accent,
         ),
         totalEvents: events.length,
         padding: EdgeInsets.all(7.0),
-        backgroundColor: events[0]?.color ?? Colors.blue,
+        backgroundColor: events[0].color,
       );
     else
       return Container();
   }
 
-  /// Default view header builder. This builder will be used if [widget.dayTitleBuilder] is null.
+  /// Default view header builder. This builder will be used if
+  /// [widget.dayTitleBuilder] is null.
   Widget _defaultWeekPageHeaderBuilder(DateTime startDate, DateTime endDate) {
     return WeekPageHeader(
       startDate: _currentStartDate,
@@ -374,7 +382,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
-        DateTime? selectedDate = await showDatePicker(
+        final selectedDate = await showDatePicker(
           context: context,
           initialDate: startDate,
           firstDate: CalendarConstants.minDate,
@@ -382,7 +390,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
         );
 
         if (selectedDate == null) return;
-        this.jumpToWeek(selectedDate);
+        jumpToWeek(selectedDate);
       },
     );
   }
@@ -406,7 +414,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Animate to next page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -417,7 +426,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Animate to previous page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -433,7 +443,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Animate to page number [page].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   Future<void> animateToPage(int page,
       {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
@@ -455,7 +466,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Animate to page which gives day calendar for [week].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [WeekView.pageTransitionDuration] and [WeekView.pageTransitionCurve] respectively.
+  /// as [WeekView.pageTransitionDuration] and [WeekView.pageTransitionCurve]
+  /// respectively.
   Future<void> animateToWeek(DateTime week,
       {Duration? duration, Curve? curve}) async {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {

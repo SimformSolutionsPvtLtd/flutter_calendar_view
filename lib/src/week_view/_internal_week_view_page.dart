@@ -25,7 +25,8 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   /// Builds tile for a single event.
   final EventTileBuilder<T> eventTileBuilder;
 
-  /// A calendar controller that controls all the events and rebuilds widget if event(s) are added or removed.
+  /// A calendar controller that controls all the events and rebuilds widget
+  /// if event(s) are added or removed.
   final EventController<T> controller;
 
   /// A builder to build time line.
@@ -104,15 +105,11 @@ class InternalWeekViewPage<T> extends StatelessWidget {
       height: height + weekTitleHeight,
       width: width,
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
             width: width,
             child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(

@@ -116,9 +116,6 @@ class FilledCell<T> extends StatelessWidget {
     return Container(
       color: backgroundColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(
             height: 5.0,
@@ -149,8 +146,6 @@ class FilledCell<T> extends StatelessWidget {
                   physics: BouncingScrollPhysics(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: List.generate(
                       events.length,
                       (index) => GestureDetector(
@@ -166,7 +161,6 @@ class FilledCell<T> extends StatelessWidget {
                           padding: const EdgeInsets.all(2.0),
                           alignment: Alignment.center,
                           child: Row(
-                            mainAxisSize: MainAxisSize.max,
                             children: [
                               Expanded(
                                 child: Text(

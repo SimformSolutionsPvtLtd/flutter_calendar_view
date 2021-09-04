@@ -1,8 +1,9 @@
-import 'package:example/extension.dart';
-import 'package:example/pages/day_view_page.dart';
-import 'package:example/pages/month_view_page.dart';
-import 'package:example/pages/week_view_page.dart';
 import 'package:flutter/material.dart';
+
+import '../../extension.dart';
+import '../day_view_page.dart';
+import '../month_view_page.dart';
+import '../week_view_page.dart';
 
 class MobileHomePage extends StatelessWidget {
   @override
@@ -15,7 +16,6 @@ class MobileHomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: () => context.pushRoute(MonthViewPageDemo()),

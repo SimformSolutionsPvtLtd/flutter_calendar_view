@@ -1,8 +1,9 @@
-import 'package:example/enumerations.dart';
-import 'package:example/widgets/calendar_configs.dart';
-import 'package:example/widgets/calendar_views.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../enumerations.dart';
+import '../../widgets/calendar_configs.dart';
+import '../../widgets/calendar_views.dart';
 
 class WebHomePage extends StatefulWidget {
   @override
@@ -13,9 +14,9 @@ class _WebHomePageState extends State<WebHomePage> {
   CalendarView _selectedView = CalendarView.month;
 
   void _setView(CalendarView view) {
-    if (view != this._selectedView && mounted) {
+    if (view != _selectedView && mounted) {
       setState(() {
-        this._selectedView = view;
+        _selectedView = view;
       });
     }
   }

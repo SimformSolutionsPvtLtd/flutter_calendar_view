@@ -17,10 +17,12 @@ import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
 class DayView<T> extends StatefulWidget {
-  /// A function that returns a [Widget] that determines appearance of each cell in day calendar.
+  /// A function that returns a [Widget] that determines appearance of each
+  /// cell in day calendar.
   final EventTileBuilder<T>? eventTileBuilder;
 
-  /// A function that returns a [Widget] that will be displayed left side of day view.
+  /// A function that returns a [Widget] that will be displayed left side of
+  /// day view.
   ///
   /// If null is provided then no time line will be visible.
   ///
@@ -30,8 +32,8 @@ class DayView<T> extends StatefulWidget {
   final DateWidgetBuilder? dayTitleBuilder;
 
   /// Defines how events are arranged in day view.
-  /// User can define custom event arranger by implementing [EventArranger] class
-  /// and pass object of that class as argument.
+  /// User can define custom event arranger by implementing [EventArranger]
+  /// class and pass object of that class as argument.
   final EventArranger<T>? eventArranger;
 
   /// This callback will run whenever page will change.
@@ -62,34 +64,41 @@ class DayView<T> extends StatefulWidget {
   /// Pass [HourIndicatorSettings.none] to remove live time indicator.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
-  /// Page transition duration used when user try to change page using [DayViewState.nextPage] or [DayViewState.previousPage]
+  /// Page transition duration used when user try to change page using
+  /// [DayViewState.nextPage] or [DayViewState.previousPage]
   final Duration pageTransitionDuration;
 
-  /// Page transition curve used when user try to change page using [DayViewState.nextPage] or [DayViewState.previousPage]
+  /// Page transition curve used when user try to change page using
+  /// [DayViewState.nextPage] or [DayViewState.previousPage]
   final Curve pageTransitionCurve;
 
   /// A required parameters that controls events for day view.
   ///
   /// This will auto update day view when user adds events in controller.
-  /// This controller will store all the events. And returns events for particular day.
+  /// This controller will store all the events. And returns events
+  /// for particular day.
   final EventController<T>? controller;
 
-  /// Defines height occupied by one minute of interval. This will be used to calculate total height of day view.
+  /// Defines height occupied by one minute of interval.
+  /// This will be used to calculate total height of day view.
   final double heightPerMinute;
 
-  /// Defines the width of timeline. If null then it will occupies 13% of [width].
+  /// Defines the width of timeline. If null then it will
+  /// occupies 13% of [width].
   final double? timeLineWidth;
 
   /// if parsed true then live time line will be displayed in all days.
   /// else it will be displayed in [DateTime.now] only.
   ///
-  /// Parse [HourIndicatorSettings.none] as argument in [DayView.liveTimeIndicatorSettings]
+  /// Parse [HourIndicatorSettings.none] as argument in
+  /// [DayView.liveTimeIndicatorSettings]
   /// to remove time line completely.
   final bool showLiveTimeLineInAllDays;
 
   /// Defines offset for timeline.
   ///
-  /// This will translate all the widgets returned by [DayView.timeLineBuilder] by provided offset.
+  /// This will translate all the widgets returned by
+  /// [DayView.timeLineBuilder] by provided offset.
   ///
   /// If offset is positive all the widgets will be translated up.
   ///
@@ -216,7 +225,8 @@ class DayViewState<T> extends State<DayView<T>> {
       _controller = widget.controller ??
           CalendarControllerProvider.of<T>(context).controller;
 
-      // Reloads the view if there is any change in controller or user adds new events.
+      // Reloads the view if there is any change in controller or
+      // user adds new events.
       _controller.addListener(_reloadCallback);
 
       _controllerAdded = true;
@@ -266,7 +276,6 @@ class DayViewState<T> extends State<DayView<T>> {
             color: widget.backgroundColor,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -280,7 +289,7 @@ class DayViewState<T> extends State<DayView<T>> {
                       controller: _pageController,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        DateTime date = DateTime(_minDate.year, _minDate.month,
+                        final date = DateTime(_minDate.year, _minDate.month,
                             _minDate.day + index);
 
                         return InternalDayViewPage<T>(
@@ -331,11 +340,13 @@ class DayViewState<T> extends State<DayView<T>> {
     }
   }
 
-  /// Default timeline builder this builder will be used if [widget.eventTileBuilder] is null
+  /// Default timeline builder this builder will be used if
+  /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(date: date);
 
-  /// Default timeline builder. This builder will be used if [widget.eventTileBuilder] is null
+  /// Default timeline builder. This builder will be used if
+  /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultEventTileBuilder(
     DateTime date,
@@ -358,7 +369,8 @@ class DayViewState<T> extends State<DayView<T>> {
       return Container();
   }
 
-  /// Default view header builder. This builder will be used if [widget.dayTitleBuilder] is null.
+  /// Default view header builder. This builder will be used if
+  /// [widget.dayTitleBuilder] is null.
   ///
   Widget _defaultDayBuilder(DateTime date) {
     return DayPageHeader(
@@ -366,17 +378,15 @@ class DayViewState<T> extends State<DayView<T>> {
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
-        DateTime? selectedDate = await showDatePicker(
+        final selectedDate = await showDatePicker(
           context: context,
           initialDate: date,
           firstDate: _minDate,
           lastDate: _maxDate,
         );
 
-        print(selectedDate);
-
         if (selectedDate == null) return;
-        this.jumpToDate(selectedDate);
+        jumpToDate(selectedDate);
       },
     );
   }
@@ -400,7 +410,8 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Animate to next page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   ///
   ///
   void nextPage({Duration? duration, Curve? curve}) => _pageController.nextPage(
@@ -411,7 +422,8 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Animate to previous page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   ///
   ///
   void previousPage({Duration? duration, Curve? curve}) =>
@@ -428,12 +440,12 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Animate to page number [page].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   ///
   ///
-  Future<void> animateToPage(int page,
-          {Duration? duration, Curve? curve}) async =>
-      await _pageController.animateToPage(page,
+  Future<void> animateToPage(int page, {Duration? duration, Curve? curve}) =>
+      _pageController.animateToPage(page,
           duration: duration ?? widget.pageTransitionDuration,
           curve: curve ?? widget.pageTransitionCurve);
 
@@ -455,7 +467,8 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Animate to page which gives day calendar for [date].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve] respectively.
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
   ///
   ///
   Future<void> animateToDate(DateTime date,

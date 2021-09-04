@@ -38,12 +38,12 @@ class HourLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
+    final paint = Paint()
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (int i = 1; i < Constants.hoursADay; i++) {
-      double dy = i * minuteHeight * 60;
+    for (var i = 1; i < Constants.hoursADay; i++) {
+      final dy = i * minuteHeight * 60;
       canvas.drawLine(Offset(offset, dy), Offset(size.width, dy), paint);
     }
 
@@ -55,11 +55,11 @@ class HourLinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return oldDelegate is HourLinePainter &&
-        (oldDelegate.lineColor != this.lineColor ||
-            oldDelegate.offset != this.offset ||
-            this.lineHeight != oldDelegate.lineHeight ||
-            this.minuteHeight != oldDelegate.minuteHeight ||
-            this.showVerticalLine != oldDelegate.showVerticalLine);
+        (oldDelegate.lineColor != lineColor ||
+            oldDelegate.offset != offset ||
+            lineHeight != oldDelegate.lineHeight ||
+            minuteHeight != oldDelegate.minuteHeight ||
+            showVerticalLine != oldDelegate.showVerticalLine);
   }
 }
 
@@ -107,7 +107,7 @@ class CurrentTimeLinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
       oldDelegate is CurrentTimeLinePainter &&
-      (this.color != oldDelegate.color ||
-          this.height != oldDelegate.height ||
-          this.offset != oldDelegate.offset);
+      (color != oldDelegate.color ||
+          height != oldDelegate.height ||
+          offset != oldDelegate.offset);
 }

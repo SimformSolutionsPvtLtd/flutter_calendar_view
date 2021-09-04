@@ -20,7 +20,8 @@ abstract class EventArranger<T> {
   ///
   const EventArranger();
 
-  /// This method will arrange all the events in and return List of [OrganizedCalendarEventData].
+  /// This method will arrange all the events in and return List of
+  /// [OrganizedCalendarEventData].
   ///
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -53,7 +54,8 @@ class OrganizedCalendarEventData<T> {
   /// End duration of event/event list.
   final DateTime? endDuration;
 
-  /// Provides event data with its [left], [right], [top], and [bottom] boundary.
+  /// Provides event data with its [left], [right], [top], and [bottom]
+  /// boundary.
   OrganizedCalendarEventData({
     this.startDuration,
     this.endDuration,
@@ -65,13 +67,13 @@ class OrganizedCalendarEventData<T> {
   });
 
   OrganizedCalendarEventData.empty()
-      : this.startDuration = DateTime.now(),
-        this.endDuration = DateTime.now(),
-        this.right = 0,
-        this.left = 0,
-        this.events = const [],
-        this.top = 0,
-        this.bottom = 0;
+      : startDuration = DateTime.now(),
+        endDuration = DateTime.now(),
+        right = 0,
+        left = 0,
+        events = const [],
+        top = 0,
+        bottom = 0;
 
   OrganizedCalendarEventData<T> getWithUpdatedRight(double right) =>
       OrganizedCalendarEventData<T>(

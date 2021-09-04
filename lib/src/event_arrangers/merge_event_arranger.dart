@@ -5,8 +5,10 @@
 part of 'event_arrangers.dart';
 
 class MergeEventArranger<T> extends EventArranger<T> {
-  /// This class will provide method that will merge all the simultaneous events. and that will act like one single event.
-  /// [OrganizedCalendarEventData.events] will gives list of all the combined events.
+  /// This class will provide method that will merge all the simultaneous
+  /// events. and that will act like one single event.
+  /// [OrganizedCalendarEventData.events] will gives
+  /// list of all the combined events.
   const MergeEventArranger();
 
   @override
@@ -16,16 +18,11 @@ class MergeEventArranger<T> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
   }) {
-    List<OrganizedCalendarEventData<T>> arrangedEvents = [];
+    final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
-    List<CalendarEventData<T>> skippedEvents = [];
-
-    for (CalendarEventData<T> event in events) {
-      DateTime startTime = event.startTime ?? DateTime.now();
-      DateTime endTime = event.endTime ?? startTime;
-      // If event has null start time or null end time or end time is earlier than start time or end time and tart time is same.
-      // Skip that event.
-      //
+    for (final event in events) {
+      final startTime = event.startTime ?? DateTime.now();
+      final endTime = event.endTime ?? startTime;
 
       assert(
           !(endTime.getTotalMinutes <= startTime.getTotalMinutes),
@@ -34,17 +31,17 @@ class MergeEventArranger<T> extends EventArranger<T> {
           "This error occurs when you does not provide startDate or endDate in "
           "CalendarEventDate or provided endDate occurs before startDate.");
 
-      int eventStart = startTime.getTotalMinutes;
-      int eventEnd = endTime.getTotalMinutes;
+      final eventStart = startTime.getTotalMinutes;
+      final eventEnd = endTime.getTotalMinutes;
 
-      int arrangeEventLen = arrangedEvents.length;
+      final arrangeEventLen = arrangedEvents.length;
 
-      int eventIndex = -1;
+      var eventIndex = -1;
 
-      for (int i = 0; i < arrangeEventLen; i++) {
-        int arrangedEventStart =
+      for (var i = 0; i < arrangeEventLen; i++) {
+        final arrangedEventStart =
             arrangedEvents[i].startDuration?.getTotalMinutes ?? 0;
-        int arrangedEventEnd =
+        final arrangedEventEnd =
             arrangedEvents[i].endDuration?.getTotalMinutes ?? 0;
 
         if ((arrangedEventStart >= eventStart &&
@@ -59,16 +56,14 @@ class MergeEventArranger<T> extends EventArranger<T> {
       }
 
       if (eventIndex == -1) {
-        double top = eventStart * heightPerMinute;
-        double left = 0;
-        double right = 0;
-        double bottom = height - eventEnd * heightPerMinute;
+        final top = eventStart * heightPerMinute;
+        final bottom = height - eventEnd * heightPerMinute;
 
-        OrganizedCalendarEventData<T> newEvent = OrganizedCalendarEventData<T>(
+        final newEvent = OrganizedCalendarEventData<T>(
           top: top,
           bottom: bottom,
-          left: left,
-          right: right,
+          left: 0,
+          right: 0,
           startDuration: startTime.copyFromMinutes(eventStart),
           endDuration: endTime.copyFromMinutes(eventEnd),
           events: [event],
@@ -76,27 +71,24 @@ class MergeEventArranger<T> extends EventArranger<T> {
 
         arrangedEvents.add(newEvent);
       } else {
-        OrganizedCalendarEventData<T> arrangedEventData =
-            arrangedEvents[eventIndex];
+        final arrangedEventData = arrangedEvents[eventIndex];
 
-        int arrangedEventStart =
+        final arrangedEventStart =
             arrangedEventData.startDuration?.getTotalMinutes ?? 0;
-        int arrangedEventEnd =
+        final arrangedEventEnd =
             arrangedEventData.endDuration?.getTotalMinutes ?? 0;
 
-        int startDuration = math.min(eventStart, arrangedEventStart);
-        int endDuration = math.max(eventEnd, arrangedEventEnd);
+        final startDuration = math.min(eventStart, arrangedEventStart);
+        final endDuration = math.max(eventEnd, arrangedEventEnd);
 
-        double top = startDuration * heightPerMinute;
-        double left = 0;
-        double right = 0;
-        double bottom = height - endDuration * heightPerMinute;
+        final top = startDuration * heightPerMinute;
+        final bottom = height - endDuration * heightPerMinute;
 
-        OrganizedCalendarEventData<T> newEvent = OrganizedCalendarEventData<T>(
+        final newEvent = OrganizedCalendarEventData<T>(
           top: top,
           bottom: bottom,
-          left: left,
-          right: right,
+          left: 0,
+          right: 0,
           startDuration:
               arrangedEventData.startDuration?.copyFromMinutes(startDuration),
           endDuration:
@@ -107,10 +99,6 @@ class MergeEventArranger<T> extends EventArranger<T> {
         arrangedEvents[eventIndex] = newEvent;
       }
     }
-
-    print("Total Skipped Events... : ${skippedEvents.length}");
-    print(skippedEvents);
-    print("End Skipped Event....");
 
     return arrangedEvents;
   }

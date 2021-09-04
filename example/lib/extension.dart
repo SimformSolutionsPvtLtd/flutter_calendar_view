@@ -1,7 +1,7 @@
-import 'package:example/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'app_colors.dart';
 import 'enumerations.dart';
 
 enum TimeStampFormat { parse_12, parse_24 }
@@ -12,8 +12,8 @@ extension NavigationExtension on State {
 }
 
 extension NavigatorExtention on BuildContext {
-  Future<T?> pushRoute<T>(Widget page) async => await Navigator.of(this)
-      .push<T>(MaterialPageRoute(builder: (context) => page));
+  Future<T?> pushRoute<T>(Widget page) =>
+      Navigator.of(this).push<T>(MaterialPageRoute(builder: (context) => page));
 
   void pop([dynamic value]) => Navigator.of(this).pop(value);
 
@@ -24,7 +24,7 @@ extension NavigatorExtention on BuildContext {
 
 extension DateUtils on DateTime {
   String get weekdayToFullString {
-    switch (this.weekday) {
+    switch (weekday) {
       case DateTime.monday:
         return "Monday";
       case DateTime.tuesday:
@@ -45,7 +45,7 @@ extension DateUtils on DateTime {
   }
 
   String get weekdayToAbbreviatedString {
-    switch (this.weekday) {
+    switch (weekday) {
       case DateTime.monday:
         return "M";
       case DateTime.tuesday:
@@ -65,9 +65,9 @@ extension DateUtils on DateTime {
     }
   }
 
-  int get totalMinutes => this.hour * 60 + this.minute;
+  int get totalMinutes => hour * 60 + minute;
 
-  TimeOfDay get timeOfDay => TimeOfDay(hour: this.hour, minute: this.minute);
+  TimeOfDay get timeOfDay => TimeOfDay(hour: hour, minute: minute);
 
   DateTime copyWith({
     int? year,
@@ -106,22 +106,17 @@ extension DateUtils on DateTime {
           .toUpperCase();
 
   bool compareWithoutTime(DateTime date) =>
-      this.day == date.day &&
-      this.month == date.month &&
-      this.year == date.year;
+      day == date.day && month == date.month && year == date.year;
 
   bool compareTime(DateTime date) =>
-      this.hour == date.hour &&
-      this.minute == date.minute &&
-      this.second == date.second;
+      hour == date.hour && minute == date.minute && second == date.second;
 }
 
 extension ColorExtension on Color {
-  Color get accentColor => (this.blue / 2 >= 255 / 2 ||
-          this.red / 2 >= 255 / 2 ||
-          this.green / 2 >= 255 / 2)
-      ? AppColors.black
-      : AppColors.white;
+  Color get accentColor =>
+      (blue / 2 >= 255 / 2 || red / 2 >= 255 / 2 || green / 2 >= 255 / 2)
+          ? AppColors.black
+          : AppColors.white;
 }
 
 extension StringExt on String {
@@ -129,5 +124,5 @@ extension StringExt on String {
 }
 
 extension ViewNameExt on CalendarView {
-  String get name => this.toString().split(".").last;
+  String get name => toString().split(".").last;
 }

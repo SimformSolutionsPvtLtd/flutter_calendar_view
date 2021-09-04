@@ -1,17 +1,17 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/constants.dart';
-import 'package:example/extension.dart';
-import 'package:example/model/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../app_colors.dart';
+import '../constants.dart';
+import '../extension.dart';
+import '../model/event.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
 class AddEventWidget extends StatefulWidget {
   final void Function(CalendarEventData<Event>)? onEventAdd;
-  AddEventWidget({
+  const AddEventWidget({
     Key? key,
     this.onEventAdd,
   }) : super(key: key);
@@ -93,7 +93,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
               return null;
             },
-            maxLines: 1,
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
           ),
@@ -121,7 +120,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             height: 15,
           ),
           Row(
-            mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
@@ -196,7 +194,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             height: 15.0,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 "Event Color: ",
@@ -231,7 +228,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
     _form.currentState?.save();
 
-    var event = CalendarEventData<Event>(
+    final event = CalendarEventData<Event>(
       date: _date,
       color: _color,
       endTime: _endTime,
@@ -286,8 +283,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
           ColorPicker(
             displayThumbColor: true,
             enableAlpha: false,
-            showLabel: true,
-            paletteType: PaletteType.hsv,
             pickerColor: _color,
             onColorChanged: (c) {
               color = c;
