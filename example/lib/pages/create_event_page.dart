@@ -1,9 +1,9 @@
-import 'package:example/widgets/add_event_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../extension.dart';
+import '../widgets/add_event_widget.dart';
 
 class CreateEventPage extends StatefulWidget {
   final bool withDuration;

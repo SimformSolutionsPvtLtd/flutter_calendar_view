@@ -1,9 +1,9 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/widgets/week_view_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
 import '../model/event.dart';
+import '../widgets/week_view_widget.dart';
 import 'create_event_page.dart';
 
 class WeekViewDemo extends StatefulWidget {
@@ -26,8 +26,8 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
     );
   }
 
-  void _addEvent() async {
-    CalendarEventData<Event>? event =
+  Future<void> _addEvent() async {
+    final event =
         await context.pushRoute<CalendarEventData<Event>>(CreateEventPage(
       withDuration: true,
     ));

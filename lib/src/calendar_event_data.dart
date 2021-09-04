@@ -37,7 +37,7 @@ class CalendarEventData<T> {
   final T? event;
 
   /// Stores all the events on [date]
-  CalendarEventData({
+  const CalendarEventData({
     required this.date,
     required this.title,
     this.description = "",
@@ -57,15 +57,15 @@ class CalendarEventData<T> {
       };
 
   @override
-  String toString() => this.toJson().toString();
+  String toString() => toJson().toString();
 
   @override
   bool operator ==(Object other) {
     return other is CalendarEventData<T> &&
-        this.date.compareWithoutTime(other.date) &&
-        this.event == other.event &&
-        this.title == other.title &&
-        this.description == other.description;
+        date.compareWithoutTime(other.date) &&
+        event == other.event &&
+        title == other.title &&
+        description == other.description;
   }
 
   @override

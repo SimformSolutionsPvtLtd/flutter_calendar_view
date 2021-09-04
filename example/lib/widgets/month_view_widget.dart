@@ -1,6 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/model/event.dart';
 import 'package:flutter/material.dart';
+
+import '../model/event.dart';
 
 class MonthViewWidget extends StatelessWidget {
   final GlobalKey<MonthViewState>? state;

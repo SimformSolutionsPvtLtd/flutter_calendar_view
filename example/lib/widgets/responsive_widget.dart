@@ -18,7 +18,7 @@ class ResponsiveWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = this.width ?? MediaQuery.of(context).size.width;
+    final width = this.width ?? MediaQuery.of(context).size.width;
 
     if (width < breakPoint) {
       return mobileWidget;

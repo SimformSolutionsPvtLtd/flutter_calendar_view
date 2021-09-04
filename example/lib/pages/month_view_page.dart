@@ -1,10 +1,10 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/pages/create_event_page.dart';
-import 'package:example/widgets/month_view_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
 import '../model/event.dart';
+import '../widgets/month_view_widget.dart';
+import 'create_event_page.dart';
 
 class MonthViewPageDemo extends StatefulWidget {
   const MonthViewPageDemo({
@@ -28,9 +28,8 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
     );
   }
 
-  void _addEvent() async {
-    CalendarEventData<Event>? event =
-        await context.pushRoute<CalendarEventData<Event>>(
+  Future<void> _addEvent() async {
+    final event = await context.pushRoute<CalendarEventData<Event>>(
       CreateEventPage(
         withDuration: true,
       ),

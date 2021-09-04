@@ -1,11 +1,12 @@
 import 'dart:math';
 
-import 'package:example/app_colors.dart';
-import 'package:example/enumerations.dart';
-import 'package:example/widgets/day_view_widget.dart';
-import 'package:example/widgets/month_view_widget.dart';
-import 'package:example/widgets/week_view_widget.dart';
 import 'package:flutter/material.dart';
+
+import '../app_colors.dart';
+import '../enumerations.dart';
+import 'day_view_widget.dart';
+import 'month_view_widget.dart';
+import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
@@ -17,8 +18,8 @@ class CalendarViews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double availableWidth = MediaQuery.of(context).size.width;
-    double width = min(_breakPoint, availableWidth);
+    final availableWidth = MediaQuery.of(context).size.width;
+    final width = min(_breakPoint, availableWidth);
 
     return Container(
       height: double.infinity,

@@ -14,7 +14,8 @@ import '../extensions.dart';
 import '../typedefs.dart';
 
 class MonthView<T> extends StatefulWidget {
-  /// A function that returns a [Widget] that determines appearance of each cell in month calendar.
+  /// A function that returns a [Widget] that determines appearance of
+  /// each cell in month calendar.
   final CellBuilder<T>? cellBuilder;
 
   /// Builds month page title.
@@ -28,7 +29,8 @@ class MonthView<T> extends StatefulWidget {
   /// This function will be called when user taps on month view cell.
   final CellTapCallback<T>? onCellTap;
 
-  /// This function will be called when user will tap on a single event tile inside a cell.
+  /// This function will be called when user will tap on a single event
+  /// tile inside a cell.
   ///
   /// This function will only work if [cellBuilder] is null.
   final TileTapCallback<T>? onEventTap;
@@ -70,18 +72,22 @@ class MonthView<T> extends StatefulWidget {
   /// It will take affect only if [showBorder] is set.
   final Color borderColor;
 
-  /// Page transition duration used when user try to change page using [MonthView.nextPage] or [MonthView.previousPage]
+  /// Page transition duration used when user try to change page using
+  /// [MonthView.nextPage] or [MonthView.previousPage]
   final Duration pageTransitionDuration;
 
-  /// Page transition curve used when user try to change page using [MonthView.nextPage] or [MonthView.previousPage]
+  /// Page transition curve used when user try to change page using
+  /// [MonthView.nextPage] or [MonthView.previousPage]
   final Curve pageTransitionCurve;
 
   /// A required parameters that controls events for month view.
   ///
   /// This will auto update month view when user adds events in controller.
-  /// This controller will store all the events. And returns events for particular day.
+  /// This controller will store all the events. And returns events
+  /// for particular day.
   ///
-  /// If [controller] is null it will take controller from [CalendarControllerProvider.controller].
+  /// If [controller] is null it will take controller from
+  /// [CalendarControllerProvider.controller].
   final EventController<T>? controller;
 
   /// Defines width of default border
@@ -201,8 +207,11 @@ class MonthViewState<T> extends State<MonthView<T>> {
     // This widget will come under header this will display week days.
     _weekBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
 
-    // Initialize header builder. Assign default if widget.headerBuilder is null.
-    // This widget will be displayed on top of the page. from where user can see month and change month.
+    // Initialize header builder. Assign default if widget.headerBuilder
+    // is null.
+    //
+    // This widget will be displayed on top of the page.
+    // from where user can see month and change month.
     _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
   }
 
@@ -221,7 +230,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
       _controller = widget.controller ??
           CalendarControllerProvider.of<T>(context).controller;
 
-      // Reloads the view if there is any change in controller or user adds new events.
+      // Reloads the view if there is any change in controller or user adds
+      // new events.
       _controller.addListener(_reloadCallback);
 
       _controllerAdded = true;
@@ -239,7 +249,6 @@ class MonthViewState<T> extends State<MonthView<T>> {
       child: SizedBox(
         width: _width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
@@ -248,15 +257,12 @@ class MonthViewState<T> extends State<MonthView<T>> {
             ),
             Expanded(
               child: PageView.builder(
-                scrollDirection: Axis.horizontal,
                 controller: _pageController,
                 onPageChanged: _onPageChange,
                 itemBuilder: (_, index) {
-                  DateTime date =
-                      DateTime(_minDate.year, _minDate.month + index, 1);
+                  final date = DateTime(_minDate.year, _minDate.month + index);
                   return Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
@@ -335,7 +341,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
   Widget _defaultHeaderBuilder(DateTime date) {
     return MonthPageHeader(
       onTitleTapped: () async {
-        DateTime? selectedDate = await showDatePicker(
+        final selectedDate = await showDatePicker(
           context: context,
           initialDate: date,
           firstDate: _minDate,
@@ -343,7 +349,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
         );
 
         if (selectedDate == null) return;
-        this.jumpToMonth(selectedDate);
+        jumpToMonth(selectedDate);
       },
       onPreviousMonth: previousPage,
       date: date,
@@ -373,7 +379,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Animate to next page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve] respectively.
+  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
+  /// respectively.
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -384,7 +391,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Animate to previous page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve] respectively.
+  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
+  /// respectively.
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -400,7 +408,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Animate to page number [page].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve] respectively.
+  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
+  /// respectively.
   Future<void> animateToPage(int page,
       {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
@@ -422,7 +431,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
   /// Animate to page which gives month calendar for [month].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve] respectively.
+  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
+  /// respectively.
   Future<void> animateToMonth(DateTime month,
       {Duration? duration, Curve? curve}) async {
     if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
@@ -469,7 +479,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<DateTime> monthDays = date.datesOfMonths;
+    final monthDays = date.datesOfMonths;
     return Container(
       width: width,
       height: height,
@@ -478,8 +488,6 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
           childAspectRatio: cellRatio,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 0,
         ),
         itemCount: 42,
         shrinkWrap: true,
