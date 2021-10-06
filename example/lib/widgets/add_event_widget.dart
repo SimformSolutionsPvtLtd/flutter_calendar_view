@@ -11,6 +11,7 @@ import 'date_time_selector.dart';
 
 class AddEventWidget extends StatefulWidget {
   final void Function(CalendarEventData<Event>)? onEventAdd;
+
   const AddEventWidget({
     Key? key,
     this.onEventAdd,

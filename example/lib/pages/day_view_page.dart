@@ -26,7 +26,7 @@ class _DayViewPageDemoState extends State<DayViewPageDemo> {
             withDuration: true,
           ));
           if (event == null) return;
-          CalendarControllerProvider.of(context).controller.add(event);
+          CalendarControllerProvider.of<Event>(context).controller.add(event);
         },
       ),
       body: DayViewWidget(),

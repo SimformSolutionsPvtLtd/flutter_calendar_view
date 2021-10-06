@@ -1,3 +1,7 @@
+# 0.0.3 - October 11,2021 [Unreleased]
+
+- Added support for multiple day events
+
 # 0.0.2
 
 - Update `README.md` file.
