@@ -23,9 +23,9 @@ class CalendarControllerProvider<T> extends InheritedWidget {
         .dependOnInheritedWidgetOfExactType<CalendarControllerProvider<T>>();
     assert(
         result != null,
-        'No CalendarControllerProvider found in context. '
+        'No CalendarControllerProvider<$T> found in context. '
         'To solve this issue either wrap material app with '
-        '\'CalendarControllerProvider\' or provide controller argument in '
+        '\'CalendarControllerProvider<$T>\' or provide controller argument in '
         'respected calendar view class.');
     return result!;
   }

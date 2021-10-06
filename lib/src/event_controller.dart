@@ -29,6 +29,8 @@ class EventController<T> extends ChangeNotifier {
 
   final _eventList = <CalendarEventData<T>>[];
 
+  final _rangingEventList = <CalendarEventData<T>>[];
+
   /// Returns list of [CalendarEventData<T>] stored in this controller.
   List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
 
@@ -61,20 +63,27 @@ class EventController<T> extends ChangeNotifier {
   }
 
   void _addEvent(CalendarEventData<T> event) {
-    for (var i = 0; i < _events.length; i++) {
-      if (_events[i].year == event.date.year) {
-        if (_events[i].addEvent(event)) {
+    assert(event.endDate.difference(event.date).inDays >= 0,
+        'The end date must be greater or equal to the start date');
+
+    if (event.endDate.difference(event.date).inDays > 0) {
+      _rangingEventList.add(event);
+      _eventList.add(event);
+    } else {
+      for (final e in _events) {
+        if (e.year == event.date.year && e.addEvent(event)) {
           _eventList.add(event);
+          return;
         }
-        return;
+      }
+
+      final newEvent = _YearEvent<T>(year: event.date.year);
+      if (newEvent.addEvent(event)) {
+        _events.add(newEvent);
+        _eventList.add(event);
       }
     }
-
-    final newEvent = _YearEvent<T>(year: event.date.year);
-    if (newEvent.addEvent(event)) {
-      _events.add(newEvent);
-      _eventList.add(event);
-    }
+    notifyListeners();
   }
 
   /// Returns events on given day.
@@ -98,6 +107,24 @@ class EventController<T> extends ChangeNotifier {
               if (calendarEvents[k].date.day == date.day)
                 events.add(calendarEvents[k]);
             }
+          }
+        }
+      }
+    }
+
+    final daysFromRange = <DateTime>[];
+    for (final rangingEvent in _rangingEventList) {
+      for (var i = 0;
+          i <= rangingEvent.endDate.difference(rangingEvent.date).inDays;
+          i++) {
+        daysFromRange.add(rangingEvent.date.add(Duration(days: i)));
+      }
+      if (rangingEvent.date.isBefore(rangingEvent.endDate)) {
+        for(final eventDay in daysFromRange){
+          if (eventDay.year == date.year &&
+              eventDay.month == date.month &&
+              eventDay.day == date.day) {
+            events.add(rangingEvent);
           }
         }
       }

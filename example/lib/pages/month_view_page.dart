@@ -35,6 +35,6 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
       ),
     );
     if (event == null) return;
-    CalendarControllerProvider.of(context).controller.add(event);
+    CalendarControllerProvider.of<Event>(context).controller.add(event);
   }
 }

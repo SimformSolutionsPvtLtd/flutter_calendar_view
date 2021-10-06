@@ -82,12 +82,24 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
     ```dart
     final event = CalendarEventData(
-        date: DateTime(2021, 8, 10);
+        date: DateTime(2021, 8, 10),
         event: "Event 1",
     );
 
     CalendarControllerProvider.of(context).controller.add(event);
     ```
+
+   To Add events in range of dates:
+
+   ```dart
+   final event = CalendarEventData(
+           date: DateTime(2021, 8, 10),
+           endDate: DateTime(2021,8,15),
+           event: "Event 1",
+       );
+
+       CalendarControllerProvider.of(context).controller.add(event);
+   ```
 
    To Remove event:
 

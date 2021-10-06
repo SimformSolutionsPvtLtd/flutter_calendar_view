@@ -36,16 +36,21 @@ class CalendarEventData<T> {
   /// Event on [date].
   final T? event;
 
+  final DateTime? _endDate;
+
   /// Stores all the events on [date]
   const CalendarEventData({
-    required this.date,
     required this.title,
     this.description = "",
     this.event,
     this.color = Colors.blue,
     this.startTime,
     this.endTime,
-  });
+    DateTime? endDate,
+    required this.date,
+  }) : _endDate = endDate;
+
+  DateTime get endDate => _endDate ?? date;
 
   Map<String, dynamic> toJson() => {
         "date": date,
@@ -54,6 +59,7 @@ class CalendarEventData<T> {
         "event": event,
         "title": title,
         "description": description,
+        "endDate": endDate,
       };
 
   @override
@@ -63,6 +69,7 @@ class CalendarEventData<T> {
   bool operator ==(Object other) {
     return other is CalendarEventData<T> &&
         date.compareWithoutTime(other.date) &&
+        endDate.compareWithoutTime(other.endDate) &&
         event == other.event &&
         title == other.title &&
         description == other.description;
