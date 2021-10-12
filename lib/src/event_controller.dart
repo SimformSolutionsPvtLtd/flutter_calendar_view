@@ -120,7 +120,7 @@ class EventController<T> extends ChangeNotifier {
         daysFromRange.add(rangingEvent.date.add(Duration(days: i)));
       }
       if (rangingEvent.date.isBefore(rangingEvent.endDate)) {
-        for(final eventDay in daysFromRange){
+        for (final eventDay in daysFromRange) {
           if (eventDay.year == date.year &&
               eventDay.month == date.month &&
               eventDay.day == date.day) {
