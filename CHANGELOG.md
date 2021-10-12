@@ -1,4 +1,4 @@
-# 0.0.3 - October 11,2021 [Unreleased]
+# 0.0.3
 
 - Added support for multiple day events
 
