@@ -339,7 +339,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
         child: Text(
-          "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+          "${_addLeadingZeroIfNeeded(((date.hour - 1) % 24) + 1)}:00",
           textAlign: TextAlign.right,
           style: TextStyle(
             fontSize: 15.0,
@@ -488,4 +488,12 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Returns true if it does else false.
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
       dates.any((date) => date.compareWithoutTime(DateTime.now()));
+
+  String _addLeadingZeroIfNeeded(int value) {
+    if (value < 10) {
+      return '0$value';
+    }
+
+    return value.toString();
+  }
 }
