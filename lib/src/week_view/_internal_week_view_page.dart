@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../components/_internal_components.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -115,6 +116,25 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                 SizedBox(
                   height: weekTitleHeight,
                   width: timeLineWidth,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${DateFormat.MMMM().format(dates.first).substring(0, 3)}.',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        DateFormat.y().format(dates.first),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 ...List.generate(
                   dates.length,
@@ -125,7 +145,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                       dates[index],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

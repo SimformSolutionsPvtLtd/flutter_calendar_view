@@ -108,7 +108,7 @@ class WeekView<T> extends StatefulWidget {
     this.onPageChange,
     this.weekPageHeaderBuilder,
     this.eventArranger,
-    this.weekTitleHeight = 50,
+    this.weekTitleHeight = 85,
     this.weekDayBuilder,
     this.backgroundColor = Colors.white,
     this.onEventTap,
