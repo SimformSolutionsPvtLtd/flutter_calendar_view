@@ -116,7 +116,7 @@ class WeekView<T> extends StatefulWidget {
     this.weekDayBuilder,
     this.backgroundColor = Colors.white,
     this.onEventTap,
-    this.plannedHoursForMonth
+    this.plannedHoursForMonth = 0,
   }) : super(key: key);
 
   @override
