@@ -75,6 +75,9 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  /// Total planned hours for the current month
+  final double plannedHoursForMonth;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -98,6 +101,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.weekTitleWidth,
     required this.onTileTap,
+    required this.plannedHoursForMonth,
   }) : super(key: key);
 
   @override
@@ -132,6 +136,10 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                           color: Colors.grey,
                           fontSize: 16,
                         ),
+                      ),
+                      Text(
+                        '$plannedHoursForMonth h',
+                        style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),

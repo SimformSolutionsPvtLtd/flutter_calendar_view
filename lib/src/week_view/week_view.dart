@@ -87,6 +87,9 @@ class WeekView<T> extends StatefulWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
+  /// Total planned hours for the current month
+  final double? plannedHoursForMonth;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -112,6 +115,7 @@ class WeekView<T> extends StatefulWidget {
     this.weekDayBuilder,
     this.backgroundColor = Colors.white,
     this.onEventTap,
+    this.plannedHoursForMonth
   }) : super(key: key);
 
   @override
@@ -124,6 +128,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late double _timeLineWidth;
   late double _hourHeight;
   late double _timeLineOffset;
+  late double _plannedHoursForMonth;
   late DateTime _currentStartDate;
   late DateTime _currentEndDate;
   late DateTime _maxDate;
@@ -186,6 +191,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+    _plannedHoursForMonth = widget.plannedHoursForMonth ?? _plannedHoursForMonth;
   }
 
   @override
@@ -291,6 +297,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         controller: _controller,
                         hourHeight: _hourHeight,
                         eventArranger: _eventArranger,
+                        plannedHoursForMonth: _plannedHoursForMonth,
                       );
                     },
                   ),
