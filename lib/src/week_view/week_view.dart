@@ -4,6 +4,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
@@ -322,6 +323,17 @@ class WeekViewState<T> extends State<WeekView<T>> {
     }
   }
 
+  String _formatToDate(DateTime dateTimeValue) {
+    return DateFormat('yyyy-MM-dd').format(dateTimeValue);
+  }
+
+  TextStyle _getWeekDayTextStyle(date) {
+    return TextStyle(
+      fontWeight: (_formatToDate(date) == _formatToDate(DateTime.now())) ? FontWeight.bold : FontWeight.normal,
+      color: (_formatToDate(date) == _formatToDate(DateTime.now())) ? Colors.black : Colors.black87,
+    );
+  }
+
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(DateTime date) {
     return Center(
@@ -341,8 +353,11 @@ class WeekViewState<T> extends State<WeekView<T>> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(Constants.weekTitles[date.weekday - 1]),
-            Text(date.day.toString()),
+            Text(
+              Constants.weekTitles[date.weekday - 1],
+              style: _getWeekDayTextStyle(date),
+            ),
+            Text(date.day.toString(), style: _getWeekDayTextStyle(date)),
           ],
         ),
       ),
