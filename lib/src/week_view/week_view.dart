@@ -259,7 +259,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(_currentStartDate, _currentEndDate),
               Expanded(
                 child: SizedBox(
                   height: _height,
@@ -326,13 +325,26 @@ class WeekViewState<T> extends State<WeekView<T>> {
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(DateTime date) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(Constants.weekTitles[date.weekday - 1]),
-          Text(date.day.toString()),
-        ],
+      child: GestureDetector(
+        onTap: () async {
+          final selectedDate = await showDatePicker(
+            context: context,
+            initialDate: date,
+            firstDate: CalendarConstants.minDate,
+            lastDate: CalendarConstants.maxDate,
+          );
+
+          if (selectedDate == null) return;
+          jumpToWeek(selectedDate);
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(Constants.weekTitles[date.weekday - 1]),
+            Text(date.day.toString()),
+          ],
+        ),
       ),
     );
   }
