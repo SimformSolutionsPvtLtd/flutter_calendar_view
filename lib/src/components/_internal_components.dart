@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
@@ -247,7 +246,7 @@ class EventGenerator<T> extends StatelessWidget {
 }
 
 /// A widget that allow to long press on calendar.
-class PressDetector<T> extends StatelessWidget {
+class PressDetector extends StatelessWidget {
   /// Height of display area
   final double height;
 

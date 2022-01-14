@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../extensions.dart';
-import '../typedefs.dart';
 import 'common_components.dart';
 
 /// This class defines default tile to display in day view.
@@ -165,63 +164,6 @@ class DefaultTimeLineMark extends StatelessWidget {
                 fontSize: 15.0,
               ),
         ),
-      ),
-    );
-  }
-}
-
-/// A widget that display event tiles in day/week view.
-class PressDetector<T> extends StatelessWidget {
-  /// Height of display area
-  final double height;
-
-  /// width of display area
-  final double width;
-
-  /// Defines height of single minute in day/week view page.
-  final double hourHeight;
-
-  /// Defines date for which events will be displayed in given display area.
-  final DateTime date;
-
-  final DatePressCallback? onDatePress;
-
-  /// A widget that display event tiles in day/week view.
-  const PressDetector({
-    Key? key,
-    required this.height,
-    required this.width,
-    required this.hourHeight,
-    required this.date,
-    required this.onDatePress,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      child: Stack(
-        children: [
-          for (int i = 0; i < Constants.hoursADay; i++)
-            Positioned(
-              top: hourHeight * i,
-              left: 0,
-              right: 0,
-              bottom: height - (hourHeight * (i + 1)),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onLongPress: () => onDatePress
-                    ?.call(DateTime(date.year, date.month, date.day, i)),
-                child: Container(
-                  width: width,
-                  height: hourHeight,
-                  decoration:
-                      BoxDecoration(color: Colors.blue.withOpacity(0.5)),
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }
