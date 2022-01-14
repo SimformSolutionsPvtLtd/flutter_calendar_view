@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
@@ -240,6 +241,59 @@ class EventGenerator<T> extends StatelessWidget {
       width: width,
       child: Stack(
         children: _generateEvents(),
+      ),
+    );
+  }
+}
+
+/// A widget that allow to long press on calendar.
+class PressDetector<T> extends StatelessWidget {
+  /// Height of display area
+  final double height;
+
+  /// width of display area
+  final double width;
+
+  /// Defines height of single minute in day/week view page.
+  final double hourHeight;
+
+  /// Defines date for which events will be displayed in given display area.
+  final DateTime date;
+
+  /// Called when user long press on calendar.
+  final DatePressCallback? onDatePress;
+
+  /// A widget that display event tiles in day/week view.
+  const PressDetector({
+    Key? key,
+    required this.height,
+    required this.width,
+    required this.hourHeight,
+    required this.date,
+    required this.onDatePress,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      child: Stack(
+        children: [
+          for (int i = 0; i < Constants.hoursADay; i++)
+            Positioned(
+              top: hourHeight * i,
+              left: 0,
+              right: 0,
+              bottom: height - (hourHeight * (i + 1)),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onLongPress: () => onDatePress
+                    ?.call(DateTime(date.year, date.month, date.day, i)),
+                child: SizedBox(width: width, height: hourHeight),
+              ),
+            ),
+        ],
       ),
     );
   }
