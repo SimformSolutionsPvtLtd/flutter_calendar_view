@@ -88,7 +88,7 @@ class WeekView<T> extends StatefulWidget {
   final CellTapCallback<T>? onEventTap;
 
   /// This method will be called when user long press on calendar.
-  final DatePressCallback? onDatePress;
+  final DatePressCallback? onDateLongPress;
 
   /// Main widget for week view.
   const WeekView({
@@ -115,7 +115,7 @@ class WeekView<T> extends StatefulWidget {
     this.weekDayBuilder,
     this.backgroundColor = Colors.white,
     this.onEventTap,
-    this.onDatePress,
+    this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -282,7 +282,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                         timeLineBuilder: _timeLineBuilder,
                         onTileTap: widget.onEventTap,
-                        onDatePress: widget.onDatePress,
+                        onDateLongPress: widget.onDateLongPress,
                         eventTileBuilder: _eventTileBuilder,
                         heightPerMinute: widget.heightPerMinute,
                         hourIndicatorSettings: _hourIndicatorSettings,

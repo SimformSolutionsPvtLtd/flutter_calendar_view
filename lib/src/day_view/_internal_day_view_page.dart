@@ -66,7 +66,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
   final CellTapCallback<T>? onTileTap;
 
   /// Called when user long press on calendar.
-  final DatePressCallback? onDatePress;
+  final DatePressCallback? onDateLongPress;
 
   /// Defines a single day page.
   const InternalDayViewPage({
@@ -88,7 +88,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.onTileTap,
-    required this.onDatePress,
+    required this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -122,7 +122,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
             height: height,
             hourHeight: hourHeight,
             date: date,
-            onDatePress: onDatePress,
+            onDateLongPress: onDateLongPress,
           ),
           Align(
             alignment: Alignment.centerRight,

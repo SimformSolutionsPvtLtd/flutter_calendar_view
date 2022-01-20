@@ -260,7 +260,7 @@ class PressDetector extends StatelessWidget {
   final DateTime date;
 
   /// Called when user long press on calendar.
-  final DatePressCallback? onDatePress;
+  final DatePressCallback? onDateLongPress;
 
   /// A widget that display event tiles in day/week view.
   const PressDetector({
@@ -269,7 +269,7 @@ class PressDetector extends StatelessWidget {
     required this.width,
     required this.hourHeight,
     required this.date,
-    required this.onDatePress,
+    required this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -287,7 +287,7 @@ class PressDetector extends StatelessWidget {
               bottom: height - (hourHeight * (i + 1)),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onLongPress: () => onDatePress
+                onLongPress: () => onDateLongPress
                     ?.call(DateTime(date.year, date.month, date.day, i)),
                 child: SizedBox(width: width, height: hourHeight),
               ),

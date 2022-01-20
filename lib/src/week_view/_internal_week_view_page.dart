@@ -75,7 +75,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   final CellTapCallback<T>? onTileTap;
 
   /// Called when user long press on calendar.
-  final DatePressCallback? onDatePress;
+  final DatePressCallback? onDateLongPress;
 
   /// A single page for week view.
   const InternalWeekViewPage({
@@ -100,7 +100,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.weekTitleWidth,
     required this.onTileTap,
-    required this.onDatePress,
+    required this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -186,7 +186,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                                       height: height,
                                       hourHeight: hourHeight,
                                       date: dates[index],
-                                      onDatePress: onDatePress,
+                                      onDateLongPress: onDateLongPress,
                                     ),
                                     EventGenerator<T>(
                                       height: height,

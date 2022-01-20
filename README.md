@@ -136,7 +136,7 @@ MonthView(
     }
     // This callback will only work if cellBuilder is null.
     onEventTap: (event, date) => print(event);
-    onDatePress: (date) => print(date);
+    onDateLongPress: (date) => print(date);
 );
 ```
 
@@ -157,7 +157,7 @@ DayView(
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDatePress: (date) => print(date);
+    onDateLongPress: (date) => print(date);
 );
 ```
 
@@ -178,7 +178,7 @@ WeekView(
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDatePress: (date) => print(date);
+    onDateLongPress: (date) => print(date);
 );
 ```
 
