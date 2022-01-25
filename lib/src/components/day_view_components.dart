@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'package:calendar_view/src/typedefs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -121,6 +122,7 @@ class DayPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousDay,
     Color iconColor = Constants.black,
     Color backgroundColor = Constants.headerBackground,
+    StringProvider? dateStringBuilder,
     required DateTime date,
   }) : super(
           key: key,
@@ -130,7 +132,7 @@ class DayPageHeader extends CalendarPageHeader {
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,
-          dateStringBuilder: DayPageHeader._dayStringBuilder,
+          dateStringBuilder: dateStringBuilder ?? DayPageHeader._dayStringBuilder,
         );
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
