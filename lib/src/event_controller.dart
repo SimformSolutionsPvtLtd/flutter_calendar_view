@@ -201,10 +201,6 @@ class _MonthEvent<T> {
   }
 
   void removeEvent(CalendarEventData<T> event) {
-    for (final e in _events) {
-      if (e == event) {
-        _events.remove(e);
-      }
-    }
+    _events.removeWhere((e) => e == event);
   }
 }
