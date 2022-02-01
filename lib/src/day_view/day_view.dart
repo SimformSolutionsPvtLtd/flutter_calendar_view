@@ -120,6 +120,9 @@ class DayView<T> extends StatefulWidget {
   /// Background colour of day view page.
   final Color? backgroundColor;
 
+  /// Scroll offset of day view page.
+  final double scrollOffset;
+
   /// This method will be called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
@@ -147,6 +150,7 @@ class DayView<T> extends StatefulWidget {
     this.eventArranger,
     this.verticalLineOffset = 10,
     this.backgroundColor = Colors.white,
+    this.scrollOffset = 0.0,
     this.onEventTap,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
@@ -184,6 +188,8 @@ class DayViewState<T> extends State<DayView<T>> {
 
   late EventController<T> _controller;
 
+  late ScrollController _scrollController;
+
   bool _controllerAdded = false;
 
   late VoidCallback _reloadCallback;
@@ -210,6 +216,8 @@ class DayViewState<T> extends State<DayView<T>> {
     _hourHeight = widget.heightPerMinute * 60;
     _height = _hourHeight * Constants.hoursADay;
     _timeLineOffset = widget.timeLineOffset;
+    _scrollController =
+        ScrollController(initialScrollOffset: widget.scrollOffset);
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
@@ -282,6 +290,7 @@ class DayViewState<T> extends State<DayView<T>> {
               _dayTitleBuilder(_currentDate),
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: SizedBox(
                     height: _height,
                     child: PageView.builder(
