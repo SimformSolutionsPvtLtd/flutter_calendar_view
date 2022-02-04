@@ -1,3 +1,7 @@
+# 0.0.4 - Unreleased
+
+- Fixed issue [#17 - EventController remove event don't work](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/27)
+
 # 0.0.3
 
 - Added support for multiple day events
