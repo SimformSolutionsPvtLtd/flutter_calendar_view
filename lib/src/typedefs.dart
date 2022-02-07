@@ -21,13 +21,9 @@ typedef EventTileBuilder<T> = Widget Function(
   DateTime endDuration,
 );
 
-typedef WeekDayBuilder = Widget Function(
-  int day,
-);
+typedef WeekDayBuilder = Widget Function(int day);
 
-typedef DateWidgetBuilder = Widget Function(
-  DateTime date,
-);
+typedef DateWidgetBuilder = Widget Function(DateTime date);
 
 typedef CalendarPageChangeCallBack = void Function(DateTime date, int page);
 
