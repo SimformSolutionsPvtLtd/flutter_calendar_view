@@ -353,9 +353,12 @@ class DayViewState<T> extends State<DayView<T>> {
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) =>
-      DefaultTimeLineMark(date: date,
-          timeStringBuilder: widget.timeStringBuilder ?? (DateTime date, {DateTime? secondaryDate}) => "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}");
+  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
+      date: date,
+      timeStringBuilder: widget.timeStringBuilder ??
+          (date, {secondaryDate}) =>
+              """${((date.hour - 1) % 12) + 1}
+              ${date.hour ~/ 12 == 0 ? "am" : "pm"}""");
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -387,7 +390,7 @@ class DayViewState<T> extends State<DayView<T>> {
   Widget _defaultDayBuilder(DateTime date) {
     return DayPageHeader(
       date: _currentDate,
-      dateStringBuilder: widget.dateStringBuilder, 
+      dateStringBuilder: widget.dateStringBuilder,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {

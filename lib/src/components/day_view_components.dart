@@ -2,12 +2,12 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-import 'package:calendar_view/src/typedefs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../extensions.dart';
+import '../typedefs.dart';
 import 'common_components.dart';
 
 /// This class defines default tile to display in day view.
@@ -132,7 +132,8 @@ class DayPageHeader extends CalendarPageHeader {
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,
-          dateStringBuilder: dateStringBuilder ?? DayPageHeader._dayStringBuilder,
+          dateStringBuilder:
+              dateStringBuilder ?? DayPageHeader._dayStringBuilder,
         );
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
