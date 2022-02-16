@@ -2,6 +2,7 @@
 *.iml
 *.ipr
 *.iws
+.fvm/
 .idea/
 
 # Flutter/Dart/Pub related
