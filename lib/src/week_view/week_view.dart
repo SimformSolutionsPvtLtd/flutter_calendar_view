@@ -140,24 +140,32 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late PageController _pageController;
 
   late DateWidgetBuilder _timeLineBuilder;
+
   late EventTileBuilder<T> _eventTileBuilder;
+
   late WeekPageHeaderBuilder _weekHeaderBuilder;
+
   late DateWidgetBuilder _weekDayBuilder;
 
+  late EventController<T> _controller;
+
+  late VoidCallback _reloadCallback;
+  late VoidCallback _nextPageCallback;
+  late VoidCallback _previousPageCallback;
+
   late double _weekTitleWidth;
+
   final _weekDays = 7;
 
   bool _controllerAdded = false;
-
-  late VoidCallback _reloadCallback;
-
-  late EventController<T> _controller;
 
   @override
   void initState() {
     super.initState();
 
     _reloadCallback = _reload;
+    _nextPageCallback = nextPage;
+    _previousPageCallback = previousPage;
 
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
@@ -173,7 +181,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
     final dates = _initialDay.datesOfWeek();
     _currentStartDate = dates.first;
     _currentEndDate = dates.last;
-
     _totalWeeks = _maxDate.getWeekDifference(_minDate) + 1;
     _currentIndex = _currentStartDate.getWeekDifference(_minDate) + 1;
     _hourHeight = widget.heightPerMinute * 60;
@@ -199,11 +206,13 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
       // Reloads the view if there is any change in controller or user
       // adds new events.
-      _controller.addListener(_reloadCallback);
+      _controller
+        ..addListener(_reloadCallback)
+        ..setOnNextPage(_nextPageCallback)
+        ..setOnPreviousPage(_previousPageCallback);
     }
 
     _width = widget.width ?? MediaQuery.of(context).size.width;
-
     assert(_width != 0, "Calendar width can not be 0.");
 
     _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
@@ -215,7 +224,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
           height: widget.heightPerMinute,
           offset: 5,
         );
-
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
         "liveTimeIndicator height must be less than minuteHeight * 60");
 
@@ -225,7 +233,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
           color: Constants.defaultBorderColor,
           offset: 5,
         );
-
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
 
@@ -235,7 +242,10 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
   @override
   void dispose() {
-    _controller.removeListener(_reloadCallback);
+    _controller
+      ..removeListener(_reloadCallback)
+      ..setOnNextPage(null)
+      ..setOnPreviousPage(null);
     _pageController.dispose();
     super.dispose();
   }
@@ -246,9 +256,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       child: SizedBox(
         width: _width,
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.backgroundColor,
-          ),
+          decoration: BoxDecoration(color: widget.backgroundColor),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -266,7 +274,6 @@ class WeekViewState<T> extends State<WeekView<T>> {
                       final dates = _minDate
                           .add(Duration(days: (index - 1) * _weekDays))
                           .datesOfWeek();
-
                       return InternalWeekViewPage<T>(
                         key: ValueKey(
                             _hourHeight.toString() + dates[0].toString()),
