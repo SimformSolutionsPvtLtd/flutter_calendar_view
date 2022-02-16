@@ -16,6 +16,7 @@ import '../modals.dart';
 import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
+/// [Widget] to display day view.
 class DayView<T> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each
   /// cell in day calendar.
@@ -184,15 +185,19 @@ class DayViewState<T> extends State<DayView<T>> {
 
   late EventController<T> _controller;
 
-  bool _controllerAdded = false;
-
   late VoidCallback _reloadCallback;
+  late VoidCallback _nextPageCallback;
+  late VoidCallback _previousPageCallback;
+
+  bool _controllerAdded = false;
 
   @override
   void initState() {
     super.initState();
 
     _reloadCallback = _reload;
+    _nextPageCallback = nextPage;
+    _previousPageCallback = previousPage;
 
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
@@ -227,7 +232,10 @@ class DayViewState<T> extends State<DayView<T>> {
 
       // Reloads the view if there is any change in controller or
       // user adds new events.
-      _controller.addListener(_reloadCallback);
+      _controller
+        ..addListener(_reloadCallback)
+        ..setOnNextPage(_nextPageCallback)
+        ..setOnPreviousPage(_previousPageCallback);
 
       _controllerAdded = true;
     }
@@ -244,7 +252,6 @@ class DayViewState<T> extends State<DayView<T>> {
           height: widget.heightPerMinute,
           offset: 5 + widget.verticalLineOffset,
         );
-
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
         "liveTimeIndicator height must be less than minuteHeight * 60");
 
@@ -254,14 +261,16 @@ class DayViewState<T> extends State<DayView<T>> {
           color: Constants.defaultBorderColor,
           offset: 5,
         );
-
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_reloadCallback);
+    _controller
+      ..removeListener(_reloadCallback)
+      ..setOnNextPage(null)
+      ..setOnPreviousPage(null);
     _pageController.dispose();
     super.dispose();
   }
@@ -272,9 +281,7 @@ class DayViewState<T> extends State<DayView<T>> {
       child: SizedBox(
         width: _width,
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.backgroundColor,
-          ),
+          decoration: BoxDecoration(color: widget.backgroundColor),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -291,7 +298,6 @@ class DayViewState<T> extends State<DayView<T>> {
                       itemBuilder: (_, index) {
                         final date = DateTime(_minDate.year, _minDate.month,
                             _minDate.day + index);
-
                         return InternalDayViewPage<T>(
                           key: ValueKey(
                               _hourHeight.toString() + date.toString()),

@@ -19,6 +19,9 @@ class EventController<T> extends ChangeNotifier {
   ///
   final EventFilter<T>? eventFilter;
 
+  late VoidCallback? onNextPage;
+  late VoidCallback? onPreviousPage;
+
   /// Calendar controller to control all the events related operations like,
   /// adding event, removing event, etc.
   EventController({
@@ -33,6 +36,24 @@ class EventController<T> extends ChangeNotifier {
 
   /// Returns list of [CalendarEventData<T>] stored in this controller.
   List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
+
+  void setOnNextPage(VoidCallback? onNextPage) {
+    this.onNextPage = onNextPage;
+    notifyListeners();
+  }
+
+  void setOnPreviousPage(VoidCallback? onPreviousPage) {
+    this.onPreviousPage = onPreviousPage;
+    notifyListeners();
+  }
+
+  void nextPage() {
+    onNextPage?.call();
+  }
+
+  void previousPage() {
+    onPreviousPage?.call();
+  }
 
   /// Add all the events in the list
   /// If there is an event with same date then
@@ -60,6 +81,14 @@ class EventController<T> extends ChangeNotifier {
         break;
       }
     }
+  }
+
+  void update(List<CalendarEventData<T>> events) {
+    _events.clear();
+    _eventList.clear();
+    _rangingEventList.clear();
+
+    addAll(events);
   }
 
   void _addEvent(CalendarEventData<T> event) {
