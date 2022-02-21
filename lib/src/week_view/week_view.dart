@@ -152,6 +152,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late VoidCallback _reloadCallback;
   late VoidCallback _nextPageCallback;
   late VoidCallback _previousPageCallback;
+  late Function(DateTime) _jumpToTodayPageCallback;
 
   late double _weekTitleWidth;
 
@@ -166,6 +167,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _reloadCallback = _reload;
     _nextPageCallback = nextPage;
     _previousPageCallback = previousPage;
+    _jumpToTodayPageCallback = animateToWeek;
 
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
@@ -209,7 +211,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
       _controller
         ..addListener(_reloadCallback)
         ..setOnNextPage(_nextPageCallback)
-        ..setOnPreviousPage(_previousPageCallback);
+        ..setOnPreviousPage(_previousPageCallback)
+        ..setOnGoToTodayPage(_jumpToTodayPageCallback);
     }
 
     _width = widget.width ?? MediaQuery.of(context).size.width;
@@ -245,7 +248,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _controller
       ..removeListener(_reloadCallback)
       ..setOnNextPage(null)
-      ..setOnPreviousPage(null);
+      ..setOnPreviousPage(null)
+      ..setOnGoToTodayPage((_) => null);
     _pageController.dispose();
     super.dispose();
   }

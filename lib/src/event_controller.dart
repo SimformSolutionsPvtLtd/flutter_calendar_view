@@ -21,6 +21,7 @@ class EventController<T> extends ChangeNotifier {
 
   late VoidCallback? onNextPage;
   late VoidCallback? onPreviousPage;
+  late Function(DateTime)? onGoToTodayPage;
 
   /// Calendar controller to control all the events related operations like,
   /// adding event, removing event, etc.
@@ -47,12 +48,21 @@ class EventController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setOnGoToTodayPage(Function(DateTime) onGoToTodayPage) {
+    this.onGoToTodayPage = onGoToTodayPage;
+    notifyListeners();
+  }
+
   void nextPage() {
     onNextPage?.call();
   }
 
   void previousPage() {
     onPreviousPage?.call();
+  }
+
+  void goToTodayPage(DateTime date) {
+    onGoToTodayPage?.call(date);
   }
 
   /// Add all the events in the list
