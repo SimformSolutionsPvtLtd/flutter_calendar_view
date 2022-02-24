@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 import '../enumerations.dart';
 import 'day_view_widget.dart';
-import 'month_view_widget.dart';
 import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
 
-  const CalendarViews({Key? key, this.view = CalendarView.month})
+  const CalendarViews({Key? key, this.view = CalendarView.week})
       : super(key: key);
 
   final _breakPoint = 490.0;
@@ -26,11 +25,7 @@ class CalendarViews extends StatelessWidget {
       width: double.infinity,
       color: AppColors.grey,
       child: Center(
-        child: view == CalendarView.month
-            ? MonthViewWidget(
-                width: width,
-              )
-            : view == CalendarView.day
+        child: view == CalendarView.day
                 ? DayViewWidget(
                     width: width,
                   )

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'model/event.dart';
 import 'pages/mobile/mobile_home_page.dart';
-import 'pages/web/web_home_page.dart';
 import 'widgets/responsive_widget.dart';
 
 DateTime get _now => DateTime.now();
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.light(),
         home: ResponsiveWidget(
           mobileWidget: MobileHomePage(),
-          webWidget: WebHomePage(),
+          webWidget: Container(),
         ),
       ),
     );
