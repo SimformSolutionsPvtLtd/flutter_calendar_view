@@ -1,6 +1,7 @@
 # 0.0.4 - Unreleased
 
 - Fixed issue [#17 - EventController remove event don't work](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/27)
+- Fixed issue [#13 - Give the option to show weekdays in a weekview.](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/13)
 
 # 0.0.3
 

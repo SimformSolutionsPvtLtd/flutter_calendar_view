@@ -243,6 +243,25 @@ There are two ways to synchronize events between calendar views.
 1. Provide the same `controller` object to all calendar views used in the project.
 2. Wrap MaterialApp with `CalendarControllerProvider` and provide controller as argument as defined in [Implementation](#implementation).
 
+### Show only working days in WeekView.
+
+You can configure week view such that it can display only specific days.
+ex,
+
+```dart
+WeekView(
+  weekDays: [
+    WeekDays.monday,
+    WeekDays.tuesday,
+    WeekDays.wednesday,
+    WeekDays.thursday,
+    WeekDays.friday,
+  ],
+);
+```
+
+Above code will create `WeekView` with only five days, from monday to friday.
+
 ## License
 
 ```text
