@@ -245,11 +245,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
   @override
   void dispose() {
-    _controller
-      ..removeListener(_reloadCallback)
-      ..setOnNextPage(null)
-      ..setOnPreviousPage(null)
-      ..setOnGoToTodayPage((_) => null);
+    _controller.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
