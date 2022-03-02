@@ -123,6 +123,9 @@ class DayView<T> extends StatefulWidget {
   /// This method will be called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
+  /// This method will be called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -148,6 +151,7 @@ class DayView<T> extends StatefulWidget {
     this.verticalLineOffset = 10,
     this.backgroundColor = Colors.white,
     this.onEventTap,
+    this.onDateLongPress,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         super(key: key);
@@ -303,6 +307,7 @@ class DayViewState<T> extends State<DayView<T>> {
                           hourIndicatorSettings: _hourIndicatorSettings,
                           date: date,
                           onTileTap: widget.onEventTap,
+                          onDateLongPress: widget.onDateLongPress,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               date.compareWithoutTime(DateTime.now()),
                           timeLineOffset: _timeLineOffset,

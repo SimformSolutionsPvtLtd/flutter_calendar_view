@@ -74,6 +74,9 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  /// Called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -97,6 +100,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.weekTitleWidth,
     required this.onTileTap,
+    required this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -175,16 +179,27 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                                 ),
                                 height: height,
                                 width: weekTitleWidth,
-                                child: EventGenerator<T>(
-                                  height: height,
-                                  date: dates[index],
-                                  onTileTap: onTileTap,
-                                  width: weekTitleWidth,
-                                  eventArranger: eventArranger,
-                                  eventTileBuilder: eventTileBuilder,
-                                  events:
-                                      controller.getEventsOnDay(dates[index]),
-                                  heightPerMinute: heightPerMinute,
+                                child: Stack(
+                                  children: [
+                                    PressDetector(
+                                      width: weekTitleWidth,
+                                      height: height,
+                                      hourHeight: hourHeight,
+                                      date: dates[index],
+                                      onDateLongPress: onDateLongPress,
+                                    ),
+                                    EventGenerator<T>(
+                                      height: height,
+                                      date: dates[index],
+                                      onTileTap: onTileTap,
+                                      width: weekTitleWidth,
+                                      eventArranger: eventArranger,
+                                      eventTileBuilder: eventTileBuilder,
+                                      events: controller
+                                          .getEventsOnDay(dates[index]),
+                                      heightPerMinute: heightPerMinute,
+                                    ),
+                                  ],
                                 ),
                               ),
                             )
