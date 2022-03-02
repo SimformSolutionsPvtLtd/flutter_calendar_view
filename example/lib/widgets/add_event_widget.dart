@@ -22,7 +22,8 @@ class AddEventWidget extends StatefulWidget {
 }
 
 class _AddEventWidgetState extends State<AddEventWidget> {
-  late DateTime _date;
+  late DateTime _startDate;
+  late DateTime _endDate;
 
   DateTime? _startTime;
 
@@ -42,9 +43,10 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
   final GlobalKey<FormState> _form = GlobalKey();
 
-  late TextEditingController _dateController;
+  late TextEditingController _startDateController;
   late TextEditingController _startTimeController;
   late TextEditingController _endTimeController;
+  late TextEditingController _endDateController;
 
   @override
   void initState() {
@@ -54,7 +56,8 @@ class _AddEventWidgetState extends State<AddEventWidget> {
     _descriptionNode = FocusNode();
     _dateNode = FocusNode();
 
-    _dateController = TextEditingController();
+    _startDateController = TextEditingController();
+    _endDateController = TextEditingController();
     _startTimeController = TextEditingController();
     _endTimeController = TextEditingController();
   }
@@ -65,7 +68,8 @@ class _AddEventWidgetState extends State<AddEventWidget> {
     _descriptionNode.dispose();
     _dateNode.dispose();
 
-    _dateController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
     _startTimeController.dispose();
     _endTimeController.dispose();
 
@@ -100,22 +104,50 @@ class _AddEventWidgetState extends State<AddEventWidget> {
           SizedBox(
             height: 15,
           ),
-          DateTimeSelectorFormField(
-            controller: _dateController,
-            decoration: AppConstants.inputDecoration.copyWith(
-              labelText: "Select Date",
-            ),
-            validator: (value) {
-              if (value == null || value == "") return "Please select date.";
+          Row(
+            children: [
+              Expanded(
+                child: DateTimeSelectorFormField(
+                  controller: _startDateController,
+                  decoration: AppConstants.inputDecoration.copyWith(
+                    labelText: "Start Date",
+                  ),
+                  validator: (value) {
+                    if (value == null || value == "")
+                      return "Please select date.";
 
-              return null;
-            },
-            textStyle: TextStyle(
-              color: AppColors.black,
-              fontSize: 17.0,
-            ),
-            onSave: (date) => _date = date,
-            type: DateTimeSelectionType.date,
+                    return null;
+                  },
+                  textStyle: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 17.0,
+                  ),
+                  onSave: (date) => _startDate = date,
+                  type: DateTimeSelectionType.date,
+                ),
+              ),
+              SizedBox(width: 20.0),
+              Expanded(
+                child: DateTimeSelectorFormField(
+                  controller: _endDateController,
+                  decoration: AppConstants.inputDecoration.copyWith(
+                    labelText: "End Date",
+                  ),
+                  validator: (value) {
+                    if (value == null || value == "")
+                      return "Please select date.";
+
+                    return null;
+                  },
+                  textStyle: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 17.0,
+                  ),
+                  onSave: (date) => _endDate = date,
+                  type: DateTimeSelectionType.date,
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 15,
@@ -230,11 +262,12 @@ class _AddEventWidgetState extends State<AddEventWidget> {
     _form.currentState?.save();
 
     final event = CalendarEventData<Event>(
-      date: _date,
+      date: _startDate,
       color: _color,
       endTime: _endTime,
       startTime: _startTime,
       description: _description,
+      endDate: _endDate,
       title: _title,
       event: Event(
         title: _title,
@@ -247,7 +280,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
   void _resetForm() {
     _form.currentState?.reset();
-    _dateController.text = "";
+    _startDateController.text = "";
     _endTimeController.text = "";
     _startTimeController.text = "";
   }
