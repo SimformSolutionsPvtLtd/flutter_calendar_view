@@ -25,10 +25,13 @@ class EventController<T> extends ChangeNotifier {
     this.eventFilter,
   });
 
+  // Stores events that occurs only once in a tree type structure.
   final _events = <_YearEvent<T>>[];
 
+  // Stores all the events in a list.
   final _eventList = <CalendarEventData<T>>[];
 
+  // Stores all the ranging events in a list.
   final _rangingEventList = <CalendarEventData<T>>[];
 
   /// Returns list of [CalendarEventData<T>] stored in this controller.
@@ -58,7 +61,16 @@ class EventController<T> extends ChangeNotifier {
         e.removeEvent(event);
         _eventList.remove(event);
         notifyListeners();
-        break;
+        return;
+      }
+    }
+
+    for (final e in _rangingEventList) {
+      if (e == event) {
+        _rangingEventList.remove(event);
+        _eventList.remove(event);
+        notifyListeners();
+        return;
       }
     }
   }
@@ -74,6 +86,8 @@ class EventController<T> extends ChangeNotifier {
       for (final e in _events) {
         if (e.year == event.date.year && e.addEvent(event)) {
           _eventList.add(event);
+          notifyListeners();
+
           return;
         }
       }
@@ -84,6 +98,7 @@ class EventController<T> extends ChangeNotifier {
         _eventList.add(event);
       }
     }
+
     notifyListeners();
   }
 
