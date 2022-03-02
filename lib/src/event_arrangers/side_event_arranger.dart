@@ -81,8 +81,8 @@ class SideEventArranger<T> extends EventArranger<T> {
               events: [event],
               left: left,
               right: right,
-              endDuration: event.startTime ?? DateTime.now(),
-              startDuration: event.endTime ?? DateTime.now(),
+              startDuration: event.startTime ?? DateTime.now(),
+              endDuration: event.endTime ?? DateTime.now(),
             );
             arrangedEvent.add(eventData);
           } else {
