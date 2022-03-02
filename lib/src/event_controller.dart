@@ -56,7 +56,7 @@ class EventController<T> extends ChangeNotifier {
     for (final e in _events) {
       if (e.year == event.date.year) {
         e.removeEvent(event);
-        _eventList.removeWhere((element) => element.event == event.event);
+        _eventList.remove(event);
         notifyListeners();
         break;
       }

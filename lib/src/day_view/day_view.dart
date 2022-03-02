@@ -201,6 +201,12 @@ class DayViewState<T> extends State<DayView<T>> {
     _minDate = widget.minDay ?? CalendarConstants.epochDate;
     _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
 
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
+
     _initialDay = widget.initialDay ?? DateTime.now();
 
     if (_initialDay.isBefore(_minDate)) {
