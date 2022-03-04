@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
@@ -10,6 +9,7 @@ import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
 import '../constants.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
@@ -90,6 +90,30 @@ class WeekView<T> extends StatefulWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
+  /// Show weekends or not
+  ///
+  /// Default value is true.
+  ///
+  /// If it is false week view will remove weekends from week
+  /// even if weekends are added in [weekDays].
+  ///
+  /// ex, if [showWeekends] is false and [weekDays] are monday, tuesday,
+  /// saturday and sunday, only monday and tuesday will be visible in week view.
+  final bool showWeekends;
+
+  /// Defines which days should be displayed in one week.
+  ///
+  /// By default all the days will be visible.
+  /// Sequence will be monday to sunday.
+  ///
+  /// Duplicate values will be removed from list.
+  ///
+  /// ex, if there are two mondays in list it will display only one.
+  final List<WeekDays> weekDays;
+
+  /// This method will be called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -116,6 +140,9 @@ class WeekView<T> extends StatefulWidget {
     this.backgroundColor = Colors.white,
     this.scrollOffset = 0.0,
     this.onEventTap,
+    this.onDateLongPress,
+    this.weekDays = WeekDays.values,
+    this.showWeekends = true,
   }) : super(key: key);
 
   @override
@@ -149,7 +176,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late DateWidgetBuilder _weekDayBuilder;
 
   late double _weekTitleWidth;
-  final _weekDays = 7;
+  late final int _totalDaysInWeek;
 
   bool _controllerAdded = false;
 
@@ -158,15 +185,40 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late EventController<T> _controller;
 
   late ScrollController _scrollController;
+  late final List<WeekDays> _weekDays;
 
   @override
   void initState() {
     super.initState();
 
+    _weekDays = widget.weekDays.toSet().toList();
+
+    if (!widget.showWeekends) {
+      _weekDays
+        ..remove(WeekDays.saturday)
+        ..remove(WeekDays.sunday);
+    }
+
+    assert(
+        _weekDays.isNotEmpty,
+        "weekDays can not be empty.\n"
+        "Make sure you are providing weekdays in initialization of "
+        "WeekView. or showWeekends is true if you are providing only "
+        "saturday or sunday in weekDays.");
+
     _reloadCallback = _reload;
 
-    _minDate = widget.minDay ?? CalendarConstants.epochDate;
-    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
+    _totalDaysInWeek = _weekDays.length;
+
+    _minDate =
+        (widget.minDay ?? CalendarConstants.epochDate).datesOfWeek().first;
+    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).datesOfWeek().last;
+
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
 
     _initialDay = widget.initialDay ?? DateTime.now();
 
@@ -238,7 +290,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
         "hourIndicator height must be less than minuteHeight * 60");
 
     _weekTitleWidth =
-        (_width - _timeLineWidth - _hourIndicatorSettings.offset) / _weekDays;
+        (_width - _timeLineWidth - _hourIndicatorSettings.offset) /
+            _totalDaysInWeek;
   }
 
   @override
@@ -272,7 +325,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
                     onPageChanged: _onPageChange,
                     itemBuilder: (_, index) {
                       final dates = _minDate
-                          .add(Duration(days: (index - 1) * _weekDays))
+                          .add(Duration(
+                              days: (index - 1) * DateTime.daysPerWeek))
                           .datesOfWeek();
 
                       return InternalWeekViewPage<T>(
@@ -286,6 +340,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                         timeLineBuilder: _timeLineBuilder,
                         onTileTap: widget.onEventTap,
+                        onDateLongPress: widget.onDateLongPress,
                         eventTileBuilder: _eventTileBuilder,
                         heightPerMinute: widget.heightPerMinute,
                         hourIndicatorSettings: _hourIndicatorSettings,
@@ -300,6 +355,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
                         hourHeight: _hourHeight,
                         scrollController: _scrollController,
                         eventArranger: _eventArranger,
+                        weekDays: _weekDays,
                       );
                     },
                   ),
@@ -312,6 +368,10 @@ class WeekViewState<T> extends State<WeekView<T>> {
     );
   }
 
+  /// Returns [EventController] associated with this Widget.
+  ///
+  /// This will throw [AssertionError] if controller is called before its
+  /// initialization is complete.
   EventController<T> get controller {
     assert(_controllerAdded, "EventController is not initialized yet.");
 

@@ -4,8 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'enumerations.dart';
-
 extension DateTimeExtensions on DateTime {
   /// Compares only [day], [month] and [year] of [DateTime].
   bool compareWithoutTime(DateTime date) {
@@ -45,9 +43,14 @@ extension DateTimeExtensions on DateTime {
   /// will return dates
   /// [6,7,8,9,10,11,12]
   /// Where on 6th there will be monday and on 12th there will be Sunday
-  List<DateTime> datesOfWeek({WeekDays startDay = WeekDays.monday}) {
-    final day = weekday;
-    final start = subtract(Duration(days: day - startDay.index));
+  List<DateTime> datesOfWeek() {
+    // weekday can very from 1(Monday) to 7(Sunday).
+    // If we have a date that has week day of 3 (Wednesday) and
+    // we want to find first date of the week that contains this date
+    // we need to move 2 days back. Wednesday -> Tuesday -> Monday.
+    // That is same as 3 - 1 (weekday - 1).
+    //
+    final start = subtract(Duration(days: weekday - 1));
 
     return [
       start,

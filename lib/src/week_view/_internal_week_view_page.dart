@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
@@ -76,6 +77,15 @@ class InternalWeekViewPage<T> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  /// Defines which days should be displayed in one week.
+  ///
+  /// By default all the days will be visible.
+  /// Sequence will be monday to sunday.
+  final List<WeekDays> weekDays;
+
+  /// Called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -100,10 +110,13 @@ class InternalWeekViewPage<T> extends StatelessWidget {
     required this.weekTitleWidth,
     required this.scrollController,
     required this.onTileTap,
+    required this.onDateLongPress,
+    required this.weekDays,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final filteredDates = _filteredDate();
     return Container(
       height: height + weekTitleHeight,
       width: width,
@@ -120,12 +133,12 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                   width: timeLineWidth,
                 ),
                 ...List.generate(
-                  dates.length,
+                  filteredDates.length,
                   (index) => SizedBox(
                     height: weekTitleHeight,
                     width: weekTitleWidth,
                     child: weekDayBuilder(
-                      dates[index],
+                      filteredDates[index],
                     ),
                   ),
                 )
@@ -162,12 +175,12 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: SizedBox(
-                        width: weekTitleWidth * dates.length,
+                        width: weekTitleWidth * filteredDates.length,
                         height: height,
                         child: Row(
                           children: [
                             ...List.generate(
-                              dates.length,
+                              filteredDates.length,
                               (index) => Container(
                                 decoration: BoxDecoration(
                                   border: Border(
@@ -179,16 +192,27 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                                 ),
                                 height: height,
                                 width: weekTitleWidth,
-                                child: EventGenerator<T>(
-                                  height: height,
-                                  date: dates[index],
-                                  onTileTap: onTileTap,
-                                  width: weekTitleWidth,
-                                  eventArranger: eventArranger,
-                                  eventTileBuilder: eventTileBuilder,
-                                  events:
-                                      controller.getEventsOnDay(dates[index]),
-                                  heightPerMinute: heightPerMinute,
+                                child: Stack(
+                                  children: [
+                                    PressDetector(
+                                      width: weekTitleWidth,
+                                      height: height,
+                                      hourHeight: hourHeight,
+                                      date: dates[index],
+                                      onDateLongPress: onDateLongPress,
+                                    ),
+                                    EventGenerator<T>(
+                                      height: height,
+                                      date: filteredDates[index],
+                                      onTileTap: onTileTap,
+                                      width: weekTitleWidth,
+                                      eventArranger: eventArranger,
+                                      eventTileBuilder: eventTileBuilder,
+                                      events: controller
+                                          .getEventsOnDay(filteredDates[index]),
+                                      heightPerMinute: heightPerMinute,
+                                    ),
+                                  ],
                                 ),
                               ),
                             )
@@ -211,5 +235,25 @@ class InternalWeekViewPage<T> extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<DateTime> _filteredDate() {
+    final output = <DateTime>[];
+
+    final weekDays = this.weekDays.toList()
+      ..sort((d1, d2) => d1.index - d2.index);
+
+    var weekDayIndex = 0;
+    var dateCounter = 0;
+
+    while (weekDayIndex < weekDays.length && dateCounter < dates.length) {
+      if (dates[dateCounter].weekday == weekDays[weekDayIndex].index + 1) {
+        output.add(dates[dateCounter]);
+        weekDayIndex++;
+      }
+      dateCounter++;
+    }
+
+    return output;
   }
 }

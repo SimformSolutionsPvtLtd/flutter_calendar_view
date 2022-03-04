@@ -48,5 +48,7 @@ typedef TileTapCallback<T> = void Function(
 typedef CellTapCallback<T> = void Function(
     List<CalendarEventData<T>> events, DateTime date);
 
+typedef DatePressCallback = void Function(DateTime date);
+
 typedef EventFilter<T> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);
