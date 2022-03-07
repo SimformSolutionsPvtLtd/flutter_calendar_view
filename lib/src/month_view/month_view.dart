@@ -274,9 +274,11 @@ class MonthViewState<T> extends State<MonthView<T>> {
                         child: Row(
                           children: List.generate(
                             7,
-                            (index) => SizedBox(
-                              width: _cellWidth,
-                              child: _weekBuilder(index),
+                            (index) => Expanded(
+                              child: SizedBox(
+                                width: _cellWidth,
+                                child: _weekBuilder(index),
+                              ),
                             ),
                           ),
                         ),
