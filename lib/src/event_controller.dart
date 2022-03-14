@@ -40,17 +40,14 @@ class EventController<T> extends ChangeNotifier {
 
   void setOnNextPage(VoidCallback? onNextPage) {
     this.onNextPage = onNextPage;
-    notifyListeners();
   }
 
   void setOnPreviousPage(VoidCallback? onPreviousPage) {
     this.onPreviousPage = onPreviousPage;
-    notifyListeners();
   }
 
   void setOnGoToTodayPage(Function(DateTime) onGoToTodayPage) {
     this.onGoToTodayPage = onGoToTodayPage;
-    notifyListeners();
   }
 
   void nextPage() {

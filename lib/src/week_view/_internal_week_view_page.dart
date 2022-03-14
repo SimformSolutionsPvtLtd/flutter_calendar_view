@@ -188,7 +188,7 @@ class InternalWeekViewPage<T> extends StatelessWidget {
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings: liveTimeIndicatorSettings,
                         width: width,
-                        height: height,
+                        height: 1.0,
                         heightPerMinute: heightPerMinute,
                         timeLineWidth: timeLineWidth,
                       ),
