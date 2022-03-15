@@ -12,7 +12,7 @@ class MonthYearLabel extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final monthYearBuilder? monthYearLabelBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MonthYearLabel extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           child: Text(
-            monthLabel + " " + yearLabel!,
+            "$monthLabel ${yearLabel!}",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         );

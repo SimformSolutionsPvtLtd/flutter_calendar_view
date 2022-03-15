@@ -17,11 +17,11 @@ const List<String> _DaysOfTheWeek = [
 
 /// Show the row of text from [_DaysOfTheWeek]
 class DaysOfTheWeek extends StatelessWidget {
-  DaysOfTheWeek(this.daysOfTheWeekBuilder);
+  const DaysOfTheWeek(this.daysOfTheWeekBuilder);
 
-  final daysBuilder? daysOfTheWeekBuilder;
+  final DaysBuilder? daysOfTheWeekBuilder;
 
-  Widget defaultLabels(index) {
+  Widget defaultLabels(int index) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8),
       child: Text(

@@ -38,9 +38,10 @@ class DaysRow extends StatelessWidget {
 
 /// Cell of calendar.
 ///
-/// Its height is circulated by [MeasureSize] and notified by [CellHeightController]
+/// Its height is circulated by [MeasureSize]
+/// and notified by [CellHeightController]
 class _DayCell extends StatelessWidget {
-  _DayCell(this.date, this.visiblePageDate, this.dateTextStyle);
+  const _DayCell(this.date, this.visiblePageDate, this.dateTextStyle);
 
   final DateTime date;
   final DateTime visiblePageDate;
@@ -61,9 +62,8 @@ class _DayCell extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Theme.of(context).dividerColor, width: 1),
-              right:
-              BorderSide(color: Theme.of(context).dividerColor, width: 1),
+              top: BorderSide(color: Theme.of(context).dividerColor),
+              right: BorderSide(color: Theme.of(context).dividerColor),
             ),
           ),
           child: MeasureSize(
@@ -74,16 +74,17 @@ class _DayCell extends StatelessWidget {
             },
             child: Column(
               children: [
-                isToday
-                    ? _TodayLabel(
-                  date: date,
-                  dateTextStyle: dateTextStyle,
-                )
-                    : _DayLabel(
-                  date: date,
-                  visiblePageDate: visiblePageDate,
-                  dateTextStyle: dateTextStyle,
-                ),
+                if (isToday)
+                  _TodayLabel(
+                    date: date,
+                    dateTextStyle: dateTextStyle,
+                  )
+                else
+                  _DayLabel(
+                    date: date,
+                    visiblePageDate: visiblePageDate,
+                    dateTextStyle: dateTextStyle,
+                  ),
                 EventLabels(date),
               ],
             ),

@@ -4,14 +4,15 @@ import 'package:flutter/foundation.dart';
 import '../calendar_event.dart';
 import '../date_extension.dart';
 
-/// Controller to call functions from argument like [onPageChanged] and [onCellTapped]
+/// Controller to call functions from argument like
+/// [onPageChanged] and [onCellTapped]
 class CalendarStateController extends ChangeNotifier {
   CalendarStateController({
     required this.events,
     required this.onPageChangedFromUserArgument,
     required this.onCellTappedFromUserArgument,
   }) {
-    this._initialize();
+    _initialize();
   }
 
   final List<CalendarEvent> events;
@@ -39,7 +40,7 @@ class CalendarStateController extends ChangeNotifier {
   }
 
   DateTime _getFirstDay(DateTime dateTime) {
-    final firstDayOfTheMonth = DateTime(dateTime.year, dateTime.month, 1);
+    final firstDayOfTheMonth = DateTime(dateTime.year, dateTime.month);
     return firstDayOfTheMonth.add(firstDayOfTheMonth.weekday.daysDuration);
   }
 

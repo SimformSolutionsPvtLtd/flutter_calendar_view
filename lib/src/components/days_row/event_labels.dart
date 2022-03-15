@@ -19,7 +19,7 @@ const _eventLabelHeight = _eventLabelContentHeight + _eventLabelBottomMargin;
 /// Shows accurate number of [_EventLabel] by the height of the parent cell
 /// notified from [CellHeightController]
 class EventLabels extends StatelessWidget {
-  EventLabels(this.date);
+  const EventLabels(this.date);
 
   final DateTime date;
 
@@ -94,7 +94,7 @@ class EventLabels extends StatelessWidget {
 
 /// label to show [CalendarEvent]
 class _EventLabel extends StatelessWidget {
-  _EventLabel(this.event);
+  const _EventLabel(this.event);
 
   final CalendarEvent event;
 

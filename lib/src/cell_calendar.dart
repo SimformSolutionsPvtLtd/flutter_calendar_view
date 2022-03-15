@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +10,9 @@ import 'controllers/cell_calendar_page_controller.dart';
 import 'controllers/cell_height_controller.dart';
 import 'date_extension.dart';
 
-typedef daysBuilder = Widget Function(int dayIndex);
+typedef DaysBuilder = Widget Function(int dayIndex);
 
-typedef monthYearBuilder = Widget Function(DateTime? visibleDateTime);
+typedef MonthYearBuilder = Widget Function(DateTime? visibleDateTime);
 
 class TodayUIConfig {
   final Color todayMarkColor;
@@ -26,7 +25,7 @@ class TodayUIConfig {
 ///
 /// Expected to be used in full screen
 class CellCalendar extends StatelessWidget {
-  CellCalendar({
+  const CellCalendar({
     this.cellCalendarPageController,
     this.events = const [],
     this.onPageChanged,
@@ -44,9 +43,9 @@ class CellCalendar extends StatelessWidget {
   ///
   /// 0 for Sunday, 6 for Saturday.
   /// By default, it returns English labels
-  final daysBuilder? daysOfTheWeekBuilder;
+  final DaysBuilder? daysOfTheWeekBuilder;
 
-  final monthYearBuilder? monthYearLabelBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
 
   final TextStyle? dateTextStyle;
 
@@ -84,15 +83,15 @@ class CellCalendar extends StatelessWidget {
 
 /// Shows [MonthYearLabel] and PageView of [_CalendarPage]
 class _CalendarPageView extends StatelessWidget {
-  _CalendarPageView(
+  const _CalendarPageView(
     this.daysOfTheWeekBuilder,
     this.monthYearLabelBuilder,
     this.dateTextStyle,
     this.cellCalendarPageController,
   );
 
-  final daysBuilder? daysOfTheWeekBuilder;
-  final monthYearBuilder? monthYearLabelBuilder;
+  final DaysBuilder? daysOfTheWeekBuilder;
+  final MonthYearBuilder? monthYearLabelBuilder;
   final TextStyle? dateTextStyle;
   final CellCalendarPageController? cellCalendarPageController;
 
@@ -136,21 +135,21 @@ class _CalendarPage extends StatelessWidget {
   }) : super(key: key);
 
   final DateTime visiblePageDate;
-  final daysBuilder? daysOfTheWeekBuilder;
+  final DaysBuilder? daysOfTheWeekBuilder;
   final TextStyle? dateTextStyle;
 
   List<DateTime> _getCurrentDays(DateTime dateTime) {
-    final List<DateTime> result = [];
+    final result = <DateTime>[];
     final firstDay = _getFirstDay(dateTime);
     result.add(firstDay);
-    for (int i = 0; i + 1 < 42; i++) {
+    for (var i = 0; i + 1 < 42; i++) {
       result.add(firstDay.add(Duration(days: i + 1)));
     }
     return result;
   }
 
   DateTime _getFirstDay(DateTime dateTime) {
-    final firstDayOfTheMonth = DateTime(dateTime.year, dateTime.month, 1);
+    final firstDayOfTheMonth = DateTime(dateTime.year, dateTime.month);
     return firstDayOfTheMonth.add(firstDayOfTheMonth.weekday.daysDuration);
   }
 
