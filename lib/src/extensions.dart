@@ -34,7 +34,7 @@ extension DateTimeExtensions on DateTime {
 
   /// Gets difference of weeks between [date] and calling object.
   int getWeekDifference(DateTime date) =>
-      (difference(date).inDays.abs() / 7).ceil();
+      (firstDayOfWeek.difference(date.firstDayOfWeek).inDays.abs() / 7).ceil();
 
   /// Returns The List of date of Current Week
   /// Day will start from Monday to Sunday.
@@ -62,6 +62,9 @@ extension DateTimeExtensions on DateTime {
       start.add(Duration(days: 6)),
     ];
   }
+
+  DateTime get firstDayOfWeek => subtract(Duration(days: weekday - 1));
+  DateTime get lastDayOfWeek => add(Duration(days: 7 - weekday));
 
   /// Returns list of all dates of [month].
   /// All the dates are week based that means it will return array of size 42
