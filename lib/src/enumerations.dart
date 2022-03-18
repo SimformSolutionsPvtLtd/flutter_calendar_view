@@ -2,12 +2,14 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+// Note: Do not change sequence of this enumeration if not necessary
+// this can change behaviour of month and week view.
 enum WeekDays {
-  sunday,
   monday,
   tuesday,
   wednesday,
   thursday,
   friday,
   saturday,
+  sunday,
 }

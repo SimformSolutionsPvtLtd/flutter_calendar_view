@@ -105,6 +105,9 @@ class MonthView<T> extends StatefulWidget {
   /// If null is provided then It will take width of closest [MediaQuery].
   final double? width;
 
+  /// This method will be called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -125,6 +128,7 @@ class MonthView<T> extends StatefulWidget {
     this.onPageChange,
     this.onCellTap,
     this.onEventTap,
+    this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -285,6 +289,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
                             child: _MonthPageBuilder<T>(
                               key: ValueKey(date.toIso8601String()),
                               onCellTap: widget.onCellTap,
+                              onDateLongPress: widget.onDateLongPress,
                               width: _width,
                               height: _height,
                               controller: _controller,
@@ -462,6 +467,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double width;
   final double height;
   final CellTapCallback<T>? onCellTap;
+  final DatePressCallback? onDateLongPress;
 
   const _MonthPageBuilder({
     Key? key,
@@ -475,6 +481,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.width,
     required this.height,
     required this.onCellTap,
+    required this.onDateLongPress,
   }) : super(key: key);
 
   @override
@@ -495,6 +502,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
           final events = controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
+            onLongPress: () => onDateLongPress?.call(monthDays[index]),
             child: Container(
               decoration: BoxDecoration(
                 border: showBorder

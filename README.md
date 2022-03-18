@@ -136,6 +136,7 @@ MonthView(
     }
     // This callback will only work if cellBuilder is null.
     onEventTap: (event, date) => print(event);
+    onDateLongPress: (date) => print(date);
 );
 ```
 
@@ -156,6 +157,7 @@ DayView(
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
+    onDateLongPress: (date) => print(date);
 );
 ```
 
@@ -176,6 +178,7 @@ WeekView(
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
+    onDateLongPress: (date) => print(date);
 );
 ```
 
@@ -239,6 +242,39 @@ There are two ways to synchronize events between calendar views.
 
 1. Provide the same `controller` object to all calendar views used in the project.
 2. Wrap MaterialApp with `CalendarControllerProvider` and provide controller as argument as defined in [Implementation](#implementation).
+
+### Show only working days in WeekView.
+
+You can configure week view such that it displays only specific days.
+ex,
+
+```dart
+WeekView(
+  weekDays: [
+    WeekDays.monday,
+    WeekDays.tuesday,
+    WeekDays.wednesday,
+    WeekDays.thursday,
+    WeekDays.friday,
+  ],
+);
+```
+
+Above code will create `WeekView` with only five days, from monday to friday.
+
+
+## Main Contributors
+
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/vatsaltanna"><img src="https://avatars.githubusercontent.com/u/25323183?s=100" width="100px;" alt=""/><br /><sub><b>Vatsal Tanna</b></sub></a></td>
+     <td align="center"><a href="https://github.com/sanket-simform"><img src="https://avatars.githubusercontent.com/u/65167856?v=4" width="100px;" alt=""/><br /><sub><b>Sanket Kachhela</b></sub></a></td>
+     <td align="center"><a href="https://github.com/ParthBaraiya"><img src="https://avatars.githubusercontent.com/u/36261739?v=4" width="100px;" alt=""/><br /><sub><b>Parth Baraiya</b></sub></a></td>
+    <td align="center"><a href="https://github.com/ujas-m-simformsolutions"><img src="https://avatars.githubusercontent.com/u/76939001?v=4" width="100px;" alt=""/><br /><sub><b>Ujas Majithiya</b></sub></a></td>
+  </tr>
+</table>
+<br/>
 
 ## License
 

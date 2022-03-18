@@ -25,10 +25,13 @@ class EventController<T> extends ChangeNotifier {
     this.eventFilter,
   });
 
+  // Stores events that occurs only once in a tree type structure.
   final _events = <_YearEvent<T>>[];
 
+  // Stores all the events in a list.
   final _eventList = <CalendarEventData<T>>[];
 
+  // Stores all the ranging events in a list.
   final _rangingEventList = <CalendarEventData<T>>[];
 
   /// Returns list of [CalendarEventData<T>] stored in this controller.
@@ -55,8 +58,21 @@ class EventController<T> extends ChangeNotifier {
   void remove(CalendarEventData<T> event) {
     for (final e in _events) {
       if (e.year == event.date.year) {
-        e.removeEvent(event);
-        notifyListeners();
+        if (e.removeEvent(event) && _eventList.remove(event)) {
+          notifyListeners();
+          return;
+        }
+
+        break;
+      }
+    }
+
+    for (final e in _rangingEventList) {
+      if (e == event) {
+        if (_rangingEventList.remove(event) && _eventList.remove(event)) {
+          notifyListeners();
+          return;
+        }
         break;
       }
     }
@@ -81,6 +97,8 @@ class EventController<T> extends ChangeNotifier {
       for (final e in _events) {
         if (e.year == event.date.year && e.addEvent(event)) {
           _eventList.add(event);
+          notifyListeners();
+
           return;
         }
       }
@@ -91,6 +109,7 @@ class EventController<T> extends ChangeNotifier {
         _eventList.add(event);
       }
     }
+
     notifyListeners();
   }
 
@@ -176,12 +195,13 @@ class _YearEvent<T> {
     return totalEvents;
   }
 
-  void removeEvent(CalendarEventData<T> event) {
+  bool removeEvent(CalendarEventData<T> event) {
     for (final e in _months) {
       if (e.month == event.date.month) {
-        e.removeEvent(event);
+        return e.removeEvent(event);
       }
     }
+    return false;
   }
 
   void removeWhere(bool Function(CalendarEventData<T> element) test) {
@@ -214,8 +234,14 @@ class _MonthEvent<T> {
     return false;
   }
 
-  void removeEvent(CalendarEventData<T> event) {
-    _events.removeWhere((e) => e == event);
+  bool removeEvent(CalendarEventData<T> event) {
+    final index = _events.indexWhere((element) => element == event);
+    if (index == -1) {
+      return false;
+    } else {
+      _events.removeAt(index);
+      return true;
+    }
   }
 
   void removeWhere(bool Function(CalendarEventData<T> element) test) {
