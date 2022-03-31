@@ -95,6 +95,12 @@ extension DateTimeExtensions on DateTime {
         totalMinutes ~/ 60,
         totalMinutes % 60,
       );
+
+  DateTime get lastDayOfMonth {
+    final beginningNextMonth =
+        (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
+    return beginningNextMonth.subtract(Duration(days: 1));
+  }
 }
 
 extension ColorExtension on Color {
