@@ -108,6 +108,12 @@ class MonthView<T> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines the String displayed by the default title builder.
+  ///
+  /// Use this parameter instead of [headerBuilder] if you like the behavior of
+  /// the default header and only need to change the title
+  final String Function(DateTime)? titleProvider;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -129,7 +135,10 @@ class MonthView<T> extends StatefulWidget {
     this.onCellTap,
     this.onEventTap,
     this.onDateLongPress,
-  }) : super(key: key);
+    this.titleProvider,
+  })  : assert(headerBuilder == null || titleProvider == null,
+            'Only one of headerBuilder and titleProvider should be set'),
+        super(key: key);
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -165,6 +174,8 @@ class MonthViewState<T> extends State<MonthView<T>> {
   bool _controllerAdded = false;
 
   late VoidCallback _reloadCallback;
+
+  StringProvider? _dateStringBuilder;
 
   @override
   void initState() {
@@ -217,6 +228,13 @@ class MonthViewState<T> extends State<MonthView<T>> {
     // This widget will be displayed on top of the page.
     // from where user can see month and change month.
     _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
+
+    // Used by the default header builder to display a custom title.
+    // We wrap the more natural signature of titleProvider to be a valid
+    // StringProvider
+    _dateStringBuilder = widget.titleProvider == null
+        ? null
+        : (date, {secondaryDate}) => widget.titleProvider!(date);
   }
 
   @override
@@ -359,6 +377,7 @@ class MonthViewState<T> extends State<MonthView<T>> {
       onPreviousMonth: previousPage,
       date: date,
       onNextMonth: nextPage,
+      dateStringBuilder: _dateStringBuilder,
     );
   }
 

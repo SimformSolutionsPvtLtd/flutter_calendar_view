@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../extensions.dart';
+import '../typedefs.dart';
 import 'common_components.dart';
 
 /// This class defines default tile to display in day view.
@@ -121,6 +122,7 @@ class DayPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousDay,
     Color iconColor = Constants.black,
     Color backgroundColor = Constants.headerBackground,
+    StringProvider? dateStringBuilder,
     required DateTime date,
   }) : super(
           key: key,
@@ -130,8 +132,10 @@ class DayPageHeader extends CalendarPageHeader {
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,
-          dateStringBuilder: DayPageHeader._dayStringBuilder,
+          dateStringBuilder:
+              dateStringBuilder ?? DayPageHeader._dayStringBuilder,
         );
+
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }
