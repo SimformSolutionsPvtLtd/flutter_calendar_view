@@ -197,6 +197,7 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousMonth,
     Color iconColor = Constants.black,
     Color backgroundColor = Constants.headerBackground,
+    StringProvider? dateStringBuilder,
     required DateTime date,
   }) : super(
           key: key,
@@ -206,8 +207,10 @@ class MonthPageHeader extends CalendarPageHeader {
           onTitleTapped: onTitleTapped,
           iconColor: iconColor,
           backgroundColor: backgroundColor,
-          dateStringBuilder: MonthPageHeader._monthStringBuilder,
+          dateStringBuilder:
+              dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
         );
+
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
 }

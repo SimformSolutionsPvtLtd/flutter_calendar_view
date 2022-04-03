@@ -4,6 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../typedefs.dart';
 import 'common_components.dart';
 
 class WeekPageHeader extends CalendarPageHeader {
@@ -13,6 +14,7 @@ class WeekPageHeader extends CalendarPageHeader {
     VoidCallback? onNextDay,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousDay,
+    StringProvider? dateStringBuilder,
     required DateTime startDate,
     required DateTime endDate,
   }) : super(
@@ -22,8 +24,9 @@ class WeekPageHeader extends CalendarPageHeader {
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,
-          dateStringBuilder: WeekPageHeader._weekStringBuilder,
+          dateStringBuilder: dateStringBuilder ?? _weekStringBuilder,
         );
+
   static String _weekStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} / ${date.month} / ${date.year} to "
       "${secondaryDate != null ? "${secondaryDate.day} / "

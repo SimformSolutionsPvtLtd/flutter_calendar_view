@@ -128,6 +128,12 @@ class WeekView<T> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines the String displayed by the default page header builder.
+  ///
+  /// Use this parameter instead of [weekPageHeaderBuilder] if you like the
+  /// behavior of the default header and only need to change the title
+  final String Function(DateTime, DateTime)? titleProvider;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -157,7 +163,12 @@ class WeekView<T> extends StatefulWidget {
     this.onDateLongPress,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
-  }) : super(key: key);
+    this.titleProvider,
+  })  : assert(
+            weekPageHeaderBuilder == null || titleProvider == null,
+            'Only one of weekPageHeaderBuilder and'
+            ' titleProvider should be set'),
+        super(key: key);
 
   @override
   WeekViewState<T> createState() => WeekViewState<T>();
@@ -201,6 +212,8 @@ class WeekViewState<T> extends State<WeekView<T>> {
   late ScrollController _scrollController;
   late final List<WeekDays> _weekDays;
 
+  StringProvider? _dateStringBuilder;
+
   @override
   void initState() {
     super.initState();
@@ -208,7 +221,9 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _weekDays = widget.weekDays.toSet().toList();
 
     if (!widget.showWeekends) {
-      _weekDays..remove(WeekDays.saturday)..remove(WeekDays.sunday);
+      _weekDays
+        ..remove(WeekDays.saturday)
+        ..remove(WeekDays.sunday);
     }
 
     assert(
@@ -257,6 +272,10 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+    _dateStringBuilder = widget.titleProvider == null
+        ? null
+        : (date, {secondaryDate}) =>
+            widget.titleProvider!(date, secondaryDate!);
   }
 
   @override
@@ -460,6 +479,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
       endDate: _currentEndDate,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
+      dateStringBuilder: _dateStringBuilder,
       onTitleTapped: () async {
         final selectedDate = await showDatePicker(
           context: context,

@@ -129,6 +129,12 @@ class DayView<T> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines the String displayed by the default title builder.
+  ///
+  /// Use this parameter instead of [dayTitleBuilder] if you like the behavior
+  /// of the default builder and only need to change the title
+  final String Function(DateTime)? titleProvider;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -156,8 +162,11 @@ class DayView<T> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
+    this.titleProvider,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
+        assert(dayTitleBuilder == null || titleProvider == null,
+        'Only one of dayTitleBuilder and titleProvider should be set'),
         super(key: key);
 
   @override
@@ -198,6 +207,8 @@ class DayViewState<T> extends State<DayView<T>> {
 
   late VoidCallback _reloadCallback;
 
+  StringProvider? _dateStringBuilder;
+
   @override
   void initState() {
     super.initState();
@@ -233,6 +244,9 @@ class DayViewState<T> extends State<DayView<T>> {
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
     _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
     _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
+    _dateStringBuilder = widget.titleProvider == null
+        ? null
+        : (date, {secondaryDate}) => widget.titleProvider!(date);
   }
 
   @override
@@ -397,6 +411,7 @@ class DayViewState<T> extends State<DayView<T>> {
       date: _currentDate,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
+      dateStringBuilder: _dateStringBuilder,
       onTitleTapped: () async {
         final selectedDate = await showDatePicker(
           context: context,
