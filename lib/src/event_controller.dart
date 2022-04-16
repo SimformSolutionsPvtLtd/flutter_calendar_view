@@ -149,7 +149,8 @@ class EventController<T> extends ChangeNotifier {
       }
     }
 
-    return events;
+    final uniqueEvents = <CalendarEventData<T>> {}..addAll(events);
+    return uniqueEvents.toList();
   }
 }
 
