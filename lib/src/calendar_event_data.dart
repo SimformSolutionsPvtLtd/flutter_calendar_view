@@ -37,6 +37,10 @@ class CalendarEventData<T> {
 
   final DateTime? _endDate;
 
+  final String uid;
+
+  final String userID;
+
   /// Stores all the events on [date]
   const CalendarEventData({
     required this.title,
@@ -45,8 +49,10 @@ class CalendarEventData<T> {
     this.color = Colors.blue,
     this.startTime,
     this.endTime,
+    this.userID="",
     DateTime? endDate,
     required this.date,
+    required this.uid,
   }) : _endDate = endDate;
 
   DateTime get endDate => _endDate ?? date;
@@ -57,6 +63,8 @@ class CalendarEventData<T> {
         "endTime": endTime,
         "event": event,
         "title": title,
+        "uid": uid,
+        "userID": userID,
         "description": description,
         "endDate": endDate,
       };
@@ -71,6 +79,8 @@ class CalendarEventData<T> {
         endDate.compareWithoutTime(other.endDate) &&
         event == other.event &&
         title == other.title &&
+        uid == other.uid &&
+        userID == other.userID &&
         description == other.description;
   }
 
