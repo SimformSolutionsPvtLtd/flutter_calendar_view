@@ -39,8 +39,6 @@ class CalendarEventData<T> {
 
   final String uid;
 
-  final String userID;
-
   /// Stores all the events on [date]
   const CalendarEventData({
     required this.title,
@@ -49,13 +47,26 @@ class CalendarEventData<T> {
     this.color = Colors.blue,
     this.startTime,
     this.endTime,
-    this.userID="",
     DateTime? endDate,
     required this.date,
     required this.uid,
   }) : _endDate = endDate;
 
   DateTime get endDate => _endDate ?? date;
+
+  factory CalendarEventData.fromJson(Map<String, dynamic> json) {
+    return CalendarEventData(
+      title: json["title"],
+      date: json["date"],
+      uid: json["uid"],
+      startTime: json["startTime"],
+      endDate: json["endDate"],
+      endTime: json["endTime"],
+      event: json["event"],
+      color: Color(json["color"]),
+      description: json["description"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "date": date,
@@ -64,7 +75,7 @@ class CalendarEventData<T> {
         "event": event,
         "title": title,
         "uid": uid,
-        "userID": userID,
+        "color": color.value,
         "description": description,
         "endDate": endDate,
       };
@@ -80,7 +91,6 @@ class CalendarEventData<T> {
         event == other.event &&
         title == other.title &&
         uid == other.uid &&
-        userID == other.userID &&
         description == other.description;
   }
 
