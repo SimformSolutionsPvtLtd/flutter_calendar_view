@@ -109,14 +109,6 @@ class InternalDayViewPage<T> extends StatelessWidget {
               showVerticalLine: showVerticalLine,
             ),
           ),
-          if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-            LiveTimeIndicator(
-              liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-              width: width,
-              height: height,
-              heightPerMinute: heightPerMinute,
-              timeLineWidth: timeLineWidth,
-            ),
           PressDetector(
             width: width,
             height: height,
@@ -147,6 +139,16 @@ class InternalDayViewPage<T> extends StatelessWidget {
             timeLineOffset: timeLineOffset,
             timeLineWidth: timeLineWidth,
             key: ValueKey(heightPerMinute),
+          ),
+          if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+            IgnorePointer(
+              child: LiveTimeIndicator(
+              liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+              width: width,
+              height: height,
+              heightPerMinute: heightPerMinute,
+              timeLineWidth: timeLineWidth,
+            ),
           ),
         ],
       ),
