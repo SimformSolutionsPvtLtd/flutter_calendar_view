@@ -32,5 +32,6 @@ class CalendarControllerProvider<T extends Object?> extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(CalendarControllerProvider oldWidget) => false;
+  bool updateShouldNotify(CalendarControllerProvider oldWidget) =>
+      oldWidget.controller != controller;
 }
