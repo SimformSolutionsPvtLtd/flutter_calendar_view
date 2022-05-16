@@ -2,6 +2,7 @@
 
 - Fixed issue [#48 - WeekView header date is different from the calendar view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/48)
 - Fixed issue [#42 - WeekDayTile causes RenderFlex-Overflow](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/42)
+- Fixed issue [#65 - Adding onCellTap callback breaks whole calendar](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/65)
 
 # [0.0.4](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/0.0.4)
 

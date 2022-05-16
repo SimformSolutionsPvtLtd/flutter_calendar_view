@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'event_controller.dart';
 
-class CalendarControllerProvider<T> extends InheritedWidget {
+class CalendarControllerProvider<T extends Object?> extends InheritedWidget {
   /// Event controller for Calendar views.
   final EventController<T> controller;
 
@@ -18,7 +18,8 @@ class CalendarControllerProvider<T> extends InheritedWidget {
     required Widget child,
   }) : super(key: key, child: child);
 
-  static CalendarControllerProvider<T> of<T>(BuildContext context) {
+  static CalendarControllerProvider<T> of<T extends Object?>(
+      BuildContext context) {
     final result = context
         .dependOnInheritedWidgetOfExactType<CalendarControllerProvider<T>>();
     assert(

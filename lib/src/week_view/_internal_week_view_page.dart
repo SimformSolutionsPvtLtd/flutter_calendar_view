@@ -13,7 +13,7 @@ import '../painters.dart';
 import '../typedefs.dart';
 
 /// A single page for week view.
-class InternalWeekViewPage<T> extends StatelessWidget {
+class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Width of the page.
   final double width;
 

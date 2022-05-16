@@ -18,7 +18,7 @@ import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
 /// [Widget] to display week view.
-class WeekView<T> extends StatefulWidget {
+class WeekView<T extends Object?> extends StatefulWidget {
   /// Builder to build tile for events.
   final EventTileBuilder<T>? eventTileBuilder;
 
@@ -163,7 +163,7 @@ class WeekView<T> extends StatefulWidget {
   WeekViewState<T> createState() => WeekViewState<T>();
 }
 
-class WeekViewState<T> extends State<WeekView<T>> {
+class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late double _width;
   late double _height;
   late double _timeLineWidth;
@@ -208,7 +208,9 @@ class WeekViewState<T> extends State<WeekView<T>> {
     _weekDays = widget.weekDays.toSet().toList();
 
     if (!widget.showWeekends) {
-      _weekDays..remove(WeekDays.saturday)..remove(WeekDays.sunday);
+      _weekDays
+        ..remove(WeekDays.saturday)
+        ..remove(WeekDays.sunday);
     }
 
     assert(
@@ -430,7 +432,7 @@ class WeekViewState<T> extends State<WeekView<T>> {
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
-  Widget _defaultEventTileBuilder<T>(
+  Widget _defaultEventTileBuilder(
       DateTime date,
       List<CalendarEventData<T>> events,
       Rect boundary,

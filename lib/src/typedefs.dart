@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
 
-typedef CellBuilder<T> = Widget Function(
+typedef CellBuilder<T extends Object?> = Widget Function(
   DateTime date,
   List<CalendarEventData<T>> event,
   bool isToday,
   bool isInMonth,
 );
 
-typedef EventTileBuilder<T> = Widget Function(
+typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime date,
   List<CalendarEventData<T>> events,
   Rect boundary,
@@ -42,13 +42,13 @@ typedef StringProvider = String Function(DateTime date,
 typedef WeekPageHeaderBuilder = Widget Function(
     DateTime startDate, DateTime endDate);
 
-typedef TileTapCallback<T> = void Function(
+typedef TileTapCallback<T extends Object?> = void Function(
     CalendarEventData<T> event, DateTime date);
 
-typedef CellTapCallback<T> = void Function(
+typedef CellTapCallback<T extends Object?> = void Function(
     List<CalendarEventData<T>> events, DateTime date);
 
 typedef DatePressCallback = void Function(DateTime date);
 
-typedef EventFilter<T> = List<CalendarEventData<T>> Function(
+typedef EventFilter<T extends Object?> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);

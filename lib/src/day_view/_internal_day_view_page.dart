@@ -12,7 +12,7 @@ import '../painters.dart';
 import '../typedefs.dart';
 
 /// Defines a single day page.
-class InternalDayViewPage<T> extends StatelessWidget {
+class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Width of the page
   final double width;
 

@@ -8,7 +8,7 @@ import 'extensions.dart';
 
 /// Stores all the events on [date]
 @immutable
-class CalendarEventData<T> {
+class CalendarEventData<T extends Object?> {
   /// Specifies date on which all these events are.
   final DateTime date;
 

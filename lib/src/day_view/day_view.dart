@@ -16,7 +16,7 @@ import '../modals.dart';
 import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
-class DayView<T> extends StatefulWidget {
+class DayView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each
   /// cell in day calendar.
   final EventTileBuilder<T>? eventTileBuilder;
@@ -164,7 +164,7 @@ class DayView<T> extends StatefulWidget {
   DayViewState<T> createState() => DayViewState<T>();
 }
 
-class DayViewState<T> extends State<DayView<T>> {
+class DayViewState<T extends Object?> extends State<DayView<T>> {
   late double _width;
   late double _height;
   late double _timeLineWidth;

@@ -160,7 +160,7 @@ class TimeLine extends StatelessWidget {
 }
 
 /// A widget that display event tiles in day/week view.
-class EventGenerator<T> extends StatelessWidget {
+class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Height of display area
   final double height;
 
