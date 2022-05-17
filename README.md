@@ -133,10 +133,11 @@ MonthView(
     onCellTap: (events, date) {
         // Implement callback when user taps on a cell.
         print(events);
-    }
+    },
+    startDay: WeekDays.sunday, // To change the first day of the week.
     // This callback will only work if cellBuilder is null.
-    onEventTap: (event, date) => print(event);
-    onDateLongPress: (date) => print(date);
+    onEventTap: (event, date) => print(event),
+    onDateLongPress: (date) => print(date),
 );
 ```
 
@@ -151,13 +152,13 @@ DayView(
     },
     showVerticalLine: true, // To display live time line in day view.
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in day view.
-    minMonth: DateTime(1990),
-    maxMonth: DateTime(2050),
-    initialMonth: DateTime(2021),
+    minDay: DateTime(1990),
+    maxDay: DateTime(2050),
+    initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDateLongPress: (date) => print(date);
+    onDateLongPress: (date) => print(date),
 );
 ```
 
@@ -172,13 +173,14 @@ WeekView(
     },
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in week view.
     width: 400, // width of week view.
-    minMonth: DateTime(1990),
-    maxMonth: DateTime(2050),
-    initialMonth: DateTime(2021),
+    minDay: DateTime(1990),
+    maxDay: DateTime(2050),
+    initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDateLongPress: (date) => print(date);
+    onDateLongPress: (date) => print(date),
+    startDay: WeekDays.sunday, // To change the first day of the week.
 );
 ```
 
