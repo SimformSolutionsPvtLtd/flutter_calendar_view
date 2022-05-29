@@ -156,8 +156,14 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
-  })  : assert((timeLineOffset) >= 0,
+  })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
+        assert(width == null || width > 0,
+            "Calendar width must be greater than 0."),
+        assert(timeLineWidth == null || timeLineWidth > 0,
+            "Time line width must be greater than 0."),
+        assert(
+            heightPerMinute > 0, "Height per minute must be greater than 0."),
         super(key: key);
 
   @override
@@ -169,11 +175,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
-  late double _timeLineOffset;
   late DateTime _currentDate;
   late DateTime _maxDate;
   late DateTime _minDate;
-  late DateTime _initialDay;
   late int _totalDays;
   late int _currentIndex;
 
@@ -203,36 +207,18 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     super.initState();
 
     _reloadCallback = _reload;
+    _setDateRange();
 
-    _minDate = widget.minDay ?? CalendarConstants.epochDate;
-    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
+    _currentDate = widget.initialDay ?? DateTime.now();
 
-    assert(
-      _minDate.isBefore(_maxDate),
-      "Minimum date should be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
-    );
+    _regulateCurrentDate();
 
-    _initialDay = widget.initialDay ?? DateTime.now();
-
-    if (_initialDay.isBefore(_minDate)) {
-      _initialDay = _minDate;
-    } else if (_initialDay.isAfter(_maxDate)) {
-      _initialDay = _maxDate;
-    }
-    _currentDate = _initialDay;
-    _totalDays = _maxDate.getDayDifference(_minDate) + 1;
-    _currentIndex = _currentDate.getDayDifference(_minDate);
-    _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
-    _timeLineOffset = widget.timeLineOffset;
+    _calculateHeights();
     _scrollController =
         ScrollController(initialScrollOffset: widget.scrollOffset);
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
-    _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
-    _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
+    _assignBuilders();
   }
 
   @override
@@ -250,31 +236,40 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       _controllerAdded = true;
     }
 
-    _width = widget.width ?? MediaQuery.of(context).size.width;
-    assert(_width != 0, "Calendar width can not be 0.");
+    _updateViewDimensions();
+  }
 
-    _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
-    assert(_timeLineWidth != 0, "Time line width can not be 0.");
+  @override
+  void didUpdateWidget(DayView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update controller.
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
-    _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
-        HourIndicatorSettings(
-          color: Constants.defaultLiveTimeIndicatorColor,
-          height: widget.heightPerMinute,
-          offset: 5 + widget.verticalLineOffset,
-        );
+    if (newController != _controller) {
+      _controller.removeListener(_reloadCallback);
+      _controller = newController;
+      _controller.addListener(_reloadCallback);
+    }
 
-    assert(_liveTimeIndicatorSettings.height < _hourHeight,
-        "liveTimeIndicator height must be less than minuteHeight * 60");
+    // Update date range.
+    if (widget.minDay != oldWidget.minDay ||
+        widget.maxDay != oldWidget.maxDay) {
+      _setDateRange();
+      _regulateCurrentDate();
 
-    _hourIndicatorSettings = widget.hourIndicatorSettings ??
-        HourIndicatorSettings(
-          height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
-          offset: 5,
-        );
+      _pageController.jumpToPage(_currentIndex);
+    }
 
-    assert(_hourIndicatorSettings.height < _hourHeight,
-        "hourIndicator height must be less than minuteHeight * 60");
+    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+
+    // Update heights.
+    _calculateHeights();
+
+    _updateViewDimensions();
+
+    // Update builders and callbacks
+    _assignBuilders();
   }
 
   @override
@@ -325,7 +320,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           onDateLongPress: widget.onDateLongPress,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               date.compareWithoutTime(DateTime.now()),
-                          timeLineOffset: _timeLineOffset,
+                          timeLineOffset: widget.timeLineOffset,
                           timeLineWidth: _timeLineWidth,
                           verticalLineOffset: widget.verticalLineOffset,
                           showVerticalLine: widget.showVerticalLine,
@@ -358,6 +353,75 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _updateViewDimensions() {
+    _width = widget.width ?? MediaQuery.of(context).size.width;
+
+    _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
+
+    _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
+        HourIndicatorSettings(
+          color: Constants.defaultLiveTimeIndicatorColor,
+          height: widget.heightPerMinute,
+          offset: 5 + widget.verticalLineOffset,
+        );
+
+    assert(_liveTimeIndicatorSettings.height < _hourHeight,
+        "liveTimeIndicator height must be less than minuteHeight * 60");
+
+    _hourIndicatorSettings = widget.hourIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_hourIndicatorSettings.height < _hourHeight,
+        "hourIndicator height must be less than minuteHeight * 60");
+  }
+
+  void _calculateHeights() {
+    _hourHeight = widget.heightPerMinute * 60;
+    _height = _hourHeight * Constants.hoursADay;
+  }
+
+  void _assignBuilders() {
+    _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
+    _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
+    _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
+  }
+
+  /// Sets the current date of this month.
+  ///
+  /// This method is used in initState and onUpdateWidget methods to
+  /// regulate current date in Month view.
+  ///
+  /// If maximum and minimum dates are change then first call _setDateRange
+  /// and then _regulateCurrentDate method.
+  ///
+  void _regulateCurrentDate() {
+    if (_currentDate.isBefore(_minDate)) {
+      _currentDate = _minDate;
+    } else if (_currentDate.isAfter(_maxDate)) {
+      _currentDate = _maxDate;
+    }
+
+    _currentIndex = _currentDate.getDayDifference(_minDate);
+  }
+
+  /// Sets the minimum and maximum dates for current view.
+  void _setDateRange() {
+    _minDate = widget.minDay ?? CalendarConstants.epochDate;
+    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
+
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
+
+    _totalDays = _maxDate.getDayDifference(_minDate) + 1;
   }
 
   /// Default timeline builder this builder will be used if

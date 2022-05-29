@@ -172,58 +172,17 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     _reloadCallback = _reload;
 
-    // Initialize minimum date.
-    _minDate = widget.minMonth ?? CalendarConstants.epochDate;
-
-    // Initialize maximum date.
-    _maxDate = widget.maxMonth ?? CalendarConstants.maxDate;
-
-    assert(
-      _minDate.isBefore(_maxDate),
-      "Minimum date should be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
-    );
+    _setDateRange();
 
     // Initialize current date.
     _currentDate = widget.initialMonth ?? DateTime.now();
 
-    // make sure that _currentDate is between _minDate and _maxDate.
-    if (_currentDate.isBefore(_minDate)) {
-      _currentDate = _minDate;
-    } else if (_currentDate.isAfter(_maxDate)) {
-      _currentDate = _maxDate;
-    }
-
-    // Get number of months between _minDate and _maxDate.
-    // This number will be number of page in page view.
-    _totalMonths = _maxDate.getMonthDifference(_minDate);
-
-    // Calculate the current index of page view.
-    _currentIndex = _minDate.getMonthDifference(_currentDate) - 1;
+    _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
     _pageController = PageController(initialPage: _currentIndex);
 
-    // Initialize cell builder. Assign default if widget.cellBuilder is null.
-    _cellBuilder = widget.cellBuilder ?? _defaultCellBuilder;
-
-    // Initialize week builder. Assign default if widget.weekBuilder is null.
-    // This widget will come under header this will display week days.
-    _weekBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
-
-    // Initialize header builder. Assign default if widget.headerBuilder
-    // is null.
-    //
-    // This widget will be displayed on top of the page.
-    // from where user can see month and change month.
-    _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_reloadCallback);
-    _pageController.dispose();
-    super.dispose();
+    _assignBuilders();
   }
 
   @override
@@ -241,10 +200,42 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       _controllerAdded = true;
     }
 
-    _width = widget.width ?? MediaQuery.of(context).size.width;
-    _cellWidth = _width / 7;
-    _cellHeight = _cellWidth / widget.cellAspectRatio;
-    _height = _cellHeight * 6;
+    updateViewDimensions();
+  }
+
+  @override
+  void didUpdateWidget(MonthView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update controller.
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
+
+    if (newController != _controller) {
+      _controller.removeListener(_reloadCallback);
+      _controller = newController;
+      _controller.addListener(_reloadCallback);
+    }
+
+    // Update date range.
+    if (widget.minMonth != oldWidget.minMonth ||
+        widget.maxMonth != oldWidget.maxMonth) {
+      _setDateRange();
+      _regulateCurrentDate();
+
+      _pageController.jumpToPage(_currentIndex);
+    }
+
+    // Update builders and callbacks
+    _assignBuilders();
+
+    updateViewDimensions();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_reloadCallback);
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -327,6 +318,68 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void updateViewDimensions() {
+    _width = widget.width ?? MediaQuery.of(context).size.width;
+    _cellWidth = _width / 7;
+    _cellHeight = _cellWidth / widget.cellAspectRatio;
+    _height = _cellHeight * 6;
+  }
+
+  void _assignBuilders() {
+    // Initialize cell builder. Assign default if widget.cellBuilder is null.
+    _cellBuilder = widget.cellBuilder ?? _defaultCellBuilder;
+
+    // Initialize week builder. Assign default if widget.weekBuilder is null.
+    // This widget will come under header this will display week days.
+    _weekBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+
+    // Initialize header builder. Assign default if widget.headerBuilder
+    // is null.
+    //
+    // This widget will be displayed on top of the page.
+    // from where user can see month and change month.
+    _headerBuilder = widget.headerBuilder ?? _defaultHeaderBuilder;
+  }
+
+  /// Sets the current date of this month.
+  ///
+  /// This method is used in initState and onUpdateWidget methods to
+  /// regulate current date in Month view.
+  ///
+  /// If maximum and minimum dates are change then first call _setDateRange
+  /// and then _regulateCurrentDate method.
+  ///
+  void _regulateCurrentDate() {
+    // make sure that _currentDate is between _minDate and _maxDate.
+    if (_currentDate.isBefore(_minDate)) {
+      _currentDate = _minDate;
+    } else if (_currentDate.isAfter(_maxDate)) {
+      _currentDate = _maxDate;
+    }
+
+    // Calculate the current index of page view.
+    _currentIndex = _minDate.getMonthDifference(_currentDate) - 1;
+  }
+
+  /// Sets the minimum and maximum dates for current view.
+  void _setDateRange() {
+    // Initialize minimum date.
+    _minDate = widget.minMonth ?? CalendarConstants.epochDate;
+
+    // Initialize maximum date.
+    _maxDate = widget.maxMonth ?? CalendarConstants.maxDate;
+
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
+
+    // Get number of months between _minDate and _maxDate.
+    // This number will be number of page in page view.
+    _totalMonths = _maxDate.getMonthDifference(_minDate);
   }
 
   /// Calls when user changes page using gesture or inbuilt methods.
