@@ -13,7 +13,7 @@ import '../event_controller.dart';
 import '../extensions.dart';
 import '../typedefs.dart';
 
-class MonthView<T> extends StatefulWidget {
+class MonthView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of
   /// each cell in month calendar.
   final CellBuilder<T>? cellBuilder;
@@ -136,7 +136,7 @@ class MonthView<T> extends StatefulWidget {
 }
 
 /// State of month view.
-class MonthViewState<T> extends State<MonthView<T>> {
+class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   late DateTime _minDate;
   late DateTime _maxDate;
 
@@ -372,14 +372,14 @@ class MonthViewState<T> extends State<MonthView<T>> {
   }
 
   /// Default cell builder. Used when [widget.cellBuilder] is null
-  Widget _defaultCellBuilder<T>(
+  Widget _defaultCellBuilder(
       date, List<CalendarEventData<T>> events, isToday, isInMonth) {
     return FilledCell<T>(
       date: date,
       shouldHighlight: isToday,
       backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
       events: events,
-      onTileTap: widget.onEventTap as TileTapCallback<T>?,
+      onTileTap: widget.onEventTap,
     );
   }
 

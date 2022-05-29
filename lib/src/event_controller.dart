@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'calendar_event_data.dart';
 import 'typedefs.dart';
 
-class EventController<T> extends ChangeNotifier {
+class EventController<T extends Object?> extends ChangeNotifier {
   /// This method will provide list of events on particular date.
   ///
   /// This method is use full when you have recurring events.
