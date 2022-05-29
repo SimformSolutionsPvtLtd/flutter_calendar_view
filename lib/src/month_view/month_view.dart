@@ -9,6 +9,7 @@ import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
 import '../constants.dart';
+import '../enumerations.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../typedefs.dart';
@@ -108,6 +109,11 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  ///   /// Defines the day from which the week starts.
+  ///
+  /// Default value is [WeekDays.monday].
+  final WeekDays startDay;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -129,6 +135,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onCellTap,
     this.onEventTap,
     this.onDateLongPress,
+    this.startDay = WeekDays.monday,
   }) : super(key: key);
 
   @override
@@ -256,6 +263,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                 onPageChanged: _onPageChange,
                 itemBuilder: (_, index) {
                   final date = DateTime(_minDate.year, _minDate.month + index);
+                  final weekDays = date.datesOfWeek(start: widget.startDay);
+
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +277,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                             (index) => Expanded(
                               child: SizedBox(
                                 width: _cellWidth,
-                                child: _weekBuilder(index),
+                                child:
+                                    _weekBuilder(weekDays[index].weekday - 1),
                               ),
                             ),
                           ),
@@ -292,6 +302,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               cellRatio: widget.cellAspectRatio,
                               date: date,
                               showBorder: widget.showBorder,
+                              startDay: widget.startDay,
                             ),
                           ),
                         ),
@@ -523,6 +534,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double height;
   final CellTapCallback<T>? onCellTap;
   final DatePressCallback? onDateLongPress;
+  final WeekDays startDay;
 
   const _MonthPageBuilder({
     Key? key,
@@ -537,11 +549,12 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.height,
     required this.onCellTap,
     required this.onDateLongPress,
+    required this.startDay,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final monthDays = date.datesOfMonths;
+    final monthDays = date.datesOfMonths(startDay: startDay);
     return Container(
       width: width,
       height: height,

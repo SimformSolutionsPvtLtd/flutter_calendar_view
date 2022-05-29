@@ -240,18 +240,12 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   List<DateTime> _filteredDate() {
     final output = <DateTime>[];
 
-    final weekDays = this.weekDays.toList()
-      ..sort((d1, d2) => d1.index - d2.index);
+    final weekDays = this.weekDays.toList();
 
-    var weekDayIndex = 0;
-    var dateCounter = 0;
-
-    while (weekDayIndex < weekDays.length && dateCounter < dates.length) {
-      if (dates[dateCounter].weekday == weekDays[weekDayIndex].index + 1) {
-        output.add(dates[dateCounter]);
-        weekDayIndex++;
+    for (final date in dates) {
+      if (weekDays.any((weekDay) => weekDay.index + 1 == date.weekday)) {
+        output.add(date);
       }
-      dateCounter++;
     }
 
     return output;

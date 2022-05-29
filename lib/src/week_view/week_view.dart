@@ -128,6 +128,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines the day from which the week starts.
+  ///
+  /// Default value is [WeekDays.monday].
+  final WeekDays startDay;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -157,6 +162,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onDateLongPress,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
+    this.startDay = WeekDays.monday,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -314,7 +320,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                     itemBuilder: (_, index) {
                       final dates = _minDate
                           .add(Duration(days: index * DateTime.daysPerWeek))
-                          .datesOfWeek();
+                          .datesOfWeek(start: widget.startDay);
 
                       return InternalWeekViewPage<T>(
                         key: ValueKey(
@@ -448,16 +454,18 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       _currentWeek = _maxDate;
     }
 
-    _currentStartDate = _currentWeek.firstDayOfWeek;
-    _currentEndDate = _currentWeek.lastDayOfWeek;
+    _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
+    _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
     _currentIndex = _minDate.getWeekDifference(_currentEndDate);
   }
 
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
-    _minDate = (widget.minDay ?? CalendarConstants.epochDate).firstDayOfWeek;
+    _minDate = (widget.minDay ?? CalendarConstants.epochDate)
+        .firstDayOfWeek(start: widget.startDay);
 
-    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).lastDayOfWeek;
+    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
+        .lastDayOfWeek(start: widget.startDay);
 
     assert(
       _minDate.isBefore(_maxDate),
