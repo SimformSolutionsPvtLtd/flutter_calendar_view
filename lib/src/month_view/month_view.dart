@@ -396,11 +396,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Calls when user changes page using gesture or inbuilt methods.
   void _onPageChange(int value) {
     if (mounted) {
+      final newMonth = _currentDate.month + (value - _currentIndex);
+      final newDay =
+          DateTime(_currentDate.year, newMonth, 1).lastDayOfMonth.day;
       setState(() {
         _currentDate = DateTime(
           _currentDate.year,
-          _currentDate.month + (value - _currentIndex),
-          _currentDate.day,
+          newMonth,
+          newDay,
         );
         _currentIndex = value;
       });
