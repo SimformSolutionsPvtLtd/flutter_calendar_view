@@ -35,8 +35,12 @@ extension DateTimeExtensions on DateTime {
   int getDayDifference(DateTime date) => difference(date).inDays.abs();
 
   /// Gets difference of weeks between [date] and calling object.
-  int getWeekDifference(DateTime date) =>
-      (firstDayOfWeek().difference(date.firstDayOfWeek()).inDays.abs() / 7)
+  int getWeekDifference(DateTime date, {WeekDays start = WeekDays.monday}) =>
+      (firstDayOfWeek(start: start)
+                  .difference(date.firstDayOfWeek(start: start))
+                  .inDays
+                  .abs() /
+              7)
           .ceil();
 
   /// Returns The List of date of Current Week

@@ -456,7 +456,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
     _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
-    _currentIndex = _minDate.getWeekDifference(_currentEndDate);
+    _currentIndex =
+        _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
   }
 
   /// Sets the minimum and maximum dates for current view.
