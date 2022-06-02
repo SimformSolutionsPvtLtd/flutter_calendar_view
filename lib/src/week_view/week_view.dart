@@ -474,7 +474,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
 
-    _totalWeeks = _minDate.getWeekDifference(_maxDate) + 1;
+    _totalWeeks =
+        _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
   }
 
   /// Default builder for week line.
@@ -621,7 +622,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController.jumpToPage(_minDate.getWeekDifference(week));
+    _pageController
+        .jumpToPage(_minDate.getWeekDifference(week, start: widget.startDay));
   }
 
   /// Animate to page which gives day calendar for [week].
@@ -635,7 +637,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getWeekDifference(week),
+      _minDate.getWeekDifference(week, start: widget.startDay),
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );
