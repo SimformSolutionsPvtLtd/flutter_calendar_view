@@ -400,7 +400,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         _currentDate = DateTime(
           _currentDate.year,
           _currentDate.month + (value - _currentIndex),
-          _currentDate.day,
         );
         _currentIndex = value;
       });
@@ -517,8 +516,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   /// Returns the current visible date in month view.
-  DateTime get currentDate =>
-      DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
+  DateTime get currentDate => DateTime(_currentDate.year, _currentDate.month);
 }
 
 /// A single month page.
