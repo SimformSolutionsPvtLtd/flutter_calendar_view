@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -86,6 +87,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  final EventScrollConfiguration scrollConfiguration;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -112,6 +115,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.onTileTap,
     required this.onDateLongPress,
     required this.weekDays,
+    required this.scrollConfiguration,
   }) : super(key: key);
 
   @override
@@ -208,6 +212,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       width: weekTitleWidth,
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,
+                                      scrollNotifier: scrollConfiguration,
                                       events: controller
                                           .getEventsOnDay(filteredDates[index]),
                                       heightPerMinute: heightPerMinute,

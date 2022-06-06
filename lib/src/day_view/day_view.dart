@@ -2,12 +2,15 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/day_view_components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../constants.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -202,6 +205,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late VoidCallback _reloadCallback;
 
+  final _scrollConfiguration = EventScrollConfiguration<T>();
+
   @override
   void initState() {
     super.initState();
@@ -306,29 +311,34 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                         final date = DateTime(_minDate.year, _minDate.month,
                             _minDate.day + index);
 
-                        return InternalDayViewPage<T>(
-                          key: ValueKey(
-                              _hourHeight.toString() + date.toString()),
-                          width: _width,
-                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                          timeLineBuilder: _timeLineBuilder,
-                          eventTileBuilder: _eventTileBuilder,
-                          heightPerMinute: widget.heightPerMinute,
-                          hourIndicatorSettings: _hourIndicatorSettings,
-                          date: date,
-                          onTileTap: widget.onEventTap,
-                          onDateLongPress: widget.onDateLongPress,
-                          showLiveLine: widget.showLiveTimeLineInAllDays ||
-                              date.compareWithoutTime(DateTime.now()),
-                          timeLineOffset: widget.timeLineOffset,
-                          timeLineWidth: _timeLineWidth,
-                          verticalLineOffset: widget.verticalLineOffset,
-                          showVerticalLine: widget.showVerticalLine,
-                          height: _height,
-                          controller: _controller,
-                          hourHeight: _hourHeight,
-                          eventArranger: _eventArranger,
-                        );
+                        return ValueListenableBuilder(
+                            valueListenable: _scrollConfiguration,
+                            builder: (_, __, ___) => InternalDayViewPage<T>(
+                                  key: ValueKey(
+                                      _hourHeight.toString() + date.toString()),
+                                  width: _width,
+                                  liveTimeIndicatorSettings:
+                                      _liveTimeIndicatorSettings,
+                                  timeLineBuilder: _timeLineBuilder,
+                                  eventTileBuilder: _eventTileBuilder,
+                                  heightPerMinute: widget.heightPerMinute,
+                                  hourIndicatorSettings: _hourIndicatorSettings,
+                                  date: date,
+                                  onTileTap: widget.onEventTap,
+                                  onDateLongPress: widget.onDateLongPress,
+                                  showLiveLine: widget
+                                          .showLiveTimeLineInAllDays ||
+                                      date.compareWithoutTime(DateTime.now()),
+                                  timeLineOffset: widget.timeLineOffset,
+                                  timeLineWidth: _timeLineWidth,
+                                  verticalLineOffset: widget.verticalLineOffset,
+                                  showVerticalLine: widget.showVerticalLine,
+                                  height: _height,
+                                  controller: _controller,
+                                  hourHeight: _hourHeight,
+                                  eventArranger: _eventArranger,
+                                  scrollNotifier: _scrollConfiguration,
+                                ));
                       },
                     ),
                   ),
@@ -562,6 +572,43 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     }
     await _pageController.animateToPage(
       _minDate.getDayDifference(date),
+      duration: duration ?? widget.pageTransitionDuration,
+      curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
+
+  /// Jumps to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  Future<void> jumpToEvent(CalendarEventData<T> event) async {
+    jumpToDate(event.date);
+
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
+      duration: Duration.zero,
+      curve: Curves.ease,
+    );
+  }
+
+  /// Animate to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  /// Arguments [duration] and [curve] will override default values provided
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
+  ///
+  /// Actual duration will be 2 times the given duration.
+  ///
+  /// Ex, If provided duration is 200 milliseconds then this function will take
+  /// 200 milliseconds for animate to page then 200 milliseconds for
+  /// scroll to event tile.
+  ///
+  ///
+  Future<void> animateToEvent(CalendarEventData<T> event,
+      {Duration? duration, Curve? curve}) async {
+    await animateToDate(event.date, duration: duration, curve: curve);
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );

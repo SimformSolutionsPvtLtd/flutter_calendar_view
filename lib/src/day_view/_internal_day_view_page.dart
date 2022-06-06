@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
@@ -68,6 +69,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Notifies if there is any event that needs to be visible instantly.
+  final EventScrollConfiguration scrollNotifier;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -89,6 +93,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.onTileTap,
     required this.onDateLongPress,
+    required this.scrollNotifier,
   }) : super(key: key);
 
   @override
@@ -126,6 +131,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
               events: controller.getEventsOnDay(date),
               heightPerMinute: heightPerMinute,
               eventTileBuilder: eventTileBuilder,
+              scrollNotifier: scrollNotifier,
               width: width -
                   timeLineWidth -
                   hourIndicatorSettings.offset -
@@ -143,13 +149,13 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           if (showLiveLine && liveTimeIndicatorSettings.height > 0)
             IgnorePointer(
               child: LiveTimeIndicator(
-              liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-              width: width,
-              height: height,
-              heightPerMinute: heightPerMinute,
-              timeLineWidth: timeLineWidth,
+                liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                width: width,
+                height: height,
+                heightPerMinute: heightPerMinute,
+                timeLineWidth: timeLineWidth,
+              ),
             ),
-          ),
         ],
       ),
     );
