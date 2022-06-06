@@ -1,8 +1,11 @@
-# [0.0.6] 3 Aug 2022 - Unreleased
+# [1.0.0] 3 Aug 2022 - Unreleased
 
 - Add 15,30 and 60 minutes slots for onDateLongPress callback in Week and Day view.
 - Add method to update filter in `EventController`.
 - Restructured the logic to store single time events.
+- Improved logic to compare `CalendarEventData`.
+- Add method to scroll to an event. Issue [#30 - Scroll to an event in day view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/30)
+- Added feature [#36 - Feature/custom strings](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/36)
 
 # [0.0.5 - 2 Jun 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/0.0.5)
 
@@ -11,6 +14,7 @@
 - Fixed issue [#42 - WeekDayTile causes RenderFlex-Overflow](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/42)
 - Fixed issue [#65 - Adding onCellTap callback breaks whole calendar](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/65)
 - Fixed issue [#62 - Missing redraw events](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/62)
+- Fixed issue [#16 - Scroll to index/liveTime](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/16)
 - Show live time indicator line above event tiles. PR [#67](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/67)
 
 # [0.0.4 - 2 Mar 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/0.0.4)

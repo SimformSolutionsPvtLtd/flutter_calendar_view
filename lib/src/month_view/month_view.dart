@@ -319,6 +319,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
+  /// Returns [EventController] associated with this Widget.
+  ///
+  /// This will throw [AssertionError] if controller is called before its
+  /// initialization is complete.
   EventController<T> get controller {
     assert(_controllerAdded, "EventController is not initialized yet.");
 
