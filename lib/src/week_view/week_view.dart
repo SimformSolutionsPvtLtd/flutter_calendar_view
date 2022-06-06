@@ -133,6 +133,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Default value is [WeekDays.monday].
   final WeekDays startDay;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -163,6 +167,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
     this.startDay = WeekDays.monday,
+    this.minuteSlotSize = MinuteSlotSize.minutes60,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -349,6 +354,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                         scrollController: _scrollController,
                         eventArranger: _eventArranger,
                         weekDays: _weekDays,
+                        minuteSlotSize: widget.minuteSlotSize,
                       );
                     },
                   ),

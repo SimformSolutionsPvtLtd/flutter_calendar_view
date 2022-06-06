@@ -9,6 +9,7 @@ import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/day_view_components.dart';
 import '../constants.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
@@ -129,6 +130,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -156,6 +161,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
+    this.minuteSlotSize = MinuteSlotSize.minutes60,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -328,6 +334,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           controller: _controller,
                           hourHeight: _hourHeight,
                           eventArranger: _eventArranger,
+                          minuteSlotSize: widget.minuteSlotSize,
                         );
                       },
                     ),
