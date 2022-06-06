@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
 
+T? ambiguate<T>(T? object) => object;
+
 extension DateTimeExtensions on DateTime {
   /// Compares only [day], [month] and [year] of [DateTime].
   bool compareWithoutTime(DateTime date) {

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -73,6 +74,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Notifies if there is any event that needs to be visible instantly.
+  final EventScrollConfiguration scrollNotifier;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -95,6 +99,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.onTileTap,
     required this.onDateLongPress,
     required this.minuteSlotSize,
+    required this.scrollNotifier,
   }) : super(key: key);
 
   @override
@@ -133,6 +138,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
               events: controller.getEventsOnDay(date),
               heightPerMinute: heightPerMinute,
               eventTileBuilder: eventTileBuilder,
+              scrollNotifier: scrollNotifier,
               width: width -
                   timeLineWidth -
                   hourIndicatorSettings.offset -

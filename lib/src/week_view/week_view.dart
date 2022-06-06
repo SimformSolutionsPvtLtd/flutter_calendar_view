@@ -8,6 +8,7 @@ import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -219,6 +220,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late ScrollController _scrollController;
   late List<WeekDays> _weekDays;
 
+  final _scrollConfiguration = EventScrollConfiguration();
+
   @override
   void initState() {
     super.initState();
@@ -327,35 +330,40 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           .add(Duration(days: index * DateTime.daysPerWeek))
                           .datesOfWeek(start: widget.startDay);
 
-                      return InternalWeekViewPage<T>(
-                        key: ValueKey(
-                            _hourHeight.toString() + dates[0].toString()),
-                        height: _height,
-                        width: _width,
-                        weekTitleWidth: _weekTitleWidth,
-                        weekTitleHeight: widget.weekTitleHeight,
-                        weekDayBuilder: _weekDayBuilder,
-                        liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                        timeLineBuilder: _timeLineBuilder,
-                        onTileTap: widget.onEventTap,
-                        onDateLongPress: widget.onDateLongPress,
-                        eventTileBuilder: _eventTileBuilder,
-                        heightPerMinute: widget.heightPerMinute,
-                        hourIndicatorSettings: _hourIndicatorSettings,
-                        dates: dates,
-                        showLiveLine: widget.showLiveTimeLineInAllDays ||
-                            _showLiveTimeIndicator(dates),
-                        timeLineOffset: widget.timeLineOffset,
-                        timeLineWidth: _timeLineWidth,
-                        verticalLineOffset: 0,
-                        showVerticalLine: true,
-                        controller: _controller,
-                        hourHeight: _hourHeight,
-                        scrollController: _scrollController,
-                        eventArranger: _eventArranger,
-                        weekDays: _weekDays,
-                        minuteSlotSize: widget.minuteSlotSize,
-                      );
+                      return ValueListenableBuilder(
+                          valueListenable: _scrollConfiguration,
+                          builder: (_, __, ___) => InternalWeekViewPage<T>(
+                                key: ValueKey(_hourHeight.toString() +
+                                    dates[0].toString()),
+                                height: _height,
+                                width: _width,
+                                weekTitleWidth: _weekTitleWidth,
+                                weekTitleHeight: widget.weekTitleHeight,
+                                weekDayBuilder: _weekDayBuilder,
+                                liveTimeIndicatorSettings:
+                                    _liveTimeIndicatorSettings,
+                                timeLineBuilder: _timeLineBuilder,
+                                onTileTap: widget.onEventTap,
+                                onDateLongPress: widget.onDateLongPress,
+                                eventTileBuilder: _eventTileBuilder,
+                                heightPerMinute: widget.heightPerMinute,
+                                hourIndicatorSettings: _hourIndicatorSettings,
+                                dates: dates,
+                                showLiveLine:
+                                    widget.showLiveTimeLineInAllDays ||
+                                        _showLiveTimeIndicator(dates),
+                                timeLineOffset: widget.timeLineOffset,
+                                timeLineWidth: _timeLineWidth,
+                                verticalLineOffset: 0,
+                                showVerticalLine: true,
+                                controller: _controller,
+                                hourHeight: _hourHeight,
+                                scrollController: _scrollController,
+                                eventArranger: _eventArranger,
+                                weekDays: _weekDays,
+                            minuteSlotSize: widget.minuteSlotSize,
+                                scrollConfiguration: _scrollConfiguration,
+                              ));
                     },
                   ),
                 ),
@@ -652,6 +660,43 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Returns the current visible week's first date.
   DateTime get currentDate => DateTime(
       _currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
+
+  /// Jumps to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  Future<void> jumpToEvent(CalendarEventData<T> event) async {
+    jumpToWeek(event.date);
+
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
+      duration: Duration.zero,
+      curve: Curves.ease,
+    );
+  }
+
+  /// Animate to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  /// Arguments [duration] and [curve] will override default values provided
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
+  ///
+  /// Actual duration will be 2 times the given duration.
+  ///
+  /// Ex, If provided duration is 200 milliseconds then this function will take
+  /// 200 milliseconds for animate to page then 200 milliseconds for
+  /// scroll to event tile.
+  ///
+  ///
+  Future<void> animateToEvent(CalendarEventData<T> event,
+      {Duration? duration, Curve? curve}) async {
+    await animateToWeek(event.date, duration: duration, curve: curve);
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
+      duration: duration ?? widget.pageTransitionDuration,
+      curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
 
   /// check if any dates contains current date or not.
   /// Returns true if it does else false.

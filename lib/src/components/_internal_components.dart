@@ -14,6 +14,7 @@ import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../typedefs.dart';
+import 'event_scroll_notifier.dart';
 
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {
@@ -186,6 +187,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  final EventScrollConfiguration scrollNotifier;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -197,12 +200,13 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
+    required this.scrollNotifier,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event
   /// tile on display area. This method uses [eventArranger] to get position
   /// of events and [eventTileBuilder] to display events.
-  List<Widget> _generateEvents() {
+  List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
       events: this.events,
       height: height,
@@ -218,19 +222,47 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
         right: events[index].right,
         child: GestureDetector(
           onTap: () => onTileTap?.call(events[index].events, date),
-          child: eventTileBuilder(
-            date,
-            events[index].events,
-            Rect.fromLTWH(
-                events[index].left,
-                events[index].top,
-                width - events[index].right - events[index].left,
-                height - events[index].bottom - events[index].top),
-            events[index].startDuration ?? DateTime.now(),
-            events[index].endDuration ?? DateTime.now(),
-          ),
+          child: Builder(builder: (context) {
+            if (scrollNotifier.shouldScroll &&
+                events[index]
+                    .events
+                    .any((element) => element == scrollNotifier.event)) {
+              _scrollToEvent(context);
+            }
+            return eventTileBuilder(
+              date,
+              events[index].events,
+              Rect.fromLTWH(
+                  events[index].left,
+                  events[index].top,
+                  width - events[index].right - events[index].left,
+                  height - events[index].bottom - events[index].top),
+              events[index].startDuration ?? DateTime.now(),
+              events[index].endDuration ?? DateTime.now(),
+            );
+          }),
         ),
       );
+    });
+  }
+
+  void _scrollToEvent(BuildContext context) {
+    final duration = scrollNotifier.duration ?? Duration.zero;
+    final curve = scrollNotifier.curve ?? Curves.ease;
+
+    scrollNotifier.resetScrollEvent();
+
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
+      try {
+        await Scrollable.ensureVisible(
+          context,
+          duration: duration,
+          curve: curve,
+          alignment: 0.5,
+        );
+      } finally {
+        scrollNotifier.completeScroll();
+      }
     });
   }
 
@@ -240,7 +272,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       height: height,
       width: width,
       child: Stack(
-        children: _generateEvents(),
+        children: _generateEvents(context),
       ),
     );
   }
