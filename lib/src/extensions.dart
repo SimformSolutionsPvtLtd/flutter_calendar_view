@@ -120,8 +120,25 @@ extension ColorExtension on Color {
 }
 
 extension MaterialColorExtension on MaterialColor {
+  @Deprecated(
+      "This extension is not being used in this package and will be removed "
+      "in next major release.")
   Color get accent =>
       (blue / 2 >= 255 / 2 || red / 2 >= 255 / 2 || green / 2 >= 255 / 2)
           ? Colors.black
           : Colors.white;
+}
+
+extension MinutesExtension on MinuteSlotSize {
+  /// Returns minutes for respective [MinuteSlotSize]
+  int get minutes {
+    switch (this) {
+      case MinuteSlotSize.minutes15:
+        return 15;
+      case MinuteSlotSize.minutes30:
+        return 30;
+      case MinuteSlotSize.minutes60:
+        return 60;
+    }
+  }
 }

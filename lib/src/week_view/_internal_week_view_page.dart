@@ -86,6 +86,10 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -112,6 +116,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.onTileTap,
     required this.onDateLongPress,
     required this.weekDays,
+    required this.minuteSlotSize,
   }) : super(key: key);
 
   @override
@@ -197,9 +202,10 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                     PressDetector(
                                       width: weekTitleWidth,
                                       height: height,
-                                      hourHeight: hourHeight,
+                                      heightPerMinute: heightPerMinute,
                                       date: dates[index],
                                       onDateLongPress: onDateLongPress,
+                                      minuteSlotSize: minuteSlotSize,
                                     ),
                                     EventGenerator<T>(
                                       height: height,

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
@@ -68,6 +69,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -89,6 +94,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.onTileTap,
     required this.onDateLongPress,
+    required this.minuteSlotSize,
   }) : super(key: key);
 
   @override
@@ -112,9 +118,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           PressDetector(
             width: width,
             height: height,
-            hourHeight: hourHeight,
+            heightPerMinute: heightPerMinute,
             date: date,
             onDateLongPress: onDateLongPress,
+            minuteSlotSize: minuteSlotSize,
           ),
           Align(
             alignment: Alignment.centerRight,
@@ -143,13 +150,13 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           if (showLiveLine && liveTimeIndicatorSettings.height > 0)
             IgnorePointer(
               child: LiveTimeIndicator(
-              liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-              width: width,
-              height: height,
-              heightPerMinute: heightPerMinute,
-              timeLineWidth: timeLineWidth,
+                liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                width: width,
+                height: height,
+                heightPerMinute: heightPerMinute,
+                timeLineWidth: timeLineWidth,
+              ),
             ),
-          ),
         ],
       ),
     );
