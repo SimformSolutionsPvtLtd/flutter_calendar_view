@@ -355,10 +355,8 @@ class DayViewState<T> extends State<DayView<T>> {
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
       date: date,
-      timeStringBuilder: widget.timeStringBuilder ??
-          (date, {secondaryDate}) =>
-              """${((date.hour - 1) % 12) + 1}
-              ${date.hour ~/ 12 == 0 ? "am" : "pm"}""");
+      timeStringBuilder: widget.timeStringBuilder
+  );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null

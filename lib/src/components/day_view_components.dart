@@ -144,7 +144,7 @@ class DefaultTimeLineMark extends StatelessWidget {
   final DateTime date;
 
   /// StringProvider for time string
-  final StringProvider timeStringBuilder;
+  final StringProvider? timeStringBuilder;
 
   /// Text style for time string.
   final TextStyle? markingStyle;
@@ -153,18 +153,21 @@ class DefaultTimeLineMark extends StatelessWidget {
   const DefaultTimeLineMark({
     Key? key,
     required this.date,
-    required this.timeStringBuilder,
     this.markingStyle,
+    this.timeStringBuilder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final timeString = (timeStringBuilder != null)
+        ? timeStringBuilder!(date)
+        : "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
         child: Text(
-          timeStringBuilder(date),
+          timeString,
           textAlign: TextAlign.right,
           style: markingStyle ??
               TextStyle(
