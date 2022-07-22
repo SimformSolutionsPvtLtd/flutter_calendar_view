@@ -135,7 +135,7 @@ class TimeLine extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          for (int i = 1; i < Constants.hoursADay; i++)
+          for (int i = 0; i < Constants.hoursADay; i++)
             Positioned(
               top: hourHeight * i - timeLineOffset,
               left: 0,
