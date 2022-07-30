@@ -78,6 +78,14 @@ class EventController<T extends Object?> extends ChangeNotifier {
     }
   }
 
+  /// Removes multiple [event] from this controller.
+  void removeWhere(bool Function(CalendarEventData<T> element) test) {
+    for (final e in _events) {
+      e.removeWhere((element) => test(element));
+    }
+    notifyListeners();
+  }
+
   void _addEvent(CalendarEventData<T> event) {
     assert(event.endDate.difference(event.date).inDays >= 0,
         'The end date must be greater or equal to the start date');
@@ -195,6 +203,12 @@ class _YearEvent<T> {
     }
     return false;
   }
+
+  void removeWhere(bool Function(CalendarEventData<T> element) test) {
+    for (final e in _months) {
+      e.removeWhere((element) => test(element));
+    }
+  }
 }
 
 class _MonthEvent<T> {
@@ -228,5 +242,9 @@ class _MonthEvent<T> {
       _events.removeAt(index);
       return true;
     }
+  }
+
+  void removeWhere(bool Function(CalendarEventData<T> element) test) {
+    _events.removeWhere((element) => test(element));
   }
 }
