@@ -22,6 +22,14 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// cell in day calendar.
   final EventTileBuilder<T>? eventTileBuilder;
 
+  /// A function to generate the DateString in the calendar title.
+  /// Useful for I18n
+  final StringProvider? dateStringBuilder;
+
+  /// A function to generate the TimeString in the timeline.
+  /// Useful for I18n
+  final StringProvider? timeStringBuilder;
+
   /// A function that returns a [Widget] that will be displayed left side of
   /// day view.
   ///
@@ -138,6 +146,8 @@ class DayView<T extends Object?> extends StatefulWidget {
   const DayView({
     Key? key,
     this.eventTileBuilder,
+    this.dateStringBuilder,
+    this.timeStringBuilder,
     this.controller,
     this.showVerticalLine = true,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
@@ -434,7 +444,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(date: date);
+  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
+      date: date,
+      timeStringBuilder: widget.timeStringBuilder
+  );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -466,6 +479,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   Widget _defaultDayBuilder(DateTime date) {
     return DayPageHeader(
       date: _currentDate,
+      dateStringBuilder: widget.dateStringBuilder,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
