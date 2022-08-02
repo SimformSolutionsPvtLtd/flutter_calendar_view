@@ -231,7 +231,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _setWeekDays();
     _setDateRange();
 
-    _currentWeek = widget.initialDay ?? DateTime.now();
+    _currentWeek = (widget.initialDay ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
 
@@ -477,10 +477,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     _minDate = (widget.minDay ?? CalendarConstants.epochDate)
-        .firstDayOfWeek(start: widget.startDay);
+        .firstDayOfWeek(start: widget.startDay)
+        .withoutTime;
 
     _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
-        .lastDayOfWeek(start: widget.startDay);
+        .lastDayOfWeek(start: widget.startDay)
+        .withoutTime;
 
     assert(
       _minDate.isBefore(_maxDate),

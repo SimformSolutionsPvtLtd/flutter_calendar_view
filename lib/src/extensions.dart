@@ -30,7 +30,8 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Gets difference of days between [date] and calling object.
-  int getDayDifference(DateTime date) => difference(date).inDays.abs();
+  int getDayDifference(DateTime date) =>
+      withoutTime.difference(date.withoutTime).inDays.abs();
 
   /// Gets difference of weeks between [date] and calling object.
   int getWeekDifference(DateTime date, {WeekDays start = WeekDays.monday}) =>
@@ -57,7 +58,8 @@ extension DateTimeExtensions on DateTime {
     // adding 1 in index. So, new formula with WeekDays is,
     //    difference = (weekdays - (start.index + 1))%7
     //
-    final startDay = subtract(Duration(days: (weekday - start.index - 1) % 7));
+    final startDay =
+        withoutTime.subtract(Duration(days: (weekday - start.index - 1) % 7));
 
     return [
       startDay,
@@ -72,11 +74,11 @@ extension DateTimeExtensions on DateTime {
 
   /// Returns the first date of week containing the current date
   DateTime firstDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      subtract(Duration(days: (weekday - start.index - 1) % 7));
+      withoutTime.subtract(Duration(days: (weekday - start.index - 1) % 7));
 
   /// Returns the last date of week containing the current date
   DateTime lastDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      add(Duration(days: 6 - (weekday - start.index - 1) % 7));
+      withoutTime.add(Duration(days: 6 - (weekday - start.index - 1) % 7));
 
   /// Returns list of all dates of [month].
   /// All the dates are week based that means it will return array of size 42

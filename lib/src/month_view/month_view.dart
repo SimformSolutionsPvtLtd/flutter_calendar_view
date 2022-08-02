@@ -182,7 +182,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _setDateRange();
 
     // Initialize current date.
-    _currentDate = widget.initialMonth ?? DateTime.now();
+    _currentDate = (widget.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
 
@@ -381,10 +381,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     // Initialize minimum date.
-    _minDate = widget.minMonth ?? CalendarConstants.epochDate;
+    _minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
 
     // Initialize maximum date.
-    _maxDate = widget.maxMonth ?? CalendarConstants.maxDate;
+    _maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
 
     assert(
       _minDate.isBefore(_maxDate),
