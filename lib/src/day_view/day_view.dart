@@ -225,7 +225,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _reloadCallback = _reload;
     _setDateRange();
 
-    _currentDate = widget.initialDay ?? DateTime.now();
+    _currentDate = (widget.initialDay ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
 
@@ -429,8 +429,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
-    _minDate = widget.minDay ?? CalendarConstants.epochDate;
-    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
+    _minDate = (widget.minDay ?? CalendarConstants.epochDate).withoutTime;
+    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).withoutTime;
 
     assert(
       _minDate.isBefore(_maxDate),
@@ -445,9 +445,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
-      date: date,
-      timeStringBuilder: widget.timeStringBuilder
-  );
+      date: date, timeStringBuilder: widget.timeStringBuilder);
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
