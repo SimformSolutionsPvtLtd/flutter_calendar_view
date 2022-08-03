@@ -1,6 +1,8 @@
-# [0.0.6] 6 Jun 2022 - Unreleased
+# [0.0.6] 3 Aug 2022 - Unreleased
 
 - Add 15,30 and 60 minutes slots for onDateLongPress callback in Week and Day view.
+- Add method to update filter in `EventController`.
+- Restructured the logic to store single time events.
 
 # [0.0.5 - 2 Jun 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/0.0.5)
 
