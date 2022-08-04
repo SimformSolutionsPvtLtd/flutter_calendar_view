@@ -12,10 +12,6 @@ extension DateTimeExtensions on DateTime {
     return day == date.day && month == date.month && year == date.year;
   }
 
-  /// Checks if time stamp of [date] is same as [this].
-  /// This method only checks hours and minutes.
-  bool hasSameTimeAs(DateTime date) => getTotalMinutes == date.getTotalMinutes;
-
   /// Gets difference of months between [date] and calling object.
   int getMonthDifference(DateTime date) {
     if (year == date.year) return ((date.month - month).abs() + 1);
@@ -110,6 +106,18 @@ extension DateTimeExtensions on DateTime {
         totalMinutes ~/ 60,
         totalMinutes % 60,
       );
+
+  /// Returns [DateTime] without timestamp.
+  DateTime get withoutTime => DateTime(year, month, day);
+
+  /// Compares time of two [DateTime] objects.
+  bool hasSameTimeAs(DateTime other) {
+    return other.hour == hour &&
+        other.minute == minute &&
+        other.second == second &&
+        other.millisecond == millisecond &&
+        other.microsecond == microsecond;
+  }
 }
 
 extension ColorExtension on Color {
