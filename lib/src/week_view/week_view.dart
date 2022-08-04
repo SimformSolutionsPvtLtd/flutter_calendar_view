@@ -245,15 +245,22 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!_controllerAdded) {
-      _controller = widget.controller ??
-          CalendarControllerProvider.of<T>(context).controller;
-      _controllerAdded = true;
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
-      // Reloads the view if there is any change in controller or user
-      // adds new events.
-      _controller.addListener(_reloadCallback);
+    if (_controller != newController) {
+      _controller = newController;
+
+      _controller
+        // Removes existing callback.
+        ..removeListener(_reloadCallback)
+
+        // Reloads the view if there is any change in controller or
+        // user adds new events.
+        ..addListener(_reloadCallback);
     }
+
+    _controllerAdded = true;
 
     _updateViewDimensions();
   }
