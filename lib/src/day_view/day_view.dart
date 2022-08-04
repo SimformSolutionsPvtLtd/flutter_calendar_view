@@ -246,16 +246,22 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!_controllerAdded) {
-      _controller = widget.controller ??
-          CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
-      // Reloads the view if there is any change in controller or
-      // user adds new events.
-      _controller.addListener(_reloadCallback);
+    if (_controller != newController) {
+      _controller = newController;
 
-      _controllerAdded = true;
+      _controller
+        // Removes existing callback.
+        ..removeListener(_reloadCallback)
+
+        // Reloads the view if there is any change in controller or
+        // user adds new events.
+        ..addListener(_reloadCallback);
     }
+
+    _controllerAdded = true;
 
     _updateViewDimensions();
   }
@@ -460,9 +466,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
-      date: date,
-      timeStringBuilder: widget.timeStringBuilder
-  );
+      date: date, timeStringBuilder: widget.timeStringBuilder);
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
