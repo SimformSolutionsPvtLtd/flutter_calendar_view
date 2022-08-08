@@ -16,145 +16,95 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
   }) {
-    final durations = _getEventsDuration(events);
-    final tempEvents = [...events]..sort((e1, e2) =>
-        (e1.startTime?.getTotalMinutes ?? 0) -
-        (e2.startTime?.getTotalMinutes ?? 0));
-
-    final table = List.generate(
-      events.length,
-      (index) => List.generate(
-        durations.length,
-        (index) => null as CalendarEventData<T>?, // ignore: unnecessary_cast
-      ),
+    final mergedEvents = MergeEventArranger<T>().arrange(
+      events: events,
+      height: height,
+      width: width,
+      heightPerMinute: heightPerMinute,
     );
 
-    var eventCounter = 0;
-    var rowCounter = 0;
+    final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
-    while (tempEvents.isNotEmpty && rowCounter < events.length) {
-      eventCounter = 0;
+    for (final event in mergedEvents) {
+      // If there is only one event in list that means, there
+      // is no simultaneous events.
+      if (event.events.length == 1) {
+        arrangedEvents.add(event);
+        continue;
+      }
 
-      var end = tempEvents[0].endTime?.getTotalMinutes ?? 0;
+      final concurrentEvents = event.events;
 
-      _insertIntoTable(table, durations, rowCounter, tempEvents[0]);
+      if (concurrentEvents.isEmpty) continue;
 
-      tempEvents.removeAt(0);
+      var column = 1;
+      final sideEventData = <_SideEventData<T>>[];
+      var currentEventIndex = 0;
 
-      while (tempEvents.isNotEmpty && eventCounter < tempEvents.length) {
-        if ((tempEvents[eventCounter].startTime?.getTotalMinutes ?? 0) > end) {
-          _insertIntoTable(
-              table, durations, rowCounter, tempEvents[eventCounter]);
+      while (concurrentEvents.isNotEmpty) {
+        final event = concurrentEvents[currentEventIndex];
+        final end = event.endTime!.getTotalMinutes;
+        sideEventData.add(_SideEventData(column: column, event: event));
+        concurrentEvents.removeAt(currentEventIndex);
 
-          end = tempEvents[eventCounter].endTime?.getTotalMinutes ?? 0;
-          tempEvents.removeAt(eventCounter);
-        } else {
-          eventCounter++;
+        while (currentEventIndex < concurrentEvents.length) {
+          if (end <
+              concurrentEvents[currentEventIndex].startTime!.getTotalMinutes) {
+            break;
+          }
+
+          currentEventIndex++;
+        }
+
+        if (concurrentEvents.isNotEmpty &&
+            currentEventIndex >= concurrentEvents.length) {
+          column++;
+          currentEventIndex = 0;
         }
       }
-      rowCounter++;
-    }
 
-    final arrangedEvent = <OrganizedCalendarEventData<T>>[];
+      final slotWidth = width / column;
 
-    final widthPerCol = width / rowCounter;
+      for (final sideEvent in sideEventData) {
+        if (sideEvent.event.startTime == null ||
+            sideEvent.event.endTime == null) {
+          assert(() {
+            try {
+              debugPrint("Start time or end time of an event can not be null. "
+                  "This ${sideEvent.event} will be ignored.");
+            } catch (e) {} // Suppress exceptions.
 
-    for (var i = 0; i < rowCounter; i++) {
-      CalendarEventData<T>? event;
-      for (var j = 0; j < durations.length; j++) {
-        if (table[i][j] != null && (event == null || table[i][j] != event)) {
-          event = table[i][j];
+            return true;
+          }(), "Can not add event in the list.");
 
-          final top =
-              (event!.startTime?.getTotalMinutes ?? 0) * heightPerMinute;
-          final bottom = height -
-              ((event.endTime?.getTotalMinutes ?? 0) * heightPerMinute);
-          final left = widthPerCol * i;
-          final right = width - (left + widthPerCol);
-
-          final index = _containsEvent(arrangedEvent, event);
-
-          if (index == -1) {
-            final eventData = OrganizedCalendarEventData<T>(
-              top: top,
-              bottom: bottom,
-              events: [event],
-              left: left,
-              right: right,
-              startDuration: event.startTime ?? DateTime.now(),
-              endDuration: event.endTime ?? DateTime.now(),
-            );
-            arrangedEvent.add(eventData);
-          } else {
-            arrangedEvent[index] = arrangedEvent[index]
-                .getWithUpdatedRight(arrangedEvent[index].right - widthPerCol);
-          }
-        } else {
           continue;
         }
+
+        final startTime = sideEvent.event.startTime!;
+        final endTime = sideEvent.event.endTime!;
+
+        arrangedEvents.add(OrganizedCalendarEventData<T>(
+          left: slotWidth * (sideEvent.column - 1),
+          right: slotWidth * (column - sideEvent.column),
+          top: startTime.getTotalMinutes * heightPerMinute,
+          bottom: height - endTime.getTotalMinutes * heightPerMinute,
+          startDuration: startTime,
+          endDuration: endTime,
+          events: [sideEvent.event],
+        ));
       }
     }
-    return arrangedEvent;
+
+    return arrangedEvents;
   }
+}
 
-  int _containsEvent(
-      List<OrganizedCalendarEventData<T>> events, CalendarEventData<T>? event) {
-    for (var i = 0; i < events.length; i++) {
-      if (events[i].events.isNotEmpty && events[i].events[0] == event) return i;
-    }
-    return -1;
-  }
+class _SideEventData<T> {
+  final int column;
+  final CalendarEventData<T> event;
 
-  void _insertIntoTable(List<List<CalendarEventData<T>?>> table,
-      List<int> durations, int row, CalendarEventData<T> event) {
-    var i = 0;
-
-    final start = event.startTime?.getTotalMinutes ?? 0;
-    final end = event.endTime?.getTotalMinutes ?? 0;
-
-    while (i < durations.length && durations[i] != start) i++;
-
-    while (i < durations.length && durations[i] <= end) {
-      table[row][i++] = event;
-    }
-  }
-
-  /// This method returns list of all durations (start and end)
-  /// in ascending order.
-  List<int> _getEventsDuration(List<CalendarEventData<T>> events) {
-    final durations = <int>[];
-    for (final event in events) {
-      final startTime = event.startTime ?? DateTime.now();
-      final endTime = event.endTime ?? startTime;
-      assert(
-          !(endTime.getTotalMinutes <= startTime.getTotalMinutes),
-          "Assertion fail for event: \n$event\n"
-          "startDate must be less than endDate.\n"
-          "This error occurs when you does not provide startDate or endDate in "
-          "CalendarEventDate or provided endDate occurs before startDate.");
-
-      final start = startTime.getTotalMinutes;
-      final end = endTime.getTotalMinutes;
-      int i;
-
-      /// Get position where we can add start duration
-      for (i = 0; i < durations.length && durations[i] < start; i++) {}
-
-      /// Check if start duration is not repeating or if i is equal to length
-      /// of durations list then add duration because duration will not be
-      /// repeating if there is no element at i index.
-      if (i == durations.length || durations[i] != start)
-        durations.insert(i, start);
-
-      /// Get position where we can add end duration.
-      for (i = i + 1; i < durations.length && durations[i] < end; i++) {}
-
-      /// Check if end duration is not repeating or if i is equal to length of
-      /// durations list then add duration because duration will not be
-      /// repeating if there is no element at i index.
-      if (i == durations.length || durations[i] != end)
-        durations.insert(i, end);
-    }
-    return durations;
-  }
+  const _SideEventData({
+    required this.column,
+    required this.event,
+  });
 }

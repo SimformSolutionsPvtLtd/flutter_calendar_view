@@ -39,6 +39,12 @@ class EventController<T extends Object?> extends ChangeNotifier {
   //#endregion
 
   //#region Public Fields
+
+  // TODO: change the type from List<CalendarEventData>
+  //  to UnmodifiableListView provided in dart:collection.
+
+  // Note: Do not use this getter inside of EventController class.
+  // use _eventList instead.
   /// Returns list of [CalendarEventData<T>] stored in this controller.
   List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
 
@@ -144,7 +150,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
   void _addEvent(CalendarEventData<T> event) {
     assert(event.endDate.difference(event.date).inDays >= 0,
         'The end date must be greater or equal to the start date');
-    if (events.contains(event)) return;
+    if (_eventList.contains(event)) return;
     if (event.endDate.difference(event.date).inDays > 0) {
       _rangingEventList.add(event);
     } else {
