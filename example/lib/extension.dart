@@ -3,8 +3,11 @@ import 'package:intl/intl.dart';
 
 import 'app_colors.dart';
 import 'enumerations.dart';
+import 'pages/my_app/my_app.dart';
 
 enum TimeStampFormat { parse_12, parse_24 }
+
+final app = GlobalKey<MyAppState>();
 
 extension NavigationExtension on State {
   void pushRoute(Widget page) =>

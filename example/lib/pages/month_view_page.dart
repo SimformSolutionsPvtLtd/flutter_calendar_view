@@ -2,7 +2,6 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
-import '../model/event.dart';
 import '../widgets/month_view_widget.dart';
 import 'create_event_page.dart';
 
@@ -29,12 +28,12 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
   }
 
   Future<void> _addEvent() async {
-    final event = await context.pushRoute<CalendarEventData<Event>>(
+    final event = await context.pushRoute<CalendarEventData<String>>(
       CreateEventPage(
         withDuration: true,
       ),
     );
     if (event == null) return;
-    CalendarControllerProvider.of<Event>(context).controller.add(event);
+    CalendarControllerProvider.of<String>(context).controller.add(event);
   }
 }

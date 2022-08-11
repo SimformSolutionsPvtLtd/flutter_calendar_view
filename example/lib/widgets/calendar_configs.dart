@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
-import '../model/event.dart';
+import '../pages/calendar_settings/calendar_settings_dialog.dart';
 import 'add_event_widget.dart';
 
 class CalendarConfig extends StatelessWidget {
@@ -25,12 +25,26 @@ class CalendarConfig extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 20, top: 20),
-          child: Text(
-            "Flutter Calendar Page",
-            style: TextStyle(
-              color: AppColors.black,
-              fontSize: 30,
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Flutter Calendar Page",
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => CalendarSettingsDialog().show(context),
+                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                icon: Icon(
+                  Icons.settings,
+                  color: AppColors.grey,
+                ),
+              ),
+            ],
           ),
         ),
         Divider(
@@ -101,7 +115,7 @@ class CalendarConfig extends StatelessWidget {
                 ),
                 AddEventWidget(
                   onEventAdd: (event) {
-                    CalendarControllerProvider.of<Event>(context)
+                    CalendarControllerProvider.of<String>(context)
                         .controller
                         .add(event);
                   },

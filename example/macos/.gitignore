@@ -4,3 +4,5 @@
 
 # Xcode-related
 **/xcuserdata/
+/DerivedData
+/Podfile

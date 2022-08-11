@@ -1,7 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/calendar_settings/calendar_settings_provider.dart';
 
 class WeekViewWidget extends StatelessWidget {
   final GlobalKey<WeekViewState>? state;
@@ -11,9 +11,14 @@ class WeekViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WeekView<Event>(
+    final settings = CalendarSettingsProvider.of(context);
+
+    return WeekView<String>(
       key: state,
       width: width,
+      initialDay: settings.initialDate,
+      maxDay: settings.maxDate,
+      minDay: settings.minDate,
     );
   }
 }

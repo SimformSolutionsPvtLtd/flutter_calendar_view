@@ -5,12 +5,11 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../app_colors.dart';
 import '../constants.dart';
 import '../extension.dart';
-import '../model/event.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
 class AddEventWidget extends StatefulWidget {
-  final void Function(CalendarEventData<Event>)? onEventAdd;
+  final void Function(CalendarEventData<String>)? onEventAdd;
 
   const AddEventWidget({
     Key? key,
@@ -261,7 +260,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
     _form.currentState?.save();
 
-    final event = CalendarEventData<Event>(
+    final event = CalendarEventData(
       date: _startDate,
       color: _color,
       endTime: _endTime,
@@ -269,9 +268,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
       description: _description,
       endDate: _endDate,
       title: _title,
-      event: Event(
-        title: _title,
-      ),
+      event: _title,
     );
 
     widget.onEventAdd?.call(event);

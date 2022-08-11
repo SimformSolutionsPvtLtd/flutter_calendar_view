@@ -1,7 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/calendar_settings/calendar_settings_provider.dart';
 
 class MonthViewWidget extends StatelessWidget {
   final GlobalKey<MonthViewState>? state;
@@ -15,9 +15,14 @@ class MonthViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MonthView<Event>(
+    final settings = CalendarSettingsProvider.of(context);
+
+    return MonthView<String>(
       key: state,
       width: width,
+      initialMonth: settings.initialDate,
+      maxMonth: settings.maxDate,
+      minMonth: settings.minDate,
     );
   }
 }

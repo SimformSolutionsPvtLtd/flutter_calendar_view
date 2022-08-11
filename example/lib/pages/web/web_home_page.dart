@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../enumerations.dart';
 import '../../widgets/calendar_configs.dart';
 import '../../widgets/calendar_views.dart';
+import '../calendar_settings/calendar_settings_dialog.dart';
 
 class WebHomePage extends StatefulWidget {
   @override
@@ -11,6 +12,15 @@ class WebHomePage extends StatefulWidget {
 
 class _WebHomePageState extends State<WebHomePage> {
   CalendarView _selectedView = CalendarView.month;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      CalendarSettingsDialog().show(context);
+    });
+  }
 
   void _setView(CalendarView view) {
     if (view != _selectedView && mounted) {

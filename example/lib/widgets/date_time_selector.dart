@@ -11,13 +11,13 @@ class DateTimeSelectorFormField extends StatefulWidget {
   final Function(DateTime?)? onSelect;
   final DateTimeSelectionType? type;
   final FocusNode? focusNode;
-  final DateTime? minimumDateTime;
+  final DateTime? initialDateTime;
   final Validator? validator;
-  final bool displayDefault;
   final TextStyle? textStyle;
   final void Function(DateTime date)? onSave;
   final InputDecoration? decoration;
   final TextEditingController controller;
+  final EdgeInsets padding;
 
   const DateTimeSelectorFormField({
     this.onSelect,
@@ -25,11 +25,11 @@ class DateTimeSelectorFormField extends StatefulWidget {
     this.onSave,
     this.decoration,
     this.focusNode,
-    this.minimumDateTime,
+    this.initialDateTime,
     this.validator,
-    this.displayDefault = false,
     this.textStyle,
     required this.controller,
+    this.padding = const EdgeInsets.only(top: 8),
   });
 
   @override
@@ -50,16 +50,27 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
     _textEditingController = widget.controller;
     _focusNode = FocusNode();
 
-    _selectedDate = widget.minimumDateTime ?? DateTime.now();
+    _selectedDate = widget.initialDateTime ?? DateTime.now();
 
-    if (widget.displayDefault && widget.minimumDateTime != null) {
+    _initializeController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _initializeController();
+  }
+
+  void _initializeController() {
+    if (widget.initialDateTime != null) {
       if (widget.type == DateTimeSelectionType.date) {
-        _textEditingController.text = widget.minimumDateTime
+        _textEditingController.text = widget.initialDateTime
                 ?.dateToStringWithFormat(format: "dd/MM/yyyy") ??
             "";
       } else {
         _textEditingController.text =
-            widget.minimumDateTime?.getTimeInFormat(TimeStampFormat.parse_12) ??
+            widget.initialDateTime?.getTimeInFormat(TimeStampFormat.parse_12) ??
                 "";
       }
     }
@@ -76,6 +87,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
 
     if (widget.type == DateTimeSelectionType.date) {
       date = await _showDateSelector();
+
       _textEditingController.text =
           (date ?? _selectedDate).dateToStringWithFormat(format: "dd/MM/yyyy");
     } else {
@@ -90,16 +102,18 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
       setState(() {});
     }
 
+    debugPrint("On select: $date");
+
     widget.onSelect?.call(date);
   }
 
   Future<DateTime?> _showDateSelector() async {
-    final now = widget.minimumDateTime ?? DateTime.now();
+    final now = widget.initialDateTime ?? DateTime.now();
 
     final date = await showDatePicker(
       context: context,
       initialDate: now,
-      firstDate: widget.minimumDateTime ?? now,
+      firstDate: CalendarConstants.minDate,
       lastDate: CalendarConstants.maxDate,
     );
 
@@ -109,7 +123,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   }
 
   Future<DateTime?> _showTimeSelector() async {
-    final now = widget.minimumDateTime ?? DateTime.now();
+    final now = widget.initialDateTime ?? DateTime.now();
     final time = await showTimePicker(
       context: context,
       builder: (context, widget) {
@@ -125,7 +139,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
       minute: time.minute,
     );
 
-    if (widget.minimumDateTime == null) return date;
+    if (widget.initialDateTime == null) return date;
 
     return date;
   }
@@ -134,14 +148,17 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _showSelector,
-      child: TextFormField(
-        style: widget.textStyle,
-        controller: _textEditingController,
-        validator: widget.validator,
-        minLines: 1,
-        onSaved: (value) => widget.onSave?.call(_selectedDate),
-        enabled: false,
-        decoration: widget.decoration,
+      child: Padding(
+        padding: widget.padding,
+        child: TextFormField(
+          style: widget.textStyle,
+          controller: _textEditingController,
+          validator: widget.validator,
+          minLines: 1,
+          onSaved: (value) => widget.onSave?.call(_selectedDate),
+          enabled: false,
+          decoration: widget.decoration,
+        ),
       ),
     );
   }
