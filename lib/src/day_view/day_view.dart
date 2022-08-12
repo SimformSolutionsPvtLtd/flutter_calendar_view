@@ -213,11 +213,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late DateWidgetBuilder _dayTitleBuilder;
 
-  late EventController<T> _controller;
+  EventController<T>? _controller;
 
   late ScrollController _scrollController;
-
-  bool _controllerAdded = false;
 
   late VoidCallback _reloadCallback;
 
@@ -249,10 +247,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     final newController = widget.controller ??
         CalendarControllerProvider.of<T>(context).controller;
 
-    if (_controller != newController) {
+    if (newController != _controller) {
       _controller = newController;
 
-      _controller
+      _controller!
         // Removes existing callback.
         ..removeListener(_reloadCallback)
 
@@ -260,8 +258,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         // user adds new events.
         ..addListener(_reloadCallback);
     }
-
-    _controllerAdded = true;
 
     _updateViewDimensions();
   }
@@ -274,9 +270,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
-      _controller.removeListener(_reloadCallback);
+      _controller?.removeListener(_reloadCallback);
       _controller = newController;
-      _controller.addListener(_reloadCallback);
+      _controller?.addListener(_reloadCallback);
     }
 
     // Update date range.
@@ -301,7 +297,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   @override
   void dispose() {
-    _controller.removeListener(_reloadCallback);
+    _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -356,7 +352,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                   verticalLineOffset: widget.verticalLineOffset,
                                   showVerticalLine: widget.showVerticalLine,
                                   height: _height,
-                                  controller: _controller,
+                                  controller: controller,
                                   hourHeight: _hourHeight,
                                   eventArranger: _eventArranger,
                                   minuteSlotSize: widget.minuteSlotSize,
@@ -379,9 +375,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// This will throw [AssertionError] if controller is called before its
   /// initialization is complete.
   EventController<T> get controller {
-    assert(_controllerAdded, "EventController is not initialized yet.");
+    if (_controller == null) {
+      throw "EventController is not initialized yet.";
+    }
 
-    return _controller;
+    return _controller!;
   }
 
   /// Reloads page.

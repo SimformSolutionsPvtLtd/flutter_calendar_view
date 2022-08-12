@@ -211,11 +211,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late double _weekTitleWidth;
   late int _totalDaysInWeek;
 
-  bool _controllerAdded = false;
-
   late VoidCallback _reloadCallback;
 
-  late EventController<T> _controller;
+  EventController<T>? _controller;
 
   late ScrollController _scrollController;
   late List<WeekDays> _weekDays;
@@ -254,7 +252,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (_controller != newController) {
       _controller = newController;
 
-      _controller
+      _controller!
         // Removes existing callback.
         ..removeListener(_reloadCallback)
 
@@ -262,8 +260,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         // user adds new events.
         ..addListener(_reloadCallback);
     }
-
-    _controllerAdded = true;
 
     _updateViewDimensions();
   }
@@ -276,9 +272,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
-      _controller.removeListener(_reloadCallback);
+      _controller?.removeListener(_reloadCallback);
       _controller = newController;
-      _controller.addListener(_reloadCallback);
+      _controller?.addListener(_reloadCallback);
     }
 
     _setWeekDays();
@@ -305,7 +301,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   @override
   void dispose() {
-    _controller.removeListener(_reloadCallback);
+    _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -363,12 +359,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 timeLineWidth: _timeLineWidth,
                                 verticalLineOffset: 0,
                                 showVerticalLine: true,
-                                controller: _controller,
+                                controller: controller,
                                 hourHeight: _hourHeight,
                                 scrollController: _scrollController,
                                 eventArranger: _eventArranger,
                                 weekDays: _weekDays,
-                            minuteSlotSize: widget.minuteSlotSize,
+                                minuteSlotSize: widget.minuteSlotSize,
                                 scrollConfiguration: _scrollConfiguration,
                               ));
                     },
@@ -387,9 +383,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// This will throw [AssertionError] if controller is called before its
   /// initialization is complete.
   EventController<T> get controller {
-    assert(_controllerAdded, "EventController is not initialized yet.");
+    if (_controller == null) {
+      throw "EventController is not initialized yet.";
+    }
 
-    return _controller;
+    return _controller!;
   }
 
   /// Reloads page.
