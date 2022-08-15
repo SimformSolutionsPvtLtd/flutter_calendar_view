@@ -216,6 +216,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   EventController<T>? _controller;
 
   late ScrollController _scrollController;
+
+  ScrollController get scrollController => _scrollController;
+
   late List<WeekDays> _weekDays;
 
   final _scrollConfiguration = EventScrollConfiguration();

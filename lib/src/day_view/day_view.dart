@@ -217,6 +217,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late ScrollController _scrollController;
 
+  ScrollController get scrollController => _scrollController;
+  
   late VoidCallback _reloadCallback;
 
   final _scrollConfiguration = EventScrollConfiguration<T>();
