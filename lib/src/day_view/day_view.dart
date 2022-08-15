@@ -642,6 +642,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     );
   }
 
+  /// Animate to specific scroll controller offset
+  void animateTo(
+    double offset, {
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) {
+    _scrollController.animateTo(
+      offset,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
   /// Returns the current visible date in day view.
   DateTime get currentDate =>
       DateTime(_currentDate.year, _currentDate.month, _currentDate.day);

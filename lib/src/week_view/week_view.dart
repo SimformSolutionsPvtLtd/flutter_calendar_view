@@ -705,6 +705,19 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     );
   }
 
+  /// Animate to specific scroll controller offset
+  void animateTo(
+    double offset, {
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) {
+    _scrollController.animateTo(
+      offset,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
   /// check if any dates contains current date or not.
   /// Returns true if it does else false.
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
