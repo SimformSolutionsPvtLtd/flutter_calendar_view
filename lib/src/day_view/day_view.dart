@@ -452,7 +452,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).withoutTime;
 
     assert(
-      _minDate.isBefore(_maxDate),
+      !_maxDate.isBefore(_minDate),
       "Minimum date should be less than maximum date.\n"
       "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
