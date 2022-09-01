@@ -2,13 +2,17 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/day_view_components.dart';
+import '../components/event_scroll_notifier.dart';
 import '../constants.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
@@ -16,10 +20,18 @@ import '../modals.dart';
 import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
-class DayView<T> extends StatefulWidget {
+class DayView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each
   /// cell in day calendar.
   final EventTileBuilder<T>? eventTileBuilder;
+
+  /// A function to generate the DateString in the calendar title.
+  /// Useful for I18n
+  final StringProvider? dateStringBuilder;
+
+  /// A function to generate the TimeString in the timeline.
+  /// Useful for I18n
+  final StringProvider? timeStringBuilder;
 
   /// A function that returns a [Widget] that will be displayed left side of
   /// day view.
@@ -129,10 +141,16 @@ class DayView<T> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
     this.eventTileBuilder,
+    this.dateStringBuilder,
+    this.timeStringBuilder,
     this.controller,
     this.showVerticalLine = true,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
@@ -156,24 +174,29 @@ class DayView<T> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
-  })  : assert((timeLineOffset) >= 0,
+    this.minuteSlotSize = MinuteSlotSize.minutes60,
+  })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
+        assert(width == null || width > 0,
+            "Calendar width must be greater than 0."),
+        assert(timeLineWidth == null || timeLineWidth > 0,
+            "Time line width must be greater than 0."),
+        assert(
+            heightPerMinute > 0, "Height per minute must be greater than 0."),
         super(key: key);
 
   @override
   DayViewState<T> createState() => DayViewState<T>();
 }
 
-class DayViewState<T> extends State<DayView<T>> {
+class DayViewState<T extends Object?> extends State<DayView<T>> {
   late double _width;
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
-  late double _timeLineOffset;
   late DateTime _currentDate;
   late DateTime _maxDate;
   late DateTime _minDate;
-  late DateTime _initialDay;
   late int _totalDays;
   late int _currentIndex;
 
@@ -190,96 +213,91 @@ class DayViewState<T> extends State<DayView<T>> {
 
   late DateWidgetBuilder _dayTitleBuilder;
 
-  late EventController<T> _controller;
+  EventController<T>? _controller;
 
   late ScrollController _scrollController;
 
-  bool _controllerAdded = false;
-
   late VoidCallback _reloadCallback;
+
+  final _scrollConfiguration = EventScrollConfiguration<T>();
 
   @override
   void initState() {
     super.initState();
 
     _reloadCallback = _reload;
+    _setDateRange();
 
-    _minDate = widget.minDay ?? CalendarConstants.epochDate;
-    _maxDate = widget.maxDay ?? CalendarConstants.maxDate;
+    _currentDate = (widget.initialDay ?? DateTime.now()).withoutTime;
 
-    assert(
-      _minDate.isBefore(_maxDate),
-      "Minimum date should be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
-    );
+    _regulateCurrentDate();
 
-    _initialDay = widget.initialDay ?? DateTime.now();
-
-    if (_initialDay.isBefore(_minDate)) {
-      _initialDay = _minDate;
-    } else if (_initialDay.isAfter(_maxDate)) {
-      _initialDay = _maxDate;
-    }
-    _currentDate = _initialDay;
-    _totalDays = _maxDate.getDayDifference(_minDate) + 1;
-    _currentIndex = _currentDate.getDayDifference(_minDate);
-    _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
-    _timeLineOffset = widget.timeLineOffset;
+    _calculateHeights();
     _scrollController =
         ScrollController(initialScrollOffset: widget.scrollOffset);
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
-    _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
-    _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
+    _assignBuilders();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!_controllerAdded) {
-      _controller = widget.controller ??
-          CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
-      // Reloads the view if there is any change in controller or
-      // user adds new events.
-      _controller.addListener(_reloadCallback);
+    if (newController != _controller) {
+      _controller = newController;
 
-      _controllerAdded = true;
+      _controller!
+        // Removes existing callback.
+        ..removeListener(_reloadCallback)
+
+        // Reloads the view if there is any change in controller or
+        // user adds new events.
+        ..addListener(_reloadCallback);
     }
 
-    _width = widget.width ?? MediaQuery.of(context).size.width;
-    assert(_width != 0, "Calendar width can not be 0.");
+    _updateViewDimensions();
+  }
 
-    _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
-    assert(_timeLineWidth != 0, "Time line width can not be 0.");
+  @override
+  void didUpdateWidget(DayView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update controller.
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
-    _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
-        HourIndicatorSettings(
-          color: Constants.defaultLiveTimeIndicatorColor,
-          height: widget.heightPerMinute,
-          offset: 5 + widget.verticalLineOffset,
-        );
+    if (newController != _controller) {
+      _controller?.removeListener(_reloadCallback);
+      _controller = newController;
+      _controller?.addListener(_reloadCallback);
+    }
 
-    assert(_liveTimeIndicatorSettings.height < _hourHeight,
-        "liveTimeIndicator height must be less than minuteHeight * 60");
+    // Update date range.
+    if (widget.minDay != oldWidget.minDay ||
+        widget.maxDay != oldWidget.maxDay) {
+      _setDateRange();
+      _regulateCurrentDate();
 
-    _hourIndicatorSettings = widget.hourIndicatorSettings ??
-        HourIndicatorSettings(
-          height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
-          offset: 5,
-        );
+      _pageController.jumpToPage(_currentIndex);
+    }
 
-    assert(_hourIndicatorSettings.height < _hourHeight,
-        "hourIndicator height must be less than minuteHeight * 60");
+    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+
+    // Update heights.
+    _calculateHeights();
+
+    _updateViewDimensions();
+
+    // Update builders and callbacks
+    _assignBuilders();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_reloadCallback);
+    _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
   }
@@ -311,29 +329,35 @@ class DayViewState<T> extends State<DayView<T>> {
                         final date = DateTime(_minDate.year, _minDate.month,
                             _minDate.day + index);
 
-                        return InternalDayViewPage<T>(
-                          key: ValueKey(
-                              _hourHeight.toString() + date.toString()),
-                          width: _width,
-                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                          timeLineBuilder: _timeLineBuilder,
-                          eventTileBuilder: _eventTileBuilder,
-                          heightPerMinute: widget.heightPerMinute,
-                          hourIndicatorSettings: _hourIndicatorSettings,
-                          date: date,
-                          onTileTap: widget.onEventTap,
-                          onDateLongPress: widget.onDateLongPress,
-                          showLiveLine: widget.showLiveTimeLineInAllDays ||
-                              date.compareWithoutTime(DateTime.now()),
-                          timeLineOffset: _timeLineOffset,
-                          timeLineWidth: _timeLineWidth,
-                          verticalLineOffset: widget.verticalLineOffset,
-                          showVerticalLine: widget.showVerticalLine,
-                          height: _height,
-                          controller: _controller,
-                          hourHeight: _hourHeight,
-                          eventArranger: _eventArranger,
-                        );
+                        return ValueListenableBuilder(
+                            valueListenable: _scrollConfiguration,
+                            builder: (_, __, ___) => InternalDayViewPage<T>(
+                                  key: ValueKey(
+                                      _hourHeight.toString() + date.toString()),
+                                  width: _width,
+                                  liveTimeIndicatorSettings:
+                                      _liveTimeIndicatorSettings,
+                                  timeLineBuilder: _timeLineBuilder,
+                                  eventTileBuilder: _eventTileBuilder,
+                                  heightPerMinute: widget.heightPerMinute,
+                                  hourIndicatorSettings: _hourIndicatorSettings,
+                                  date: date,
+                                  onTileTap: widget.onEventTap,
+                                  onDateLongPress: widget.onDateLongPress,
+                                  showLiveLine: widget
+                                          .showLiveTimeLineInAllDays ||
+                                      date.compareWithoutTime(DateTime.now()),
+                                  timeLineOffset: widget.timeLineOffset,
+                                  timeLineWidth: _timeLineWidth,
+                                  verticalLineOffset: widget.verticalLineOffset,
+                                  showVerticalLine: widget.showVerticalLine,
+                                  height: _height,
+                                  controller: controller,
+                                  hourHeight: _hourHeight,
+                                  eventArranger: _eventArranger,
+                                  minuteSlotSize: widget.minuteSlotSize,
+                                  scrollNotifier: _scrollConfiguration,
+                                ));
                       },
                     ),
                   ),
@@ -346,10 +370,16 @@ class DayViewState<T> extends State<DayView<T>> {
     );
   }
 
+  /// Returns [EventController] associated with this Widget.
+  ///
+  /// This will throw [AssertionError] if controller is called before its
+  /// initialization is complete.
   EventController<T> get controller {
-    assert(_controllerAdded, "EventController is not initialized yet.");
+    if (_controller == null) {
+      throw "EventController is not initialized yet.";
+    }
 
-    return _controller;
+    return _controller!;
   }
 
   /// Reloads page.
@@ -360,10 +390,81 @@ class DayViewState<T> extends State<DayView<T>> {
     }
   }
 
+  /// Updates data related to size of this view.
+  void _updateViewDimensions() {
+    _width = widget.width ?? MediaQuery.of(context).size.width;
+
+    _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
+
+    _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
+        HourIndicatorSettings(
+          color: Constants.defaultLiveTimeIndicatorColor,
+          height: widget.heightPerMinute,
+          offset: 5 + widget.verticalLineOffset,
+        );
+
+    assert(_liveTimeIndicatorSettings.height < _hourHeight,
+        "liveTimeIndicator height must be less than minuteHeight * 60");
+
+    _hourIndicatorSettings = widget.hourIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_hourIndicatorSettings.height < _hourHeight,
+        "hourIndicator height must be less than minuteHeight * 60");
+  }
+
+  void _calculateHeights() {
+    _hourHeight = widget.heightPerMinute * 60;
+    _height = _hourHeight * Constants.hoursADay;
+  }
+
+  void _assignBuilders() {
+    _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
+    _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
+    _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
+  }
+
+  /// Sets the current date of this month.
+  ///
+  /// This method is used in initState and onUpdateWidget methods to
+  /// regulate current date in Month view.
+  ///
+  /// If maximum and minimum dates are change then first call _setDateRange
+  /// and then _regulateCurrentDate method.
+  ///
+  void _regulateCurrentDate() {
+    if (_currentDate.isBefore(_minDate)) {
+      _currentDate = _minDate;
+    } else if (_currentDate.isAfter(_maxDate)) {
+      _currentDate = _maxDate;
+    }
+
+    _currentIndex = _currentDate.getDayDifference(_minDate);
+  }
+
+  /// Sets the minimum and maximum dates for current view.
+  void _setDateRange() {
+    _minDate = (widget.minDay ?? CalendarConstants.epochDate).withoutTime;
+    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).withoutTime;
+
+    assert(
+      _minDate.isBefore(_maxDate),
+      "Minimum date should be less than maximum date.\n"
+      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    );
+
+    _totalDays = _maxDate.getDayDifference(_minDate) + 1;
+  }
+
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(date: date);
+  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
+      date: date, timeStringBuilder: widget.timeStringBuilder);
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -386,7 +487,7 @@ class DayViewState<T> extends State<DayView<T>> {
         margin: EdgeInsets.all(2.0),
       );
     else
-      return Container();
+      return SizedBox.shrink();
   }
 
   /// Default view header builder. This builder will be used if
@@ -395,6 +496,7 @@ class DayViewState<T> extends State<DayView<T>> {
   Widget _defaultDayBuilder(DateTime date) {
     return DayPageHeader(
       date: _currentDate,
+      dateStringBuilder: widget.dateStringBuilder,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
@@ -498,6 +600,43 @@ class DayViewState<T> extends State<DayView<T>> {
     }
     await _pageController.animateToPage(
       _minDate.getDayDifference(date),
+      duration: duration ?? widget.pageTransitionDuration,
+      curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
+
+  /// Jumps to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  Future<void> jumpToEvent(CalendarEventData<T> event) async {
+    jumpToDate(event.date);
+
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
+      duration: Duration.zero,
+      curve: Curves.ease,
+    );
+  }
+
+  /// Animate to page which contains given events and make event
+  /// tile visible to user.
+  ///
+  /// Arguments [duration] and [curve] will override default values provided
+  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
+  /// respectively.
+  ///
+  /// Actual duration will be 2 times the given duration.
+  ///
+  /// Ex, If provided duration is 200 milliseconds then this function will take
+  /// 200 milliseconds for animate to page then 200 milliseconds for
+  /// scroll to event tile.
+  ///
+  ///
+  Future<void> animateToEvent(CalendarEventData<T> event,
+      {Duration? duration, Curve? curve}) async {
+    await animateToDate(event.date, duration: duration, curve: curve);
+    await _scrollConfiguration.setScrollEvent(
+      event: event,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );

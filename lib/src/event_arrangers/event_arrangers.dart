@@ -10,7 +10,7 @@ import '../extensions.dart';
 part 'merge_event_arranger.dart';
 part 'side_event_arranger.dart';
 
-abstract class EventArranger<T> {
+abstract class EventArranger<T extends Object?> {
   /// [EventArranger] defines how simultaneous events will be arranged.
   /// Implement [arrange] method to define how events will be arranged.
   ///
@@ -32,7 +32,7 @@ abstract class EventArranger<T> {
 }
 
 /// Provides event data with its [left], [right], [top], and [bottom] boundary.
-class OrganizedCalendarEventData<T> {
+class OrganizedCalendarEventData<T extends Object?> {
   /// Top position from where event tile will start.
   final double top;
 

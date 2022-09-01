@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
 import '../constants.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../typedefs.dart';
+import 'event_scroll_notifier.dart';
 
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {
@@ -160,7 +162,7 @@ class TimeLine extends StatelessWidget {
 }
 
 /// A widget that display event tiles in day/week view.
-class EventGenerator<T> extends StatelessWidget {
+class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Height of display area
   final double height;
 
@@ -185,6 +187,8 @@ class EventGenerator<T> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  final EventScrollConfiguration scrollNotifier;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -196,12 +200,13 @@ class EventGenerator<T> extends StatelessWidget {
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
+    required this.scrollNotifier,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event
   /// tile on display area. This method uses [eventArranger] to get position
   /// of events and [eventTileBuilder] to display events.
-  List<Widget> _generateEvents() {
+  List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
       events: this.events,
       height: height,
@@ -217,19 +222,47 @@ class EventGenerator<T> extends StatelessWidget {
         right: events[index].right,
         child: GestureDetector(
           onTap: () => onTileTap?.call(events[index].events, date),
-          child: eventTileBuilder(
-            date,
-            events[index].events,
-            Rect.fromLTWH(
-                events[index].left,
-                events[index].top,
-                width - events[index].right - events[index].left,
-                height - events[index].bottom - events[index].top),
-            events[index].startDuration ?? DateTime.now(),
-            events[index].endDuration ?? DateTime.now(),
-          ),
+          child: Builder(builder: (context) {
+            if (scrollNotifier.shouldScroll &&
+                events[index]
+                    .events
+                    .any((element) => element == scrollNotifier.event)) {
+              _scrollToEvent(context);
+            }
+            return eventTileBuilder(
+              date,
+              events[index].events,
+              Rect.fromLTWH(
+                  events[index].left,
+                  events[index].top,
+                  width - events[index].right - events[index].left,
+                  height - events[index].bottom - events[index].top),
+              events[index].startDuration ?? DateTime.now(),
+              events[index].endDuration ?? DateTime.now(),
+            );
+          }),
         ),
       );
+    });
+  }
+
+  void _scrollToEvent(BuildContext context) {
+    final duration = scrollNotifier.duration ?? Duration.zero;
+    final curve = scrollNotifier.curve ?? Curves.ease;
+
+    scrollNotifier.resetScrollEvent();
+
+    ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((timeStamp) async {
+      try {
+        await Scrollable.ensureVisible(
+          context,
+          duration: duration,
+          curve: curve,
+          alignment: 0.5,
+        );
+      } finally {
+        scrollNotifier.completeScroll();
+      }
     });
   }
 
@@ -239,7 +272,7 @@ class EventGenerator<T> extends StatelessWidget {
       height: height,
       width: width,
       child: Stack(
-        children: _generateEvents(),
+        children: _generateEvents(context),
       ),
     );
   }
@@ -254,7 +287,7 @@ class PressDetector extends StatelessWidget {
   final double width;
 
   /// Defines height of single minute in day/week view page.
-  final double hourHeight;
+  final double heightPerMinute;
 
   /// Defines date for which events will be displayed in given display area.
   final DateTime date;
@@ -262,34 +295,49 @@ class PressDetector extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not available.
+  final MinuteSlotSize minuteSlotSize;
+
   /// A widget that display event tiles in day/week view.
   const PressDetector({
     Key? key,
     required this.height,
     required this.width,
-    required this.hourHeight,
+    required this.heightPerMinute,
     required this.date,
     required this.onDateLongPress,
+    required this.minuteSlotSize,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+
     return Container(
       height: height,
       width: width,
       child: Stack(
         children: [
-          for (int i = 0; i < Constants.hoursADay; i++)
+          for (int i = 0; i < slots; i++)
             Positioned(
-              top: hourHeight * i,
+              top: heightPerSlot * i,
               left: 0,
               right: 0,
-              bottom: height - (hourHeight * (i + 1)),
+              bottom: height - (heightPerSlot * (i + 1)),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onLongPress: () => onDateLongPress
-                    ?.call(DateTime(date.year, date.month, date.day, i)),
-                child: SizedBox(width: width, height: hourHeight),
+                onLongPress: () => onDateLongPress?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
+                child: SizedBox(width: width, height: heightPerSlot),
               ),
             ),
         ],

@@ -4,7 +4,7 @@
 
 part of 'event_arrangers.dart';
 
-class MergeEventArranger<T> extends EventArranger<T> {
+class MergeEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will merge all the simultaneous
   /// events. and that will act like one single event.
   /// [OrganizedCalendarEventData.events] will gives

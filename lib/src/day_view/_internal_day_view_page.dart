@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/event_scroll_notifier.dart';
+import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
@@ -12,7 +14,7 @@ import '../painters.dart';
 import '../typedefs.dart';
 
 /// Defines a single day page.
-class InternalDayViewPage<T> extends StatelessWidget {
+class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Width of the page
   final double width;
 
@@ -68,6 +70,13 @@ class InternalDayViewPage<T> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Defines size of the slots that provides long press callback on area
+  /// where events are not there.
+  final MinuteSlotSize minuteSlotSize;
+
+  /// Notifies if there is any event that needs to be visible instantly.
+  final EventScrollConfiguration scrollNotifier;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -89,6 +98,8 @@ class InternalDayViewPage<T> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.onTileTap,
     required this.onDateLongPress,
+    required this.minuteSlotSize,
+    required this.scrollNotifier,
   }) : super(key: key);
 
   @override
@@ -109,20 +120,13 @@ class InternalDayViewPage<T> extends StatelessWidget {
               showVerticalLine: showVerticalLine,
             ),
           ),
-          if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-            LiveTimeIndicator(
-              liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-              width: width,
-              height: height,
-              heightPerMinute: heightPerMinute,
-              timeLineWidth: timeLineWidth,
-            ),
           PressDetector(
             width: width,
             height: height,
-            hourHeight: hourHeight,
+            heightPerMinute: heightPerMinute,
             date: date,
             onDateLongPress: onDateLongPress,
+            minuteSlotSize: minuteSlotSize,
           ),
           Align(
             alignment: Alignment.centerRight,
@@ -134,6 +138,7 @@ class InternalDayViewPage<T> extends StatelessWidget {
               events: controller.getEventsOnDay(date),
               heightPerMinute: heightPerMinute,
               eventTileBuilder: eventTileBuilder,
+              scrollNotifier: scrollNotifier,
               width: width -
                   timeLineWidth -
                   hourIndicatorSettings.offset -
@@ -148,6 +153,16 @@ class InternalDayViewPage<T> extends StatelessWidget {
             timeLineWidth: timeLineWidth,
             key: ValueKey(heightPerMinute),
           ),
+          if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+            IgnorePointer(
+              child: LiveTimeIndicator(
+                liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                width: width,
+                height: height,
+                heightPerMinute: heightPerMinute,
+                timeLineWidth: timeLineWidth,
+              ),
+            ),
         ],
       ),
     );

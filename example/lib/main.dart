@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,13 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Calendar Page Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.light(),
+        scrollBehavior: ScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.trackpad,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+          },
+        ),
         home: ResponsiveWidget(
           mobileWidget: MobileHomePage(),
           webWidget: WebHomePage(),

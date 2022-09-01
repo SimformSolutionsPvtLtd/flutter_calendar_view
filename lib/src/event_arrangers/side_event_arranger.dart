@@ -4,7 +4,7 @@
 
 part of 'event_arrangers.dart';
 
-class SideEventArranger<T> extends EventArranger<T> {
+class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will arrange
   /// all the events side by side.
   const SideEventArranger();

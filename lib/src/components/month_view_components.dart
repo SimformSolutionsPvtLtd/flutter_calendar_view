@@ -59,7 +59,7 @@ class CircularCell extends StatelessWidget {
   }
 }
 
-class FilledCell<T> extends StatelessWidget {
+class FilledCell<T extends Object?> extends StatelessWidget {
   /// Date of current cell.
   final DateTime date;
 

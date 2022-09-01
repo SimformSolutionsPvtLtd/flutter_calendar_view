@@ -5,9 +5,43 @@
 import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
+import 'extensions.dart';
 import 'typedefs.dart';
 
-class EventController<T> extends ChangeNotifier {
+class EventController<T extends Object?> extends ChangeNotifier {
+  /// Calendar controller to control all the events related operations like,
+  /// adding event, removing event, etc.
+  EventController({
+    /// This method will provide list of events on particular date.
+    ///
+    /// This method is use full when you have recurring events.
+    /// As of now this library does not support recurring events.
+    /// You can implement same behaviour in this function.
+    /// This function will overwrite default behaviour of [getEventsOnDay]
+    /// function which will be used to display events on given day in
+    /// [MonthView], [DayView] and [WeekView].
+    ///
+    EventFilter<T>? eventFilter,
+  }) : _eventFilter = eventFilter;
+
+  //#region Private Fields
+  EventFilter<T>? _eventFilter;
+
+  // Stores events that occurs only once in a map.
+  final _events = <DateTime, List<CalendarEventData<T>>>{};
+
+  // Stores all the events in a list.
+  final _eventList = <CalendarEventData<T>>[];
+
+  // Stores all the ranging events in a list.
+  final _rangingEventList = <CalendarEventData<T>>[];
+
+  //#endregion
+
+  //#region Public Fields
+  /// Returns list of [CalendarEventData<T>] stored in this controller.
+  List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
+
   /// This method will provide list of events on particular date.
   ///
   /// This method is use full when you have recurring events.
@@ -17,26 +51,11 @@ class EventController<T> extends ChangeNotifier {
   /// function which will be used to display events on given day in
   /// [MonthView], [DayView] and [WeekView].
   ///
-  final EventFilter<T>? eventFilter;
+  EventFilter<T>? get eventFilter => _eventFilter;
 
-  /// Calendar controller to control all the events related operations like,
-  /// adding event, removing event, etc.
-  EventController({
-    this.eventFilter,
-  });
+  //#endregion
 
-  // Stores events that occurs only once in a tree type structure.
-  final _events = <_YearEvent<T>>[];
-
-  // Stores all the events in a list.
-  final _eventList = <CalendarEventData<T>>[];
-
-  // Stores all the ranging events in a list.
-  final _rangingEventList = <CalendarEventData<T>>[];
-
-  /// Returns list of [CalendarEventData<T>] stored in this controller.
-  List<CalendarEventData<T>> get events => _eventList.toList(growable: false);
-
+  //#region Public Methods
   /// Add all the events in the list
   /// If there is an event with same date then
   void addAll(List<CalendarEventData<T>> events) {
@@ -56,17 +75,17 @@ class EventController<T> extends ChangeNotifier {
 
   /// Removes [event] from this controller.
   void remove(CalendarEventData<T> event) {
-    for (final e in _events) {
-      if (e.year == event.date.year) {
-        if (e.removeEvent(event) && _eventList.remove(event)) {
-          notifyListeners();
-          return;
-        }
+    final date = event.date.withoutTime;
 
-        break;
-      }
+    // Removes the event from single event map.
+    if (_events[date] != null) {
+      _events[date]?.remove(event);
+      _eventList.remove(event);
+      notifyListeners();
+      return;
     }
 
+    // Removes the event from ranging event.
     for (final e in _rangingEventList) {
       if (e == event) {
         if (_rangingEventList.remove(event) && _eventList.remove(event)) {
@@ -116,27 +135,14 @@ class EventController<T> extends ChangeNotifier {
   /// Returns events on given day.
   ///
   /// To overwrite default behaviour of this function,
-  /// provide [eventFilter] argument in [EventController] constructor.
+  /// provide [_eventFilter] argument in [EventController] constructor.
   List<CalendarEventData<T>> getEventsOnDay(DateTime date) {
-    if (eventFilter != null) return eventFilter!.call(date, this.events);
+    if (_eventFilter != null) return _eventFilter!.call(date, this.events);
 
     final events = <CalendarEventData<T>>[];
 
-    for (var i = 0; i < _events.length; i++) {
-      if (_events[i].year == date.year) {
-        final monthEvents = _events[i]._months;
-
-        for (var j = 0; j < monthEvents.length; j++) {
-          if (monthEvents[j].month == date.month) {
-            final calendarEvents = monthEvents[j]._events;
-
-            for (var k = 0; k < calendarEvents.length; k++) {
-              if (calendarEvents[k].date.day == date.day)
-                events.add(calendarEvents[k]);
-            }
-          }
-        }
-      }
+    if (_events[date] != null) {
+      events.addAll(_events[date]!);
     }
 
     final daysFromRange = <DateTime>[];

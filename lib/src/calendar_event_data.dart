@@ -8,7 +8,7 @@ import 'extensions.dart';
 
 /// Stores all the events on [date]
 @immutable
-class CalendarEventData<T> {
+class CalendarEventData<T extends Object?> {
   /// Specifies date on which all these events are.
   final DateTime date;
 
@@ -69,7 +69,16 @@ class CalendarEventData<T> {
     return other is CalendarEventData<T> &&
         date.compareWithoutTime(other.date) &&
         endDate.compareWithoutTime(other.endDate) &&
-        event == other.event &&
+        ((event == null && other.event == null) ||
+            (event != null && other.event != null && event == other.event)) &&
+        ((startTime == null && other.startTime == null) ||
+            (startTime != null &&
+                other.startTime != null &&
+                startTime!.hasSameTimeAs(other.startTime!))) &&
+        ((endTime == null && other.endTime == null) ||
+            (endTime != null &&
+                other.endTime != null &&
+                endTime!.hasSameTimeAs(other.endTime!))) &&
         title == other.title &&
         description == other.description;
   }

@@ -6,7 +6,8 @@
 
 A Flutter package allows you to easily implement all calendar UI and calendar event functionality.
 
-For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github.io/flutter_calendar_view/).
+For web demo
+visit [Calendar View Example](https://simformsolutionspvtltd.github.io/flutter_calendar_view/).
 
 ## Preview
 
@@ -16,7 +17,8 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
 1. Add dependencies to `pubspec.yaml`
 
-   Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/calendar_view/install)
+   Get the latest version in the 'Installing' tab
+   on [pub.dev](https://pub.dev/packages/calendar_view/install)
 
     ```yaml
     dependencies:
@@ -74,7 +76,9 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
     );
     ```
 
-   For more info on properties visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html).
+   For more info on properties
+   visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html)
+   .
 
 3. Use `controller` to add or remove events.
 
@@ -107,9 +111,12 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
     CalendarControllerProvider.of(context).controller.remove(event);
     ```
 
-   As soon as you add or remove events from the controller, it will automatically update the calendar view assigned to that controller. See, [Use of EventController](#use-of-eventcontroller) for more info
+   As soon as you add or remove events from the controller, it will automatically update the
+   calendar view assigned to that controller. See, [Use of EventController](#use-of-eventcontroller)
+   for more info
 
-4. Use `GlobalKey` to change the page or jump to a specific page or date. See, [Use of GlobalKey](#use-of-globalkey) for more info.
+4. Use `GlobalKey` to change the page or jump to a specific page or date.
+   See, [Use of GlobalKey](#use-of-globalkey) for more info.
 
 ## More on the calendar view
 
@@ -133,10 +140,11 @@ MonthView(
     onCellTap: (events, date) {
         // Implement callback when user taps on a cell.
         print(events);
-    }
+    },
+    startDay: WeekDays.sunday, // To change the first day of the week.
     // This callback will only work if cellBuilder is null.
-    onEventTap: (event, date) => print(event);
-    onDateLongPress: (date) => print(date);
+    onEventTap: (event, date) => print(event),
+    onDateLongPress: (date) => print(date),
 );
 ```
 
@@ -151,13 +159,13 @@ DayView(
     },
     showVerticalLine: true, // To display live time line in day view.
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in day view.
-    minMonth: DateTime(1990),
-    maxMonth: DateTime(2050),
-    initialMonth: DateTime(2021),
+    minDay: DateTime(1990),
+    maxDay: DateTime(2050),
+    initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDateLongPress: (date) => print(date);
+    onDateLongPress: (date) => print(date),
 );
 ```
 
@@ -172,21 +180,26 @@ WeekView(
     },
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in week view.
     width: 400, // width of week view.
-    minMonth: DateTime(1990),
-    maxMonth: DateTime(2050),
-    initialMonth: DateTime(2021),
+    minDay: DateTime(1990),
+    maxDay: DateTime(2050),
+    initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
-    onDateLongPress: (date) => print(date);
+    onDateLongPress: (date) => print(date),
+    startDay: WeekDays.sunday, // To change the first day of the week.
 );
 ```
 
-To see the list of all parameters and detailed description of parameters visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html).
+To see the list of all parameters and detailed description of parameters
+visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html)
+.
 
 ### Use of `EventController`
 
-`EventController` is used to add or remove events from the calendar view. When we add or remove events from the controller, it will automatically update all the views to which this controller is assigned.
+`EventController` is used to add or remove events from the calendar view. When we add or remove
+events from the controller, it will automatically update all the views to which this controller is
+assigned.
 
 Methods provided by `EventController`
 
@@ -199,9 +212,12 @@ Methods provided by `EventController`
 
 ### Use of `GlobalKey`
 
-User needs to define global keys to access functionalities like changing a page or jump to a specific page or date. Users can also access the `controller` assigned to respected view using the global key.
+User needs to define global keys to access functionalities like changing a page or jump to a
+specific page or date. Users can also access the `controller` assigned to respected view using the
+global key.
 
-By assigning global keys to calendar views you can access methods and fields defined by state class of respected views.
+By assigning global keys to calendar views you can access methods and fields defined by state class
+of respected views.
 
 Methods defined by `MonthViewState` class:
 
@@ -224,6 +240,8 @@ Methods defined by `DayViewState` class.
 | animateToPage | int page | Animate to page index defined by `page`. |
 | jumpToDate | DateTime date | Jumps to the page that has a calendar for month defined by `date` |
 | animateToDate | DateTime date | Animate to the page that has a calendar for month defined by `date` |
+| animateToEvent | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
+| jumpToEvent | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
 
 Methods defined by `WeekViewState` class.
 
@@ -235,18 +253,20 @@ Methods defined by `WeekViewState` class.
 | animateToPage | int page | Animate to page index defined by `page`. |
 | jumpToWeek | DateTime week | Jumps to the page that has a calendar for month defined by `week` |
 | animateToWeek | DateTime week | Animate to the page that has a calendar for month defined by `week` |
+| animateToEvent | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
+| jumpToEvent | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
 
 ### Synchronize events between calendar views
 
 There are two ways to synchronize events between calendar views.
 
 1. Provide the same `controller` object to all calendar views used in the project.
-2. Wrap MaterialApp with `CalendarControllerProvider` and provide controller as argument as defined in [Implementation](#implementation).
+2. Wrap MaterialApp with `CalendarControllerProvider` and provide controller as argument as defined
+   in [Implementation](#implementation).
 
 ### Show only working days in WeekView.
 
-You can configure week view such that it displays only specific days.
-ex,
+You can configure week view such that it displays only specific days. ex,
 
 ```dart
 WeekView(
@@ -262,17 +282,16 @@ WeekView(
 
 Above code will create `WeekView` with only five days, from monday to friday.
 
-
 ## Main Contributors
-
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/vatsaltanna"><img src="https://avatars.githubusercontent.com/u/25323183?s=100" width="100px;" alt=""/><br /><sub><b>Vatsal Tanna</b></sub></a></td>
-     <td align="center"><a href="https://github.com/sanket-simform"><img src="https://avatars.githubusercontent.com/u/65167856?v=4" width="100px;" alt=""/><br /><sub><b>Sanket Kachhela</b></sub></a></td>
-     <td align="center"><a href="https://github.com/ParthBaraiya"><img src="https://avatars.githubusercontent.com/u/36261739?v=4" width="100px;" alt=""/><br /><sub><b>Parth Baraiya</b></sub></a></td>
+    <td align="center"><a href="https://github.com/sanket-simform"><img src="https://avatars.githubusercontent.com/u/65167856?v=4" width="100px;" alt=""/><br /><sub><b>Sanket Kachhela</b></sub></a></td>
+    <td align="center"><a href="https://github.com/ParthBaraiya"><img src="https://avatars.githubusercontent.com/u/36261739?v=4" width="100px;" alt=""/><br /><sub><b>Parth Baraiya</b></sub></a></td>
     <td align="center"><a href="https://github.com/ujas-m-simformsolutions"><img src="https://avatars.githubusercontent.com/u/76939001?v=4" width="100px;" alt=""/><br /><sub><b>Ujas Majithiya</b></sub></a></td>
-  </tr>
+    <td align="center"><a href="https://github.com/AnkitPanchal10"><img src="https://avatars.githubusercontent.com/u/38405884?s=100" width="100px;" alt=""/><br /><sub><b>Ankit Panchal</b></sub></a></td>  
+</tr>
 </table>
 <br/>
 
