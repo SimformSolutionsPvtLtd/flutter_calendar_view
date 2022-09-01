@@ -88,47 +88,21 @@ class EventController<T extends Object?> extends ChangeNotifier {
     // Removes the event from ranging event.
     for (final e in _rangingEventList) {
       if (e == event) {
-        if (_rangingEventList.remove(event) && _eventList.remove(event)) {
-          notifyListeners();
-          return;
-        }
-        break;
+        _rangingEventList.remove(event);
+        _eventList.remove(event);
+        notifyListeners();
+        return;
       }
     }
   }
 
   /// Removes multiple [event] from this controller.
   void removeWhere(bool Function(CalendarEventData<T> element) test) {
-    for (final e in _events) {
-      e.removeWhere((element) => test(element));
+    for (final e in _events.values) {
+      e.removeWhere(test);
     }
-    notifyListeners();
-  }
-
-  void _addEvent(CalendarEventData<T> event) {
-    assert(event.endDate.difference(event.date).inDays >= 0,
-        'The end date must be greater or equal to the start date');
-
-    if (event.endDate.difference(event.date).inDays > 0) {
-      _rangingEventList.add(event);
-      _eventList.add(event);
-    } else {
-      for (final e in _events) {
-        if (e.year == event.date.year && e.addEvent(event)) {
-          _eventList.add(event);
-          notifyListeners();
-
-          return;
-        }
-      }
-
-      final newEvent = _YearEvent<T>(year: event.date.year);
-      if (newEvent.addEvent(event)) {
-        _events.add(newEvent);
-        _eventList.add(event);
-      }
-    }
-
+    _rangingEventList.removeWhere(test);
+    _eventList.removeWhere(test);
     notifyListeners();
   }
 
@@ -165,92 +139,39 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
     return events;
   }
-}
 
-class _YearEvent<T> {
-  int year;
-  final _months = <_MonthEvent<T>>[];
-
-  List<_MonthEvent<T>> get months => _months.toList(growable: false);
-
-  _YearEvent({required this.year});
-
-  int hasMonth(int month) {
-    for (var i = 0; i < _months.length; i++) {
-      if (_months[i].month == month) return i;
-    }
-    return -1;
-  }
-
-  bool addEvent(CalendarEventData<T> event) {
-    for (var i = 0; i < _months.length; i++) {
-      if (_months[i].month == event.date.month) {
-        return _months[i].addEvent(event);
-      }
-    }
-    final newEvent = _MonthEvent<T>(month: event.date.month)..addEvent(event);
-    _months.add(newEvent);
-    return true;
-  }
-
-  List<CalendarEventData<T>> getAllEvents() {
-    final totalEvents = <CalendarEventData<T>>[];
-    for (var i = 0; i < _months.length; i++) {
-      totalEvents.addAll(_months[i].events);
-    }
-    return totalEvents;
-  }
-
-  bool removeEvent(CalendarEventData<T> event) {
-    for (final e in _months) {
-      if (e.month == event.date.month) {
-        return e.removeEvent(event);
-      }
-    }
-    return false;
-  }
-
-  void removeWhere(bool Function(CalendarEventData<T> element) test) {
-    for (final e in _months) {
-      e.removeWhere((element) => test(element));
+  void updateFilter({required EventFilter<T> newFilter}) {
+    if (newFilter != _eventFilter) {
+      _eventFilter = newFilter;
+      notifyListeners();
     }
   }
-}
 
-class _MonthEvent<T> {
-  int month;
-  final _events = <CalendarEventData<T>>[];
+  //#endregion
 
-  List<CalendarEventData<T>> get events => _events.toList(growable: false);
+  //#region Private Methods
+  void _addEvent(CalendarEventData<T> event) {
+    assert(event.endDate.difference(event.date).inDays >= 0,
+        'The end date must be greater or equal to the start date');
 
-  _MonthEvent({required this.month});
-
-  int hasDay(int day) {
-    for (var i = 0; i < _events.length; i++) {
-      if (_events[i].date.day == day) return i;
-    }
-    return -1;
-  }
-
-  bool addEvent(CalendarEventData<T> event) {
-    if (!_events.contains(event)) {
-      _events.add(event);
-      return true;
-    }
-    return false;
-  }
-
-  bool removeEvent(CalendarEventData<T> event) {
-    final index = _events.indexWhere((element) => element == event);
-    if (index == -1) {
-      return false;
+    if (event.endDate.difference(event.date).inDays > 0) {
+      _rangingEventList.add(event);
     } else {
-      _events.removeAt(index);
-      return true;
+      final date = event.date.withoutTime;
+
+      if (_events[date] == null) {
+        _events.addAll({
+          date: [event],
+        });
+      } else {
+        _events[date]!.add(event);
+      }
     }
+
+    _eventList.add(event);
+
+    notifyListeners();
   }
 
-  void removeWhere(bool Function(CalendarEventData<T> element) test) {
-    _events.removeWhere((element) => test(element));
-  }
+//#endregion
 }
