@@ -96,6 +96,16 @@ class EventController<T extends Object?> extends ChangeNotifier {
     }
   }
 
+  /// Removes multiple [event] from this controller.
+  void removeWhere(bool Function(CalendarEventData<T> element) test) {
+    for (final e in _events.values) {
+      e.removeWhere(test);
+    }
+    _rangingEventList.removeWhere(test);
+    _eventList.removeWhere(test);
+    notifyListeners();
+  }
+
   /// Returns events on given day.
   ///
   /// To overwrite default behaviour of this function,
@@ -163,5 +173,5 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
-  //#endregion
+//#endregion
 }
