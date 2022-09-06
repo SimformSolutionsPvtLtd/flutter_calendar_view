@@ -30,8 +30,10 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Gets difference of days between [date] and calling object.
-  int getDayDifference(DateTime date) =>
-      withoutTime.difference(date.withoutTime).inDays.abs();
+  int getDayDifference(DateTime date) => DateTime.utc(year, month, day)
+      .difference(DateTime.utc(date.year, date.month, date.day))
+      .inDays
+      .abs();
 
   /// Gets difference of weeks between [date] and calling object.
   int getWeekDifference(DateTime date, {WeekDays start = WeekDays.monday}) =>
