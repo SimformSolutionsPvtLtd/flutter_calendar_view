@@ -70,6 +70,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Called when user taps on calendar.
+  final DateTapCallback? onDateTap;
+
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
@@ -98,6 +101,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.verticalLineOffset,
     required this.onTileTap,
     required this.onDateLongPress,
+    required this.onDateTap,
     required this.minuteSlotSize,
     required this.scrollNotifier,
   }) : super(key: key);
@@ -122,13 +126,13 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           ),
           PressDetector(
             width: width,
-              height: height,
-              heightPerMinute: heightPerMinute,
-              date: date,
-              onDateTap: onDateTap,
-              onDateLongPress: onDateLongPress,
-              minuteSlotSize: minuteSlotSize,
-            ),
+            height: height,
+            heightPerMinute: heightPerMinute,
+            date: date,
+            onDateTap: onDateTap,
+            onDateLongPress: onDateLongPress,
+            minuteSlotSize: minuteSlotSize,
+          ),
           Align(
             alignment: Alignment.centerRight,
             child: EventGenerator<T>(
