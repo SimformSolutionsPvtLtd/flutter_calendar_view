@@ -141,6 +141,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// This method will be called when user taps on calendar.
+  final DateTapCallback? onDateTap;
+
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
@@ -174,6 +177,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
+    this.onDateTap,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
@@ -344,6 +348,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                   date: date,
                                   onTileTap: widget.onEventTap,
                                   onDateLongPress: widget.onDateLongPress,
+                                  onDateTap: widget.onDateTap,
                                   showLiveLine: widget
                                           .showLiveTimeLineInAllDays ||
                                       date.compareWithoutTime(DateTime.now()),

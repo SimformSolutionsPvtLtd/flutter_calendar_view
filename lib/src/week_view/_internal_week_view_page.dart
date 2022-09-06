@@ -87,6 +87,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Called when user taps on calendar.
+  final DateTapCallback? onDateTap;
+
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
@@ -118,6 +121,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.scrollController,
     required this.onTileTap,
     required this.onDateLongPress,
+    required this.onDateTap,
     required this.weekDays,
     required this.minuteSlotSize,
     required this.scrollConfiguration,
@@ -208,6 +212,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       height: height,
                                       heightPerMinute: heightPerMinute,
                                       date: dates[index],
+                                      onDateTap: onDateTap,
                                       onDateLongPress: onDateLongPress,
                                       minuteSlotSize: minuteSlotSize,
                                     ),
