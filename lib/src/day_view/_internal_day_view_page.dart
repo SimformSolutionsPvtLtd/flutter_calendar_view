@@ -122,12 +122,13 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           ),
           PressDetector(
             width: width,
-            height: height,
-            heightPerMinute: heightPerMinute,
-            date: date,
-            onDateLongPress: onDateLongPress,
-            minuteSlotSize: minuteSlotSize,
-          ),
+              height: height,
+              heightPerMinute: heightPerMinute,
+              date: date,
+              onDateTap: onDateTap,
+              onDateLongPress: onDateLongPress,
+              minuteSlotSize: minuteSlotSize,
+            ),
           Align(
             alignment: Alignment.centerRight,
             child: EventGenerator<T>(
