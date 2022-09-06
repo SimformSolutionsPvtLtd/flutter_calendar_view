@@ -589,6 +589,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         );
         _currentEndDate = _currentStartDate.add(Duration(days: 6));
         _currentIndex = index;
+        _currentWeek = _currentStartDate;
       });
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
