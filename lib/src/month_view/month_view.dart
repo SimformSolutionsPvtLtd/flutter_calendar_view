@@ -24,6 +24,19 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Used default title builder if null.
   final DateWidgetBuilder? headerBuilder;
 
+  /// This function will generate DateString in the calendar header.
+  /// Useful for I18n
+  final StringProvider? headerStringBuilder;
+
+  /// This function will generate DayString in month view cell.
+  /// Useful for I18n
+  final StringProvider? dateStringBuilder;
+
+  /// This function will generate WeeDayString in weekday view.
+  /// Useful for I18n
+  /// Ex : ['Mon','Sun','Wed','Thu','Fri','Sat','Sun']
+  final String Function(int)? weekDayStringBuilder;
+
   /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;
 
@@ -136,6 +149,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onEventTap,
     this.onDateLongPress,
     this.startDay = WeekDays.monday,
+    this.headerStringBuilder,
+    this.dateStringBuilder,
+    this.weekDayStringBuilder,
   }) : super(key: key);
 
   @override
@@ -431,6 +447,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       },
       onPreviousMonth: previousPage,
       date: date,
+      dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
     );
   }
@@ -439,6 +456,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Widget _defaultWeekDayBuilder(int index) {
     return WeekDayTile(
       dayIndex: index,
+      weekDayStringBuilder: widget.weekDayStringBuilder,
     );
   }
 
@@ -451,6 +469,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
       events: events,
       onTileTap: widget.onEventTap,
+      dateStringBuilder: widget.dateStringBuilder,
     );
   }
 
