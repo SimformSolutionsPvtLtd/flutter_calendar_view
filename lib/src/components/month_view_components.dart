@@ -66,6 +66,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// List of events on for current date.
   final List<CalendarEventData<T>> events;
 
+  /// defines date string for current cell.
+  final StringProvider? dateStringBuilder;
+
   /// Defines if cell should be highlighted or not.
   /// If true it will display date title in a circle.
   final bool shouldHighlight;
@@ -109,6 +112,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.highlightRadius = 11,
     this.titleColor = Constants.black,
     this.highlightedTitleColor = Constants.white,
+    this.dateStringBuilder,
   }) : super(key: key);
 
   @override
@@ -125,7 +129,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
             backgroundColor:
                 shouldHighlight ? highlightColor : Colors.transparent,
             child: Text(
-              "${date.day}",
+              dateStringBuilder?.call(date) ?? "${date.day}",
               style: TextStyle(
                 color: shouldHighlight
                     ? highlightedTitleColor
@@ -197,6 +201,7 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousMonth,
     Color iconColor = Constants.black,
     Color backgroundColor = Constants.headerBackground,
+    StringProvider? dateStringBuilder,
     required DateTime date,
   }) : super(
           key: key,
@@ -206,7 +211,8 @@ class MonthPageHeader extends CalendarPageHeader {
           onTitleTapped: onTitleTapped,
           iconColor: iconColor,
           backgroundColor: backgroundColor,
-          dateStringBuilder: MonthPageHeader._monthStringBuilder,
+          dateStringBuilder:
+              dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
         );
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
@@ -215,6 +221,9 @@ class MonthPageHeader extends CalendarPageHeader {
 class WeekDayTile extends StatelessWidget {
   /// Index of week day.
   final int dayIndex;
+
+  /// display week day
+  final String Function(int)? weekDayStringBuilder;
 
   /// Background color of single week day tile.
   final Color backgroundColor;
@@ -232,6 +241,7 @@ class WeekDayTile extends StatelessWidget {
     this.backgroundColor = Constants.white,
     this.displayBorder = true,
     this.textStyle,
+    this.weekDayStringBuilder,
   }) : super(key: key);
 
   @override
@@ -248,7 +258,7 @@ class WeekDayTile extends StatelessWidget {
         ),
       ),
       child: Text(
-        Constants.weekTitles[dayIndex],
+        weekDayStringBuilder?.call(dayIndex) ?? Constants.weekTitles[dayIndex],
         style: textStyle ??
             TextStyle(
               fontSize: 17,
