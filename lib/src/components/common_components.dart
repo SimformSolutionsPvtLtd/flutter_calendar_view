@@ -35,6 +35,9 @@ class CalendarPageHeader extends StatelessWidget {
   /// Color of icons at both sides of header.
   final Color iconColor;
 
+  /// Style of title.
+  final TextStyle? textStyle;
+
   /// Common header for month and day view In this header user can define format
   /// in which date will be displayed by providing [dateStringBuilder] function.
   const CalendarPageHeader({
@@ -47,6 +50,7 @@ class CalendarPageHeader extends StatelessWidget {
     this.secondaryDate,
     this.backgroundColor = Constants.headerBackground,
     this.iconColor = Constants.black,
+    this.textStyle,
   }) : super(key: key);
 
   @override
@@ -79,6 +83,7 @@ class CalendarPageHeader extends StatelessWidget {
               child: Text(
                 dateStringBuilder(date, secondaryDate: secondaryDate),
                 textAlign: TextAlign.center,
+                style: textStyle,
               ),
             ),
           ),
