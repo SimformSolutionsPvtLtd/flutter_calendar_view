@@ -149,6 +149,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Style for DayView header.
   final HeaderStyle headerStyle;
 
+  /// Define start time of day view.
+  final int startTime;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -179,6 +182,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventTap,
     this.onDateLongPress,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
+    this.startTime = 1,
     this.headerStyle = const HeaderStyle(),
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
@@ -335,34 +339,35 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             _minDate.day + index);
 
                         return ValueListenableBuilder(
-                            valueListenable: _scrollConfiguration,
-                            builder: (_, __, ___) => InternalDayViewPage<T>(
-                                  key: ValueKey(
-                                      _hourHeight.toString() + date.toString()),
-                                  width: _width,
-                                  liveTimeIndicatorSettings:
-                                      _liveTimeIndicatorSettings,
-                                  timeLineBuilder: _timeLineBuilder,
-                                  eventTileBuilder: _eventTileBuilder,
-                                  heightPerMinute: widget.heightPerMinute,
-                                  hourIndicatorSettings: _hourIndicatorSettings,
-                                  date: date,
-                                  onTileTap: widget.onEventTap,
-                                  onDateLongPress: widget.onDateLongPress,
-                                  showLiveLine: widget
-                                          .showLiveTimeLineInAllDays ||
-                                      date.compareWithoutTime(DateTime.now()),
-                                  timeLineOffset: widget.timeLineOffset,
-                                  timeLineWidth: _timeLineWidth,
-                                  verticalLineOffset: widget.verticalLineOffset,
-                                  showVerticalLine: widget.showVerticalLine,
-                                  height: _height,
-                                  controller: controller,
-                                  hourHeight: _hourHeight,
-                                  eventArranger: _eventArranger,
-                                  minuteSlotSize: widget.minuteSlotSize,
-                                  scrollNotifier: _scrollConfiguration,
-                                ));
+                          valueListenable: _scrollConfiguration,
+                          builder: (_, __, ___) => InternalDayViewPage<T>(
+                            key: ValueKey(
+                                _hourHeight.toString() + date.toString()),
+                            width: _width,
+                            liveTimeIndicatorSettings:
+                                _liveTimeIndicatorSettings,
+                            timeLineBuilder: _timeLineBuilder,
+                            eventTileBuilder: _eventTileBuilder,
+                            heightPerMinute: widget.heightPerMinute,
+                            hourIndicatorSettings: _hourIndicatorSettings,
+                            date: date,
+                            onTileTap: widget.onEventTap,
+                            onDateLongPress: widget.onDateLongPress,
+                            showLiveLine: widget.showLiveTimeLineInAllDays ||
+                                date.compareWithoutTime(DateTime.now()),
+                            timeLineOffset: widget.timeLineOffset,
+                            timeLineWidth: _timeLineWidth,
+                            verticalLineOffset: widget.verticalLineOffset,
+                            showVerticalLine: widget.showVerticalLine,
+                            height: _height,
+                            controller: controller,
+                            hourHeight: _hourHeight,
+                            eventArranger: _eventArranger,
+                            minuteSlotSize: widget.minuteSlotSize,
+                            scrollNotifier: _scrollConfiguration,
+                            startTime: widget.startTime,
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -469,7 +474,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
-      date: date, timeStringBuilder: widget.timeStringBuilder);
+        date: date,
+        timeStringBuilder: widget.timeStringBuilder,
+        startTime: widget.startTime,
+      );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
