@@ -29,6 +29,22 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Header builder for week page header.
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
 
+  /// This function will generate dateString int the calendar header.
+  /// Useful for I18n
+  final StringProvider? headerStringBuilder;
+
+  /// This function will generate the TimeString in the timeline.
+  /// Useful for I18n
+  final StringProvider? timeLineStringBuilder;
+
+  /// This function will generate WeekDayString in the weekday.
+  /// Useful for I18n
+  final String Function(int)? weekDayStringBuilder;
+
+  /// This function will generate WeekDayDateString in the weekday.
+  /// Useful for I18n
+  final String Function(int)? weekDayDateStringBuilder;
+
   /// Arrange events.
   final EventArranger<T>? eventArranger;
 
@@ -169,6 +185,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showWeekends = true,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
+    this.headerStringBuilder,
+    this.timeLineStringBuilder,
+    this.weekDayStringBuilder,
+    this.weekDayDateStringBuilder,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -506,8 +526,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(Constants.weekTitles[date.weekday - 1]),
-          Text(date.day.toString()),
+          Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
+              Constants.weekTitles[date.weekday - 1]),
+          Text(widget.weekDayDateStringBuilder?.call(date.day) ??
+              date.day.toString()),
         ],
       ),
     );
@@ -517,12 +539,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(DateTime date) {
+    final timeLineString = widget.timeLineStringBuilder?.call(date) ??
+        "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
         child: Text(
-          "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+          timeLineString,
           textAlign: TextAlign.right,
           style: TextStyle(
             fontSize: 15.0,
@@ -575,6 +599,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         if (selectedDate == null) return;
         jumpToWeek(selectedDate);
       },
+      headerStringBuilder: widget.headerStringBuilder,
     );
   }
 
