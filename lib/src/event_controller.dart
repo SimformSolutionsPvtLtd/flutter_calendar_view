@@ -119,12 +119,21 @@ class EventController<T extends Object?> extends ChangeNotifier {
       events.addAll(_events[date]!);
     }
 
+    final daysFromRange = <DateTime>[];
     for (final rangingEvent in _rangingEventList) {
-      if (date == rangingEvent.date ||
-          date == rangingEvent.endDate ||
-          (date.isBefore(rangingEvent.endDate) &&
-              date.isAfter(rangingEvent.date))) {
-        events.add(rangingEvent);
+      for (var i = 0;
+          i <= rangingEvent.endDate.difference(rangingEvent.date).inDays;
+          i++) {
+        daysFromRange.add(rangingEvent.date.add(Duration(days: i)));
+      }
+      if (rangingEvent.date.isBefore(rangingEvent.endDate)) {
+        for (final eventDay in daysFromRange) {
+          if (eventDay.year == date.year &&
+              eventDay.month == date.month &&
+              eventDay.day == date.day) {
+            events.add(rangingEvent);
+          }
+        }
       }
     }
 
