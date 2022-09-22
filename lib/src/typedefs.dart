@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
+import 'enumerations.dart';
 
 typedef CellBuilder<T extends Object?> = Widget Function(
   DateTime date,
@@ -20,6 +21,14 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime startDuration,
   DateTime endDuration,
 );
+
+typedef DetectorBuilder<T extends Object?> = Widget Function({
+  required DateTime date,
+  required double height,
+  required double width,
+  required double heightPerMinute,
+  required MinuteSlotSize minuteSlotSize,
+});
 
 typedef WeekDayBuilder = Widget Function(
   int day,
