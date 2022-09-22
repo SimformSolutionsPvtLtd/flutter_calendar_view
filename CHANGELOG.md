@@ -1,3 +1,12 @@
+# [1.0.1 - 16 Sep 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.1)
+
+- Fixed
+  issue [#93 - Showing only 1 day in DayView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/93)
+- Added
+  feature [#26 - Support for locale](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/26)
+- Added
+  feature [#108 - WeekPage header color customization](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/108)
+
 # [1.0.0 - 12 Aug 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.0)
 
 - **Breaking Changes**
