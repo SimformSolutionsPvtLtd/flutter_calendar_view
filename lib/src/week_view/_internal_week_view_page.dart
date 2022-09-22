@@ -67,6 +67,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Builder for week day title.
   final DateWidgetBuilder weekDayBuilder;
 
+  /// Builds custom PressDetector widget
+  final DetectorBuilder weekDetectorBuilder;
+
   /// Height of week title.
   final double weekTitleHeight;
 
@@ -121,6 +124,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.weekDays,
     required this.minuteSlotSize,
     required this.scrollConfiguration,
+    required this.weekDetectorBuilder,
   }) : super(key: key);
 
   @override
@@ -203,12 +207,11 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                 width: weekTitleWidth,
                                 child: Stack(
                                   children: [
-                                    PressDetector(
+                                    weekDetectorBuilder(
                                       width: weekTitleWidth,
                                       height: height,
                                       heightPerMinute: heightPerMinute,
                                       date: dates[index],
-                                      onDateLongPress: onDateLongPress,
                                       minuteSlotSize: minuteSlotSize,
                                     ),
                                     EventGenerator<T>(
