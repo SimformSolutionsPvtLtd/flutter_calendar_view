@@ -145,6 +145,12 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Use this field to disable the calendar scrolling
+  final ScrollPhysics? scrollPhysics;
+
+  /// Use this field to disable the page view scrolling behavior
+  final ScrollPhysics? pageViewPhysics;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -175,6 +181,8 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventTap,
     this.onDateLongPress,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
+    this.scrollPhysics,
+    this.pageViewPhysics,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -319,9 +327,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
               Expanded(
                 child: SingleChildScrollView(
                   controller: _scrollController,
+                  physics: widget.scrollPhysics,
                   child: SizedBox(
                     height: _height,
                     child: PageView.builder(
+                      physics: widget.pageViewPhysics,
                       itemCount: _totalDays,
                       controller: _pageController,
                       onPageChanged: _onPageChange,
