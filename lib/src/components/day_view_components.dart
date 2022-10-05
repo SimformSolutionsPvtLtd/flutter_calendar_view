@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
-import '../constants.dart';
 import '../extensions.dart';
 import '../style/header_style.dart';
 import '../typedefs.dart';
@@ -122,17 +121,12 @@ class DayPageHeader extends CalendarPageHeader {
     VoidCallback? onNextDay,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousDay,
-    Color iconColor = Constants.black,
-    Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
           key: key,
           date: date,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           onNextDay: onNextDay,
           onPreviousDay: onPreviousDay,
           onTitleTapped: onTitleTapped,

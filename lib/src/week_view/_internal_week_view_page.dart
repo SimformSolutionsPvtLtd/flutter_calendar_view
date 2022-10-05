@@ -5,13 +5,14 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
-import '../components/week_view_components.dart';
 import '../components/event_scroll_notifier.dart';
+import '../components/week_view_components.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
 import '../painters.dart';
+import '../style/week_style.dart';
 import '../typedefs.dart';
 
 /// A single page for week view.
@@ -160,6 +161,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Style for Calendar's week days.
+  final DaysOfWeekStyle weekDayStyle;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -208,6 +212,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
+    this.weekDayStyle = const DaysOfWeekStyle(),
   }) : super(key: key);
 
   @override
@@ -262,13 +267,19 @@ class _InternalWeekViewPageState<T extends Object?>
                       widget.hourIndicatorSettings.offset,
                   child: widget.weekNumberBuilder.call(filteredDates[0]),
                 ),
-                ...List.generate(
-                  filteredDates.length,
-                  (index) => SizedBox(
-                    height: widget.weekTitleHeight,
-                    width: widget.weekTitleWidth,
-                    child: widget.weekDayBuilder(
-                      filteredDates[index],
+                Padding(
+                  padding:
+                      widget.weekDayStyle.padding + widget.weekDayStyle.margin,
+                  child: Row(
+                    children: List.generate(
+                      filteredDates.length,
+                      (index) => SizedBox(
+                        height: widget.weekTitleHeight,
+                        width: widget.weekTitleWidth,
+                        child: widget.weekDayBuilder(
+                          filteredDates[index],
+                        ),
+                      ),
                     ),
                   ),
                 )

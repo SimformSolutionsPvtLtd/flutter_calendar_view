@@ -19,6 +19,7 @@ import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../style/header_style.dart';
+import '../style/week_style.dart';
 import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
@@ -87,7 +88,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
 
-  /// A funtion that returns a [CustomPainter].
+  /// A function that returns a [CustomPainter].
   ///
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
@@ -240,6 +241,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Style for Calendar's week days.
+  final DaysOfWeekStyle daysOfWeekStyle;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -298,6 +302,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    this.daysOfWeekStyle = const DaysOfWeekStyle(),
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -310,7 +315,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
             heightPerMinute > 0, "Height per minute must be greater than 0."),
         assert(
           weekDetectorBuilder == null || onDateLongPress == null,
-          """If you use [weekPressDetectorBuilder] 
+          """If you use [weekPressDetectorBuilder]
           do not provide [onDateLongPress]""",
         ),
         assert(
@@ -750,15 +755,25 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(DateTime date) {
-    return Center(
+    return Container(
+      decoration: widget.daysOfWeekStyle.weekDayDecoration,
+      alignment: Alignment.center,
+      padding: widget.daysOfWeekStyle.padding,
+      margin: widget.daysOfWeekStyle.margin,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-              Constants.weekTitles[date.weekday - 1]),
-          Text(widget.weekDayDateStringBuilder?.call(date.day) ??
-              date.day.toString()),
+          Text(
+            widget.weekDayStringBuilder?.call(date.weekday - 1) ??
+                Constants.weekTitles[date.weekday - 1],
+            style: widget.daysOfWeekStyle.weekDayTexStyle,
+          ),
+          Text(
+            widget.weekDayDateStringBuilder?.call(date.day) ??
+                date.day.toString(),
+            style: widget.daysOfWeekStyle.weekDayTexStyle,
+          ),
         ],
       ),
     );

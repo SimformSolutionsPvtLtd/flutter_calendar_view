@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+
 /// Class for styling Calendar's header.
 class HeaderStyle {
   /// Provide text style for calendar's header.
@@ -8,12 +10,12 @@ class HeaderStyle {
   /// Widget used for left icon.
   ///
   /// Tapping on it will navigate to previous calendar page.
-  final Widget? leftIcon;
+  final Widget leftIcon;
 
   /// Widget used for right icon.
   ///
   /// Tapping on it will navigate to next calendar page.
-  final Widget? rightIcon;
+  final Widget rightIcon;
 
   /// Determines left icon visibility.
   final bool leftIconVisible;
@@ -37,13 +39,13 @@ class HeaderStyle {
   final TextAlign titleAlign;
 
   /// Decoration of whole header.
-  final BoxDecoration? decoration;
+  final BoxDecoration decoration;
 
   /// Create a `HeaderStyle` of calendar view
   const HeaderStyle({
     this.headerTextStyle,
-    this.leftIcon,
-    this.rightIcon,
+    this.leftIcon = const Icon(Icons.chevron_left, size: 30),
+    this.rightIcon = const Icon(Icons.chevron_right, size: 30),
     this.leftIconVisible = true,
     this.rightIconVisible = true,
     this.headerMargin = EdgeInsets.zero,
@@ -51,6 +53,6 @@ class HeaderStyle {
     this.leftIconPadding = const EdgeInsets.all(10),
     this.rightIconPadding = const EdgeInsets.all(10),
     this.titleAlign = TextAlign.center,
-    this.decoration,
+    this.decoration = const BoxDecoration(color: Constants.headerBackground),
   });
 }

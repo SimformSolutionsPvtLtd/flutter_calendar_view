@@ -9,6 +9,7 @@ import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../style/header_style.dart';
+import '../style/week_style.dart';
 import '../typedefs.dart';
 import 'common_components.dart';
 
@@ -217,8 +218,6 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onNextMonth,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousMonth,
-    Color iconColor = Constants.black,
-    Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle = const HeaderStyle(),
@@ -228,9 +227,6 @@ class MonthPageHeader extends CalendarPageHeader {
           onNextDay: onNextMonth,
           onPreviousDay: onPreviousMonth,
           onTitleTapped: onTitleTapped,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
           headerStyle: headerStyle,
@@ -256,6 +252,9 @@ class WeekDayTile extends StatelessWidget {
   /// Style for week day string.
   final TextStyle? textStyle;
 
+  /// Style for Calendar's week days.
+  final DaysOfWeekStyle daysOfWeekStyle;
+
   /// Title for week day in month view.
   const WeekDayTile({
     Key? key,
@@ -264,26 +263,28 @@ class WeekDayTile extends StatelessWidget {
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
+    this.daysOfWeekStyle = const DaysOfWeekStyle(),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.symmetric(vertical: 10.0),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: displayBorder
-            ? Border.all(
-                color: Constants.defaultBorderColor,
-                width: 0.5,
-              )
-            : null,
-      ),
+      alignment: daysOfWeekStyle.weekDayAlignment,
+      margin: daysOfWeekStyle.weekDayMargin,
+      padding: daysOfWeekStyle.weekDayPadding,
+      decoration: daysOfWeekStyle.weekDayDecoration ??
+          BoxDecoration(
+            color: backgroundColor,
+            border: displayBorder
+                ? Border.all(
+                    color: Constants.defaultBorderColor,
+                    width: 0.5,
+                  )
+                : null,
+          ),
       child: Text(
         weekDayStringBuilder?.call(dayIndex) ?? Constants.weekTitles[dayIndex],
-        style: textStyle ??
+        style: daysOfWeekStyle.weekDayTexStyle ??
             TextStyle(
               fontSize: 17,
               color: Constants.black,
