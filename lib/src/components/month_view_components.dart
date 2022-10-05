@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
+import '../style/header_style.dart';
 import '../typedefs.dart';
 import 'common_components.dart';
 
@@ -203,18 +204,19 @@ class MonthPageHeader extends CalendarPageHeader {
     Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
-    TextStyle? textStyle,
+    HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
           key: key,
           date: date,
           onNextDay: onNextMonth,
           onPreviousDay: onPreviousMonth,
           onTitleTapped: onTitleTapped,
-          iconColor: iconColor,
+          // ignore_for_file: deprecated_member_use_from_same_package
           backgroundColor: backgroundColor,
+          iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
-          textStyle: textStyle,
+          headerStyle: headerStyle,
         );
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";

@@ -17,6 +17,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
@@ -145,6 +146,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Style for DayView header.
+  final HeaderStyle headerStyle;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -175,6 +179,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventTap,
     this.onDateLongPress,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
+    this.headerStyle = const HeaderStyle(),
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -510,6 +515,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         if (selectedDate == null) return;
         jumpToDate(selectedDate);
       },
+      headerStyle: widget.headerStyle,
     );
   }
 
