@@ -12,6 +12,7 @@ import '../constants.dart';
 import '../enumerations.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
+import '../style/header_style.dart';
 import '../typedefs.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
@@ -127,6 +128,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [WeekDays.monday].
   final WeekDays startDay;
 
+  /// Style for MontView header.
+  final HeaderStyle headerStyle;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -152,6 +156,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.headerStringBuilder,
     this.dateStringBuilder,
     this.weekDayStringBuilder,
+    this.headerStyle = const HeaderStyle(),
   }) : super(key: key);
 
   @override
@@ -449,6 +454,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       date: date,
       dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
+      headerStyle: widget.headerStyle,
     );
   }
 

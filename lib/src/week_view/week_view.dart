@@ -15,6 +15,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
@@ -154,6 +155,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Style for WeekView header.
+  final HeaderStyle headerStyle;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -189,6 +193,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
+    this.headerStyle = const HeaderStyle(),
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -600,6 +605,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         jumpToWeek(selectedDate);
       },
       headerStringBuilder: widget.headerStringBuilder,
+      headerStyle: widget.headerStyle,
     );
   }
 
