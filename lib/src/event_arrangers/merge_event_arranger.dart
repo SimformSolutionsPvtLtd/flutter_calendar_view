@@ -17,6 +17,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required int dayStartTime,
   }) {
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
@@ -31,8 +32,12 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           "This error occurs when you does not provide startDate or endDate in "
           "CalendarEventDate or provided endDate occurs before startDate.");
 
-      final eventStart = startTime.getTotalMinutes;
-      final eventEnd = endTime.getTotalMinutes;
+      final eventStart = startTime
+          .subtract(Duration(hours: (dayStartTime - 1) % Constants.hoursADay))
+          .getTotalMinutes;
+      final eventEnd = endTime
+          .subtract(Duration(hours: (dayStartTime - 1) % Constants.hoursADay))
+          .getTotalMinutes;
 
       final arrangeEventLen = arrangedEvents.length;
 

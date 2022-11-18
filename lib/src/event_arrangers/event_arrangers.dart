@@ -5,6 +5,7 @@
 import 'dart:math' as math;
 
 import '../calendar_event_data.dart';
+import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
@@ -28,6 +29,7 @@ abstract class EventArranger<T extends Object?> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required int dayStartTime,
   });
 }
 
