@@ -26,6 +26,10 @@ class HourLinePainter extends CustomPainter {
   /// left offset of vertical line.
   final double verticalLineOffset;
 
+  final int startTime;
+
+  final int endTime;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -34,6 +38,8 @@ class HourLinePainter extends CustomPainter {
     required this.offset,
     required this.showVerticalLine,
     this.verticalLineOffset = 10,
+    this.startTime = 1,
+    this.endTime = 24,
   });
 
   @override
@@ -42,7 +48,9 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 1; i < Constants.hoursADay; i++) {
+    for (var i = 1;
+        i < (endTime - startTime) % Constants.hoursADay + 1;
+        i++) {
       final dy = i * minuteHeight * 60;
       canvas.drawLine(Offset(offset, dy), Offset(size.width, dy), paint);
     }

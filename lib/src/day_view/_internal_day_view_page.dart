@@ -86,6 +86,11 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Notifies if there is any event that needs to be visible instantly.
   final EventScrollConfiguration scrollNotifier;
 
+  /// Define start time of day view
+  final int startTime;
+
+  final int endTime;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -110,6 +115,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.onDateTap,
     required this.minuteSlotSize,
     required this.scrollNotifier,
+    this.startTime = 1,
+    this.endTime = 24,
   }) : super(key: key);
 
   @override
@@ -128,6 +135,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
               minuteHeight: heightPerMinute,
               verticalLineOffset: verticalLineOffset,
               showVerticalLine: showVerticalLine,
+              startTime: startTime,
+              endTime: endTime,
             ),
           ),
           PressDetector(
@@ -138,6 +147,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
             onDateTap: onDateTap,
             onDateLongPress: onDateLongPress,
             minuteSlotSize: minuteSlotSize,
+            startTime: startTime,
           ),
           Align(
             alignment: Alignment.centerRight,
@@ -154,6 +164,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                   timeLineWidth -
                   hourIndicatorSettings.offset -
                   verticalLineOffset,
+              startTime: startTime,
             ),
           ),
           TimeLine(
@@ -163,6 +174,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
             timeLineOffset: timeLineOffset,
             timeLineWidth: timeLineWidth,
             key: ValueKey(heightPerMinute),
+            startTime: startTime,
+            endTime: endTime,
           ),
           if (showLiveLine && liveTimeIndicatorSettings.height > 0)
             IgnorePointer(
@@ -172,6 +185,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                 height: height,
                 heightPerMinute: heightPerMinute,
                 timeLineWidth: timeLineWidth,
+                startTime: startTime,
+                endTime: endTime,
               ),
             ),
         ],

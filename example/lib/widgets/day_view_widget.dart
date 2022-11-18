@@ -18,6 +18,9 @@ class DayViewWidget extends StatelessWidget {
     return DayView<Event>(
       key: state,
       width: width,
+      startTime: 19,
+      endTime: 21,
+      onDateLongPress: print,
     );
   }
 }
