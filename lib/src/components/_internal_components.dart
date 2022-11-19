@@ -35,19 +35,15 @@ class LiveTimeIndicator extends StatefulWidget {
   /// Defines height occupied by one minute.
   final double heightPerMinute;
 
-  /// Define start time of day.
-  final int startTime;
-
   /// Widget to display tile line according to current time.
-  const LiveTimeIndicator({
-    Key? key,
-    required this.width,
-    required this.height,
-    required this.timeLineWidth,
-    required this.liveTimeIndicatorSettings,
-    required this.heightPerMinute,
-    this.startTime = 1,
-  }) : super(key: key);
+  const LiveTimeIndicator(
+      {Key? key,
+      required this.width,
+      required this.height,
+      required this.timeLineWidth,
+      required this.liveTimeIndicatorSettings,
+      required this.heightPerMinute})
+      : super(key: key);
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -60,8 +56,8 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   @override
   void initState() {
     super.initState();
-    _currentDate = DateTime.now().subtract(
-        Duration(hours: (widget.startTime - 1) % Constants.hoursADay));
+
+    _currentDate = DateTime.now();
     _timer = Timer(Duration(seconds: 1), setTimer);
   }
 
@@ -77,8 +73,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   void setTimer() {
     if (mounted) {
       setState(() {
-        _currentDate = DateTime.now().subtract(
-            Duration(hours: (widget.startTime - 1) % Constants.hoursADay));
+        _currentDate = DateTime.now();
         _timer = Timer(Duration(seconds: 1), setTimer);
       });
     }
@@ -120,14 +115,14 @@ class TimeLine extends StatelessWidget {
   static DateTime get _date => DateTime.now();
 
   /// Time line to display time at left side of day or week view.
-  const TimeLine({
-    Key? key,
-    required this.timeLineWidth,
-    required this.hourHeight,
-    required this.height,
-    required this.timeLineOffset,
-    required this.timeLineBuilder,
-  }) : super(key: key);
+  const TimeLine(
+      {Key? key,
+      required this.timeLineWidth,
+      required this.hourHeight,
+      required this.height,
+      required this.timeLineOffset,
+      required this.timeLineBuilder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -194,9 +189,6 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollNotifier;
 
-  /// Define start time of day.
-  final int startTime;
-
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -209,7 +201,6 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.date,
     required this.onTileTap,
     required this.scrollNotifier,
-    this.startTime = 1,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event
@@ -221,7 +212,6 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       height: height,
       width: width,
       heightPerMinute: heightPerMinute,
-      dayStartTime: startTime,
     );
 
     return List.generate(events.length, (index) {
@@ -309,9 +299,6 @@ class PressDetector extends StatelessWidget {
   /// where events are not available.
   final MinuteSlotSize minuteSlotSize;
 
-  ///Define start time of day
-  final int startTime;
-
   /// A widget that display event tiles in day/week view.
   const PressDetector({
     Key? key,
@@ -321,7 +308,6 @@ class PressDetector extends StatelessWidget {
     required this.date,
     required this.onDateLongPress,
     required this.minuteSlotSize,
-    this.startTime = 1,
   }) : super(key: key);
 
   @override
@@ -348,11 +334,7 @@ class PressDetector extends StatelessWidget {
                     date.month,
                     date.day,
                     0,
-                    minuteSlotSize.minutes *
-                        ((i +
-                                (startTime - 1) *
-                                    (slots ~/ Constants.hoursADay)) %
-                            slots),
+                    minuteSlotSize.minutes * i,
                   ),
                 ),
                 child: SizedBox(width: width, height: heightPerSlot),

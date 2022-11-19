@@ -153,27 +153,19 @@ class DefaultTimeLineMark extends StatelessWidget {
   /// Text style for time string.
   final TextStyle? markingStyle;
 
-  /// Define start time of day.
-  final int startTime;
-
   /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
     Key? key,
     required this.date,
     this.markingStyle,
     this.timeStringBuilder,
-    this.startTime = 1,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final getAmPm =
-        ((date.hour + (startTime - 1)) % Constants.hoursADay) ~/ 12 == 0
-            ? 'am'
-            : 'pm';
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
-        : "${((date.hour - 1 + (startTime - 1)) % 12) + 1} $getAmPm";
+        : "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
