@@ -30,6 +30,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl:
   flutter_colorpicker: ^0.6.0
+  context_menus:
+  go_router: ^5.1.10
   calendar_view:
     path: ../
 

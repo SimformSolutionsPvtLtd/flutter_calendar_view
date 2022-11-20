@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
-import '../pages/calendar_settings/calendar_settings_dialog.dart';
+// import '../pages/calendar_settings/calendar_settings_dialog.dart';
 import 'add_event_widget.dart';
 
 class CalendarConfig extends StatelessWidget {
@@ -37,7 +37,8 @@ class CalendarConfig extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () => CalendarSettingsDialog().show(context),
+                onPressed: () {},
+                // onPressed: () => CalendarSettingsDialog().show(context),
                 padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
                 icon: Icon(
                   Icons.settings,
