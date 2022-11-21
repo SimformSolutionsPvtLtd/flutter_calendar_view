@@ -77,9 +77,6 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Notifies if there is any event that needs to be visible instantly.
   final EventScrollConfiguration scrollNotifier;
 
-  /// Define start time of day view
-  final int startTime;
-
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -103,7 +100,6 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.onDateLongPress,
     required this.minuteSlotSize,
     required this.scrollNotifier,
-    this.startTime = 1,
   }) : super(key: key);
 
   @override
@@ -131,7 +127,6 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
             date: date,
             onDateLongPress: onDateLongPress,
             minuteSlotSize: minuteSlotSize,
-            startTime: startTime,
           ),
           Align(
             alignment: Alignment.centerRight,
@@ -148,7 +143,6 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                   timeLineWidth -
                   hourIndicatorSettings.offset -
                   verticalLineOffset,
-              startTime: startTime,
             ),
           ),
           TimeLine(
@@ -167,7 +161,6 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                 height: height,
                 heightPerMinute: heightPerMinute,
                 timeLineWidth: timeLineWidth,
-                startTime: startTime,
               ),
             ),
         ],

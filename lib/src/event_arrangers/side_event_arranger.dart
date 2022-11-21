@@ -15,7 +15,6 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
-    required int dayStartTime,
   }) {
     final durations = _getEventsDuration(events);
     final tempEvents = [...events]..sort((e1, e2) =>
@@ -66,19 +65,10 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
         if (table[i][j] != null && (event == null || table[i][j] != event)) {
           event = table[i][j];
 
-          final top = (event!.startTime
-                      ?.subtract(Duration(
-                          hours: (dayStartTime - 1) % Constants.hoursADay))
-                      .getTotalMinutes ??
-                  0) *
-              heightPerMinute;
+          final top =
+              (event!.startTime?.getTotalMinutes ?? 0) * heightPerMinute;
           final bottom = height -
-              ((event.endTime
-                          ?.subtract(Duration(
-                              hours: (dayStartTime - 1) % Constants.hoursADay))
-                          .getTotalMinutes ??
-                      0) *
-                  heightPerMinute);
+              ((event.endTime?.getTotalMinutes ?? 0) * heightPerMinute);
           final left = widthPerCol * i;
           final right = width - (left + widthPerCol);
 
