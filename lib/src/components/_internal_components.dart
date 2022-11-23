@@ -237,8 +237,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
                   events[index].top,
                   width - events[index].right - events[index].left,
                   height - events[index].bottom - events[index].top),
-              events[index].startDuration ?? DateTime.now(),
-              events[index].endDuration ?? DateTime.now(),
+              events[index].startDuration,
+              events[index].endDuration,
             );
           }),
         ),
