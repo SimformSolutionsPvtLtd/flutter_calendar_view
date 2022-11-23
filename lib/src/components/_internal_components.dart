@@ -295,6 +295,15 @@ class PressDetector extends StatelessWidget {
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Called when user taps on day view page.
+  ///
+  /// This callback will have a date parameter which
+  /// will provide the time span on which user has tapped.
+  ///
+  /// Ex, User Taps on Date page with date 11/01/2022 and time span is 1PM to 2PM.
+  /// then DateTime object will be  DateTime(2022,01,11,1,0)
+  final DateTapCallback? onDateTap;
+
   /// Defines size of the slots that provides long press callback on area
   /// where events are not available.
   final MinuteSlotSize minuteSlotSize;
@@ -307,6 +316,7 @@ class PressDetector extends StatelessWidget {
     required this.heightPerMinute,
     required this.date,
     required this.onDateLongPress,
+    required this.onDateTap,
     required this.minuteSlotSize,
   }) : super(key: key);
 
@@ -328,6 +338,15 @@ class PressDetector extends StatelessWidget {
               bottom: height - (heightPerSlot * (i + 1)),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
+                onTap: () => onDateTap?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
                 onLongPress: () => onDateLongPress?.call(
                   DateTime(
                     date.year,
