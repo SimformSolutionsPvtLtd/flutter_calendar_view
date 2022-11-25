@@ -35,7 +35,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// This function will generate WeeDayString in weekday view.
   /// Useful for I18n
-  /// Ex : ['Mon','Sun','Wed','Thu','Fri','Sat','Sun']
+  /// Ex : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
   final String Function(int)? weekDayStringBuilder;
 
   /// Called when user changes month.
