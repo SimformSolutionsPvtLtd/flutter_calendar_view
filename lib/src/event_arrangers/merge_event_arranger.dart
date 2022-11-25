@@ -21,15 +21,25 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
     for (final event in events) {
-      final startTime = event.startTime ?? DateTime.now();
-      final endTime = event.endTime ?? startTime;
+      if (event.startTime == null ||
+          event.endTime == null ||
+          event.endTime!.getTotalMinutes <= event.startTime!.getTotalMinutes) {
+        assert(() {
+          try {
+            debugPrint(
+                "Failed to add event because of one of the given reasons: "
+                "\n1. Start time or end time might be null"
+                "\n2. endTime occurs before or at the same time as startTime."
+                "\nEvent data: \n$event\n");
+          } catch (e) {} // Suppress exceptions.
 
-      assert(
-          !(endTime.getTotalMinutes <= startTime.getTotalMinutes),
-          "Assertion fail for event: \n$event\n"
-          "startDate must be less than endDate.\n"
-          "This error occurs when you does not provide startDate or endDate in "
-          "CalendarEventDate or provided endDate occurs before startDate.");
+          return true;
+        }(), "Can not add event in the list.");
+        continue;
+      }
+
+      final startTime = event.startTime!;
+      final endTime = event.endTime!;
 
       final eventStart = startTime.getTotalMinutes;
       final eventEnd = endTime.getTotalMinutes;
@@ -40,9 +50,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
       for (var i = 0; i < arrangeEventLen; i++) {
         final arrangedEventStart =
-            arrangedEvents[i].startDuration?.getTotalMinutes ?? 0;
-        final arrangedEventEnd =
-            arrangedEvents[i].endDuration?.getTotalMinutes ?? 0;
+            arrangedEvents[i].startDuration.getTotalMinutes;
+        final arrangedEventEnd = arrangedEvents[i].endDuration.getTotalMinutes;
 
         if ((arrangedEventStart >= eventStart &&
                 arrangedEventStart <= eventEnd) ||
@@ -74,9 +83,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         final arrangedEventData = arrangedEvents[eventIndex];
 
         final arrangedEventStart =
-            arrangedEventData.startDuration?.getTotalMinutes ?? 0;
-        final arrangedEventEnd =
-            arrangedEventData.endDuration?.getTotalMinutes ?? 0;
+            arrangedEventData.startDuration.getTotalMinutes;
+        final arrangedEventEnd = arrangedEventData.endDuration.getTotalMinutes;
 
         final startDuration = math.min(eventStart, arrangedEventStart);
         final endDuration = math.max(eventEnd, arrangedEventEnd);
@@ -90,9 +98,9 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           left: 0,
           right: 0,
           startDuration:
-              arrangedEventData.startDuration?.copyFromMinutes(startDuration),
+              arrangedEventData.startDuration.copyFromMinutes(startDuration),
           endDuration:
-              arrangedEventData.endDuration?.copyFromMinutes(endDuration),
+              arrangedEventData.endDuration.copyFromMinutes(endDuration),
           events: arrangedEventData.events..add(event),
         );
 

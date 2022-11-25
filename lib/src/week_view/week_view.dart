@@ -15,6 +15,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
@@ -145,6 +146,15 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
+  /// Called when user taps on day view page.
+  ///
+  /// This callback will have a date parameter which
+  /// will provide the time span on which user has tapped.
+  ///
+  /// Ex, User Taps on Date page with date 11/01/2022 and time span is 1PM to 2PM.
+  /// then DateTime object will be  DateTime(2022,01,11,1,0)
+  final DateTapCallback? onDateTap;
+
   /// Defines the day from which the week starts.
   ///
   /// Default value is [WeekDays.monday].
@@ -153,6 +163,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
+
+  /// Style for WeekView header.
+  final HeaderStyle headerStyle;
 
   /// Main widget for week view.
   const WeekView({
@@ -181,6 +194,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onDateLongPress,
+    this.onDateTap,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
     this.startDay = WeekDays.monday,
@@ -189,6 +203,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
+    this.headerStyle = const HeaderStyle(),
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -368,6 +383,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 timeLineBuilder: _timeLineBuilder,
                                 onTileTap: widget.onEventTap,
                                 onDateLongPress: widget.onDateLongPress,
+                                onDateTap: widget.onDateTap,
                                 eventTileBuilder: _eventTileBuilder,
                                 heightPerMinute: widget.heightPerMinute,
                                 hourIndicatorSettings: _hourIndicatorSettings,
@@ -600,6 +616,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         jumpToWeek(selectedDate);
       },
       headerStringBuilder: widget.headerStringBuilder,
+      headerStyle: widget.headerStyle,
     );
   }
 
