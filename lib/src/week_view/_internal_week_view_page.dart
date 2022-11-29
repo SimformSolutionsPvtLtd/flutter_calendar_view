@@ -149,7 +149,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
               children: [
                 SizedBox(
                   height: weekTitleHeight,
-                  width: timeLineWidth,
+                  width: timeLineWidth + hourIndicatorSettings.offset,
                 ),
                 ...List.generate(
                   filteredDates.length,
