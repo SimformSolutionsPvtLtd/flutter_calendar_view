@@ -67,6 +67,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Builder for week day title.
   final DateWidgetBuilder weekDayBuilder;
 
+  /// Builder for week number.
+  final WeekNumberBuilder weekNumberBuilder;
+
   /// Height of week title.
   final double weekTitleHeight;
 
@@ -108,6 +111,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.showVerticalLine,
     required this.weekTitleHeight,
     required this.weekDayBuilder,
+    required this.weekNumberBuilder,
     required this.width,
     required this.dates,
     required this.eventTileBuilder,
@@ -150,6 +154,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 SizedBox(
                   height: weekTitleHeight,
                   width: timeLineWidth + hourIndicatorSettings.offset,
+                  child: weekNumberBuilder.call(filteredDates[0]),
                 ),
                 ...List.generate(
                   filteredDates.length,
@@ -163,6 +168,10 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 )
               ],
             ),
+          ),
+          Divider(
+            thickness: 1,
+            height: 1,
           ),
           Expanded(
             child: SingleChildScrollView(
