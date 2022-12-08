@@ -8,6 +8,7 @@ import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
+import '../components/safe_area_wrapper.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../event_controller.dart';
@@ -131,6 +132,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Style for MontView header.
   final HeaderStyle headerStyle;
 
+  /// Option for SafeArea.
+  final SafeAreaOption safeAreaOption;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -157,6 +161,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.dateStringBuilder,
     this.weekDayStringBuilder,
     this.headerStyle = const HeaderStyle(),
+    this.safeAreaOption = const SafeAreaOption(),
   }) : super(key: key);
 
   @override
@@ -270,7 +275,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return SafeAreaWrapper(
+      option: widget.safeAreaOption,
       child: SizedBox(
         width: _width,
         child: Column(
