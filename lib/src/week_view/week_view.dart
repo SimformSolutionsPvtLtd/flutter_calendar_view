@@ -113,6 +113,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
+  /// Builder to build week number.
+  final WeekNumberBuilder? weekNumberBuilder;
+
   /// Background color of week view page.
   final Color backgroundColor;
 
@@ -190,6 +193,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.eventArranger,
     this.weekTitleHeight = 50,
     this.weekDayBuilder,
+    this.weekNumberBuilder,
     this.backgroundColor = Colors.white,
     this.scrollOffset = 0.0,
     this.onEventTap,
@@ -242,6 +246,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late EventTileBuilder<T> _eventTileBuilder;
   late WeekPageHeaderBuilder _weekHeaderBuilder;
   late DateWidgetBuilder _weekDayBuilder;
+  late WeekNumberBuilder _weekNumberBuilder;
 
   late double _weekTitleWidth;
   late int _totalDaysInWeek;
@@ -378,6 +383,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 weekTitleWidth: _weekTitleWidth,
                                 weekTitleHeight: widget.weekTitleHeight,
                                 weekDayBuilder: _weekDayBuilder,
+                                weekNumberBuilder: _weekNumberBuilder,
                                 liveTimeIndicatorSettings:
                                     _liveTimeIndicatorSettings,
                                 timeLineBuilder: _timeLineBuilder,
@@ -492,6 +498,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+    _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
   }
 
   /// Sets the current date of this month.
@@ -548,6 +555,19 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
               date.day.toString()),
         ],
       ),
+    );
+  }
+
+  /// Default builder for week number.
+  Widget _defaultWeekNumberBuilder(DateTime date) {
+    final daysToAdd = DateTime.thursday - date.weekday;
+    final thursday = daysToAdd > 0
+        ? date.add(Duration(days: daysToAdd))
+        : date.subtract(Duration(days: daysToAdd.abs()));
+    final weekNumber =
+        (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
+    return Center(
+      child: Text("$weekNumber"),
     );
   }
 

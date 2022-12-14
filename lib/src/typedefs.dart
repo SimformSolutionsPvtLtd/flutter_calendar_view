@@ -29,6 +29,10 @@ typedef DateWidgetBuilder = Widget Function(
   DateTime date,
 );
 
+typedef WeekNumberBuilder = Widget? Function(
+  DateTime firstDayOfWeek,
+);
+
 typedef CalendarPageChangeCallBack = void Function(DateTime date, int page);
 
 typedef PageChangeCallback = void Function(
