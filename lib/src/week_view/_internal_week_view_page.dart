@@ -105,6 +105,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollConfiguration;
 
+  /// Display full day events.
+  final FullDayEventBuilder<T>? fullDayEventBuilder;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -135,6 +138,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.weekDays,
     required this.minuteSlotSize,
     required this.scrollConfiguration,
+    this.fullDayEventBuilder,
   }) : super(key: key);
 
   @override
@@ -172,6 +176,25 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
           Divider(
             thickness: 1,
             height: 1,
+          ),
+          SizedBox(
+            width: width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: timeLineWidth + hourIndicatorSettings.offset),
+                ...List.generate(
+                  filteredDates.length,
+                  (index) => SizedBox(
+                    width: weekTitleWidth,
+                    child: fullDayEventBuilder?.call(
+                      controller.getFullDayEvent(filteredDates[index]),
+                      dates[index],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           Expanded(
             child: SingleChildScrollView(
