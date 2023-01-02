@@ -80,6 +80,7 @@ class CalendarEventData<T extends Object?> {
                 other.endTime != null &&
                 endTime!.hasSameTimeAs(other.endTime!))) &&
         title == other.title &&
+        color == other.color &&
         description == other.description;
   }
 

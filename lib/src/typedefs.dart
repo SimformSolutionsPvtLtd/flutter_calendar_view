@@ -29,6 +29,9 @@ typedef DateWidgetBuilder = Widget Function(
   DateTime date,
 );
 
+typedef FullDayEventBuilder<T> = Widget Function(
+    List<CalendarEventData<T>> events, DateTime date);
+
 typedef CalendarPageChangeCallBack = void Function(DateTime date, int page);
 
 typedef PageChangeCallback = void Function(
