@@ -9,6 +9,7 @@ import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
 import '../components/event_scroll_notifier.dart';
+import '../components/safe_area_wrapper.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -170,6 +171,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Style for WeekView header.
   final HeaderStyle headerStyle;
 
+  /// Option for SafeArea.
+  final SafeAreaOption safeAreaOption;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -208,6 +212,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
     this.headerStyle = const HeaderStyle(),
+    this.safeAreaOption = const SafeAreaOption(),
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -348,7 +353,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return SafeAreaWrapper(
+      option: widget.safeAreaOption,
       child: SizedBox(
         width: _width,
         child: DecoratedBox(
