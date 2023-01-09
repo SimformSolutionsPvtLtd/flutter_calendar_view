@@ -86,6 +86,11 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Notifies if there is any event that needs to be visible instantly.
   final EventScrollConfiguration scrollNotifier;
 
+  /// Display full day events.
+  final FullDayEventBuilder<T> fullDayEventBuilder;
+
+  final ScrollController scrollController;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -110,6 +115,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.onDateTap,
     required this.minuteSlotSize,
     required this.scrollNotifier,
+    required this.fullDayEventBuilder,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -117,63 +124,77 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     return Container(
       height: height,
       width: width,
-      child: Stack(
+      child: Column(
         children: [
-          CustomPaint(
-            size: Size(width, height),
-            painter: HourLinePainter(
-              lineColor: hourIndicatorSettings.color,
-              lineHeight: hourIndicatorSettings.height,
-              offset: timeLineWidth + hourIndicatorSettings.offset,
-              minuteHeight: heightPerMinute,
-              verticalLineOffset: verticalLineOffset,
-              showVerticalLine: showVerticalLine,
-            ),
-          ),
-          PressDetector(
-            width: width,
-            height: height,
-            heightPerMinute: heightPerMinute,
-            date: date,
-            onDateTap: onDateTap,
-            onDateLongPress: onDateLongPress,
-            minuteSlotSize: minuteSlotSize,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: EventGenerator<T>(
-              height: height,
-              date: date,
-              onTileTap: onTileTap,
-              eventArranger: eventArranger,
-              events: controller.getEventsOnDay(date),
-              heightPerMinute: heightPerMinute,
-              eventTileBuilder: eventTileBuilder,
-              scrollNotifier: scrollNotifier,
-              width: width -
-                  timeLineWidth -
-                  hourIndicatorSettings.offset -
-                  verticalLineOffset,
-            ),
-          ),
-          TimeLine(
-            height: height,
-            hourHeight: hourHeight,
-            timeLineBuilder: timeLineBuilder,
-            timeLineOffset: timeLineOffset,
-            timeLineWidth: timeLineWidth,
-            key: ValueKey(heightPerMinute),
-          ),
-          if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-            IgnorePointer(
-              child: LiveTimeIndicator(
-                liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                width: width,
+          fullDayEventBuilder(controller.getFullDayEvent(date), date),
+          Expanded(
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: SizedBox(
                 height: height,
-                heightPerMinute: heightPerMinute,
-                timeLineWidth: timeLineWidth,
+                width: width,
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: Size(width, height),
+                      painter: HourLinePainter(
+                        lineColor: hourIndicatorSettings.color,
+                        lineHeight: hourIndicatorSettings.height,
+                        offset: timeLineWidth + hourIndicatorSettings.offset,
+                        minuteHeight: heightPerMinute,
+                        verticalLineOffset: verticalLineOffset,
+                        showVerticalLine: showVerticalLine,
+                      ),
+                    ),
+                    PressDetector(
+                      width: width,
+                      height: height,
+                      heightPerMinute: heightPerMinute,
+                      date: date,
+                      onDateTap: onDateTap,
+                      onDateLongPress: onDateLongPress,
+                      minuteSlotSize: minuteSlotSize,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: EventGenerator<T>(
+                        height: height,
+                        date: date,
+                        onTileTap: onTileTap,
+                        eventArranger: eventArranger,
+                        events: controller.getEventsOnDay(date),
+                        heightPerMinute: heightPerMinute,
+                        eventTileBuilder: eventTileBuilder,
+                        scrollNotifier: scrollNotifier,
+                        width: width -
+                            timeLineWidth -
+                            hourIndicatorSettings.offset -
+                            verticalLineOffset,
+                      ),
+                    ),
+                    TimeLine(
+                      height: height,
+                      hourHeight: hourHeight,
+                      timeLineBuilder: timeLineBuilder,
+                      timeLineOffset: timeLineOffset,
+                      timeLineWidth: timeLineWidth,
+                      key: ValueKey(heightPerMinute),
+                    ),
+                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                      IgnorePointer(
+                        child: LiveTimeIndicator(
+                          liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                          width: width,
+                          height: height,
+                          heightPerMinute: heightPerMinute,
+                          timeLineWidth: timeLineWidth,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
+          ),
         ],
       ),
     );

@@ -5,6 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../style/header_style.dart';
@@ -176,6 +177,76 @@ class DefaultTimeLineMark extends StatelessWidget {
           style: markingStyle ??
               TextStyle(
                 fontSize: 15.0,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+/// This class is defined default view of full day event
+class FullDayEventView<T> extends StatelessWidget {
+  const FullDayEventView({
+    Key? key,
+    this.boxConstraints = const BoxConstraints(maxHeight: 100),
+    required this.events,
+    this.padding,
+    this.itemView,
+    this.titleStyle,
+    this.onEventTap,
+    required this.date,
+  }) : super(key: key);
+
+  /// Constraints for view
+  final BoxConstraints boxConstraints;
+
+  /// Define List of Event to display
+  final List<CalendarEventData<T>> events;
+
+  /// Define Padding of view
+  final EdgeInsets? padding;
+
+  /// Define custom Item view of Event.
+  final Widget Function(CalendarEventData<T>? event)? itemView;
+
+  /// Style for title
+  final TextStyle? titleStyle;
+
+  /// Called when user taps on event tile.
+  final TileTapCallback? onEventTap;
+
+  /// Defines date for which events will be displayed.
+  final DateTime date;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: boxConstraints,
+      child: ListView.builder(
+        itemCount: events.length,
+        padding: padding,
+        shrinkWrap: true,
+        itemBuilder: (context, index) => InkWell(
+          onTap: () => onEventTap?.call(events[index], date),
+          child: itemView?.call(events[index]) ??
+              Container(
+                margin: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(1.0),
+                height: 24,
+                child: Text(
+                  events[index].title,
+                  style: titleStyle ??
+                      TextStyle(
+                        fontSize: 16,
+                        color: events[index].color.accent,
+                      ),
+                  maxLines: 1,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: events[index].color,
+                ),
+                alignment: Alignment.centerLeft,
               ),
         ),
       ),

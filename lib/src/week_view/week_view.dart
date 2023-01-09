@@ -174,6 +174,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
 
+  /// Display full day event builder.
+  final FullDayEventBuilder? fullDayEventBuilder;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -213,6 +216,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekDayDateStringBuilder,
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
+    this.fullDayEventBuilder,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -252,6 +256,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late WeekPageHeaderBuilder _weekHeaderBuilder;
   late DateWidgetBuilder _weekDayBuilder;
   late WeekNumberBuilder _weekNumberBuilder;
+  late FullDayEventBuilder<T> _fullDayEventBuilder;
 
   late double _weekTitleWidth;
   late int _totalDaysInWeek;
@@ -380,41 +385,41 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           .datesOfWeek(start: widget.startDay);
 
                       return ValueListenableBuilder(
-                          valueListenable: _scrollConfiguration,
-                          builder: (_, __, ___) => InternalWeekViewPage<T>(
-                                key: ValueKey(_hourHeight.toString() +
-                                    dates[0].toString()),
-                                height: _height,
-                                width: _width,
-                                weekTitleWidth: _weekTitleWidth,
-                                weekTitleHeight: widget.weekTitleHeight,
-                                weekDayBuilder: _weekDayBuilder,
-                                weekNumberBuilder: _weekNumberBuilder,
-                                liveTimeIndicatorSettings:
-                                    _liveTimeIndicatorSettings,
-                                timeLineBuilder: _timeLineBuilder,
-                                onTileTap: widget.onEventTap,
-                                onDateLongPress: widget.onDateLongPress,
-                                onDateTap: widget.onDateTap,
-                                eventTileBuilder: _eventTileBuilder,
-                                heightPerMinute: widget.heightPerMinute,
-                                hourIndicatorSettings: _hourIndicatorSettings,
-                                dates: dates,
-                                showLiveLine:
-                                    widget.showLiveTimeLineInAllDays ||
-                                        _showLiveTimeIndicator(dates),
-                                timeLineOffset: widget.timeLineOffset,
-                                timeLineWidth: _timeLineWidth,
-                                verticalLineOffset: 0,
-                                showVerticalLine: true,
-                                controller: controller,
-                                hourHeight: _hourHeight,
-                                scrollController: _scrollController,
-                                eventArranger: _eventArranger,
-                                weekDays: _weekDays,
-                                minuteSlotSize: widget.minuteSlotSize,
-                                scrollConfiguration: _scrollConfiguration,
-                              ));
+                        valueListenable: _scrollConfiguration,
+                        builder: (_, __, ___) => InternalWeekViewPage<T>(
+                          key: ValueKey(
+                              _hourHeight.toString() + dates[0].toString()),
+                          height: _height,
+                          width: _width,
+                          weekTitleWidth: _weekTitleWidth,
+                          weekTitleHeight: widget.weekTitleHeight,
+                          weekDayBuilder: _weekDayBuilder,
+                          weekNumberBuilder: _weekNumberBuilder,
+                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
+                          timeLineBuilder: _timeLineBuilder,
+                          onTileTap: widget.onEventTap,
+                          onDateLongPress: widget.onDateLongPress,
+                          onDateTap: widget.onDateTap,
+                          eventTileBuilder: _eventTileBuilder,
+                          heightPerMinute: widget.heightPerMinute,
+                          hourIndicatorSettings: _hourIndicatorSettings,
+                          dates: dates,
+                          showLiveLine: widget.showLiveTimeLineInAllDays ||
+                              _showLiveTimeIndicator(dates),
+                          timeLineOffset: widget.timeLineOffset,
+                          timeLineWidth: _timeLineWidth,
+                          verticalLineOffset: 0,
+                          showVerticalLine: true,
+                          controller: controller,
+                          hourHeight: _hourHeight,
+                          scrollController: _scrollController,
+                          eventArranger: _eventArranger,
+                          weekDays: _weekDays,
+                          minuteSlotSize: widget.minuteSlotSize,
+                          scrollConfiguration: _scrollConfiguration,
+                          fullDayEventBuilder: _fullDayEventBuilder,
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -505,6 +510,17 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
+    _fullDayEventBuilder =
+        widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+  }
+
+  Widget _defaultFullDayEventBuilder(
+      List<CalendarEventData<T>> events, DateTime dateTime) {
+    return FullDayEventView(
+      events: events,
+      boxConstraints: BoxConstraints(maxHeight: 65),
+      date: dateTime,
+    );
   }
 
   /// Sets the current date of this month.

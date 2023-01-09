@@ -124,6 +124,10 @@ extension DateTimeExtensions on DateTime {
         other.millisecond == millisecond &&
         other.microsecond == microsecond;
   }
+
+  bool get isDayStart => hour % 24 == 0 && minute % 60 == 0;
+
+  DateTime get dateYMD => DateTime(year, day, hour);
 }
 
 extension ColorExtension on Color {
