@@ -175,7 +175,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final SafeAreaOption safeAreaOption;
 
   /// Display full day event builder.
-  final FullDayEventBuilder? fullDayEventBuilder;
+  final FullDayEventBuilder<T>? fullDayEventBuilder;
 
   /// Main widget for week view.
   const WeekView({
