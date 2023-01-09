@@ -157,6 +157,10 @@ DayView(
         // Return your widget to display as event tile.
         return Container();
     },
+    fullDayEventBuilder: (events, date) {
+        // Return your widget to display full day event view.
+        return Container();
+    },
     showVerticalLine: true, // To display live time line in day view.
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in day view.
     minDay: DateTime(1990),
@@ -176,6 +180,10 @@ WeekView(
     controller: EventController(),
     eventTileBuilder: (date, events, boundry, start, end) {
         // Return your widget to display as event tile.
+        return Container();
+    },
+    fullDayEventBuilder: (events, date) {
+        // Return your widget to display full day event view.
         return Container();
     },
     showLiveTimeLineInAllDays: true, // To display live time line in all pages in week view.

@@ -1,3 +1,13 @@
+# [1.0.2 - 09 Jan 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.2)
+- Added
+  Feature [#144 - WeekView not support show current week number](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/144)
+- Added
+  Feature [#149 - Full day events support](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/149)
+- Fixed
+  Issue [#142 - week day not align center](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/142)
+- Fixed
+  Issue [#146 - WeekView wrapped by SafeArea](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/146)
+
 # [1.0.1 - 25 Nov 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.1)
 - Added
   Feature [#26 - Support for locale](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/26)
