@@ -1,6 +1,6 @@
 name: calendar_view
 description: A Flutter package allows you to easily implement all calendar UI and calendar event functionality.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view
 issue_tracker: https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues
 
