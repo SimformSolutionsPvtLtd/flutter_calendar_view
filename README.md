@@ -305,6 +305,9 @@ Above code will create `WeekView` with only five days, from monday to friday.
 </table>
 <br/>
 
+## Awesome Mobile Libraries
+- Check out our other available [awesome mobile libraries](https://github.com/SimformSolutionsPvtLtd/Awesome-Mobile-Libraries)
+
 ## License
 
 ```text
