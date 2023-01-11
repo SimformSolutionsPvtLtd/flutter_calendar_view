@@ -1,10 +1,14 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'app_colors.dart';
+import 'constants.dart';
 import 'enumerations.dart';
 
 enum TimeStampFormat { parse_12, parse_24 }
+
+String getDocumentationFile(String file) => "${kIsWeb ? "" : "assets/"}$file";
 
 extension NavigationExtension on State {
   void pushRoute(Widget page) =>
@@ -16,6 +20,19 @@ extension NavigatorExtention on BuildContext {
       Navigator.of(this).push<T>(MaterialPageRoute(builder: (context) => page));
 
   void pop([dynamic value]) => Navigator.of(this).pop(value);
+
+  Future showDefaultDialog(Widget child) {
+    return showDialog(
+      context: this,
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: child,
+          shape: RoundedRectangleBorder(),
+        );
+      },
+    );
+  }
 
   void showSnackBarWithText(String text) => ScaffoldMessenger.of(this)
     ..hideCurrentSnackBar()
@@ -125,4 +142,18 @@ extension StringExt on String {
 
 extension ViewNameExt on CalendarView {
   String get name => toString().split(".").last;
+  IconData get icon {
+    switch (this) {
+      case CalendarView.month:
+        return Icons.calendar_view_month_rounded;
+      case CalendarView.day:
+        return Icons.calendar_view_day_rounded;
+      case CalendarView.week:
+        return Icons.calendar_view_week_rounded;
+    }
+  }
+}
+
+extension BreakPointExtension on num {
+  bool get isWeb => this > BreakPoints.web;
 }

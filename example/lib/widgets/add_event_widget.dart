@@ -5,13 +5,11 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../app_colors.dart';
 import '../constants.dart';
 import '../extension.dart';
-import '../model/event.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
 class AddEventWidget extends StatefulWidget {
-  final void Function(CalendarEventData<Event>)? onEventAdd;
-
+  final void Function(CalendarEventData)? onEventAdd;
   const AddEventWidget({
     Key? key,
     this.onEventAdd,
@@ -25,9 +23,9 @@ class _AddEventWidgetState extends State<AddEventWidget> {
   late DateTime _startDate;
   late DateTime _endDate;
 
-  DateTime? _startTime;
+  late DateTime _startTime;
 
-  DateTime? _endTime;
+  late DateTime _endTime;
 
   String _title = "";
 
@@ -36,14 +34,14 @@ class _AddEventWidgetState extends State<AddEventWidget> {
   Color _color = Colors.blue;
 
   late FocusNode _titleNode;
-
   late FocusNode _descriptionNode;
-
-  late FocusNode _dateNode;
+  late FocusNode _startDateNode;
+  late FocusNode _endDateNode;
 
   final GlobalKey<FormState> _form = GlobalKey();
 
   late TextEditingController _startDateController;
+  late TextEditingController _endDateController;
   late TextEditingController _startTimeController;
   late TextEditingController _endTimeController;
   late TextEditingController _endDateController;
@@ -52,26 +50,32 @@ class _AddEventWidgetState extends State<AddEventWidget> {
   void initState() {
     super.initState();
 
+    _startDate = _endDate = _startTime = _endTime = DateTime.now();
+
     _titleNode = FocusNode();
     _descriptionNode = FocusNode();
-    _dateNode = FocusNode();
+    _startDateNode = FocusNode();
+    _endDateNode = FocusNode();
 
     _startDateController = TextEditingController();
     _endDateController = TextEditingController();
     _startTimeController = TextEditingController();
     _endTimeController = TextEditingController();
+    _endDateController = TextEditingController();
   }
 
   @override
   void dispose() {
     _titleNode.dispose();
     _descriptionNode.dispose();
-    _dateNode.dispose();
+    _startDateNode.dispose();
+    _endDateNode.dispose();
 
     _startDateController.dispose();
     _endDateController.dispose();
     _startTimeController.dispose();
     _endTimeController.dispose();
+    _endDateController.dispose();
 
     super.dispose();
   }
@@ -156,17 +160,39 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
+                  displayDefault: true,
                   controller: _startTimeController,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "Start Time",
                   ),
+                  onSelect: (date) {
+                    if (date == null) return;
+
+                    _endTime = DateTime(
+                      _startDate.year,
+                      _startDate.month,
+                      _startDate.day,
+                      date.hour,
+                      date.minute,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value == "")
                       return "Please select start time.";
 
+                    if (!_validateDates()) return "Please select valid date.";
+
                     return null;
                   },
-                  onSave: (date) => _startTime = date,
+                  onSave: (date) {
+                    _endTime = DateTime(
+                      _startDate.year,
+                      _startDate.month,
+                      _startDate.day,
+                      date.hour,
+                      date.minute,
+                    );
+                  },
                   textStyle: TextStyle(
                     color: AppColors.black,
                     fontSize: 17.0,
@@ -181,13 +207,34 @@ class _AddEventWidgetState extends State<AddEventWidget> {
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "End Time",
                   ),
+                  onSelect: (date) {
+                    if (date == null) return;
+
+                    _endTime = DateTime(
+                      _startDate.year,
+                      _startDate.month,
+                      _startDate.day,
+                      date.hour,
+                      date.minute,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value == "")
                       return "Please select end time.";
 
+                    if (!_validateDates()) return "Please select valid date.";
+
                     return null;
                   },
-                  onSave: (date) => _endTime = date,
+                  onSave: (date) {
+                    _endTime = DateTime(
+                      _startDate.year,
+                      _startDate.month,
+                      _startDate.day,
+                      date.hour,
+                      date.minute,
+                    );
+                  },
                   textStyle: TextStyle(
                     color: AppColors.black,
                     fontSize: 17.0,
@@ -256,6 +303,10 @@ class _AddEventWidgetState extends State<AddEventWidget> {
     );
   }
 
+  bool _validateDates() =>
+      _startTime.difference(_endTime).inMinutes != 0 &&
+      _startTime.isAfter(_endTime);
+
   void _createEvent() {
     if (!(_form.currentState?.validate() ?? true)) return;
 
@@ -269,9 +320,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
       description: _description,
       endDate: _endDate,
       title: _title,
-      event: Event(
-        title: _title,
-      ),
     );
 
     widget.onEventAdd?.call(event);

@@ -1,12 +1,13 @@
-import 'dart:math';
+import "dart:math";
 
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
-import 'day_view_widget.dart';
-import 'month_view_widget.dart';
-import 'week_view_widget.dart';
+import '../extension.dart';
+
+final _maxWidth = 510.0;
 
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
@@ -14,27 +15,28 @@ class CalendarViews extends StatelessWidget {
   const CalendarViews({Key? key, this.view = CalendarView.month})
       : super(key: key);
 
-  final _breakPoint = 490.0;
-
   @override
   Widget build(BuildContext context) {
-    final availableWidth = MediaQuery.of(context).size.width;
-    final width = min(_breakPoint, availableWidth);
+    var width = MediaQuery.of(context).size.width;
+
+    if (width.isWeb) width /= 2;
+
+    width = min(width, _maxWidth);
 
     return Container(
-      height: double.infinity,
-      width: double.infinity,
+      width: width,
+      height: MediaQuery.of(context).size.height,
       color: AppColors.grey,
       child: Center(
         child: view == CalendarView.month
-            ? MonthViewWidget(
+            ? MonthView(
                 width: width,
               )
             : view == CalendarView.day
-                ? DayViewWidget(
+                ? DayView(
                     width: width,
                   )
-                : WeekViewWidget(
+                : WeekView(
                     width: width,
                   ),
       ),

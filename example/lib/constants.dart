@@ -50,5 +50,5 @@ class AppConstants {
 }
 
 class BreakPoints {
-  static const double web = 800;
+  static const double web = 900;
 }
