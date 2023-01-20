@@ -31,6 +31,12 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Header builder for week page header.
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
 
+  /// Builds custom PressDetector widget
+  ///
+  /// If null, internal PressDetector will be used to handle onDateLongPress()
+  ///
+  final DetectorBuilder? weekDetectorBuilder;
+
   /// This function will generate dateString int the calendar header.
   /// Useful for I18n
   final StringProvider? headerStringBuilder;
@@ -210,6 +216,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showWeekends = true,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
+    this.weekDetectorBuilder,
     this.headerStringBuilder,
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
@@ -225,6 +232,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
             "Time line width must be greater than 0."),
         assert(
             heightPerMinute > 0, "Height per minute must be greater than 0."),
+        assert(
+          weekDetectorBuilder == null || onDateLongPress == null,
+          """If you use [weekPressDetectorBuilder] 
+          do not provide [onDateLongPress]""",
+        ),
         super(key: key);
 
   @override
@@ -257,6 +269,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late DateWidgetBuilder _weekDayBuilder;
   late WeekNumberBuilder _weekNumberBuilder;
   late FullDayEventBuilder<T> _fullDayEventBuilder;
+  late DetectorBuilder _weekDetectorBuilder;
 
   late double _weekTitleWidth;
   late int _totalDaysInWeek;
@@ -395,6 +408,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           weekTitleHeight: widget.weekTitleHeight,
                           weekDayBuilder: _weekDayBuilder,
                           weekNumberBuilder: _weekNumberBuilder,
+                          weekDetectorBuilder: _weekDetectorBuilder,
                           liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                           timeLineBuilder: _timeLineBuilder,
                           onTileTap: widget.onEventTap,
@@ -509,6 +523,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+    _weekDetectorBuilder =
+        widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
@@ -562,6 +578,58 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _totalWeeks =
         _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+  }
+
+  /// Default press detector builder. This builder will be used if
+  /// [widget.weekDetectorBuilder] is null.
+  ///
+  Widget _defaultPressDetectorBuilder({
+    required DateTime date,
+    required double height,
+    required double width,
+    required double heightPerMinute,
+    required MinuteSlotSize minuteSlotSize,
+  }) {
+    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+
+    return Container(
+      height: height,
+      width: width,
+      child: Stack(
+        children: [
+          for (int i = 0; i < slots; i++)
+            Positioned(
+              top: heightPerSlot * i,
+              left: 0,
+              right: 0,
+              bottom: height - (heightPerSlot * (i + 1)),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onLongPress: () => widget.onDateLongPress?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
+                onTap: () => widget.onDateTap?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
+                child: SizedBox(width: width, height: heightPerSlot),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   /// Default builder for week line.

@@ -45,6 +45,12 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Builds day title bar.
   final DateWidgetBuilder? dayTitleBuilder;
 
+  /// Builds custom PressDetector widget
+  ///
+  /// If null, internal PressDetector will be used to handle onDateLongPress()
+  ///
+  final DetectorBuilder? dayDetectorBuilder;
+
   /// Defines how events are arranged in day view.
   /// User can define custom event arranger by implementing [EventArranger]
   /// class and pass object of that class as argument.
@@ -156,6 +162,12 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Use this field to disable the calendar scrolling
+  final ScrollPhysics? scrollPhysics;
+
+  /// Use this field to disable the page view scrolling behavior
+  final ScrollPhysics? pageViewPhysics;
+
   /// Style for DayView header.
   final HeaderStyle headerStyle;
 
@@ -199,6 +211,9 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.fullDayEventBuilder,
     this.safeAreaOption = const SafeAreaOption(),
+    this.scrollPhysics,
+    this.pageViewPhysics,
+    this.dayDetectorBuilder,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -207,6 +222,11 @@ class DayView<T extends Object?> extends StatefulWidget {
             "Time line width must be greater than 0."),
         assert(
             heightPerMinute > 0, "Height per minute must be greater than 0."),
+        assert(
+          dayDetectorBuilder == null || onDateLongPress == null,
+          """If you use [dayPressDetectorBuilder]
+          do not provide [onDateLongPress]""",
+        ),
         super(key: key);
 
   @override
@@ -238,6 +258,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late DateWidgetBuilder _dayTitleBuilder;
 
   late FullDayEventBuilder<T> _fullDayEventBuilder;
+
+  late DetectorBuilder _dayDetectorBuilder;
 
   EventController<T>? _controller;
 
@@ -347,6 +369,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                 child: SizedBox(
                   height: _height,
                   child: PageView.builder(
+                    physics: widget.pageViewPhysics,
                     itemCount: _totalDays,
                     controller: _pageController,
                     onPageChanged: _onPageChange,
@@ -361,6 +384,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           width: _width,
                           liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                           timeLineBuilder: _timeLineBuilder,
+                          dayDetectorBuilder: _dayDetectorBuilder,
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
@@ -453,6 +477,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _dayTitleBuilder = widget.dayTitleBuilder ?? _defaultDayBuilder;
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _dayDetectorBuilder =
+        widget.dayDetectorBuilder ?? _defaultPressDetectorBuilder;
   }
 
   /// Sets the current date of this month.
@@ -485,6 +511,58 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     );
 
     _totalDays = _maxDate.getDayDifference(_minDate) + 1;
+  }
+
+  /// Default press detector builder. This builder will be used if
+  /// [widget.weekDetectorBuilder] is null.
+  ///
+  Widget _defaultPressDetectorBuilder({
+    required DateTime date,
+    required double height,
+    required double width,
+    required double heightPerMinute,
+    required MinuteSlotSize minuteSlotSize,
+  }) {
+    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+
+    return Container(
+      height: height,
+      width: width,
+      child: Stack(
+        children: [
+          for (int i = 0; i < slots; i++)
+            Positioned(
+              top: heightPerSlot * i,
+              left: 0,
+              right: 0,
+              bottom: height - (heightPerSlot * (i + 1)),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onLongPress: () => widget.onDateLongPress?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
+                onTap: () => widget.onDateTap?.call(
+                  DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    minuteSlotSize.minutes * i,
+                  ),
+                ),
+                child: SizedBox(width: width, height: heightPerSlot),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   /// Default timeline builder this builder will be used if
