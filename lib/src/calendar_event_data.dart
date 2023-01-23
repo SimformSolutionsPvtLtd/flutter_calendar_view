@@ -37,6 +37,12 @@ class CalendarEventData<T extends Object?> {
 
   final DateTime? _endDate;
 
+  /// Define style of title.
+  final TextStyle? titleStyle;
+
+  /// Define style of description.
+  final TextStyle? descriptionStyle;
+
   /// Stores all the events on [date]
   const CalendarEventData({
     required this.title,
@@ -45,6 +51,8 @@ class CalendarEventData<T extends Object?> {
     this.color = Colors.blue,
     this.startTime,
     this.endTime,
+    this.titleStyle,
+    this.descriptionStyle,
     DateTime? endDate,
     required this.date,
   }) : _endDate = endDate;
@@ -81,6 +89,8 @@ class CalendarEventData<T extends Object?> {
                 endTime!.hasSameTimeAs(other.endTime!))) &&
         title == other.title &&
         color == other.color &&
+        titleStyle == other.titleStyle &&
+        descriptionStyle == other.descriptionStyle &&
         description == other.description;
   }
 

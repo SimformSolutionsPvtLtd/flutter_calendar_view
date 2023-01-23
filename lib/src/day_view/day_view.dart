@@ -590,6 +590,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         padding: EdgeInsets.all(10.0),
         backgroundColor: events[0].color,
         margin: EdgeInsets.all(2.0),
+        titleStyle: events[0].titleStyle,
+        descriptionStyle: events[0].descriptionStyle,
       );
     else
       return SizedBox.shrink();
