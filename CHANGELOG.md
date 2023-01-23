@@ -1,3 +1,11 @@
+# [1.0.3 - 16 Feb 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
+- Added
+  Feature [#172 - Press Detector builder for day view and week view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/172)
+- Added 
+  Feature [#147 - Added text style and description style in CalendarEventData](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/147)
+- Added 
+  Feature [#174 - Animate to specific scroll controller offset](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/174)
+
 # [1.0.2 - 10 Jan 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.2)
 - Added
   Feature [#144 - WeekView not support show current week number](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/144)
