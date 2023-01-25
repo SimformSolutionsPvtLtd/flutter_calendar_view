@@ -43,7 +43,9 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
       while (concurrentEvents.isNotEmpty) {
         final event = concurrentEvents[currentEventIndex];
-        final end = event.endTime!.getTotalMinutes;
+        final end = event.endTime!.getTotalMinutes == 0
+            ? Constants.minutesADay
+            : event.endTime!.getTotalMinutes;
         sideEventData.add(_SideEventData(column: column, event: event));
         concurrentEvents.removeAt(currentEventIndex);
 
@@ -82,12 +84,16 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         final startTime = sideEvent.event.startTime!;
         final endTime = sideEvent.event.endTime!;
-
+        final bottom = height -
+            (endTime.getTotalMinutes == 0
+                    ? Constants.minutesADay
+                    : endTime.getTotalMinutes) *
+                heightPerMinute;
         arrangedEvents.add(OrganizedCalendarEventData<T>(
           left: slotWidth * (sideEvent.column - 1),
           right: slotWidth * (column - sideEvent.column),
           top: startTime.getTotalMinutes * heightPerMinute,
-          bottom: height - endTime.getTotalMinutes * heightPerMinute,
+          bottom: bottom,
           startDuration: startTime,
           endDuration: endTime,
           events: [sideEvent.event],
