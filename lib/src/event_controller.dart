@@ -87,13 +87,11 @@ class EventController<T extends Object?> extends ChangeNotifier {
       }
     }
 
-    // Removes the event from ranging event.
-    if (_calendarData.rangingEventList.remove(event)) {
-      _calendarData.eventList.remove(event);
-      _calendarData.fullDayEventList.remove(event);
-      notifyListeners();
-      return;
-    }
+    // Removes the event from ranging or full day event.
+    _calendarData.eventList.remove(event);
+    _calendarData.rangingEventList.remove(event);
+    _calendarData.fullDayEventList.remove(event);
+    notifyListeners();
   }
 
   /// Removes multiple [event] from this controller.

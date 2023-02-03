@@ -7,6 +7,8 @@
   Feature [#174 - Animate to specific scroll controller offset](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/174)
 - Fixed 
   Issue [#161 - Unable to add 11.30 PM to 12.00PM](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/161)
+- Fixed
+  Issue [#179 - Removing Full Day Event does not work](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/179)
 
 # [1.0.2 - 10 Jan 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.2)
 - Added
