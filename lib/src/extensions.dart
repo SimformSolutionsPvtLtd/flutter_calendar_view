@@ -127,7 +127,7 @@ extension DateTimeExtensions on DateTime {
 
   bool get isDayStart => hour % 24 == 0 && minute % 60 == 0;
 
-  DateTime get dateYMD => DateTime(year, day, hour);
+  DateTime get dateYMD => DateTime(year, month, day);
 }
 
 extension ColorExtension on Color {

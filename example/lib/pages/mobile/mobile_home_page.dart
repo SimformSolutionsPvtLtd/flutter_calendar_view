@@ -1,6 +1,9 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../extension.dart';
+import '../../model/event.dart';
+import '../../widgets/schedule_view_page.dart';
 import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../week_view_page.dart';
@@ -34,6 +37,11 @@ class MobileHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () => context.pushRoute(WeekViewDemo()),
               child: Text("Week View"),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.pushRoute(ScheduleViewDemo()),
+              child: Text("Schedule View"),
             ),
           ],
         ),
