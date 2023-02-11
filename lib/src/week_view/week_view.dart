@@ -236,6 +236,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
+  late double _lastScrollOffset;
   late DateTime _currentStartDate;
   late DateTime _currentEndDate;
   late DateTime _maxDate;
@@ -265,7 +266,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   EventController<T>? _controller;
 
-  late ScrollController _scrollController;
   late List<WeekDays> _weekDays;
 
   final _scrollConfiguration = EventScrollConfiguration();
@@ -273,6 +273,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   @override
   void initState() {
     super.initState();
+    _lastScrollOffset = widget.scrollOffset;
 
     _reloadCallback = _reload;
 
@@ -284,8 +285,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _regulateCurrentDate();
 
     _calculateHeights();
-    _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
@@ -412,12 +412,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           showVerticalLine: true,
                           controller: controller,
                           hourHeight: _hourHeight,
-                          scrollController: _scrollController,
                           eventArranger: _eventArranger,
                           weekDays: _weekDays,
                           minuteSlotSize: widget.minuteSlotSize,
                           scrollConfiguration: _scrollConfiguration,
                           fullDayEventBuilder: _fullDayEventBuilder,
+                          scrollOffset: _lastScrollOffset,
+                          scrollListener: _scrollPageListener,
                         ),
                       );
                     },
@@ -793,4 +794,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Returns true if it does else false.
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
       dates.any((date) => date.compareWithoutTime(DateTime.now()));
+
+  /// Listener for every week page ScrollController
+  void _scrollPageListener(ScrollController controller) {
+    _lastScrollOffset = controller.offset;
+  }
 }
