@@ -309,6 +309,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
+  late double _lastScrollOffset;
   late DateTime _currentDate;
   late DateTime _maxDate;
   late DateTime _minDate;
@@ -349,6 +350,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
+    _lastScrollOffset = widget.scrollOffset;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -484,7 +486,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollNotifier: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
-                            scrollController: _scrollController,
+                            scrollOffset: _lastScrollOffset,
+                          scrollListener: _scrollPageListener,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
@@ -895,6 +898,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Returns the current visible date in day view.
   DateTime get currentDate =>
       DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
+
+  /// Listener for every day page ScrollController
+  void _scrollPageListener(ScrollController controller) {
+    _lastScrollOffset = controller.offset;
+  }
 }
 
 class DayHeader {

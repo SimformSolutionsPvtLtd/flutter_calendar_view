@@ -14,7 +14,7 @@ import '../painters.dart';
 import '../typedefs.dart';
 
 /// Defines a single day page.
-class InternalDayViewPage<T extends Object?> extends StatelessWidget {
+class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Width of the page
   final double width;
 
@@ -116,7 +116,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Settings for half hour indicator lines.
   final HourIndicatorSettings quarterHourIndicatorSettings;
 
-  final ScrollController scrollController;
+  final void Function(ScrollController) scrollListener;
+
+  /// Scroll offset of day view page.
+  final double scrollOffset;
 
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
@@ -151,7 +154,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.minuteSlotSize,
     required this.scrollNotifier,
     required this.fullDayEventBuilder,
-    required this.scrollController,
+    required this.scrollListener,
+    this.scrollOffset = 0.0,
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.showQuarterHours,
@@ -164,33 +168,66 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<InternalDayViewPage> createState() => _InternalDayViewPageState();
+}
+
+class _InternalDayViewPageState<T extends Object?>
+    extends State<InternalDayViewPage<T>> {
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController(
+      initialScrollOffset: widget.scrollOffset,
+    );
+    scrollController.addListener(_scrollControllerListener);
+  }
+
+  @override
+  void dispose() {
+    scrollController
+      ..removeListener(_scrollControllerListener)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _scrollControllerListener() {
+    widget.scrollListener(scrollController);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final fullDayEventList = controller.getFullDayEvent(date);
     return Container(
-      height: height,
-      width: width,
+      height: widget.height,
+      width: widget.width,
       child: Column(
         children: [
           fullDayEventList.isEmpty
-              ? SizedBox.shrink()
-              : fullDayEventBuilder(fullDayEventList, date),
+          ? SizedBox.shrink()
+            :widget.fullDayEventBuilder(
+            widget.controller.getFullDayEvent(widget.date),
+            widget.date,
+          ),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
               child: SizedBox(
-                height: height,
-                width: width,
+                height: widget.height,
+                width: widget.width,
                 child: Stack(
                   children: [
                     CustomPaint(
-                      size: Size(width, height),
+                      size: Size(widget.width, widget.height),
                       painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
+                        lineColor: widget.hourIndicatorSettings.color,
+                        lineHeight: widget.hourIndicatorSettings.height,
+                        offset: widget.timeLineWidth +
+                            widget.hourIndicatorSettings.offset,
+                        minuteHeight: widget.heightPerMinute,
+                        verticalLineOffset: widget.verticalLineOffset,
+                        showVerticalLine: widget.showVerticalLine,
                         lineStyle: hourIndicatorSettings.lineStyle,
                         dashWidth: hourIndicatorSettings.dashWidth,
                         dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
@@ -241,48 +278,50 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: EventGenerator<T>(
-                        height: height,
-                        date: date,
+                        height: widget.height,
+                        date: widget.date,
                         onTileLongTap: onTileLongTap,
                         onTileDoubleTap: onTileDoubleTap,
-                        onTileTap: onTileTap,
-                        eventArranger: eventArranger,
-                        events: controller.getEventsOnDay(
-                          date,
+                        onTileTap: widget.onTileTap,
+                        eventArranger: widget.eventArranger,
+                        events: widget.controller.getEventsOnDay(
+                          widget.date,
                           includeFullDayEvents: false,
                         ),
-                        heightPerMinute: heightPerMinute,
-                        eventTileBuilder: eventTileBuilder,
-                        scrollNotifier: scrollNotifier,
+                        heightPerMinute: widget.heightPerMinute,
+                        eventTileBuilder: widget.eventTileBuilder,
+                        scrollNotifier: widget.scrollNotifier,
                         startHour: startHour,
                         endHour: endHour,
-                        width: width -
-                            timeLineWidth -
-                            hourIndicatorSettings.offset -
-                            verticalLineOffset,
+                        width: widget.width -
+                            widget.timeLineWidth -
+                            widget.hourIndicatorSettings.offset -
+                            widget.verticalLineOffset,
                       ),
                     ),
                     TimeLine(
-                      height: height,
-                      hourHeight: hourHeight,
-                      timeLineBuilder: timeLineBuilder,
-                      timeLineOffset: timeLineOffset,
-                      timeLineWidth: timeLineWidth,
+                      height: widget.height,
+                      hourHeight: widget.hourHeight,
+                      timeLineBuilder: widget.timeLineBuilder,
+                      timeLineOffset: widget.timeLineOffset,
+                      timeLineWidth: widget.timeLineWidth,
                       showHalfHours: showHalfHours,
                       startHour: startHour,
                       endHour: endHour,
                       showQuarterHours: showQuarterHours,
-                      key: ValueKey(heightPerMinute),
+                      key: ValueKey(widget.heightPerMinute),
                       liveTimeIndicatorSettings: liveTimeIndicatorSettings,
                     ),
-                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                    if (widget.showLiveLine &&
+                        widget.liveTimeIndicatorSettings.height > 0)
                       IgnorePointer(
                         child: LiveTimeIndicator(
-                          liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                          width: width,
-                          height: height,
-                          heightPerMinute: heightPerMinute,
-                          timeLineWidth: timeLineWidth,
+                          liveTimeIndicatorSettings:
+                              widget.liveTimeIndicatorSettings,
+                          width: widget.width,
+                          height: widget.height,
+                          heightPerMinute: widget.heightPerMinute,
+                          timeLineWidth: widget.timeLineWidth,
                           startHour: startHour,
                           endHour: endHour,
                         ),
