@@ -328,6 +328,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
+  late double _lastScrollOffset;
   late DateTime _currentStartDate;
   late DateTime _currentEndDate;
   late DateTime _maxDate;
@@ -378,6 +379,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   @override
   void initState() {
     super.initState();
+    _lastScrollOffset = widget.scrollOffset;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -392,8 +394,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _regulateCurrentDate();
 
     _calculateHeights();
-    _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
@@ -548,6 +549,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             endHour: _endHour,
                             fullDayHeaderTitle: _fullDayHeaderTitle,
                             fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
+                            scrollOffset: _lastScrollOffset,
+                            scrollListener: _scrollPageListener,
                           ),
                         );
                       },
@@ -993,6 +996,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Returns true if it does else false.
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
       dates.any((date) => date.compareWithoutTime(DateTime.now()));
+
+  /// Listener for every week page ScrollController
+  void _scrollPageListener(ScrollController controller) {
+    _lastScrollOffset = controller.offset;
+  }
 }
 
 class WeekHeader {
