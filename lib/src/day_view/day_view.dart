@@ -234,9 +234,9 @@ class DayView<T extends Object?> extends StatefulWidget {
 }
 
 class DayViewState<T extends Object?> extends State<DayView<T>> {
-  late double _width;
+  double? _width;
   late double _height;
-  late double _timeLineWidth;
+  double? _timeLineWidth;
   late double _hourHeight;
   late DateTime _currentDate;
   late DateTime _maxDate;
@@ -356,67 +356,73 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   Widget build(BuildContext context) {
     return SafeAreaWrapper(
       option: widget.safeAreaOption,
-      child: SizedBox(
-        width: _width,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.backgroundColor,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _dayTitleBuilder(_currentDate),
-              Expanded(
-                child: SizedBox(
-                  height: _height,
-                  child: PageView.builder(
-                    physics: widget.pageViewPhysics,
-                    itemCount: _totalDays,
-                    controller: _pageController,
-                    onPageChanged: _onPageChange,
-                    itemBuilder: (_, index) {
-                      final date = DateTime(
-                          _minDate.year, _minDate.month, _minDate.day + index);
-                      return ValueListenableBuilder(
-                        valueListenable: _scrollConfiguration,
-                        builder: (_, __, ___) => InternalDayViewPage<T>(
-                          key: ValueKey(
-                              _hourHeight.toString() + date.toString()),
-                          width: _width,
-                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
-                          timeLineBuilder: _timeLineBuilder,
-                          dayDetectorBuilder: _dayDetectorBuilder,
-                          eventTileBuilder: _eventTileBuilder,
-                          heightPerMinute: widget.heightPerMinute,
-                          hourIndicatorSettings: _hourIndicatorSettings,
-                          date: date,
-                          onTileTap: widget.onEventTap,
-                          onDateLongPress: widget.onDateLongPress,
-                          onDateTap: widget.onDateTap,
-                          showLiveLine: widget.showLiveTimeLineInAllDays ||
-                              date.compareWithoutTime(DateTime.now()),
-                          timeLineOffset: widget.timeLineOffset,
-                          timeLineWidth: _timeLineWidth,
-                          verticalLineOffset: widget.verticalLineOffset,
-                          showVerticalLine: widget.showVerticalLine,
-                          height: _height,
-                          controller: controller,
-                          hourHeight: _hourHeight,
-                          eventArranger: _eventArranger,
-                          minuteSlotSize: widget.minuteSlotSize,
-                          scrollNotifier: _scrollConfiguration,
-                          fullDayEventBuilder: _fullDayEventBuilder,
-                          scrollController: _scrollController,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxWidth = constraints.maxWidth;
+          return SizedBox(
+            width: _width ?? maxWidth,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: widget.backgroundColor,
               ),
-            ],
-          ),
-        ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _dayTitleBuilder(_currentDate),
+                  Expanded(
+                    child: SizedBox(
+                      height: _height,
+                      child: PageView.builder(
+                        physics: widget.pageViewPhysics,
+                        itemCount: _totalDays,
+                        controller: _pageController,
+                        onPageChanged: _onPageChange,
+                        itemBuilder: (_, index) {
+                          final date = DateTime(_minDate.year, _minDate.month,
+                              _minDate.day + index);
+                          return ValueListenableBuilder(
+                            valueListenable: _scrollConfiguration,
+                            builder: (_, __, ___) => InternalDayViewPage<T>(
+                              key: ValueKey(
+                                  _hourHeight.toString() + date.toString()),
+                              width: _width ?? maxWidth,
+                              liveTimeIndicatorSettings:
+                                  _liveTimeIndicatorSettings,
+                              timeLineBuilder: _timeLineBuilder,
+                              dayDetectorBuilder: _dayDetectorBuilder,
+                              eventTileBuilder: _eventTileBuilder,
+                              heightPerMinute: widget.heightPerMinute,
+                              hourIndicatorSettings: _hourIndicatorSettings,
+                              date: date,
+                              onTileTap: widget.onEventTap,
+                              onDateLongPress: widget.onDateLongPress,
+                              onDateTap: widget.onDateTap,
+                              showLiveLine: widget.showLiveTimeLineInAllDays ||
+                                  date.compareWithoutTime(DateTime.now()),
+                              timeLineOffset: widget.timeLineOffset,
+                              timeLineWidth: _timeLineWidth ?? maxWidth * 0.13,
+                              verticalLineOffset: widget.verticalLineOffset,
+                              showVerticalLine: widget.showVerticalLine,
+                              height: _height,
+                              controller: controller,
+                              hourHeight: _hourHeight,
+                              eventArranger: _eventArranger,
+                              minuteSlotSize: widget.minuteSlotSize,
+                              scrollNotifier: _scrollConfiguration,
+                              fullDayEventBuilder: _fullDayEventBuilder,
+                              scrollController: _scrollController,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -443,10 +449,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Updates data related to size of this view.
   void _updateViewDimensions() {
-    _width = widget.width ?? MediaQuery.of(context).size.width;
-
-    _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
-
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         HourIndicatorSettings(
           color: Constants.defaultLiveTimeIndicatorColor,
