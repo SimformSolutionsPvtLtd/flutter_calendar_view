@@ -279,6 +279,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   EventController<T>? _controller;
 
   late ScrollController _scrollController;
+
+  ScrollController get scrollController => _scrollController;
+
   late List<WeekDays> _weekDays;
 
   final _scrollConfiguration = EventScrollConfiguration();
@@ -856,6 +859,19 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       event: event,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
+
+  /// Animate to specific scroll controller offset
+  void animateTo(
+    double offset, {
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) {
+    _scrollController.animateTo(
+      offset,
+      duration: duration,
+      curve: curve,
     );
   }
 

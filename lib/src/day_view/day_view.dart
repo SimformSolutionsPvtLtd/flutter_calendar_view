@@ -265,6 +265,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late ScrollController _scrollController;
 
+  ScrollController get scrollController => _scrollController;
+
   late VoidCallback _reloadCallback;
 
   final _scrollConfiguration = EventScrollConfiguration<T>();
@@ -751,6 +753,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       event: event,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
+
+  /// Animate to specific scroll controller offset
+  void animateTo(
+    double offset, {
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) {
+    _scrollController.animateTo(
+      offset,
+      duration: duration,
+      curve: curve,
     );
   }
 
