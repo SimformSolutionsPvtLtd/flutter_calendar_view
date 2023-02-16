@@ -213,7 +213,7 @@ class FullDayEventView<T> extends StatelessWidget {
   final TextStyle? titleStyle;
 
   /// Called when user taps on event tile.
-  final TileTapCallback? onEventTap;
+  final TileTapCallback<T>? onEventTap;
 
   /// Defines date for which events will be displayed.
   final DateTime date;
