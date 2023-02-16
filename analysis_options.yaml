@@ -40,7 +40,6 @@ linter:
     empty_statements: true
     empty_constructor_bodies: true
     hash_and_equals: true
-    invariant_booleans: true
     iterable_contains_unrelated_type: true
     list_remove_unrelated_type: true
     literal_only_boolean_expressions: true

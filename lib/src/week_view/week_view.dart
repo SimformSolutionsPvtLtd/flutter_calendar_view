@@ -694,10 +694,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
         title: events[0].title,
-        titleStyle: TextStyle(
-          fontSize: 12,
-          color: events[0].color.accent,
-        ),
+        titleStyle: events[0].titleStyle ??
+            TextStyle(
+              fontSize: 12,
+              color: events[0].color.accent,
+            ),
+        descriptionStyle: events[0].descriptionStyle,
         totalEvents: events.length,
         padding: EdgeInsets.all(7.0),
         backgroundColor: events[0].color,
