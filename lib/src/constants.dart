@@ -12,6 +12,7 @@ class Constants {
   static final int _maxColor = 256;
 
   static const int hoursADay = 24;
+  static const int minutesADay = 1440;
 
   static final List<String> weekTitles = ["M", "T", "W", "T", "F", "S", "S"];
 

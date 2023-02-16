@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 
 import '../calendar_event_data.dart';
+import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
