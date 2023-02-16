@@ -33,6 +33,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// A builder that builds time line.
   final DateWidgetBuilder timeLineBuilder;
 
+  /// Builds custom PressDetector widget
+  final DetectorBuilder dayDetectorBuilder;
+
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
 
@@ -117,6 +120,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.scrollNotifier,
     required this.fullDayEventBuilder,
     required this.scrollController,
+    required this.dayDetectorBuilder,
   }) : super(key: key);
 
   @override
@@ -146,13 +150,11 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         showVerticalLine: showVerticalLine,
                       ),
                     ),
-                    PressDetector(
+                    dayDetectorBuilder(
                       width: width,
                       height: height,
                       heightPerMinute: heightPerMinute,
                       date: date,
-                      onDateTap: onDateTap,
-                      onDateLongPress: onDateLongPress,
                       minuteSlotSize: minuteSlotSize,
                     ),
                     Align(
