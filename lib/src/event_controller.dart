@@ -120,11 +120,12 @@ class EventController<T extends Object?> extends ChangeNotifier {
       events.addAll(_calendarData.events[date]!);
     }
 
+    final lastMomentOfDay = DateTime(date.year, date.month, date.day + 1);
     for (final rangingEvent in _calendarData.rangingEventList) {
       if (date == rangingEvent.date ||
           date == rangingEvent.endDate ||
           (date.isBefore(rangingEvent.endDate) &&
-              date.isAfter(rangingEvent.date))) {
+              lastMomentOfDay.isAfter(rangingEvent.date))) {
         events.add(rangingEvent);
       }
     }
