@@ -449,6 +449,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Updates data related to size of this view.
   void _updateViewDimensions() {
+    _width = widget.width;
+
+    _timeLineWidth = widget.timeLineWidth;
+
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         HourIndicatorSettings(
           color: Constants.defaultLiveTimeIndicatorColor,
