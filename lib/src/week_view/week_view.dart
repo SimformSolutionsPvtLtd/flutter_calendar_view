@@ -396,8 +396,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                     controller: _pageController,
                     onPageChanged: _onPageChange,
                     itemBuilder: (_, index) {
-                      final dates = _minDate
-                          .add(Duration(days: index * DateTime.daysPerWeek))
+                      final dates = DateTime(_minDate.year, _minDate.month,
+                              _minDate.day + (index * DateTime.daysPerWeek))
                           .datesOfWeek(start: widget.startDay);
 
                       return ValueListenableBuilder(

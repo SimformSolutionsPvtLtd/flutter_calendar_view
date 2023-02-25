@@ -44,7 +44,8 @@ extension DateTimeExtensions on DateTime {
               7)
           .ceil();
 
-  /// Returns The List of date of Current Week
+  /// Returns The List of date of Current Week, all of the dates will be without
+  /// time.
   /// Day will start from Monday to Sunday.
   ///
   /// ex: if Current Date instance is 8th and day is wednesday then weekDates
@@ -61,26 +62,26 @@ extension DateTimeExtensions on DateTime {
     //    difference = (weekdays - (start.index + 1))%7
     //
     final startDay =
-        withoutTime.subtract(Duration(days: (weekday - start.index - 1) % 7));
+        DateTime(year, month, day - (weekday - start.index - 1) % 7);
 
     return [
       startDay,
-      startDay.add(Duration(days: 1)),
-      startDay.add(Duration(days: 2)),
-      startDay.add(Duration(days: 3)),
-      startDay.add(Duration(days: 4)),
-      startDay.add(Duration(days: 5)),
-      startDay.add(Duration(days: 6)),
+      DateTime(startDay.year, startDay.month, startDay.day + 1),
+      DateTime(startDay.year, startDay.month, startDay.day + 2),
+      DateTime(startDay.year, startDay.month, startDay.day + 3),
+      DateTime(startDay.year, startDay.month, startDay.day + 4),
+      DateTime(startDay.year, startDay.month, startDay.day + 5),
+      DateTime(startDay.year, startDay.month, startDay.day + 6),
     ];
   }
 
   /// Returns the first date of week containing the current date
   DateTime firstDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      withoutTime.subtract(Duration(days: (weekday - start.index - 1) % 7));
+      DateTime(year, month, day - ((weekday - start.index - 1) % 7));
 
   /// Returns the last date of week containing the current date
   DateTime lastDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      withoutTime.add(Duration(days: 6 - (weekday - start.index - 1) % 7));
+      DateTime(year, month, day + (6 - (weekday - start.index - 1) % 7));
 
   /// Returns list of all dates of [month].
   /// All the dates are week based that means it will return array of size 42
@@ -127,7 +128,10 @@ extension DateTimeExtensions on DateTime {
 
   bool get isDayStart => hour % 24 == 0 && minute % 60 == 0;
 
-  DateTime get dateYMD => DateTime(year, day, hour);
+  @Deprecated(
+      "This extension is not being used in this package and will be removed "
+      "in next major release. Please use withoutTime instead.")
+  DateTime get dateYMD => DateTime(year, month, day);
 }
 
 extension ColorExtension on Color {
