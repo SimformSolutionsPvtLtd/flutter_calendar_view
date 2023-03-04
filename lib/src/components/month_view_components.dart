@@ -257,10 +257,12 @@ class WeekDayTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
         color: backgroundColor,
-        border: Border.all(
-          color: Constants.defaultBorderColor,
-          width: displayBorder ? 0.5 : 0,
-        ),
+        border: displayBorder
+            ? Border.all(
+                color: Constants.defaultBorderColor,
+                width: 0.5,
+              )
+            : null,
       ),
       child: Text(
         weekDayStringBuilder?.call(dayIndex) ?? Constants.weekTitles[dayIndex],
