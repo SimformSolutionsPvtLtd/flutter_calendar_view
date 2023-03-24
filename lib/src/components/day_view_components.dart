@@ -253,3 +253,209 @@ class FullDayEventView<T> extends StatelessWidget {
     );
   }
 }
+
+class InteractiveRoundedEventTile extends StatelessWidget {
+  /// Title of the tile.
+  final String title;
+
+  /// Description of the tile.
+  final String description;
+
+  /// Background color of tile.
+  /// Default color is [Colors.blue]
+  final Color backgroundColor;
+
+  /// If same tile can have multiple events.
+  /// In most cases this value will be 1 less than total events.
+  final int totalEvents;
+
+  /// Padding of the tile. Default padding is [EdgeInsets.zero]
+  final EdgeInsets padding;
+
+  /// Margin of the tile. Default margin is [EdgeInsets.zero]
+  final EdgeInsets margin;
+
+  /// Border radius of tile.
+  final BorderRadius borderRadius;
+
+  /// Style for title
+  final TextStyle? titleStyle;
+
+  /// Style for description
+  final TextStyle? descriptionStyle;
+
+  final bool isSelected;
+
+  /// Color of the handle.
+  final Color handleColor;
+
+  /// The outline color of the tile when selected.
+  final Color selectedOutlineColor;
+
+  /// Callback when tile is tapped.
+  final VoidCallback onTap;
+
+  // Function when startButton is being draged.
+  final Function(double value) changeStartTime;
+
+  /// Function when endButton is being draged.
+  final Function(double value) changeEndTime;
+
+  /// Function to reschedule the event.
+  final Function(double value) reschedule;
+
+  /// Callback when the user is done editing the event.
+  final VoidCallback editComplete;
+
+  const InteractiveRoundedEventTile({
+    Key? key,
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+    required this.changeStartTime,
+    required this.changeEndTime,
+    required this.reschedule,
+    required this.editComplete,
+    this.padding = EdgeInsets.zero,
+    this.margin = EdgeInsets.zero,
+    this.description = "",
+    this.borderRadius = BorderRadius.zero,
+    this.totalEvents = 1,
+    this.backgroundColor = Colors.blue,
+    this.titleStyle,
+    this.descriptionStyle,
+    this.handleColor = Colors.white,
+    this.selectedOutlineColor = Colors.white,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      onVerticalDragUpdate: isSelected
+          ? (details) {
+              if (details.primaryDelta != null) {
+                reschedule(details.primaryDelta!);
+              }
+            }
+          : null,
+      onVerticalDragEnd: isSelected
+          ? (details) {
+              editComplete();
+            }
+          : null,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            padding: padding,
+            margin: margin,
+            decoration: isSelected
+                ? BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: borderRadius,
+                    border: Border.all(
+                      color: selectedOutlineColor,
+                      width: 2,
+                    ),
+                  )
+                : BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: borderRadius,
+                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: titleStyle ??
+                        TextStyle(
+                          fontSize: 18,
+                          color: backgroundColor.accent,
+                        ),
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: backgroundColor.accent,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+                if (totalEvents > 1)
+                  Expanded(
+                    child: Text(
+                      "+${totalEvents - 1} more",
+                      style: TextStyle(
+                        color: backgroundColor.accent.withAlpha(200),
+                      ).copyWith(fontSize: 17),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (isSelected)
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onVerticalDragEnd: (details) {
+                        editComplete();
+                      },
+                      onVerticalDragUpdate: (details) {
+                        if (details.primaryDelta != null) {
+                          changeStartTime(details.primaryDelta!);
+                        }
+                      },
+                      child: Icon(
+                        Icons.circle_rounded,
+                        color: handleColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          else
+            const SizedBox.shrink(),
+          if (isSelected)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onVerticalDragEnd: (details) {
+                        editComplete();
+                      },
+                      onVerticalDragUpdate: (details) {
+                        if (details.primaryDelta != null) {
+                          changeEndTime(details.primaryDelta!);
+                        }
+                      },
+                      child: Icon(
+                        Icons.circle_rounded,
+                        color: handleColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          else
+            const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+}

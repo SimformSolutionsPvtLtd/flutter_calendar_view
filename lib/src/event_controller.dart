@@ -105,6 +105,26 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Replaces a single event in [events] with an updated [eventData].
+  void replace(CalendarEventData<T> eventData) {
+    final index = events.indexWhere(
+      (element) => element.compareWithoutTime(eventData),
+    );
+
+    if (index != -1) {
+      final event = events[index];
+
+      // //Set selected Event.
+      selectedEventData = eventData;
+
+      // Remove the existing event.
+      remove(event);
+
+      // Add the updated event.
+      add(eventData);
+    }
+  }
+
   /// Returns events on given day.
   ///
   /// To overwrite default behaviour of this function,
@@ -178,6 +198,31 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
     _calendarData.eventList.add(event);
 
+    notifyListeners();
+  }
+
+  /// Selected eventData in  [DayView], this can be expanded to include other views.
+  /// This is so that the event can be highlighted and modified by the user.
+  CalendarEventData<T>? selectedEventData;
+
+  /// Update the selected [CalendarEventData].
+  void handleEventDataTap(CalendarEventData<T> eventData) {
+    if (selectedEventData == eventData) {
+      deselectEventData();
+    } else {
+      selectEventData(eventData);
+    }
+  }
+
+  /// Select the given [CalendarEventData].
+  void selectEventData(CalendarEventData<T> eventData) {
+    selectedEventData = eventData;
+    notifyListeners();
+  }
+
+  /// Deselect the currently selected [CalendarEventData].
+  void deselectEventData() {
+    selectedEventData = null;
     notifyListeners();
   }
 

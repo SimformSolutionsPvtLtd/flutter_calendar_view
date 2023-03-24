@@ -132,6 +132,16 @@ extension DateTimeExtensions on DateTime {
       "This extension is not being used in this package and will be removed "
       "in next major release. Please use withoutTime instead.")
   DateTime get dateYMD => DateTime(year, month, day);
+
+  /// Returns today's [DateTime] just after midnight.
+  DateTime get startOfToday {
+    return DateTime(year, month, day, 0, 0, 0, 0, 1);
+  }
+
+  /// Returns today's [DateTime] just before midnight.
+  DateTime get endOfToday {
+    return DateTime(year, month, day, 23, 59, 59, 999, 999);
+  }
 }
 
 extension ColorExtension on Color {
@@ -162,5 +172,14 @@ extension MinutesExtension on MinuteSlotSize {
       case MinuteSlotSize.minutes60:
         return 60;
     }
+  }
+}
+
+extension DoubleExt on double {
+  /// Returns a [Duration] where minutes are `integer part` and seconds are the `decimal part`.
+  ///
+  Duration get toDuration {
+    final seconds = ((this - truncate()) * 60).toInt();
+    return Duration(minutes: truncate(), seconds: seconds);
   }
 }

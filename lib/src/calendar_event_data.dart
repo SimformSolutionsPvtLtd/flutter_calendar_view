@@ -96,4 +96,149 @@ class CalendarEventData<T extends Object?> {
 
   @override
   int get hashCode => super.hashCode;
+
+  /// Checks if the eventData is the same without checking startTime and endTime.
+  ///
+  /// This is the workaround because [CalendarEventData] does not have a unique ID.
+  /// - It can create a bug when 2 events have are exactly the same except for the startTime and endTime.
+  ///
+  bool compareWithoutTime(Object other) {
+    return other is CalendarEventData<T> &&
+        date.compareWithoutTime(other.date) &&
+        endDate.compareWithoutTime(other.endDate) &&
+        ((event == null && other.event == null) ||
+            (event != null && other.event != null && event == other.event)) &&
+        title == other.title &&
+        color == other.color &&
+        titleStyle == other.titleStyle &&
+        descriptionStyle == other.descriptionStyle &&
+        description == other.description;
+  }
+
+  /// Updates this eventData's startTime.
+  ///
+  CalendarEventData<T>? updateEventStartTime({
+    required double primaryDelta,
+    required double heightPerMinute,
+    Duration minimumDuration = const Duration(minutes: 15),
+  }) {
+    assert(
+      startTime != null,
+      "To resize event, startTime can't be null",
+    );
+    assert(
+      endTime != null,
+      "To resize event, endTime can't be null",
+    );
+
+    // Calculate the change in duration.
+    final deltaDuration = (primaryDelta / heightPerMinute).toDuration;
+
+    // Calculate the new start time.
+    var newStartTime = startTime!.add(deltaDuration);
+
+    if (newStartTime.isAfter(endTime!.subtract(minimumDuration))) {
+      // If the new start time is after the endTime - minimumDuration.
+      newStartTime = endTime!.subtract(minimumDuration);
+    } else if (newStartTime.isBefore(date.startOfToday)) {
+      // If the new start time is before the start of this day then set it to start of today.
+      newStartTime = date.startOfToday;
+    }
+
+    return copyWith(
+      startTime: newStartTime,
+    );
+  }
+
+  /// Updates this event's endTime.
+  CalendarEventData<T>? updateEventEndTime({
+    required double primaryDelta,
+    required double heightPerMinute,
+    Duration minimumDuration = const Duration(minutes: 15),
+  }) {
+    assert(
+      startTime != null,
+      "To resize event, startTime can't be null",
+    );
+    assert(
+      endTime != null,
+      "To resize event, endTime can't be null",
+    );
+
+    // Calculate the change in duration.
+    final deltaDuration = (primaryDelta / heightPerMinute).toDuration;
+
+    // Calculate the new start time.
+    var newEndTime = endTime!.add(deltaDuration);
+
+    if (newEndTime.isBefore(startTime!.add(minimumDuration))) {
+      // If the new end time is before the startTime + minimumDuration.
+      newEndTime = endTime!.add(minimumDuration);
+    } else if (newEndTime.isAfter(date.endOfToday)) {
+      // If the new end time is after the end of this day then set it to end of today.
+      newEndTime = date.endOfToday;
+    }
+
+    return copyWith(
+      endTime: newEndTime,
+    );
+  }
+
+  /// Reschedule the event.
+  CalendarEventData<T>? rescheduleEvent({
+    required double primaryDelta,
+    required double heightPerMinute,
+  }) {
+    assert(
+      startTime != null,
+      "To resize event, startTime can't be null",
+    );
+    assert(
+      endTime != null,
+      "To resize event, endTime can't be null",
+    );
+
+    // Calculate the change in duration.
+    final deltaDuration = (primaryDelta / heightPerMinute).toDuration;
+    // Calculate the new start time.
+    final newStartTime = startTime!.add(deltaDuration);
+    // Calculate the new end time.
+    final newEndTime = endTime!.add(deltaDuration);
+
+    if (newStartTime.isAfter(date.startOfToday) &&
+        newEndTime.isBefore(date.endOfToday)) {
+      // If the new start time is after the start of this day and before the end of this day.
+      return copyWith(
+        startTime: newStartTime,
+        endTime: newEndTime,
+        date: newStartTime,
+        endDate: newEndTime,
+      );
+    } else {
+      return null;
+    }
+  }
+
+  /// Copy the [CalendarEventData] with new values.
+  CalendarEventData<T>? copyWith({
+    String? taskPath,
+    Color? color,
+    DateTime? date,
+    String? title,
+    String? description,
+    DateTime? startTime,
+    DateTime? endTime,
+    DateTime? endDate,
+  }) {
+    return CalendarEventData(
+      color: color ?? this.color,
+      date: date ?? this.date,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      endDate: endDate ?? this.endDate,
+      event: event ?? this.event,
+    );
+  }
 }
