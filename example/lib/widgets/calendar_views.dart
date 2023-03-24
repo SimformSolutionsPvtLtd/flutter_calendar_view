@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
-import '../pages/interactive_day_view_page.dart';
 import 'day_view_widget.dart';
 import 'interactive_day_view_widget.dart';
 import 'month_view_widget.dart';

@@ -201,9 +201,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Selected eventData in  [DayView], this can be expanded to include other 
+  /// Selected eventData in  [DayView], this can be expanded to include other
   /// views.
-  /// 
+  ///
   /// This is so that the event can be highlighted and modified by the user.
   CalendarEventData<T>? selectedEventData;
 
