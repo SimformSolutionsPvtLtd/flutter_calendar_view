@@ -1,3 +1,4 @@
+import 'package:example/pages/interactive_day_view_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../extension.dart';
@@ -27,6 +28,13 @@ class MobileHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () => context.pushRoute(DayViewPageDemo()),
               child: Text("Day View"),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () => context.pushRoute(InteractiveDayViewPageDemo()),
+              child: Text("Interactive Day View"),
             ),
             SizedBox(
               height: 20,
