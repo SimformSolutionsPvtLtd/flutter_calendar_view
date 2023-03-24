@@ -97,10 +97,14 @@ class CalendarEventData<T extends Object?> {
   @override
   int get hashCode => super.hashCode;
 
-  /// Checks if the eventData is the same without checking startTime and endTime.
+  /// Checks if the eventData is the same 
+  /// without checking startTime and endTime.
   ///
-  /// This is the workaround because [CalendarEventData] does not have a unique ID.
-  /// - It can create a bug when 2 events have are exactly the same except for the startTime and endTime.
+  /// This is the workaround because [CalendarEventData] does not 
+  /// have a unique ID.
+  /// 
+  /// - It can create a bug when 2 events have are exactly the same except 
+  ///   for the startTime and endTime.
   ///
   bool compareWithoutTime(Object other) {
     return other is CalendarEventData<T> &&
@@ -141,7 +145,8 @@ class CalendarEventData<T extends Object?> {
       // If the new start time is after the endTime - minimumDuration.
       newStartTime = endTime!.subtract(minimumDuration);
     } else if (newStartTime.isBefore(date.startOfToday)) {
-      // If the new start time is before the start of this day then set it to start of today.
+      // If the new start time is before the start of this day then set it to 
+      // start of today.
       newStartTime = date.startOfToday;
     }
 
@@ -175,7 +180,8 @@ class CalendarEventData<T extends Object?> {
       // If the new end time is before the startTime + minimumDuration.
       newEndTime = endTime!.add(minimumDuration);
     } else if (newEndTime.isAfter(date.endOfToday)) {
-      // If the new end time is after the end of this day then set it to end of today.
+      // If the new end time is after the end of this day then set it to end 
+      // of today.
       newEndTime = date.endOfToday;
     }
 
@@ -207,7 +213,8 @@ class CalendarEventData<T extends Object?> {
 
     if (newStartTime.isAfter(date.startOfToday) &&
         newEndTime.isBefore(date.endOfToday)) {
-      // If the new start time is after the start of this day and before the end of this day.
+      // If the new start time is after the start of this day and before the end
+      // of this day.
       return copyWith(
         startTime: newStartTime,
         endTime: newEndTime,

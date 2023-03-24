@@ -176,8 +176,8 @@ extension MinutesExtension on MinuteSlotSize {
 }
 
 extension DoubleExt on double {
-  /// Returns a [Duration] where minutes are `integer part` and seconds are the `decimal part`.
-  ///
+  /// Returns a [Duration] where minutes are `integer part` and
+  /// seconds are the `decimal part`.
   Duration get toDuration {
     final seconds = ((this - truncate()) * 60).toInt();
     return Duration(minutes: truncate(), seconds: seconds);

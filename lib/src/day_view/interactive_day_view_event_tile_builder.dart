@@ -14,11 +14,13 @@ class InteractiveDayViewEventTile<T extends Object?> extends StatefulWidget {
   final EventController<T>? controller;
 
   /// This is the height of each minute in the day view.
-  /// - Required to make sure the gestures and the event tile sizing are in sync.
+  /// - Required to make sure the gestures and the event tile sizing
+  ///   are in sync.
   final double heightPerMinute;
 
   /// Called when the user finishes editing the event.
-  /// - Use this if you want to do any operation after user finishes editing the event.
+  /// - Use this if you want to do any operation after user finishes
+  ///   editing the event.
   final Function(CalendarEventData<T> evenData)? editComplete;
 
   const InteractiveDayViewEventTile({

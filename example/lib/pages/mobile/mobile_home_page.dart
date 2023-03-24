@@ -1,8 +1,8 @@
-import 'package:example/pages/interactive_day_view_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../extension.dart';
 import '../day_view_page.dart';
+import '../interactive_day_view_page.dart';
 import '../month_view_page.dart';
 import '../week_view_page.dart';
 
