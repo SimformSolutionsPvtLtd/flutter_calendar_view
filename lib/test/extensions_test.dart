@@ -49,6 +49,25 @@ void main() {
       testAllLastDayOfTheWeek(DateTime(2023, 10, 29));
       testAllLastDayOfTheWeek(DateTime(2023, 10, 30));
     });
+    test('startOfToday', () {
+      testStartOfToday(DateTime(2023, 10, 20, 6));
+      testStartOfToday(DateTime(2023, 11, 20, 6));
+    });
+    test('endOfToday', () {
+      testEndOfToday(DateTime(2023, 10, 20, 6));
+      testEndOfToday(DateTime(2023, 11, 20, 6));
+    });
+  });
+
+  group('DoubleExtentions', () {
+    test('toDuration', () {
+      final test1 = 1.0;
+      final test2 = 1.5;
+      final test3 = 1.25;
+      expect(test1.toDuration, Duration(minutes: 1));
+      expect(test2.toDuration, Duration(minutes: 1, seconds: 30));
+      expect(test3.toDuration, Duration(minutes: 1, seconds: 15));
+    });
   });
 }
 
@@ -179,4 +198,18 @@ WeekDays nextWeekDays(WeekDays current) {
     case WeekDays.sunday:
       return WeekDays.monday;
   }
+}
+
+void testStartOfToday(DateTime dateTime) {
+  expect(
+    dateTime.startOfToday,
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 0, 0, 0, 0, 1),
+  );
+}
+
+void testEndOfToday(DateTime dateTime) {
+  expect(
+    dateTime.endOfToday,
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999, 999),
+  );
 }
