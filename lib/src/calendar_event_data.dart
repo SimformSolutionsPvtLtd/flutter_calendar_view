@@ -97,15 +97,14 @@ class CalendarEventData<T extends Object?> {
   @override
   int get hashCode => super.hashCode;
 
-  /// Checks if the eventData is the same 
+  /// Checks if the eventData is the same
   /// without checking startTime and endTime.
   ///
-  /// This is the workaround because [CalendarEventData] does not 
+  /// This is the workaround because [CalendarEventData] does not
   /// have a unique ID.
-  /// 
-  /// - It can create a bug when 2 events have are exactly the same except 
-  ///   for the startTime and endTime.
   ///
+  /// - It can create a bug when 2 events have are exactly the same except
+  ///   for the startTime and endTime.
   bool compareWithoutTime(Object other) {
     return other is CalendarEventData<T> &&
         date.compareWithoutTime(other.date) &&
@@ -120,7 +119,6 @@ class CalendarEventData<T extends Object?> {
   }
 
   /// Updates this eventData's startTime.
-  ///
   CalendarEventData<T>? updateEventStartTime({
     required double primaryDelta,
     required double heightPerMinute,
@@ -145,7 +143,7 @@ class CalendarEventData<T extends Object?> {
       // If the new start time is after the endTime - minimumDuration.
       newStartTime = endTime!.subtract(minimumDuration);
     } else if (newStartTime.isBefore(date.startOfToday)) {
-      // If the new start time is before the start of this day then set it to 
+      // If the new start time is before the start of this day then set it to
       // start of today.
       newStartTime = date.startOfToday;
     }
@@ -180,7 +178,7 @@ class CalendarEventData<T extends Object?> {
       // If the new end time is before the startTime + minimumDuration.
       newEndTime = endTime!.add(minimumDuration);
     } else if (newEndTime.isAfter(date.endOfToday)) {
-      // If the new end time is after the end of this day then set it to end 
+      // If the new end time is after the end of this day then set it to end
       // of today.
       newEndTime = date.endOfToday;
     }
