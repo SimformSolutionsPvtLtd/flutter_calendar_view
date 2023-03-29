@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -490,37 +489,44 @@ class InteractiveEventLayout<T extends Object?> extends StatefulWidget {
 
 class _InteractiveEventLayoutState<T extends Object?>
     extends State<InteractiveEventLayout<T>> {
-  /// The selected event.
-  ValueNotifier<CalendarEventData<T>?> selectedEvent =
+  /// The selected event that can be modified.
+  ValueNotifier<CalendarEventData<T>?> calendarEventData =
       ValueNotifier<CalendarEventData<T>?>(null);
 
-  /// The original selected event.
-  CalendarEventData<T>? originalSelectedEvent;
+  /// The original selected event this is used to replace the
+  /// event in the [EventController] when the modification is done.
+  CalendarEventData<T>? selectedCalendarEventData;
 
+  /// Called when user taps on event tile.
   void onTileTap(List<CalendarEventData<T>> events, DateTime date) {
     widget.onTileTap?.call(events, date);
-    if (selectedEvent.value == null) {
-      selectedEvent.value = events.first;
-      originalSelectedEvent = events.first;
+    if (calendarEventData.value == null) {
+      selectedCalendarEventData = events.first;
+      calendarEventData.value = selectedCalendarEventData;
     } else {
-      if (selectedEvent.value! == events.first) {
-        selectedEvent.value = null;
-        originalSelectedEvent = null;
+      if (calendarEventData.value! == events.first) {
+        selectedCalendarEventData = null;
+        calendarEventData.value = selectedCalendarEventData;
       } else {
-        selectedEvent.value = events.first;
-        originalSelectedEvent = events.first;
+        selectedCalendarEventData = events.first;
+        calendarEventData.value = selectedCalendarEventData;
       }
     }
   }
 
+  /// Called when user taps outside of any event tiles.
+  void onTapOutSide() {
+    selectedCalendarEventData = null;
+    calendarEventData.value = selectedCalendarEventData;
+  }
+
   @override
   Widget build(BuildContext context) {
-    log('message');
     return Container(
       height: widget.height,
       width: widget.width,
       child: ValueListenableBuilder<CalendarEventData<T>?>(
-        valueListenable: selectedEvent,
+        valueListenable: calendarEventData,
         builder: (context, value, child) {
           if (value == null) {
             return EventGenerator<T>(
@@ -538,7 +544,7 @@ class _InteractiveEventLayoutState<T extends Object?>
             return Stack(
               children: [
                 GestureDetector(
-                  onTap: () => selectedEvent.value = null,
+                  onTap: onTapOutSide,
                 ),
                 EventGenerator<T>(
                   height: widget.height,
@@ -547,7 +553,7 @@ class _InteractiveEventLayoutState<T extends Object?>
                   eventArranger: widget.eventArranger,
                   events: widget.controller.getEventsOnDay(widget.date)
                     ..removeWhere(
-                      (element) => element == originalSelectedEvent,
+                      (element) => element == selectedCalendarEventData,
                     ),
                   heightPerMinute: widget.heightPerMinute,
                   eventTileBuilder: widget.eventTileBuilder,
@@ -557,17 +563,17 @@ class _InteractiveEventLayoutState<T extends Object?>
                 SelectedEventGenerator<T>(
                   onEventChanged: (modifiedEvent) {
                     widget.controller.replace(
-                      eventDataToReplace: originalSelectedEvent!,
+                      eventDataToReplace: selectedCalendarEventData!,
                       newEventData: modifiedEvent,
                     );
-                    originalSelectedEvent = modifiedEvent;
+                    selectedCalendarEventData = modifiedEvent;
                     widget.onEventChanged(modifiedEvent);
                   },
                   height: widget.height,
                   date: widget.date,
                   onTileTap: onTileTap,
                   eventArranger: widget.eventArranger,
-                  selectedEvent: selectedEvent,
+                  selectedEvent: calendarEventData,
                   heightPerMinute: widget.heightPerMinute,
                   selectedEventTileBuilder: widget.selectedEventTileBuilder,
                   scrollNotifier: widget.scrollNotifier,

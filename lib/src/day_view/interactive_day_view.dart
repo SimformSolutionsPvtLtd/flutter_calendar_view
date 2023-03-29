@@ -613,8 +613,8 @@ class InteractiveDayViewState<T extends Object?>
       return SizedBox.shrink();
   }
 
-  /// Default timeline builder. This builder will be used if
-  /// [widget.eventTileBuilder] is null
+  /// Default selectedEventTileBuilder builder. This builder will be used if
+  /// [widget.selectedEventTileBuilder] is null.
   Widget _defaultSelectedEventTileBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
