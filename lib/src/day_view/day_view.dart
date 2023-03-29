@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
@@ -329,6 +330,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         widget.maxDay != oldWidget.maxDay) {
       _setDateRange();
       _regulateCurrentDate();
+
       _pageController.jumpToPage(_currentIndex);
     }
 
