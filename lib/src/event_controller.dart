@@ -105,10 +105,15 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Replaces a single event in [events] with an updated [eventData].
-  void replace(CalendarEventData<T> eventData) {
+  /// Replaces a single [CalendarEventData] in events
+  /// with a new [CalendarEventData].
+  void replace({
+    required CalendarEventData<T> eventDataToReplace,
+    required CalendarEventData<T> newEventData,
+  }) {
+    /// Find the index of the event to be replaced.
     final index = events.indexWhere(
-      (element) => element.compareWithoutTime(eventData),
+      (element) => element == eventDataToReplace,
     );
 
     if (index != -1) {
@@ -117,7 +122,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
       remove(event);
 
       // Add the updated event.
-      add(eventData);
+      add(newEventData);
     }
   }
 

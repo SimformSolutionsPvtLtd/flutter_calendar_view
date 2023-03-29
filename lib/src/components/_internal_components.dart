@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -493,21 +494,28 @@ class _InteractiveEventLayoutState<T extends Object?>
   ValueNotifier<CalendarEventData<T>?> selectedEvent =
       ValueNotifier<CalendarEventData<T>?>(null);
 
+  /// The original selected event.
+  CalendarEventData<T>? originalSelectedEvent;
+
   void onTileTap(List<CalendarEventData<T>> events, DateTime date) {
     widget.onTileTap?.call(events, date);
     if (selectedEvent.value == null) {
       selectedEvent.value = events.first;
+      originalSelectedEvent = events.first;
     } else {
-      if (selectedEvent.value!.compareWithoutTime(events.first)) {
+      if (selectedEvent.value! == events.first) {
         selectedEvent.value = null;
+        originalSelectedEvent = null;
       } else {
         selectedEvent.value = events.first;
+        originalSelectedEvent = events.first;
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    log('message');
     return Container(
       height: widget.height,
       width: widget.width,
@@ -539,7 +547,7 @@ class _InteractiveEventLayoutState<T extends Object?>
                   eventArranger: widget.eventArranger,
                   events: widget.controller.getEventsOnDay(widget.date)
                     ..removeWhere(
-                      (element) => element.compareWithoutTime(value),
+                      (element) => element == originalSelectedEvent,
                     ),
                   heightPerMinute: widget.heightPerMinute,
                   eventTileBuilder: widget.eventTileBuilder,
@@ -548,7 +556,11 @@ class _InteractiveEventLayoutState<T extends Object?>
                 ),
                 SelectedEventGenerator<T>(
                   onEventChanged: (modifiedEvent) {
-                    widget.controller.replace(modifiedEvent);
+                    widget.controller.replace(
+                      eventDataToReplace: originalSelectedEvent!,
+                      newEventData: modifiedEvent,
+                    );
+                    originalSelectedEvent = modifiedEvent;
                     widget.onEventChanged(modifiedEvent);
                   },
                   height: widget.height,

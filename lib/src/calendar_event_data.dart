@@ -97,27 +97,6 @@ class CalendarEventData<T extends Object?> {
   @override
   int get hashCode => super.hashCode;
 
-  /// Checks if the eventData is the same
-  /// without checking startTime and endTime.
-  ///
-  /// This is the workaround because [CalendarEventData] does not
-  /// have a unique ID.
-  ///
-  /// - It can create a bug when 2 events have are exactly the same except
-  ///   for the startTime and endTime.
-  bool compareWithoutTime(Object other) {
-    return other is CalendarEventData<T> &&
-        date.compareWithoutTime(other.date) &&
-        endDate.compareWithoutTime(other.endDate) &&
-        ((event == null && other.event == null) ||
-            (event != null && other.event != null && event == other.event)) &&
-        title == other.title &&
-        color == other.color &&
-        titleStyle == other.titleStyle &&
-        descriptionStyle == other.descriptionStyle &&
-        description == other.description;
-  }
-
   /// Updates this eventData's startTime.
   CalendarEventData<T>? updateEventStartTime({
     required double primaryDelta,
