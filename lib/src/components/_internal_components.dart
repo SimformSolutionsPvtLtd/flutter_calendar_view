@@ -279,7 +279,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// A widget that display event tiles in day/week view.
+/// A widget that displays a selected event tile in day view.
 class SelectedEventGenerator<T extends Object?> extends StatelessWidget {
   /// Height of display area
   final double height;
@@ -290,7 +290,7 @@ class SelectedEventGenerator<T extends Object?> extends StatelessWidget {
   /// List of events to display.
   final ValueNotifier<CalendarEventData<T>?> selectedEvent;
 
-  /// Called when user modifies event.
+  /// Called when user has mofied an event.
   final Function(CalendarEventData<T> changedEvent) onEventChanged;
 
   /// Defines height of single minute in day/week view page.
@@ -429,7 +429,10 @@ class SelectedEventGenerator<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// A widget that display event tiles in day/week view.
+/// A widget that handels the layout of the [EventGenerator] and
+/// the [SelectedEventGenerator].
+///
+/// It also contains the state of the selected [CalendarEventData].
 class InteractiveEventLayout<T extends Object?> extends StatefulWidget {
   /// Calendar controller.
   final EventController<T> controller;
