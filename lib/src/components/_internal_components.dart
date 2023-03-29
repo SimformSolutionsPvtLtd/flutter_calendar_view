@@ -454,7 +454,7 @@ class InteractiveEventLayout<T extends Object?> extends StatefulWidget {
   final SelectedEventTileBuilder<T> selectedEventTileBuilder;
 
   /// Called when user modifies event.
-  final Function(CalendarEventData<T>? event) onEventChanged;
+  final Function(CalendarEventData<T> event) onEventChanged;
 
   /// Defines date for which events will be displayed in given display area.
   final DateTime date;
@@ -506,7 +506,6 @@ class _InteractiveEventLayoutState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
-    log('message');
     return Container(
       height: widget.height,
       width: widget.width,
@@ -548,6 +547,7 @@ class _InteractiveEventLayoutState<T extends Object?>
                 SelectedEventGenerator<T>(
                   onEventChanged: (modifiedEvent) {
                     widget.controller.replace(modifiedEvent);
+                    widget.onEventChanged(modifiedEvent);
                   },
                   height: widget.height,
                   date: widget.date,

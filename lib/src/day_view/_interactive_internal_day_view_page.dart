@@ -33,7 +33,7 @@ class InteractiveInternalDayViewPage<T extends Object?>
   final SelectedEventTileBuilder<T> selectedEventTileBuilder;
 
   /// Called when user modifies event.
-  final Function(CalendarEventData<T>? event) onEventChanged;
+  final Function(CalendarEventData<T> event) onEventChanged;
 
   /// Controller for calendar
   final EventController<T> controller;

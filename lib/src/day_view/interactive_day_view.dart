@@ -30,7 +30,7 @@ class InteractiveDayView<T extends Object?> extends StatefulWidget {
   final SelectedEventTileBuilder<T>? selectedEventTileBuilder;
 
   /// Called when user modifies event.
-  final Function(CalendarEventData<T>? event)? onEventChanged;
+  final Function(CalendarEventData<T> event)? onEventChanged;
 
   /// A function to generate the DateString in the calendar title.
   /// Useful for I18n
@@ -90,12 +90,12 @@ class InteractiveDayView<T extends Object?> extends StatefulWidget {
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
   /// Page transition duration used when user try to change page using
-  /// [InteractiveDayViewState.nextPage] or 
+  /// [InteractiveDayViewState.nextPage] or
   /// [InteractiveDayViewState.previousPage]
   final Duration pageTransitionDuration;
 
   /// Page transition curve used when user try to change page using
-  /// [InteractiveDayViewState.nextPage] or 
+  /// [InteractiveDayViewState.nextPage] or
   /// [InteractiveDayViewState.previousPage]
   final Curve pageTransitionCurve;
 
@@ -267,7 +267,7 @@ class InteractiveDayViewState<T extends Object?>
 
   late SelectedEventTileBuilder<T> _selectedEventTileBuilder;
 
-  late Function(CalendarEventData<T>? event) _onEventChanged;
+  late Function(CalendarEventData<T> event) _onEventChanged;
 
   late DateWidgetBuilder _dayTitleBuilder;
 
@@ -701,7 +701,7 @@ class InteractiveDayViewState<T extends Object?>
   /// Animate to next page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [InteractiveDayView.pageTransitionDuration] and 
+  /// as [InteractiveDayView.pageTransitionDuration] and
   /// [InteractiveDayView.pageTransitionCurve]
   /// respectively.
   ///
@@ -714,7 +714,7 @@ class InteractiveDayViewState<T extends Object?>
   /// Animate to previous page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [InteractiveDayView.pageTransitionDuration] and 
+  /// as [InteractiveDayView.pageTransitionDuration] and
   /// [InteractiveDayView.pageTransitionCurve]
   /// respectively.
   ///
@@ -733,7 +733,7 @@ class InteractiveDayViewState<T extends Object?>
   /// Animate to page number [page].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [InteractiveDayView.pageTransitionDuration] and 
+  /// as [InteractiveDayView.pageTransitionDuration] and
   /// [InteractiveDayView.pageTransitionCurve]
   /// respectively.
   ///
@@ -761,7 +761,7 @@ class InteractiveDayViewState<T extends Object?>
   /// Animate to page which gives day calendar for [date].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [InteractiveDayView.pageTransitionDuration] and 
+  /// as [InteractiveDayView.pageTransitionDuration] and
   /// [InteractiveDayView.pageTransitionCurve]
   /// respectively.
   ///
@@ -795,7 +795,7 @@ class InteractiveDayViewState<T extends Object?>
   /// tile visible to user.
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [InteractiveDayView.pageTransitionDuration] and 
+  /// as [InteractiveDayView.pageTransitionDuration] and
   /// [InteractiveDayView.pageTransitionCurve]
   /// respectively.
   ///
