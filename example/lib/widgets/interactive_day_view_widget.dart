@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +19,7 @@ class InteractiveDayViewWidget extends StatelessWidget {
       key: state,
       width: width,
       onEventChanged: (event) {
-        // This is where I update the event in the database.
+        /// This is where I update the event in the database.
       },
     );
   }

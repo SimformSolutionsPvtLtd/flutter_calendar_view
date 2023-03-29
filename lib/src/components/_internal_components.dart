@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
