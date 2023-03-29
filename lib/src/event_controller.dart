@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+
 import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
@@ -113,10 +114,6 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
     if (index != -1) {
       final event = events[index];
-
-      // //Set selected Event.
-      selectedEventData = eventData;
-
       // Remove the existing event.
       remove(event);
 
@@ -205,26 +202,36 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// views.
   ///
   /// This is so that the event can be highlighted and modified by the user.
-  CalendarEventData<T>? selectedEventData;
+  // CalendarEventData<T>? selectedEventData;
+  ValueNotifier<CalendarEventData<T>?> selectedEventData = ValueNotifier(null);
+
+  void updateSelectedEventData(CalendarEventData<T>? newEventData) {
+    if (selectedEventData.value == null) return;
+    selectedEventData.value = newEventData;
+  }
 
   /// Update the selected [CalendarEventData].
   void handleEventDataTap(CalendarEventData<T> eventData) {
-    if (selectedEventData == eventData) {
-      deselectEventData();
-    } else {
+    if (selectedEventData.value == null) {
       selectEventData(eventData);
+    } else {
+      deselectEventData();
     }
   }
 
   /// Select the given [CalendarEventData].
   void selectEventData(CalendarEventData<T> eventData) {
-    selectedEventData = eventData;
+    selectedEventData.value = eventData;
     notifyListeners();
   }
 
   /// Deselect the currently selected [CalendarEventData].
   void deselectEventData() {
-    selectedEventData = null;
+    if (selectedEventData.value != null) {
+      replace(selectedEventData.value!);
+    }
+
+    selectedEventData.value = null;
     notifyListeners();
   }
 

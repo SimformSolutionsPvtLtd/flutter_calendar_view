@@ -10,6 +10,7 @@ export './src/calendar_event_data.dart';
 export './src/components/components.dart';
 export './src/components/safe_area_wrapper.dart';
 export './src/day_view/day_view.dart';
+export './src/day_view/interactive_day_view.dart';
 export './src/enumerations.dart';
 export './src/event_arrangers/event_arrangers.dart';
 export './src/event_controller.dart';

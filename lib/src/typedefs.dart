@@ -22,6 +22,18 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime endDuration,
 );
 
+typedef SelectedEventTileBuilder<T extends Object?> = Widget Function(
+  DateTime date,
+  List<CalendarEventData<T>> events,
+  Rect boundary,
+  DateTime startDuration,
+  DateTime endDuration,
+  Function(double primaryDelta) changeStartTime,
+  Function(double primaryDelta) changeEndTime,
+  Function(double primaryDelta) reschedule,
+  VoidCallback onEditComplete,
+);
+
 typedef DetectorBuilder<T extends Object?> = Widget Function({
   required DateTime date,
   required double height,
