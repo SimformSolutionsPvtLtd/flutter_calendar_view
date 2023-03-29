@@ -451,7 +451,6 @@ class InteractiveDayViewState<T extends Object?>
   }
 
   /// Reloads page.
-  ///
   void _reload() {
     if (mounted) {
       setState(() {});
@@ -509,7 +508,6 @@ class InteractiveDayViewState<T extends Object?>
   ///
   /// If maximum and minimum dates are change then first call _setDateRange
   /// and then _regulateCurrentDate method.
-  ///
   void _regulateCurrentDate() {
     if (_currentDate.isBefore(_minDate)) {
       _currentDate = _minDate;
@@ -536,7 +534,6 @@ class InteractiveDayViewState<T extends Object?>
 
   /// Default press detector builder. This builder will be used if
   /// [widget.weekDetectorBuilder] is null.
-  ///
   Widget _defaultPressDetectorBuilder({
     required DateTime date,
     required double height,
@@ -588,13 +585,11 @@ class InteractiveDayViewState<T extends Object?>
 
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
-  ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
       date: date, timeStringBuilder: widget.timeStringBuilder);
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
-  ///
   Widget _defaultEventTileBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -620,7 +615,6 @@ class InteractiveDayViewState<T extends Object?>
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
-  ///
   Widget _defaultSelectedEventTileBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -664,7 +658,6 @@ class InteractiveDayViewState<T extends Object?>
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.
-  ///
   Widget _defaultDayBuilder(DateTime date) {
     return DayPageHeader(
       date: _currentDate,
@@ -691,7 +684,6 @@ class InteractiveDayViewState<T extends Object?>
       FullDayEventView(events: events, date: date);
 
   /// Called when user change page using any gesture or inbuilt functions.
-  ///
   void _onPageChange(int index) {
     if (mounted) {
       setState(() {
