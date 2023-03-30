@@ -385,51 +385,39 @@ class SelectedRoundedEventTile extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onVerticalDragEnd: (details) {
-                      onEditComplete();
-                    },
-                    onVerticalDragUpdate: (details) {
-                      if (details.primaryDelta != null) {
-                        changeStartTime(details.primaryDelta!);
-                      }
-                    },
-                    child: Icon(
-                      Icons.circle_rounded,
-                      color: handleColor,
-                    ),
-                  ),
-                ],
+          Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onVerticalDragEnd: (details) {
+                onEditComplete();
+              },
+              onVerticalDragUpdate: (details) {
+                if (details.primaryDelta != null) {
+                  changeStartTime(details.primaryDelta!);
+                }
+              },
+              child: Icon(
+                Icons.circle_rounded,
+                color: handleColor,
               ),
-            ],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onVerticalDragEnd: (details) {
-                      onEditComplete();
-                    },
-                    onVerticalDragUpdate: (details) {
-                      if (details.primaryDelta != null) {
-                        changeEndTime(details.primaryDelta!);
-                      }
-                    },
-                    child: Icon(
-                      Icons.circle_rounded,
-                      color: handleColor,
-                    ),
-                  ),
-                ],
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: GestureDetector(
+              onVerticalDragEnd: (details) {
+                onEditComplete();
+              },
+              onVerticalDragUpdate: (details) {
+                if (details.primaryDelta != null) {
+                  changeEndTime(details.primaryDelta!);
+                }
+              },
+              child: Icon(
+                Icons.circle_rounded,
+                color: handleColor,
               ),
-            ],
+            ),
           ),
         ],
       ),
