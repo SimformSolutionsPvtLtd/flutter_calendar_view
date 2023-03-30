@@ -203,7 +203,7 @@ WeekDays nextWeekDays(WeekDays current) {
 void testStartOfToday(DateTime dateTime) {
   expect(
     dateTime.startOfToday,
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 0, 0, 0, 0, 1),
+    DateTime(dateTime.year, dateTime.month, dateTime.day),
   );
 }
 

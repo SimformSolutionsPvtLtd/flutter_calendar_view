@@ -135,7 +135,7 @@ extension DateTimeExtensions on DateTime {
 
   /// Returns today's [DateTime] just after midnight.
   DateTime get startOfToday {
-    return DateTime(year, month, day, 0, 0, 0, 0, 1);
+    return DateTime(year, month, day);
   }
 
   /// Returns today's [DateTime] just before midnight.
