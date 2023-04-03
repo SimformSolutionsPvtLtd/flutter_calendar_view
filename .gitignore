@@ -16,3 +16,4 @@
 
 pubspec.lock
 .vscode/
+/build/
