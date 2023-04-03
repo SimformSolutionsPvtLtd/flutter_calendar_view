@@ -113,6 +113,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// It will take affect only if [showBorder] is set.
   final double borderSize;
 
+  /// Automated Calculate cellAspectRatio using available vertical space.
+  final bool useAvailableVerticalSpace;
+
   /// Defines aspect ratio of day cells in month calendar page.
   final double cellAspectRatio;
 
@@ -146,6 +149,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.controller,
     this.initialMonth,
     this.borderSize = 1,
+    this.useAvailableVerticalSpace = false,
     this.cellAspectRatio = 0.55,
     this.headerBuilder,
     this.weekDayBuilder,
@@ -314,8 +318,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                         ),
                       ),
                       Expanded(
-                        child: SingleChildScrollView(
-                          child: SizedBox(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          final _cellAspectRatio =
+                              widget.useAvailableVerticalSpace
+                                  ? calculateCellAspectRatio(
+                                      constraints.maxHeight,
+                                    )
+                                  : widget.cellAspectRatio;
+
+                          return SizedBox(
                             height: _height,
                             width: _width,
                             child: _MonthPageBuilder<T>(
@@ -328,13 +339,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               borderColor: widget.borderColor,
                               borderSize: widget.borderSize,
                               cellBuilder: _cellBuilder,
-                              cellRatio: widget.cellAspectRatio,
+                              cellRatio: _cellAspectRatio,
                               date: date,
                               showBorder: widget.showBorder,
                               startDay: widget.startDay,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ),
                     ],
                   );
@@ -371,6 +382,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _cellWidth = _width / 7;
     _cellHeight = _cellWidth / widget.cellAspectRatio;
     _height = _cellHeight * 6;
+  }
+
+  double calculateCellAspectRatio(double height) {
+    final _cellHeight = height / 6;
+    return _cellWidth / _cellHeight;
   }
 
   void _assignBuilders() {
