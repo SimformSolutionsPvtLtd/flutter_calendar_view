@@ -213,6 +213,7 @@ class CalendarEventData<T extends Object?> {
     DateTime? startTime,
     DateTime? endTime,
     DateTime? endDate,
+    T? event,
   }) {
     return CalendarEventData(
       color: color ?? this.color,
