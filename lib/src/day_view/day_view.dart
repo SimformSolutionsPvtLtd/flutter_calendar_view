@@ -358,16 +358,14 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       option: widget.safeAreaOption,
       child: SizedBox(
         width: _width,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.backgroundColor,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _dayTitleBuilder(_currentDate),
-              Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _dayTitleBuilder(_currentDate),
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: widget.backgroundColor),
                 child: SizedBox(
                   height: _height,
                   child: PageView.builder(
@@ -414,8 +412,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

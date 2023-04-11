@@ -378,16 +378,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       option: widget.safeAreaOption,
       child: SizedBox(
         width: _width,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.backgroundColor,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _weekHeaderBuilder(_currentStartDate, _currentEndDate),
-              Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _weekHeaderBuilder(_currentStartDate, _currentEndDate),
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: widget.backgroundColor),
                 child: SizedBox(
                   height: _height,
                   width: _width,
@@ -441,8 +439,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

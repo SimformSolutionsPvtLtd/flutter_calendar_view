@@ -1,4 +1,4 @@
-# [1.0.3 - 16 Feb 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
+# [1.0.3 - 3 Apr 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
 - Added
   Feature [#172 - Press Detector builder for day view and week view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/172)
 - Added 
@@ -9,6 +9,14 @@
   Issue [#161 - Unable to add 11.30 PM to 12.00PM](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/161)
 - Fixed
   Issue [#179 - Removing Full Day Event does not work](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/179)
+- Fixed
+  Issue [#184 - Use available vertical space month view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/184)
+- Fixed
+  Issue [#191 - DisplayBorder in WeekDayTile in month_view_components does not work correctly](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/191)
+- Fixed
+  Issue [#197 - Some DateTimeExtensions methods are not working properly for Daylight Saving Time](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/197)
+- Fixed
+  Issue [#199 - HeaderStyle decoration no have effect on MonthView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/199)
 
 # [1.0.2 - 10 Jan 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.2)
 - Added
