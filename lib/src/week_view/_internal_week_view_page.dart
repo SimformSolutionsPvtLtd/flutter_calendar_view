@@ -41,7 +41,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   final bool showLiveLine;
 
   /// Settings for live time indicator.
-  final HourIndicatorSettings liveTimeIndicatorSettings;
+  final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
   ///  Height occupied by one minute time span.
   final double heightPerMinute;
@@ -219,14 +219,6 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         showVerticalLine: showVerticalLine,
                       ),
                     ),
-                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-                      LiveTimeIndicator(
-                        liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                        width: width,
-                        height: height,
-                        heightPerMinute: heightPerMinute,
-                        timeLineWidth: timeLineWidth,
-                      ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: SizedBox(
@@ -282,7 +274,16 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       height: height,
                       timeLineOffset: timeLineOffset,
                       timeLineBuilder: timeLineBuilder,
+                      liveTimeIndicatorSettings: liveTimeIndicatorSettings,
                     ),
+                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                      LiveTimeIndicator(
+                        liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                        width: width,
+                        height: height,
+                        heightPerMinute: heightPerMinute,
+                        timeLineWidth: timeLineWidth,
+                      ),
                   ],
                 ),
               ),

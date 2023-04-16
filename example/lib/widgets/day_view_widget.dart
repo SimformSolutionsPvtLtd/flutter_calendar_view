@@ -18,6 +18,16 @@ class DayViewWidget extends StatelessWidget {
     return DayView<Event>(
       key: state,
       width: width,
+      verticalLineOffset: 0,
+      timeLineWidth: 60,
+      showLiveTimeLineInAllDays: true,
+      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+        color: Colors.redAccent,
+        showBullet: false,
+        showTime: true,
+        showTimeBackgroundView: true,
+        offset: 5,
+      ),
     );
   }
 }
