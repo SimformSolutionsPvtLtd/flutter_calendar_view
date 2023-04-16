@@ -251,6 +251,15 @@ class CurrentTimeLinePainter extends CustomPainter {
   /// Radius of bullet.
   final double bulletRadius;
 
+  /// Time string
+  final String timeString;
+
+  /// Flag to show time at left side or not.
+  final bool showTime;
+
+  /// Flag to show time backgroud view.
+  final bool showTimeBackgroundView;
+
   /// Paints a single horizontal line at [offset].
   CurrentTimeLinePainter({
     this.showBullet = true,
@@ -258,12 +267,15 @@ class CurrentTimeLinePainter extends CustomPainter {
     required this.height,
     required this.offset,
     this.bulletRadius = 5,
+    required this.timeString,
+    required this.showTime,
+    required this.showTimeBackgroundView,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(
-      Offset(offset.dx, offset.dy),
+      Offset(offset.dx - (showBullet ? 0 : 8), offset.dy),
       Offset(size.width, offset.dy),
       Paint()
         ..color = color
@@ -273,6 +285,37 @@ class CurrentTimeLinePainter extends CustomPainter {
     if (showBullet)
       canvas.drawCircle(
           Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+
+    if (showTimeBackgroundView)
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            4,
+            offset.dy - 11,
+            offset.dx - 11,
+            24,
+          ),
+          Radius.circular(12),
+        ),
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill
+          ..strokeWidth = bulletRadius,
+      );
+
+    if (showTime)
+      TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          text: timeString,
+          style: TextStyle(
+            fontSize: 12.0,
+            color: showTimeBackgroundView ? Colors.white : color,
+          ),
+        ),
+      )
+        ..layout()
+        ..paint(canvas, Offset((offset.dx - 15) * 0.20, offset.dy - 6));
   }
 
   @override

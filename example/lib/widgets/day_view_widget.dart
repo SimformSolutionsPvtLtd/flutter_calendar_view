@@ -29,6 +29,16 @@ class DayViewWidget extends StatelessWidget {
         color: Theme.of(context).dividerColor,
         lineStyle: LineStyle.dashed,
       ),
+      verticalLineOffset: 0,
+      timeLineWidth: 65,
+      showLiveTimeLineInAllDays: true,
+      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+        color: Colors.redAccent,
+        showBullet: false,
+        showTime: true,
+        showTimeBackgroundView: true,
+        offset: 0,
+      ),
     );
   }
 

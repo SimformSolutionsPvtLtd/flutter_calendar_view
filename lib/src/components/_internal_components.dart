@@ -29,8 +29,8 @@ class LiveTimeIndicator extends StatefulWidget {
   final double timeLineWidth;
 
   /// settings for time line. Defines color, extra offset,
-  /// and height of indicator.
-  final HourIndicatorSettings liveTimeIndicatorSettings;
+  /// height of indicator and also allow to show time with custom format.
+  final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
   /// Defines height occupied by one minute.
   final double heightPerMinute;
@@ -81,6 +81,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
+    final currentTime = TimeOfDay.fromDateTime(_currentDate);
+    final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
+            ?.call(_currentDate) ??
+        "${currentTime.hourOfPeriod}:${currentTime.minute.toString().padLeft(2, '0')} ${currentTime.period.name}";
     return CustomPaint(
       size: Size(widget.width, widget.height),
       painter: CurrentTimeLinePainter(
@@ -90,13 +94,18 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
           widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
           _currentDate.getTotalMinutes * widget.heightPerMinute,
         ),
+        timeString: timeString,
+        showBullet: widget.liveTimeIndicatorSettings.showBullet,
+        showTime: widget.liveTimeIndicatorSettings.showTime,
+        showTimeBackgroundView:
+            widget.liveTimeIndicatorSettings.showTimeBackgroundView,
       ),
     );
   }
 }
 
 /// Time line to display time at left side of day or week view.
-class TimeLine extends StatelessWidget {
+class TimeLine extends StatefulWidget {
   /// Width of timeline
   final double timeLineWidth;
 
@@ -118,6 +127,10 @@ class TimeLine extends StatelessWidget {
   /// Flag to display quarter hours.
   final bool showQuarterHours;
 
+  /// settings for time line. Defines color, extra offset,
+  /// height of indicator and also allow to show time with custom format.
+  final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
+
   static DateTime get _date => DateTime.now();
 
   double get _halfHourHeight => hourHeight / 2;
@@ -132,53 +145,100 @@ class TimeLine extends StatelessWidget {
     required this.timeLineBuilder,
     this.showHalfHours = false,
     this.showQuarterHours = false,
+    required this.liveTimeIndicatorSettings,
   }) : super(key: key);
+
+  @override
+  State<TimeLine> createState() => _TimeLineState();
+}
+
+class _TimeLineState extends State<TimeLine> {
+  late Timer _timer;
+  late TimeOfDay _currentTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentTime = widget.liveTimeIndicatorSettings.showTime
+        ? TimeOfDay.now()
+        : TimeOfDay(hour: 0, minute: 16);
+    _timer = Timer(Duration(minutes: 60 - _currentTime.minute),
+        widget.liveTimeIndicatorSettings.showTime ? setTimer : () {});
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  /// Creates an recursive call that runs every 1 minutes.
+  /// This will rebuild TimeLine every minute. This will allow us
+  /// to show/hide time line when there is overlap with
+  /// live time line indicator in Week and Day view.
+  void setTimer() {
+    if (mounted) {
+      setState(() {
+        _currentTime = TimeOfDay.now();
+        _timer = Timer(Duration(minutes: 60 - _currentTime.minute), setTimer);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      key: ValueKey(hourHeight),
+      key: ValueKey(widget.hourHeight),
       constraints: BoxConstraints(
-        maxWidth: timeLineWidth,
-        minWidth: timeLineWidth,
-        maxHeight: height,
-        minHeight: height,
+        maxWidth: widget.timeLineWidth,
+        minWidth: widget.timeLineWidth,
+        maxHeight: widget.height,
+        minHeight: widget.height,
       ),
       child: Stack(
         children: [
           for (int i = 1; i < Constants.hoursADay; i++)
             _timelinePositioned(
-              topPosition: hourHeight * i - timeLineOffset,
-              bottomPosition: height - (hourHeight * (i + 1)) + timeLineOffset,
+              topPosition: widget.hourHeight * i - widget.timeLineOffset,
+              bottomPosition: widget.height -
+                  (widget.hourHeight * (i + 1)) +
+                  widget.timeLineOffset,
               hour: i,
             ),
-          if (showHalfHours)
+          if (widget.showHalfHours)
             for (int i = 0; i < Constants.hoursADay; i++)
               _timelinePositioned(
-                topPosition: hourHeight * i - timeLineOffset + _halfHourHeight,
-                bottomPosition:
-                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    widget._halfHourHeight,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
               ),
-          if (showQuarterHours)
+          if (widget.showQuarterHours)
             for (int i = 0; i < Constants.hoursADay; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
-                topPosition:
-                    hourHeight * i - timeLineOffset + hourHeight * 0.25,
-                bottomPosition:
-                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    widget.hourHeight * 0.25,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset,
                 hour: i,
                 minutes: 15,
               ),
 
               /// this is for 45 minutes
               _timelinePositioned(
-                topPosition:
-                    hourHeight * i - timeLineOffset + hourHeight * 0.75,
-                bottomPosition:
-                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    widget.hourHeight * 0.75,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset,
                 hour: i,
                 minutes: 45,
               ),
@@ -188,27 +248,34 @@ class TimeLine extends StatelessWidget {
     );
   }
 
+  /// To avoid overlap of live time line indicator, show time line when
+  /// current min is less than 45 min and is previous hour or
+  /// current min is greater than 15 min and is current hour
   Widget _timelinePositioned({
     required double topPosition,
     required double bottomPosition,
     required int hour,
     int minutes = 0,
   }) {
-    return Positioned(
-      top: topPosition,
-      left: 0,
-      right: 0,
-      bottom: bottomPosition,
-      child: Container(
-        height: hourHeight,
-        width: timeLineWidth,
-        child: timeLineBuilder.call(
-          DateTime(
-            _date.year,
-            _date.month,
-            _date.day,
-            hour,
-            minutes,
+    return Visibility(
+      visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
+          (_currentTime.minute <= 15 && _currentTime.hour == hour)),
+      child: Positioned(
+        top: topPosition,
+        left: 0,
+        right: 0,
+        bottom: bottomPosition,
+        child: Container(
+          height: widget.hourHeight,
+          width: widget.timeLineWidth,
+          child: widget.timeLineBuilder.call(
+            DateTime(
+              TimeLine._date.year,
+              TimeLine._date.month,
+              TimeLine._date.day,
+              hour,
+              minutes,
+            ),
           ),
         ),
       ),
