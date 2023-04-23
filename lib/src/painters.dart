@@ -91,16 +91,20 @@ class CurrentTimeLinePainter extends CustomPainter {
   /// Flag to show time backgroud view.
   final bool showTimeBackgroundView;
 
+  /// Width of time backgroud view.
+  final double timeBackgroundViewWidth;
+
   /// Paints a single horizontal line at [offset].
   CurrentTimeLinePainter({
-    this.showBullet = true,
+    required this.showBullet,
     required this.color,
     required this.height,
     required this.offset,
-    this.bulletRadius = 5,
+    required this.bulletRadius,
     required this.timeString,
     required this.showTime,
     required this.showTimeBackgroundView,
+    required this.timeBackgroundViewWidth,
   });
 
   @override
@@ -123,7 +127,7 @@ class CurrentTimeLinePainter extends CustomPainter {
           Rect.fromLTWH(
             max(3, offset.dx - 68),
             offset.dy - 11,
-            60,
+            timeBackgroundViewWidth,
             24,
           ),
           Radius.circular(12),
@@ -154,5 +158,11 @@ class CurrentTimeLinePainter extends CustomPainter {
       oldDelegate is CurrentTimeLinePainter &&
       (color != oldDelegate.color ||
           height != oldDelegate.height ||
-          offset != oldDelegate.offset);
+          offset != oldDelegate.offset ||
+          bulletRadius != oldDelegate.bulletRadius ||
+          timeString != oldDelegate.timeString ||
+          timeBackgroundViewWidth != oldDelegate.timeBackgroundViewWidth ||
+          showBullet != oldDelegate.showBullet ||
+          showTime != oldDelegate.showTime ||
+          showTimeBackgroundView != oldDelegate.showTimeBackgroundView);
 }
