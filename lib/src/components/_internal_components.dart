@@ -82,9 +82,12 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   @override
   Widget build(BuildContext context) {
     final currentTime = TimeOfDay.fromDateTime(_currentDate);
+    final currentHour = currentTime.hourOfPeriod.appendLeadingZero();
+    final currentMinute = currentTime.minute.appendLeadingZero();
+    final currentPeriod = currentTime.period.name;
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
             ?.call(_currentDate) ??
-        "${currentTime.hourOfPeriod.appendLeadingZero()}:${currentTime.minute.appendLeadingZero()} ${currentTime.period.name}";
+        '$currentHour:$currentMinute $currentPeriod';
     return CustomPaint(
       size: Size(widget.width, widget.height),
       painter: CurrentTimeLinePainter(
@@ -192,7 +195,7 @@ class _TimeLineState extends State<TimeLine> {
         children: [
           for (int i = 1; i < Constants.hoursADay; i++)
 
-            /// To avoid overlap of live time line indicator, show time line when
+            /// To avoid overlap of live time line indicator, show timeline when
             /// current min is less than 45 min and is previous hour or
             /// current min is greater than 15 min and is current hour
             Visibility(
