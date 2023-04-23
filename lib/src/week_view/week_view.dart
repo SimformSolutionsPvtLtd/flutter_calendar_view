@@ -673,11 +673,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       offset: Offset(0, -7.5),
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
-      child: Text(
-        timeLineString,
-        textAlign: TextAlign.right,
-        style: TextStyle(
-          fontSize: 15.0,
+        child: Text(
+          timeLineString,
+          textAlign: TextAlign.right,
+          style: TextStyle(
+            fontSize: 15.0,
           ),
         ),
       ),
