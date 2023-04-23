@@ -84,7 +84,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final currentTime = TimeOfDay.fromDateTime(_currentDate);
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
             ?.call(_currentDate) ??
-        "${currentTime.hourOfPeriod}:${currentTime.minute.toString().padLeft(2, '0')} ${currentTime.period.name}";
+        "${currentTime.hourOfPeriod.appendLeadingZero()}:${currentTime.minute.appendLeadingZero()} ${currentTime.period.name}";
     return CustomPaint(
       size: Size(widget.width, widget.height),
       painter: CurrentTimeLinePainter(

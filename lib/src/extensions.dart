@@ -164,3 +164,9 @@ extension MinutesExtension on MinuteSlotSize {
     }
   }
 }
+
+extension IntExtension on int {
+  String appendLeadingZero() {
+    return toString().padLeft(2, '0');
+  }
+}
