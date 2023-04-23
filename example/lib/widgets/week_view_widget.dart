@@ -15,13 +15,10 @@ class WeekViewWidget extends StatelessWidget {
       key: state,
       width: width,
       showLiveTimeLineInAllDays: true,
-      timeLineWidth: 60,
+      timeLineWidth: 65,
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,
-        showBullet: false,
         showTime: true,
-        showTimeBackgroundView: true,
-        offset: 5,
       ),
     );
   }

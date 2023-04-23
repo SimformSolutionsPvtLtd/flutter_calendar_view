@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -290,9 +292,9 @@ class CurrentTimeLinePainter extends CustomPainter {
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(
-            4,
+            max(3, offset.dx - 68),
             offset.dy - 11,
-            offset.dx - 11,
+            60,
             24,
           ),
           Radius.circular(12),

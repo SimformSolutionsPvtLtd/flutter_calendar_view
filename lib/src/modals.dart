@@ -58,7 +58,7 @@ class LiveTimeIndicatorSettings {
   /// Settings for live time line
   const LiveTimeIndicatorSettings({
     this.height = 1.0,
-    this.offset = 0.0,
+    this.offset = 5.0,
     this.color = Colors.grey,
     this.timeStringBuilder,
     this.showBullet = true,
@@ -69,5 +69,6 @@ class LiveTimeIndicatorSettings {
   factory LiveTimeIndicatorSettings.none() => LiveTimeIndicatorSettings(
         color: Colors.transparent,
         height: 0.0,
+        offset: 0.0,
       );
 }
