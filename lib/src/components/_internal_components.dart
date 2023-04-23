@@ -82,9 +82,12 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   @override
   Widget build(BuildContext context) {
     final currentTime = TimeOfDay.fromDateTime(_currentDate);
+    final currentHour = currentTime.hourOfPeriod.appendLeadingZero();
+    final currentMinute = currentTime.minute.appendLeadingZero();
+    final currentPeriod = currentTime.period.name;
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
             ?.call(_currentDate) ??
-        "${currentTime.hourOfPeriod.appendLeadingZero()}:${currentTime.minute.appendLeadingZero()} ${currentTime.period.name}";
+        '$currentHour:$currentMinute $currentPeriod';
     return CustomPaint(
       size: Size(widget.width, widget.height),
       painter: CurrentTimeLinePainter(

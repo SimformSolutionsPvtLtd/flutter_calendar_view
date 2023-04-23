@@ -549,7 +549,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         LiveTimeIndicatorSettings(
           color: Constants.defaultLiveTimeIndicatorColor,
           height: widget.heightPerMinute,
-          offset: 5,
         );
 
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
