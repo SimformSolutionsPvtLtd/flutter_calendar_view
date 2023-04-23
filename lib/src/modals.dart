@@ -55,6 +55,12 @@ class LiveTimeIndicatorSettings {
   /// Flag to show time backgroud view.
   final bool showTimeBackgroundView;
 
+  /// Radius of bullet.
+  final double bulletRadius;
+
+  /// Width of time backgroud view.
+  final double timeBackgroundViewWidth;
+
   /// Settings for live time line
   const LiveTimeIndicatorSettings({
     this.height = 1.0,
@@ -64,11 +70,14 @@ class LiveTimeIndicatorSettings {
     this.showBullet = true,
     this.showTime = false,
     this.showTimeBackgroundView = false,
+    this.bulletRadius = 5.0,
+    this.timeBackgroundViewWidth = 60.0,
   }) : assert(height >= 0, "Height must be greater than or equal to 0.");
 
   factory LiveTimeIndicatorSettings.none() => LiveTimeIndicatorSettings(
         color: Colors.transparent,
         height: 0.0,
         offset: 0.0,
+        showBullet: false,
       );
 }

@@ -99,6 +99,9 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         showTime: widget.liveTimeIndicatorSettings.showTime,
         showTimeBackgroundView:
             widget.liveTimeIndicatorSettings.showTimeBackgroundView,
+        bulletRadius: widget.liveTimeIndicatorSettings.bulletRadius,
+        timeBackgroundViewWidth:
+            widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
       ),
     );
   }
