@@ -39,3 +39,12 @@ enum MinuteSlotSize {
   /// Slot size: 60 minutes
   minutes60,
 }
+
+/// Defines different line styles
+enum LineStyle {
+  /// Solid line
+  solid,
+
+  /// Dashed line
+  dashed,
+}

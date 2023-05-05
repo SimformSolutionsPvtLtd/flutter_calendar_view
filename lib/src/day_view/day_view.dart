@@ -84,6 +84,11 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Pass [HourIndicatorSettings.none] to remove live time indicator.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
+  /// Defines settings for half hour indication lines.
+  ///
+  /// Pass [HourIndicatorSettings.none] to remove half hour lines.
+  final HourIndicatorSettings? halfHourIndicatorSettings;
+
   /// Page transition duration used when user try to change page using
   /// [DayViewState.nextPage] or [DayViewState.previousPage]
   final Duration pageTransitionDuration;
@@ -177,6 +182,8 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  final bool showHalfHours;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -214,6 +221,8 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.scrollPhysics,
     this.pageViewPhysics,
     this.dayDetectorBuilder,
+    this.showHalfHours = false,
+    this.halfHourIndicatorSettings,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -247,6 +256,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late EventArranger<T> _eventArranger;
 
   late HourIndicatorSettings _hourIndicatorSettings;
+  late HourIndicatorSettings _halfHourIndicatorSettings;
   late HourIndicatorSettings _liveTimeIndicatorSettings;
 
   late PageController _pageController;
@@ -406,6 +416,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           scrollNotifier: _scrollConfiguration,
                           fullDayEventBuilder: _fullDayEventBuilder,
                           scrollController: _scrollController,
+                          showHalfHours: widget.showHalfHours,
+                          halfHourIndicatorSettings: _halfHourIndicatorSettings,
                         ),
                       );
                     },
@@ -464,6 +476,16 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
+
+    _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_halfHourIndicatorSettings.height < _hourHeight,
+        "halfHourIndicator height must be less than minuteHeight * 60");
   }
 
   void _calculateHeights() {
