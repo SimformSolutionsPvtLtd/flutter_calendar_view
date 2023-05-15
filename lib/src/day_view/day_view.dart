@@ -18,6 +18,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../painters.dart';
 import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_day_view_page.dart';
@@ -78,6 +79,11 @@ class DayView<T extends Object?> extends StatefulWidget {
   ///
   /// Pass [HourIndicatorSettings.none] to remove Hour lines.
   final HourIndicatorSettings? hourIndicatorSettings;
+
+  /// A funtion that returns a [CustomPainter].
+  ///
+  /// Use this if you want to paint custom hour lines.
+  final CustomHourLinePainter? hourLinePainter;
 
   /// Defines settings for live time indicator.
   ///
@@ -192,6 +198,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.maxDay,
     this.initialDay,
     this.hourIndicatorSettings,
+    this.hourLinePainter,
     this.heightPerMinute = 0.7,
     this.timeLineBuilder,
     this.timeLineWidth,
@@ -247,6 +254,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late EventArranger<T> _eventArranger;
 
   late HourIndicatorSettings _hourIndicatorSettings;
+  late CustomHourLinePainter _hourLinePainter;
+
   late HourIndicatorSettings _liveTimeIndicatorSettings;
 
   late PageController _pageController;
@@ -388,6 +397,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
+                          hourLinePainter: _hourLinePainter,
                           date: date,
                           onTileTap: widget.onEventTap,
                           onDateLongPress: widget.onDateLongPress,
@@ -479,6 +489,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _dayDetectorBuilder =
         widget.dayDetectorBuilder ?? _defaultPressDetectorBuilder;
+    _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
   /// Sets the current date of this month.
@@ -624,6 +635,24 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   Widget _defaultFullDayEventBuilder(
           List<CalendarEventData<T>> events, DateTime date) =>
       FullDayEventView(events: events, date: date);
+
+  HourLinePainter _defaultHourLinePainter(
+    Color lineColor,
+    double lineHeight,
+    double offset,
+    double minuteHeight,
+    bool showVerticalLine,
+    double verticalLineOffset,
+  ) {
+    return HourLinePainter(
+      lineColor: lineColor,
+      lineHeight: lineHeight,
+      offset: _timeLineWidth + offset,
+      minuteHeight: minuteHeight,
+      verticalLineOffset: verticalLineOffset,
+      showVerticalLine: showVerticalLine,
+    );
+  }
 
   /// Called when user change page using any gesture or inbuilt functions.
   ///

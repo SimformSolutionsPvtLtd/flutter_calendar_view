@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import 'calendar_event_data.dart';
@@ -70,3 +71,13 @@ typedef DateTapCallback = void Function(DateTime date);
 
 typedef EventFilter<T extends Object?> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);
+
+
+typedef CustomHourLinePainter = CustomPainter Function(
+   Color lineColor,
+   double lineHeight,
+   double offset,
+   double minuteHeight,
+   bool showVerticalLine,
+   double verticalLineOffset,
+);

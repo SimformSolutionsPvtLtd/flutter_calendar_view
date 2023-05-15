@@ -10,7 +10,6 @@ import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
-import '../painters.dart';
 import '../typedefs.dart';
 
 /// Defines a single day page.
@@ -38,6 +37,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
+
+  /// Custom painter for hour line.
+  final CustomHourLinePainter hourLinePainter;
 
   /// Flag to display live time indicator.
   /// If true then indicator will be displayed else not.
@@ -104,6 +106,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.timeLineBuilder,
     required this.hourIndicatorSettings,
+    required this.hourLinePainter,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -141,13 +144,13 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                   children: [
                     CustomPaint(
                       size: Size(width, height),
-                      painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
+                      painter: hourLinePainter(
+                        hourIndicatorSettings.color,
+                        hourIndicatorSettings.height,
+                        timeLineWidth + hourIndicatorSettings.offset,
+                        heightPerMinute,
+                        showVerticalLine,
+                        verticalLineOffset,
                       ),
                     ),
                     dayDetectorBuilder(

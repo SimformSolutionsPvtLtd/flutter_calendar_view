@@ -37,6 +37,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
 
+  /// Custom painter for hour line.
+  final CustomHourLinePainter hourLinePainter;
+
   /// Flag to display live line.
   final bool showLiveLine;
 
@@ -124,6 +127,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.timeLineBuilder,
     required this.hourIndicatorSettings,
+    required this.hourLinePainter,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -210,13 +214,13 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                   children: [
                     CustomPaint(
                       size: Size(width, height),
-                      painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
+                      painter: hourLinePainter(
+                        hourIndicatorSettings.color,
+                        hourIndicatorSettings.height,
+                        timeLineWidth + hourIndicatorSettings.offset,
+                        heightPerMinute,
+                        showVerticalLine,
+                        verticalLineOffset,
                       ),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)

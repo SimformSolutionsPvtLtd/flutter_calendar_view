@@ -16,6 +16,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../painters.dart';
 import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_week_view_page.dart';
@@ -84,6 +85,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
+
+  /// A funtion that returns a [CustomPainter].
+  ///
+  /// Use this if you want to paint custom hour lines.
+  final CustomHourLinePainter? hourLinePainter;
 
   /// Settings for live time indicator settings.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
@@ -198,6 +204,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.maxDay,
     this.initialDay,
     this.hourIndicatorSettings,
+    this.hourLinePainter,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -259,6 +266,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late EventArranger<T> _eventArranger;
 
   late HourIndicatorSettings _hourIndicatorSettings;
+  late CustomHourLinePainter _hourLinePainter;
+
   late HourIndicatorSettings _liveTimeIndicatorSettings;
 
   late PageController _pageController;
@@ -418,6 +427,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
+                          hourLinePainter: _hourLinePainter,
                           dates: dates,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               _showLiveTimeIndicator(dates),
@@ -529,6 +539,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
   Widget _defaultFullDayEventBuilder(
@@ -730,6 +741,24 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       },
       headerStringBuilder: widget.headerStringBuilder,
       headerStyle: widget.headerStyle,
+    );
+  }
+
+  HourLinePainter _defaultHourLinePainter(
+    Color lineColor,
+    double lineHeight,
+    double offset,
+    double minuteHeight,
+    bool showVerticalLine,
+    double verticalLineOffset,
+  ) {
+    return HourLinePainter(
+      lineColor: lineColor,
+      lineHeight: lineHeight,
+      offset: _timeLineWidth + offset,
+      minuteHeight: minuteHeight,
+      verticalLineOffset: verticalLineOffset,
+      showVerticalLine: showVerticalLine,
     );
   }
 
