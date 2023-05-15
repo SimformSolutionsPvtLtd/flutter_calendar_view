@@ -755,7 +755,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
-      offset: _timeLineWidth + offset,
+      offset: offset,
       minuteHeight: minuteHeight,
       verticalLineOffset: verticalLineOffset,
       showVerticalLine: showVerticalLine,

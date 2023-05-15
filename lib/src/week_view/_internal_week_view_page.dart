@@ -10,7 +10,6 @@ import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
-import '../painters.dart';
 import '../typedefs.dart';
 
 /// A single page for week view.

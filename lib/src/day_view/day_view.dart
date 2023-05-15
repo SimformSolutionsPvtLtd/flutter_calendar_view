@@ -647,7 +647,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
-      offset: _timeLineWidth + offset,
+      offset: offset,
       minuteHeight: minuteHeight,
       verticalLineOffset: verticalLineOffset,
       showVerticalLine: showVerticalLine,
