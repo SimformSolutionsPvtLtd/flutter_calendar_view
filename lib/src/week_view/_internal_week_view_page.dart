@@ -240,14 +240,16 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                             ...List.generate(
                               filteredDates.length,
                               (index) => Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: hourIndicatorSettings.color,
-                                      width: hourIndicatorSettings.height,
-                                    ),
-                                  ),
-                                ),
+                                decoration: showVerticalLine
+                                    ? BoxDecoration(
+                                        border: Border(
+                                          right: BorderSide(
+                                            color: hourIndicatorSettings.color,
+                                            width: hourIndicatorSettings.height,
+                                          ),
+                                        ),
+                                      )
+                                    : null,
                                 height: height,
                                 width: weekTitleWidth,
                                 child: Stack(

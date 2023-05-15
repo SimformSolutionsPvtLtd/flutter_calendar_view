@@ -120,6 +120,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Width of week view. If null provided device width will be considered.
   final double? width;
 
+  /// If true this will display vertical lines between each day.
+  final bool showVerticalLines;
+
   /// Height of week day title,
   final double weekTitleHeight;
 
@@ -199,6 +202,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.heightPerMinute = 1,
     this.timeLineOffset = 0,
     this.showLiveTimeLineInAllDays = false,
+    this.showVerticalLines = true,
     this.width,
     this.minDay,
     this.maxDay,
@@ -434,7 +438,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           timeLineOffset: widget.timeLineOffset,
                           timeLineWidth: _timeLineWidth,
                           verticalLineOffset: 0,
-                          showVerticalLine: true,
+                          showVerticalLine: widget.showVerticalLines,
                           controller: controller,
                           hourHeight: _hourHeight,
                           scrollController: _scrollController,
