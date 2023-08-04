@@ -160,9 +160,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
     if (_calendarData.eventList.contains(event)) return;
     if (event.endDate.difference(event.date).inDays > 0) {
       if (event.startTime!.isDayStart && event.endTime!.isDayStart) {
-        _calendarData.fullDayEventList.add(event);
+        _calendarData.fullDayEventList.addEventInSortedManner(event);
       } else {
-        _calendarData.rangingEventList.add(event);
+        _calendarData.rangingEventList.addEventInSortedManner(event);
       }
     } else {
       final date = event.date.withoutTime;
@@ -172,7 +172,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
           date: [event],
         });
       } else {
-        _calendarData.events[date]!.add(event);
+        _calendarData.events[date]!.addEventInSortedManner(event);
       }
     }
 
@@ -185,15 +185,18 @@ class EventController<T extends Object?> extends ChangeNotifier {
 }
 
 class CalendarData<T> {
-  // Stores events that occurs only once in a map.
-  final events = <DateTime, List<CalendarEventData<T>>>{};
-
-  // Stores all the events in a list.
+  // Stores all the events in a list(all the items in below 3 list will be
+  // available in this list as global itemList of all events).
   final eventList = <CalendarEventData<T>>[];
 
-  // Stores all the ranging events in a list.
+  // Stores events that occurs only once in a map, Here the key will a day
+  // and along to the day as key we will store all the events of that day as
+  // list as value
+  final events = <DateTime, List<CalendarEventData<T>>>{};
+
+  // Stores all the ranging events in a list
   final rangingEventList = <CalendarEventData<T>>[];
 
-  // Stores all full day events
+  // Stores all full day events(24hr event)
   final fullDayEventList = <CalendarEventData<T>>[];
 }
