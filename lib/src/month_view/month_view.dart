@@ -612,6 +612,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
       width: width,
       height: height,
       child: GridView.builder(
+        padding: EdgeInsets.zero,
         physics: ClampingScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
