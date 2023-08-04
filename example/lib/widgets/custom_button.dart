@@ -6,8 +6,7 @@ class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
 
-  const CustomButton({Key? key, required this.title, this.onTap})
-      : super(key: key);
+  const CustomButton({super.key, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {

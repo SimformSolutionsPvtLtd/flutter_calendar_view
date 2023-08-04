@@ -2,13 +2,11 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
-import '../style/header_style.dart';
 import '../typedefs.dart';
 import 'common_components.dart';
 
@@ -34,14 +32,14 @@ class CircularCell extends StatelessWidget {
   /// This class will defines how cell will be displayed.
   /// To get proper view user [CircularCell] with 1 [MonthView.cellAspectRatio].
   const CircularCell({
-    Key? key,
+    super.key,
     required this.date,
     this.events = const [],
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightedTitleColor = Constants.white,
     this.titleColor = Constants.black,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +99,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({
-    Key? key,
+    super.key,
     required this.date,
     required this.events,
     this.isInMonth = false,
@@ -114,7 +112,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.titleColor = Constants.black,
     this.highlightedTitleColor = Constants.white,
     this.dateStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,28 +195,22 @@ class FilledCell<T extends Object?> extends StatelessWidget {
 class MonthPageHeader extends CalendarPageHeader {
   /// A header widget to display on month view.
   const MonthPageHeader({
-    Key? key,
+    super.key,
     VoidCallback? onNextMonth,
-    AsyncCallback? onTitleTapped,
+    super.onTitleTapped,
     VoidCallback? onPreviousMonth,
-    Color iconColor = Constants.black,
-    Color backgroundColor = Constants.headerBackground,
+    super.iconColor,
+    super.backgroundColor,
     StringProvider? dateStringBuilder,
-    required DateTime date,
-    HeaderStyle headerStyle = const HeaderStyle(),
+    required super.date,
+    super.headerStyle,
   }) : super(
-          key: key,
-          date: date,
           onNextDay: onNextMonth,
           onPreviousDay: onPreviousMonth,
-          onTitleTapped: onTitleTapped,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
-          headerStyle: headerStyle,
         );
+
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
 }
@@ -241,13 +233,13 @@ class WeekDayTile extends StatelessWidget {
 
   /// Title for week day in month view.
   const WeekDayTile({
-    Key? key,
+    super.key,
     required this.dayIndex,
     this.backgroundColor = Constants.white,
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

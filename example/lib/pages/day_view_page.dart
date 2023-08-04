@@ -7,7 +7,7 @@ import '../widgets/day_view_widget.dart';
 import 'create_event_page.dart';
 
 class DayViewPageDemo extends StatefulWidget {
-  const DayViewPageDemo({Key? key}) : super(key: key);
+  const DayViewPageDemo({super.key});
 
   @override
   _DayViewPageDemoState createState() => _DayViewPageDemoState();

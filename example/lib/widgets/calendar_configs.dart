@@ -12,10 +12,10 @@ class CalendarConfig extends StatelessWidget {
   final CalendarView currentView;
 
   const CalendarConfig({
-    Key? key,
+    super.key,
     required this.onViewChange,
     this.currentView = CalendarView.month,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

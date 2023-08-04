@@ -13,9 +13,9 @@ class AddEventWidget extends StatefulWidget {
   final void Function(CalendarEventData<Event>)? onEventAdd;
 
   const AddEventWidget({
-    Key? key,
+    super.key,
     this.onEventAdd,
-  }) : super(key: key);
+  });
 
   @override
   _AddEventWidgetState createState() => _AddEventWidgetState();

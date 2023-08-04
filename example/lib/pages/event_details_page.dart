@@ -6,7 +6,7 @@ import '../extension.dart';
 class DetailsPage extends StatelessWidget {
   final CalendarEventData event;
 
-  const DetailsPage({Key? key, required this.event}) : super(key: key);
+  const DetailsPage({super.key, required this.event});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

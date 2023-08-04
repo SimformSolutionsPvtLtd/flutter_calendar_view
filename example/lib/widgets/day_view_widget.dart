@@ -8,10 +8,10 @@ class DayViewWidget extends StatelessWidget {
   final double? width;
 
   const DayViewWidget({
-    Key? key,
+    super.key,
     this.state,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

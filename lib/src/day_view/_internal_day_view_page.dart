@@ -102,7 +102,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   /// Defines a single day page.
   const InternalDayViewPage({
-    Key? key,
+    super.key,
     required this.showVerticalLine,
     required this.width,
     required this.date,
@@ -129,7 +129,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

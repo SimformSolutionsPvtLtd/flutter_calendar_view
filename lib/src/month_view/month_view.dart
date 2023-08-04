@@ -140,7 +140,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// Main [Widget] to display month view.
   const MonthView({
-    Key? key,
+    super.key,
     this.showBorder = true,
     this.borderColor = Constants.defaultBorderColor,
     this.cellBuilder,
@@ -166,7 +166,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.weekDayStringBuilder,
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
-  }) : super(key: key);
+  });
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -590,7 +590,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final WeekDays startDay;
 
   const _MonthPageBuilder({
-    Key? key,
+    super.key,
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
@@ -603,7 +603,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.onCellTap,
     required this.onDateLongPress,
     required this.startDay,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

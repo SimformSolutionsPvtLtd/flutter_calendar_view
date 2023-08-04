@@ -8,8 +8,8 @@ import 'create_event_page.dart';
 
 class MonthViewPageDemo extends StatefulWidget {
   const MonthViewPageDemo({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _MonthViewPageDemoState createState() => _MonthViewPageDemoState();

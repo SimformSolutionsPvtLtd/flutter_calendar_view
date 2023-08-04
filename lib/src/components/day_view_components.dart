@@ -2,13 +2,10 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
-import '../constants.dart';
 import '../extensions.dart';
-import '../style/header_style.dart';
 import '../typedefs.dart';
 import 'common_components.dart';
 
@@ -45,7 +42,7 @@ class RoundedEventTile extends StatelessWidget {
 
   /// This is default tile to display in day view.
   const RoundedEventTile({
-    Key? key,
+    super.key,
     required this.title,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
@@ -55,7 +52,7 @@ class RoundedEventTile extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,28 +115,20 @@ class RoundedEventTile extends StatelessWidget {
 class DayPageHeader extends CalendarPageHeader {
   /// A header widget to display on day view.
   const DayPageHeader({
-    Key? key,
-    VoidCallback? onNextDay,
-    AsyncCallback? onTitleTapped,
-    VoidCallback? onPreviousDay,
-    Color iconColor = Constants.black,
-    Color backgroundColor = Constants.headerBackground,
+    super.key,
+    super.onNextDay,
+    super.onTitleTapped,
+    super.onPreviousDay,
+    super.iconColor,
+    super.backgroundColor,
     StringProvider? dateStringBuilder,
-    required DateTime date,
-    HeaderStyle headerStyle = const HeaderStyle(),
+    required super.date,
+    super.headerStyle,
   }) : super(
-          key: key,
-          date: date,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
-          onNextDay: onNextDay,
-          onPreviousDay: onPreviousDay,
-          onTitleTapped: onTitleTapped,
           dateStringBuilder:
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,
-          headerStyle: headerStyle,
         );
+
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }
@@ -156,11 +145,11 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
-    Key? key,
+    super.key,
     required this.date,
     this.markingStyle,
     this.timeStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +179,7 @@ class DefaultTimeLineMark extends StatelessWidget {
 /// This class is defined default view of full day event
 class FullDayEventView<T> extends StatelessWidget {
   const FullDayEventView({
-    Key? key,
+    super.key,
     this.boxConstraints = const BoxConstraints(maxHeight: 100),
     required this.events,
     this.padding,
@@ -198,7 +187,7 @@ class FullDayEventView<T> extends StatelessWidget {
     this.titleStyle,
     this.onEventTap,
     required this.date,
-  }) : super(key: key);
+  });
 
   /// Constraints for view
   final BoxConstraints boxConstraints;

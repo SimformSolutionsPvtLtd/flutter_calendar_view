@@ -37,13 +37,12 @@ class LiveTimeIndicator extends StatefulWidget {
 
   /// Widget to display tile line according to current time.
   const LiveTimeIndicator(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.height,
       required this.timeLineWidth,
       required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute})
-      : super(key: key);
+      required this.heightPerMinute});
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -121,14 +120,14 @@ class TimeLine extends StatelessWidget {
 
   /// Time line to display time at left side of day or week view.
   const TimeLine({
-    Key? key,
+    super.key,
     required this.timeLineWidth,
     required this.hourHeight,
     required this.height,
     required this.timeLineOffset,
     required this.timeLineBuilder,
     this.showHalfHours = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +219,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.events,
@@ -230,7 +229,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.date,
     required this.onTileTap,
     required this.scrollNotifier,
-  }) : super(key: key);
+  });
 
   /// Arrange events and returns list of [Widget] that displays event
   /// tile on display area. This method uses [eventArranger] to get position
@@ -339,7 +338,7 @@ class PressDetector extends StatelessWidget {
 
   /// A widget that display event tiles in day/week view.
   const PressDetector({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.heightPerMinute,
@@ -347,7 +346,7 @@ class PressDetector extends StatelessWidget {
     required this.onDateLongPress,
     required this.onDateTap,
     required this.minuteSlotSize,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

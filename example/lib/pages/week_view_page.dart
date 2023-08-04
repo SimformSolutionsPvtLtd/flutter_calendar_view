@@ -7,7 +7,7 @@ import '../widgets/week_view_widget.dart';
 import 'create_event_page.dart';
 
 class WeekViewDemo extends StatefulWidget {
-  const WeekViewDemo({Key? key}) : super(key: key);
+  const WeekViewDemo({super.key});
 
   @override
   _WeekViewDemoState createState() => _WeekViewDemoState();

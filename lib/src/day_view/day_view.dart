@@ -186,7 +186,7 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Main widget for day view.
   const DayView({
-    Key? key,
+    super.key,
     this.eventTileBuilder,
     this.dateStringBuilder,
     this.timeStringBuilder,
@@ -235,8 +235,7 @@ class DayView<T extends Object?> extends StatefulWidget {
           dayDetectorBuilder == null || onDateLongPress == null,
           """If you use [dayPressDetectorBuilder]
           do not provide [onDateLongPress]""",
-        ),
-        super(key: key);
+        );
 
   @override
   DayViewState<T> createState() => DayViewState<T>();
