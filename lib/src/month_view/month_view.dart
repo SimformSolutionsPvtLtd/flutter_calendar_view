@@ -172,7 +172,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// Main [Widget] to display month view.
   const MonthView({
-    Key? key,
+    super.key,
     this.showBorder = true,
     this.borderColor = Constants.defaultBorderColor,
     this.cellBuilder,
@@ -205,9 +205,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.showWeekTileBorder = true,
     this.hideDaysNotInMonth = false,
-  })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
-            "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
-        super(key: key);
+  }) : assert(!(onHeaderTitleTap != null && headerBuilder != null),
+            "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously");
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -661,7 +660,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final bool hideDaysNotInMonth;
 
   const _MonthPageBuilder({
-    Key? key,
+    super.key,
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
@@ -676,7 +675,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.startDay,
     required this.physics,
     required this.hideDaysNotInMonth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
