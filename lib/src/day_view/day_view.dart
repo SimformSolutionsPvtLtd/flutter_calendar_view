@@ -184,6 +184,10 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   final bool showHalfHours;
 
+  /// Duration from where default day view will be visible
+  /// By default it will be Duration(hours:0)
+  final Duration startDuration;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -223,6 +227,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.dayDetectorBuilder,
     this.showHalfHours = false,
     this.halfHourIndicatorSettings,
+    this.startDuration = const Duration(hours: 0),
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -318,6 +323,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         // user adds new events.
         ..addListener(_reloadCallback);
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      animateToDuration(widget.startDuration);
+    });
   }
 
   @override
@@ -660,6 +669,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         _currentIndex = index;
       });
     }
+    animateToDuration(widget.startDuration);
     widget.onPageChange?.call(_currentDate, _currentIndex);
   }
 
@@ -773,6 +783,27 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       event: event,
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
+    );
+  }
+
+  /// Animate to specific offset in a day view using the start duration
+  Future<void> animateToDuration(
+    Duration startDuration, {
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) async {
+    final offSetForSingleMinute = _height / 24 / 60;
+    final startDurationInMinutes = startDuration.inMinutes;
+
+    // Added ternary condition below to take care if user passing duration
+    // above 24 hrs then we take it max as 24 hours only
+    final offset = offSetForSingleMinute *
+        (startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes);
+    debugPrint("offSet $offset");
+    _scrollController.animateTo(
+      offset.toDouble(),
+      duration: duration,
+      curve: curve,
     );
   }
 
