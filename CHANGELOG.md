@@ -4,6 +4,8 @@
   Issue [#219 - There is an issue with the daily view layout display](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/219)
 - Fixed
   Issue [#205 - SafeArea can't be deactivated on MonthView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/205)
+- Fixed
+  Issue [#237 - DayView & MonthView layout issue in landscape mode](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/237)
 
 # [1.0.3 - 3 Apr 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
 
