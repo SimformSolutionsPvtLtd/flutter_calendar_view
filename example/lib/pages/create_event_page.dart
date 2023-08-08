@@ -48,10 +48,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: AddEventWidget(
-          onEventAdd: context.pop,
+      body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: AddEventWidget(
+            onEventAdd: context.pop,
+          ),
         ),
       ),
     );
