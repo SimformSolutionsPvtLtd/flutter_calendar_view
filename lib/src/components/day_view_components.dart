@@ -164,9 +164,12 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hour = ((date.hour - 1) % 12) + 1;
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
-        : "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+        : date.minute != 0
+            ? "$hour:${date.minute}"
+            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(

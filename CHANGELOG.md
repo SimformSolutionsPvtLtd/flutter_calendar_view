@@ -1,11 +1,23 @@
+# [1.0.4 - 4 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
+
+- Fixed
+  Issue [#219 - There is an issue with the daily view layout display](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/219)
+- Fixed
+  Issue [#205 - SafeArea can't be deactivated on MonthView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/205)
+- Fixed
+  Issue [#237 - DayView & MonthView layout issue in landscape mode](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/237)
+- Added Feature
+  [#57 - Change default start hour in DayView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/57)
+
 # [1.0.3 - 3 Apr 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
+
 - Added
   Feature [#172 - Press Detector builder for day view and week view](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/172)
-- Added 
+- Added
   Feature [#147 - Added text style and description style in CalendarEventData](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/147)
-- Added 
+- Added
   Feature [#174 - Animate to specific scroll controller offset](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/174)
-- Fixed 
+- Fixed
   Issue [#161 - Unable to add 11.30 PM to 12.00PM](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/161)
 - Fixed
   Issue [#179 - Removing Full Day Event does not work](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/179)
@@ -19,6 +31,7 @@
   Issue [#199 - HeaderStyle decoration no have effect on MonthView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/199)
 
 # [1.0.2 - 10 Jan 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.2)
+
 - Added
   Feature [#144 - WeekView not support show current week number](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/144)
 - Added
@@ -29,19 +42,25 @@
   Issue [#146 - WeekView wrapped by SafeArea](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/146)
 
 # [1.0.1 - 25 Nov 2022](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.1)
+
 - Added
   Feature [#26 - Support for locale](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/26)
-- Added removeWhere method in `EventController` to conditionally remove multiple events. (Fixes
+- Added removeWhere method in `EventController` to conditionally remove multiple
+  events. (Fixes
   Issue [#31](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/31))
 - Added customization in calendar views and
   closes [#34](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/34).
-  - Added Customizations in `DayView`. Adds `dateStringBuilder`, `timeStringBuilder`, `headerStyle`
-    parameters in `Dayview`,
-  - Added Customizations in `MonthView`. Adds `headerStringBuilder`, `dateStringBuilder`
-    , `weekDayStringBuilder`, `headerStyle` parameters in `WeekView`.
-  - Added Customizations in `WeekView`. Adds `headerStyle`,  `headerStringBuilder`
-    , `timeLineStringBuilder`, `weekDayStringBuilder`, `weekDayDateStringBuilder` parameters
-    in `WeekView`,
+    - Added Customizations in `DayView`.
+      Adds `dateStringBuilder`, `timeStringBuilder`, `headerStyle`
+      parameters in `Dayview`,
+    - Added Customizations in `MonthView`.
+      Adds `headerStringBuilder`, `dateStringBuilder`
+      , `weekDayStringBuilder`, `headerStyle` parameters in `WeekView`.
+    - Added Customizations in `WeekView`.
+      Adds `headerStyle`,  `headerStringBuilder`
+      , `timeLineStringBuilder`, `weekDayStringBuilder`, `weekDayDateStringBuilder`
+      parameters
+      in `WeekView`,
 - Added onTap lister in day and week views. issue #50.
 - Updates calculation of day difference. issue #80, #97.
 - Fixed
@@ -54,10 +73,12 @@
 - **Breaking Changes**
     - Improved logic to compare `CalendarEventData`.
 
-      Note: This changes the behaviour of comparing two events using `==` operator. Please test your
+      Note: This changes the behaviour of comparing two events using `==`
+      operator. Please test your
       app properly after updating to this version.
 
-- Added 15,30 and 60 minutes slots for `onDateLongPress` callback in Week and Day view.
+- Added 15,30 and 60 minutes slots for `onDateLongPress` callback in Week and
+  Day view.
 - Added method to update filter in `EventController`.
 - Restructured the logic to store single time events.
 - Added method to scroll to an event.
@@ -107,7 +128,8 @@
 - Added `CalendarControllerProvider`.
 - Added `onEventTap` callback in `WeekView` and `DayView`.
 - Added `onCellTap` callback in `MonthView`.
-- Make `controller` optional parameter in all views where `CalendarControllerProvider` is provided.
+- Make `controller` optional parameter in all views
+  where `CalendarControllerProvider` is provided.
 
 # [0.0.1 - 26 Aug 2021](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/0.0.1)
 
