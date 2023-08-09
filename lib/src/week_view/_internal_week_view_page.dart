@@ -220,6 +220,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         heightPerMinute,
                         showVerticalLine,
                         verticalLineOffset,
+                        hourIndicatorSettings.lineStyle,
+                        hourIndicatorSettings.dashWidth,
+                        hourIndicatorSettings.dashSpaceWidth,
                       ),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
