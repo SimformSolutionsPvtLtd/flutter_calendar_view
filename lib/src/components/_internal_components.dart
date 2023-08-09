@@ -115,6 +115,9 @@ class TimeLine extends StatelessWidget {
   /// Flag to display half hours.
   final bool showHalfHours;
 
+  /// Hour when the day starts
+  final int startHour;
+
   static DateTime get _date => DateTime.now();
 
   double get _halfHourHeight => hourHeight / 2;
@@ -127,6 +130,7 @@ class TimeLine extends StatelessWidget {
     required this.height,
     required this.timeLineOffset,
     required this.timeLineBuilder,
+    required this.startHour,
     this.showHalfHours = false,
   }) : super(key: key);
 
@@ -142,18 +146,22 @@ class TimeLine extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          for (int i = 1; i < Constants.hoursADay; i++)
+          for (int i = startHour + 1; i < Constants.hoursADay; i++)
             _timelinePositioned(
-              topPosition: hourHeight * i - timeLineOffset,
-              bottomPosition: height - (hourHeight * (i + 1)) + timeLineOffset,
+              topPosition: hourHeight * (i - startHour) - timeLineOffset,
+              bottomPosition:
+                  height - (hourHeight * (i - startHour + 1)) + timeLineOffset,
               hour: i,
             ),
           if (showHalfHours)
-            for (int i = 0; i < Constants.hoursADay; i++)
+            for (int i = startHour; i < Constants.hoursADay; i++)
               _timelinePositioned(
-                topPosition: hourHeight * i - timeLineOffset + _halfHourHeight,
-                bottomPosition:
-                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                topPosition: hourHeight * (i - startHour) -
+                    timeLineOffset +
+                    _halfHourHeight,
+                bottomPosition: height -
+                    (hourHeight * (i - startHour + 1)) +
+                    timeLineOffset,
                 hour: i,
                 minutes: 30,
               ),
@@ -174,6 +182,7 @@ class TimeLine extends StatelessWidget {
       right: 0,
       bottom: bottomPosition,
       child: Container(
+        decoration: BoxDecoration(color: Colors.red),
         height: hourHeight,
         width: timeLineWidth,
         child: timeLineBuilder.call(
@@ -337,6 +346,9 @@ class PressDetector extends StatelessWidget {
   /// where events are not available.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Hour when the days starts
+  final int startHour;
+
   /// A widget that display event tiles in day/week view.
   const PressDetector({
     Key? key,
@@ -347,12 +359,14 @@ class PressDetector extends StatelessWidget {
     required this.onDateLongPress,
     required this.onDateTap,
     required this.minuteSlotSize,
+    required this.startHour,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+    final slots =
+        ((Constants.hoursADay - startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,

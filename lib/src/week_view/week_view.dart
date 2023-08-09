@@ -183,6 +183,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Hour when the day begins
+  final int? startHour;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -224,6 +227,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
+    this.startHour,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -284,11 +288,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late List<WeekDays> _weekDays;
 
+  late int _startHour;
+
   final _scrollConfiguration = EventScrollConfiguration();
 
   @override
   void initState() {
     super.initState();
+
+    _startHour = widget.startHour ?? 0;
 
     _reloadCallback = _reload;
 
@@ -433,6 +441,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           minuteSlotSize: widget.minuteSlotSize,
                           scrollConfiguration: _scrollConfiguration,
                           fullDayEventBuilder: _fullDayEventBuilder,
+                          startHour: _startHour,
                         ),
                       );
                     },
@@ -515,7 +524,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
+    _height = _hourHeight * (Constants.hoursADay - _startHour);
   }
 
   void _assignBuilders() {
@@ -592,7 +601,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     required MinuteSlotSize minuteSlotSize,
   }) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+    final slots = ((Constants.hoursADay - _startHour)* 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,

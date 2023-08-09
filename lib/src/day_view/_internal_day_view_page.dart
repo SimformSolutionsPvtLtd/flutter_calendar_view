@@ -159,6 +159,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         lineStyle: hourIndicatorSettings.lineStyle,
                         dashWidth: hourIndicatorSettings.dashWidth,
                         dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                        startHour: 5
                       ),
                     ),
                     if (showHalfHours)
@@ -174,6 +175,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                           dashWidth: halfHourIndicatorSettings.dashWidth,
                           dashSpaceWidth:
                               halfHourIndicatorSettings.dashSpaceWidth,
+                          startHour: 5,
                         ),
                       ),
                     dayDetectorBuilder(
@@ -207,6 +209,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       timeLineOffset: timeLineOffset,
                       timeLineWidth: timeLineWidth,
                       showHalfHours: showHalfHours,
+                      startHour: 5,
                       key: ValueKey(heightPerMinute),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)

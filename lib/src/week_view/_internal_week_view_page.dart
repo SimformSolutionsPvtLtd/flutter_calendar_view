@@ -111,6 +111,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Hour when the day begins
+  final int startHour;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -141,6 +144,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.weekDays,
     required this.minuteSlotSize,
     required this.scrollConfiguration,
+    required this.startHour,
     this.fullDayEventBuilder,
     required this.weekDetectorBuilder,
   }) : super(key: key);
@@ -217,6 +221,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         minuteHeight: heightPerMinute,
                         verticalLineOffset: verticalLineOffset,
                         showVerticalLine: showVerticalLine,
+                        startHour: startHour
                       ),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
@@ -282,6 +287,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       height: height,
                       timeLineOffset: timeLineOffset,
                       timeLineBuilder: timeLineBuilder,
+                      startHour: startHour,
                     ),
                   ],
                 ),
