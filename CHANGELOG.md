@@ -1,4 +1,4 @@
-# [1.0.4 - 4 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
+# [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
 - Fixed
   Issue [#219 - There is an issue with the daily view layout display](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/219)
