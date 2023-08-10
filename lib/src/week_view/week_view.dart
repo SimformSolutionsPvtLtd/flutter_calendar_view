@@ -183,6 +183,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Callback for the Header title
+  final HeaderTitleCallback? onHeaderTitleTap;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -224,7 +227,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
-  })  : assert((timeLineOffset) >= 0,
+    this.onHeaderTitleTap,
+  })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
+            "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
+        assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
             "Calendar width must be greater than 0."),
@@ -381,7 +387,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(_currentStartDate, _currentEndDate),
+              _weekHeaderBuilder(
+                _currentStartDate,
+                _currentEndDate,
+              ),
               Expanded(
                 child: DecoratedBox(
                   decoration: BoxDecoration(color: widget.backgroundColor),
@@ -710,22 +719,29 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.
-  Widget _defaultWeekPageHeaderBuilder(DateTime startDate, DateTime endDate) {
+  Widget _defaultWeekPageHeaderBuilder(
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     return WeekPageHeader(
       startDate: _currentStartDate,
       endDate: _currentEndDate,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
-        final selectedDate = await showDatePicker(
-          context: context,
-          initialDate: startDate,
-          firstDate: _minDate,
-          lastDate: _maxDate,
-        );
+        if (widget.onHeaderTitleTap != null) {
+          widget.onHeaderTitleTap!(startDate);
+        } else {
+          final selectedDate = await showDatePicker(
+            context: context,
+            initialDate: startDate,
+            firstDate: _minDate,
+            lastDate: _maxDate,
+          );
 
-        if (selectedDate == null) return;
-        jumpToWeek(selectedDate);
+          if (selectedDate == null) return;
+          jumpToWeek(selectedDate);
+        }
       },
       headerStringBuilder: widget.headerStringBuilder,
       headerStyle: widget.headerStyle,

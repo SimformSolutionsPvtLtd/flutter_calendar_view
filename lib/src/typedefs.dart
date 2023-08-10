@@ -34,9 +34,9 @@ typedef WeekDayBuilder = Widget Function(
   int day,
 );
 
-typedef DateWidgetBuilder = Widget Function(
-  DateTime date,
-);
+typedef DateWidgetBuilder = Widget Function(DateTime date);
+
+typedef HeaderTitleCallback = Future<void> Function(DateTime date);
 
 typedef WeekNumberBuilder = Widget? Function(
   DateTime firstDayOfWeek,
@@ -56,7 +56,9 @@ typedef StringProvider = String Function(DateTime date,
     {DateTime? secondaryDate});
 
 typedef WeekPageHeaderBuilder = Widget Function(
-    DateTime startDate, DateTime endDate);
+  DateTime startDate,
+  DateTime endDate,
+);
 
 typedef TileTapCallback<T extends Object?> = void Function(
     CalendarEventData<T> event, DateTime date);

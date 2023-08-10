@@ -1,7 +1,10 @@
-# [1.0.5] (UnReleased)
+# [1.0.5] (UnReleased)(https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.5)
 
 - Fixed issue related to auto scroll to initial duration for day
   view-[#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
+- Added
+  feature added a callback for the default header title
+  - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
