@@ -97,7 +97,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
                     : endTime.getTotalMinutes - (startHour * 60)) *
                 heightPerMinute;
 
-        final top = (startTime.getTotalMinutes - (startHour * 60)) * heightPerMinute;
+        final top =
+            (startTime.getTotalMinutes - (startHour * 60)) * heightPerMinute;
 
         arrangedEvents.add(OrganizedCalendarEventData<T>(
           left: slotWidth * (sideEvent.column - 1),

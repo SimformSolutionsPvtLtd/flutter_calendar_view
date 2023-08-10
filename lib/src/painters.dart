@@ -141,7 +141,7 @@ class HalfHourLinePainter extends CustomPainter {
       ..strokeWidth = lineHeight;
 
     for (var i = startHour; i < Constants.hoursADay; i++) {
-      final dy = (i - startHour)* minuteHeight * 60 + (minuteHeight * 30);
+      final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {

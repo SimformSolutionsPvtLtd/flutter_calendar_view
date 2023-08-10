@@ -215,14 +215,13 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                     CustomPaint(
                       size: Size(width, height),
                       painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
-                        startHour: startHour
-                      ),
+                          lineColor: hourIndicatorSettings.color,
+                          lineHeight: hourIndicatorSettings.height,
+                          offset: timeLineWidth + hourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          verticalLineOffset: verticalLineOffset,
+                          showVerticalLine: showVerticalLine,
+                          startHour: startHour),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
                       LiveTimeIndicator(

@@ -601,7 +601,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     required MinuteSlotSize minuteSlotSize,
   }) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = ((Constants.hoursADay - _startHour)* 60) ~/ minuteSlotSize.minutes;
+    final slots =
+        ((Constants.hoursADay - _startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,
