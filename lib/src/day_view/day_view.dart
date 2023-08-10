@@ -182,7 +182,7 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
-  /// First hour displayed in the layout, goes from 0 to 23
+  /// First hour displayed in the layout, goes from 0 to 24
   final int? startHour;
 
   final bool showHalfHours;
@@ -291,7 +291,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     super.initState();
 
     _startHour = widget.startHour ?? 0;
-    if (_startHour > 23) _startHour = 0;
+    if (_startHour > 24) _startHour = 0;
 
     _reloadCallback = _reload;
     _setDateRange();
