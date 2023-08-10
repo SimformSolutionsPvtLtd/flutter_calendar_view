@@ -183,7 +183,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
-  /// First hour displayed in the layout
+  /// First hour displayed in the layout, goes from 0 to 23
   final int? startHour;
 
   /// Main widget for week view.
@@ -297,6 +297,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     super.initState();
 
     _startHour = widget.startHour ?? 0;
+    //Security to avoid any height bug
+    if (_startHour > 23) _startHour = 0;
 
     _reloadCallback = _reload;
 
