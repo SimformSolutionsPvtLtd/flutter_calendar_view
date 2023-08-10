@@ -111,7 +111,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
-  /// Hour when the day begins
+  /// First hour displayed in the layout
   final int startHour;
 
   /// A single page for week view.
@@ -269,6 +269,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,
                                       scrollNotifier: scrollConfiguration,
+                                      startHour: startHour,
                                       events: controller
                                           .getEventsOnDay(filteredDates[index]),
                                       heightPerMinute: heightPerMinute,

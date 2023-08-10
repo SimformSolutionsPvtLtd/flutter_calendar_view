@@ -115,7 +115,7 @@ class TimeLine extends StatelessWidget {
   /// Flag to display half hours.
   final bool showHalfHours;
 
-  /// Hour when the day starts
+  /// First hour displayed in the layout
   final int startHour;
 
   static DateTime get _date => DateTime.now();
@@ -182,7 +182,6 @@ class TimeLine extends StatelessWidget {
       right: 0,
       bottom: bottomPosition,
       child: Container(
-        decoration: BoxDecoration(color: Colors.red),
         height: hourHeight,
         width: timeLineWidth,
         child: timeLineBuilder.call(
@@ -222,6 +221,9 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Defines date for which events will be displayed in given display area.
   final DateTime date;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -235,6 +237,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.events,
     required this.heightPerMinute,
     required this.eventArranger,
+    required this.startHour,
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
@@ -246,11 +249,11 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
-      events: this.events,
-      height: height,
-      width: width,
-      heightPerMinute: heightPerMinute,
-    );
+        events: this.events,
+        height: height,
+        width: width,
+        heightPerMinute: heightPerMinute,
+        startHour: startHour);
 
     return List.generate(events.length, (index) {
       return Positioned(
@@ -346,7 +349,7 @@ class PressDetector extends StatelessWidget {
   /// where events are not available.
   final MinuteSlotSize minuteSlotSize;
 
-  /// Hour when the days starts
+  /// First hour displayed in the layout
   final int startHour;
 
   /// A widget that display event tiles in day/week view.

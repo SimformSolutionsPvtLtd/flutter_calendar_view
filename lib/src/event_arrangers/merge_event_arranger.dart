@@ -17,9 +17,11 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required int startHour,
   }) {
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
+    //Checking if startTime and endTime are correct
     for (final event in events) {
       if (event.startTime == null ||
           event.endTime == null ||
@@ -44,10 +46,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       final startTime = event.startTime!;
       final endTime = event.endTime!;
 
-      final eventStart = startTime.getTotalMinutes;
-      final eventEnd = endTime.getTotalMinutes == 0
-          ? Constants.minutesADay
-          : endTime.getTotalMinutes;
+      // startTime.getTotalMinutes returns the number of minutes from 00h00 to the beginning of the event
+      // But the first hour to be displayed (startHour) could be 06h00, so we have to substract
+      // The number of minutes from 00h00 to startHour which is equal to startHour * 60
+      final eventStart = startTime.getTotalMinutes - (startHour * 60);
+      final eventEnd = endTime.getTotalMinutes - (startHour * 60) == 0
+          ? Constants.minutesADay - (startHour * 60)
+          : endTime.getTotalMinutes - (startHour * 60);
 
       final arrangeEventLen = arrangedEvents.length;
 

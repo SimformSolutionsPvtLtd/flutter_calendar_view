@@ -36,7 +36,7 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
-  /// Hour when the day begins
+  /// First hour displayed in the layout
   final int startHour;
 
   /// Paints 24 hour lines.
@@ -119,7 +119,7 @@ class HalfHourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
-  /// Hour when the day begins
+  /// First hour displayed in the layout
   final int startHour;
 
   /// Paint half hour lines

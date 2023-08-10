@@ -183,7 +183,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
-  /// Hour when the day begins
+  /// First hour displayed in the layout
   final int? startHour;
 
   /// Main widget for week view.
