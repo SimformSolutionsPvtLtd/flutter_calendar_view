@@ -10,7 +10,7 @@ class WebHomePage extends StatefulWidget {
 }
 
 class _WebHomePageState extends State<WebHomePage> {
-  CalendarView _selectedView = CalendarView.week;
+  CalendarView _selectedView = CalendarView.month;
 
   void _setView(CalendarView view) {
     if (view != _selectedView && mounted) {
