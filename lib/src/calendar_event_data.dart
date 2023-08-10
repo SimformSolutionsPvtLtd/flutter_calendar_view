@@ -43,6 +43,8 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
+  final DateTime? newEndTime;
+
   /// Stores all the events on [date]
   const CalendarEventData({
     required this.title,
@@ -55,9 +57,29 @@ class CalendarEventData<T extends Object?> {
     this.descriptionStyle,
     DateTime? endDate,
     required this.date,
+    this.newEndTime,
   }) : _endDate = endDate;
 
   DateTime get endDate => _endDate ?? date;
+
+  CalendarEventData<T> updateEventTime({
+    DateTime? newStartTime,
+    DateTime? newEndTime,
+  }) {
+    return CalendarEventData(
+      title: title,
+      description: description,
+      event: event,
+      color: color,
+      startTime: newStartTime ?? startTime,
+      endTime: endTime,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      endDate: endDate,
+      date: date,
+      newEndTime: newEndTime,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "date": date,

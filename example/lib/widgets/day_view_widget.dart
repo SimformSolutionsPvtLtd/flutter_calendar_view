@@ -16,12 +16,37 @@ class DayViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DayView<Event>(
+      isMinEventTileHeight: true,
       key: state,
       width: width,
       startDuration: Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 3,
       timeLineBuilder: _timeLineBuilder,
+      onEventTap: (events, date) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: Container(
+                padding: EdgeInsets.all(10),
+                height: 200,
+                width: 500,
+                color: Colors.white,
+                child: Text(
+                  '\nEvent Title: ${events.first.title.toString()}'
+                  '\nEvent description: ${events.first.description.toString()}'
+                  '\nStart time: ${events.first.startTime.toString()}'
+                  '\nEnd time: ${events.first.endTime.toString()}',
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),

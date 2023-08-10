@@ -11,6 +11,7 @@ import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
+
 part 'side_event_arranger.dart';
 
 abstract class EventArranger<T extends Object?> {
@@ -31,10 +32,13 @@ abstract class EventArranger<T extends Object?> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required double textScaleFactor,
+    bool isMinEventTileHeight = false,
   });
 }
 
 /// Provides event data with its [left], [right], [top], and [bottom] boundary.
+@immutable
 class OrganizedCalendarEventData<T extends Object?> {
   /// Top position from where event tile will start.
   final double top;
@@ -57,9 +61,11 @@ class OrganizedCalendarEventData<T extends Object?> {
   /// End duration of event/event list.
   final DateTime endDuration;
 
+  final DateTime? newEndDuration;
+
   /// Provides event data with its [left], [right], [top], and [bottom]
   /// boundary.
-  OrganizedCalendarEventData({
+  const OrganizedCalendarEventData({
     required this.startDuration,
     required this.endDuration,
     required this.top,
@@ -67,16 +73,18 @@ class OrganizedCalendarEventData<T extends Object?> {
     required this.left,
     required this.right,
     required this.events,
+    this.newEndDuration,
   });
 
-  OrganizedCalendarEventData.empty()
+   OrganizedCalendarEventData.empty()
       : startDuration = DateTime.now(),
         endDuration = DateTime.now(),
         right = 0,
         left = 0,
         events = const [],
         top = 0,
-        bottom = 0;
+        bottom = 0,
+        newEndDuration = null;
 
   OrganizedCalendarEventData<T> getWithUpdatedRight(double right) =>
       OrganizedCalendarEventData<T>(

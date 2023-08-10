@@ -188,6 +188,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// By default it will be Duration(hours:0)
   final Duration startDuration;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -228,6 +232,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.halfHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
+    this.isMinEventTileHeight = false,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -428,6 +433,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
+                            isMinEventTileHeight: widget.isMinEventTileHeight,
                           ),
                         );
                       },
@@ -611,18 +617,40 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
-  ) {
+    double heightPerMinute, {
+    bool isMinEventTileHeight = false,
+  }) {
+    final double? eventTileHeight;
+    bool isEventTileHasSpace = false;
+    if (isMinEventTileHeight) {
+      eventTileHeight =
+          (endDuration.getTotalMinutes - startDuration.getTotalMinutes) *
+              heightPerMinute;
+
+      isEventTileHasSpace =
+          (events.first.titleStyle?.fontSize ?? Constants.maxFontSize) * 2.5 <=
+                  eventTileHeight &&
+              eventTileHeight >
+                  (events.first.titleStyle?.fontSize ?? Constants.maxFontSize);
+    }
+
     if (events.isNotEmpty)
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
         title: events[0].title,
         totalEvents: events.length - 1,
         description: events[0].description,
-        padding: EdgeInsets.all(10.0),
+        padding: isMinEventTileHeight
+            ? isEventTileHasSpace
+                ? EdgeInsets.all(6)
+                : EdgeInsets.zero
+            : EdgeInsets.all(10),
         backgroundColor: events[0].color,
-        margin: EdgeInsets.all(2.0),
+        margin: EdgeInsets.all(1.0),
         titleStyle: events[0].titleStyle,
         descriptionStyle: events[0].descriptionStyle,
+        showDescription: false,//isMinEventTileHeight ? isEventTileHasSpace : true,
+        isTitleCenter: false,// isMinEventTileHeight,
       );
     else
       return SizedBox.shrink();

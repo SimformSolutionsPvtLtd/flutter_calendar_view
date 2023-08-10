@@ -15,13 +15,16 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required double textScaleFactor,
+    bool isMinEventTileHeight = false,
   }) {
     final mergedEvents = MergeEventArranger<T>().arrange(
-      events: events,
-      height: height,
-      width: width,
-      heightPerMinute: heightPerMinute,
-    );
+        events: events,
+        height: height,
+        width: width,
+        heightPerMinute: heightPerMinute,
+        isMinEventTileHeight: isMinEventTileHeight,
+        textScaleFactor: textScaleFactor);
 
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
@@ -34,6 +37,13 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
       }
 
       final concurrentEvents = event.events;
+
+      // if (isMinEventTileHeight) {
+      //   concurrentEvents.sort(
+      //     (a, b) => b.newEndTime!.getTotalMinutes
+      //         .compareTo(a.newEndTime!.getTotalMinutes),
+      //   );
+      // }
 
       if (concurrentEvents.isEmpty) continue;
 
@@ -84,10 +94,41 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         final startTime = sideEvent.event.startTime!;
         final endTime = sideEvent.event.endTime!;
+        int? newEndTime;
+
+        /// For getting the event title height as per its font size
+        if (isMinEventTileHeight) {
+          final endTimeInMin = endTime.getTotalMinutes;
+          final eventTitleSpan = TextSpan(
+            text: sideEvent.event.title,
+            style: sideEvent.event.titleStyle ??
+                TextStyle(
+                  fontSize: Constants.maxFontSize,
+                ),
+          );
+          final eventTitle = TextPainter(
+              textScaleFactor: textScaleFactor,
+              text: eventTitleSpan,
+              textDirection: TextDirection.ltr);
+          eventTitle.layout();
+
+          final eventTileHeightAsPerDuration =
+              (endTimeInMin - startTime.getTotalMinutes) * heightPerMinute;
+
+          if (eventTileHeightAsPerDuration <= eventTitle.height) {
+            final addHeight = eventTitle.height - eventTileHeightAsPerDuration;
+
+            ///converting the height into time
+            final addTime = (addHeight / heightPerMinute).ceil();
+
+            newEndTime = endTimeInMin + addTime;
+          }
+        }
+
         final bottom = height -
-            (endTime.getTotalMinutes == 0
+            ((newEndTime ?? endTime.getTotalMinutes) == 0
                     ? Constants.minutesADay
-                    : endTime.getTotalMinutes) *
+                    : (newEndTime ?? endTime.getTotalMinutes)) *
                 heightPerMinute;
         arrangedEvents.add(OrganizedCalendarEventData<T>(
           left: slotWidth * (sideEvent.column - 1),

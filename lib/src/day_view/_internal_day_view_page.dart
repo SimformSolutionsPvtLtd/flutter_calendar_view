@@ -100,6 +100,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   final ScrollController scrollController;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -129,6 +133,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
+    this.isMinEventTileHeight = false,
   }) : super(key: key);
 
   @override
@@ -201,6 +206,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                             timeLineWidth -
                             hourIndicatorSettings.offset -
                             verticalLineOffset,
+                        isMinEventTileHeight: isMinEventTileHeight,
                       ),
                     ),
                     TimeLine(

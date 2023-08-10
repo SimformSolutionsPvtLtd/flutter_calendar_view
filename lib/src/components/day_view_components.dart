@@ -43,9 +43,16 @@ class RoundedEventTile extends StatelessWidget {
   /// Style for description
   final TextStyle? descriptionStyle;
 
+  /// Show description according to tile available space
+  final bool showDescription;
+
+  /// When we are not showing description & there some space available we
+  /// center the title
+  final bool isTitleCenter;
+
   /// This is default tile to display in day view.
   const RoundedEventTile({
-    Key? key,
+    super.key,
     required this.title,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
@@ -55,7 +62,9 @@ class RoundedEventTile extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
-  }) : super(key: key);
+    this.showDescription = true,
+    this.isTitleCenter = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +76,8 @@ class RoundedEventTile extends StatelessWidget {
         borderRadius: borderRadius,
       ),
       child: Column(
+        mainAxisAlignment:
+            isTitleCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,6 +85,7 @@ class RoundedEventTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * 0.9,
                 style: titleStyle ??
                     TextStyle(
                       fontSize: 20,
@@ -83,10 +95,10 @@ class RoundedEventTile extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             ),
-          if (description.isNotEmpty)
+          if (description.isNotEmpty && showDescription)
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 0),
                 child: Text(
                   description,
                   style: descriptionStyle ??
@@ -117,6 +129,7 @@ class RoundedEventTile extends StatelessWidget {
 /// A header widget to display on day view.
 class DayPageHeader extends CalendarPageHeader {
   /// A header widget to display on day view.
+  // ignore: use_super_parameters
   const DayPageHeader({
     Key? key,
     VoidCallback? onNextDay,
@@ -138,7 +151,6 @@ class DayPageHeader extends CalendarPageHeader {
           onTitleTapped: onTitleTapped,
           dateStringBuilder:
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,
-          headerStyle: headerStyle,
         );
 
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
@@ -157,11 +169,11 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
-    Key? key,
+    super.key,
     required this.date,
     this.markingStyle,
     this.timeStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +203,7 @@ class DefaultTimeLineMark extends StatelessWidget {
 /// This class is defined default view of full day event
 class FullDayEventView<T> extends StatelessWidget {
   const FullDayEventView({
-    Key? key,
+    super.key,
     this.boxConstraints = const BoxConstraints(maxHeight: 100),
     required this.events,
     this.padding,
@@ -199,7 +211,7 @@ class FullDayEventView<T> extends StatelessWidget {
     this.titleStyle,
     this.onEventTap,
     required this.date,
-  }) : super(key: key);
+  });
 
   /// Constraints for view
   final BoxConstraints boxConstraints;

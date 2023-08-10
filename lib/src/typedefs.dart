@@ -15,12 +15,13 @@ typedef CellBuilder<T extends Object?> = Widget Function(
 );
 
 typedef EventTileBuilder<T extends Object?> = Widget Function(
-  DateTime date,
-  List<CalendarEventData<T>> events,
-  Rect boundary,
-  DateTime startDuration,
-  DateTime endDuration,
-);
+    DateTime date,
+    List<CalendarEventData<T>> events,
+    Rect boundary,
+    DateTime startDuration,
+    DateTime endDuration,
+    double heightPerMinute,
+    {bool isMinEventTileHeight});
 
 typedef DetectorBuilder<T extends Object?> = Widget Function({
   required DateTime date,

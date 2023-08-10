@@ -218,6 +218,10 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollNotifier;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -230,6 +234,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.date,
     required this.onTileTap,
     required this.scrollNotifier,
+    this.isMinEventTileHeight = false,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event
@@ -241,6 +246,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       height: height,
       width: width,
       heightPerMinute: heightPerMinute,
+      isMinEventTileHeight: isMinEventTileHeight,
+      textScaleFactor: MediaQuery.of(context).textScaleFactor,
     );
 
     return List.generate(events.length, (index) {
@@ -268,6 +275,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
                   height - events[index].bottom - events[index].top),
               events[index].startDuration,
               events[index].endDuration,
+              heightPerMinute,
+              isMinEventTileHeight: isMinEventTileHeight,
             );
           }),
         ),

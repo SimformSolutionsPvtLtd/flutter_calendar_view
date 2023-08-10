@@ -17,6 +17,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required double textScaleFactor,
+    bool isMinEventTileHeight = false,
   }) {
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
@@ -41,13 +43,46 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         }
       }
 
+      DateTime? newEndTime;
+      int? newEventEnd;
       final startTime = event.startTime!;
-      final endTime = event.endTime!;
+      var endTime = event.endTime!;
 
       final eventStart = startTime.getTotalMinutes;
-      final eventEnd = endTime.getTotalMinutes == 0
+      var eventEnd = endTime.getTotalMinutes == 0
           ? Constants.minutesADay
           : endTime.getTotalMinutes;
+
+      /// For getting the event title height as per its font size
+      if (isMinEventTileHeight) {
+        final eventTitleSpan = TextSpan(
+          text: event.title,
+          style: event.titleStyle ??
+              TextStyle(
+                fontSize: Constants.maxFontSize,
+              ),
+        );
+        final eventTitle = TextPainter(
+            textScaleFactor: textScaleFactor,
+            text: eventTitleSpan,
+            textDirection: TextDirection.ltr);
+        eventTitle.layout();
+
+        final eventTileHeightAsPerDuration =
+            (eventEnd - eventStart) * heightPerMinute;
+
+        if (eventTileHeightAsPerDuration <= eventTitle.height) {
+          final addHeight = eventTitle.height - eventTileHeightAsPerDuration;
+
+          ///converting the height into time
+          final addTime = (addHeight / heightPerMinute).ceil();
+
+          newEventEnd = eventEnd + addTime;
+
+          newEndTime = endTime.copyWith(
+              hour: newEventEnd ~/ 60, minute: newEventEnd % 60);
+        }
+      }
 
       final arrangeEventLen = arrangedEvents.length;
 
@@ -57,12 +92,16 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         final arrangedEventStart =
             arrangedEvents[i].startDuration.getTotalMinutes;
         final arrangedEventEnd =
-            arrangedEvents[i].endDuration.getTotalMinutes == 0
+            (arrangedEvents[i].newEndDuration ?? arrangedEvents[i].endDuration)
+                        .getTotalMinutes ==
+                    0
                 ? Constants.minutesADay
-                : arrangedEvents[i].endDuration.getTotalMinutes;
+                : (arrangedEvents[i].newEndDuration ??
+                        arrangedEvents[i].endDuration)
+                    .getTotalMinutes;
 
-        if (_checkIsOverlapping(
-            arrangedEventStart, arrangedEventEnd, eventStart, eventEnd)) {
+        if (_checkIsOverlapping(arrangedEventStart, arrangedEventEnd,
+            eventStart, (newEventEnd ?? eventEnd))) {
           eventIndex = i;
           break;
         }
@@ -70,9 +109,9 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
       if (eventIndex == -1) {
         final top = eventStart * heightPerMinute;
-        final bottom = eventEnd * heightPerMinute == height
+        final bottom = (newEventEnd ?? eventEnd) * heightPerMinute == height
             ? 0.0
-            : height - eventEnd * heightPerMinute;
+            : height - (newEventEnd ?? eventEnd) * heightPerMinute;
 
         final newEvent = OrganizedCalendarEventData<T>(
           top: top,
@@ -81,7 +120,12 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           right: 0,
           startDuration: startTime.copyFromMinutes(eventStart),
           endDuration: endTime.copyFromMinutes(eventEnd),
-          events: [event],
+          events: [
+            isMinEventTileHeight
+                ? event.updateEventTime(newEndTime: newEndTime ?? endTime)
+                : event,
+          ],
+          newEndDuration: endTime.copyFromMinutes(newEventEnd ?? eventEnd),
         );
 
         arrangedEvents.add(newEvent);
@@ -96,7 +140,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
                 : arrangedEventData.endDuration.getTotalMinutes;
 
         final startDuration = math.min(eventStart, arrangedEventStart);
-        final endDuration = math.max(eventEnd, arrangedEventEnd);
+        final endDuration = math.max(newEventEnd ?? eventEnd, arrangedEventEnd);
 
         final top = startDuration * heightPerMinute;
         final bottom = endDuration * heightPerMinute == height
@@ -112,7 +156,16 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
               arrangedEventData.startDuration.copyFromMinutes(startDuration),
           endDuration:
               arrangedEventData.endDuration.copyFromMinutes(endDuration),
-          events: arrangedEventData.events..add(event),
+          events: arrangedEventData.events
+            ..add(
+              isMinEventTileHeight
+                  ? event.updateEventTime(
+                      newEndTime: arrangedEventData.endDuration
+                          .copyFromMinutes(newEventEnd ?? eventEnd))
+                  : event,
+            ),
+          newEndDuration:
+              arrangedEventData.endDuration.copyFromMinutes(endDuration),
         );
 
         arrangedEvents[eventIndex] = newEvent;

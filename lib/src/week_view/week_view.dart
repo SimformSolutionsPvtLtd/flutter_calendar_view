@@ -685,11 +685,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
   Widget _defaultEventTileBuilder(
-      DateTime date,
-      List<CalendarEventData<T>> events,
-      Rect boundary,
-      DateTime startDuration,
-      DateTime endDuration) {
+    DateTime date,
+    List<CalendarEventData<T>> events,
+    Rect boundary,
+    DateTime startDuration,
+    DateTime endDuration,
+    double? heightPerMinute, {
+    bool isMinEventTileHeight = false,
+  }) {
     if (events.isNotEmpty)
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
@@ -701,7 +704,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             ),
         descriptionStyle: events[0].descriptionStyle,
         totalEvents: events.length,
-        padding: EdgeInsets.all(7.0),
         backgroundColor: events[0].color,
       );
     else
