@@ -127,22 +127,24 @@ class TimeLine extends StatefulWidget {
   /// This will display time string in timeline.
   final DateWidgetBuilder timeLineBuilder;
 
+  /// Flag to display half hours.
+  final bool showHalfHours;
+
   /// settings for time line. Defines color, extra offset,
   /// height of indicator and also allow to show time with custom format.
   final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
-  static DateTime get _date => DateTime.now();
-
   /// Time line to display time at left side of day or week view.
-  const TimeLine(
-      {Key? key,
-      required this.timeLineWidth,
-      required this.hourHeight,
-      required this.height,
-      required this.timeLineOffset,
-      required this.timeLineBuilder,
-      required this.liveTimeIndicatorSettings})
-      : super(key: key);
+  const TimeLine({
+    Key? key,
+    required this.timeLineWidth,
+    required this.hourHeight,
+    required this.height,
+    required this.timeLineOffset,
+    required this.timeLineBuilder,
+    required this.liveTimeIndicatorSettings,
+    this.showHalfHours = false,
+  }) : super(key: key);
 
   @override
   State<TimeLine> createState() => _TimeLineState();
@@ -151,10 +153,14 @@ class TimeLine extends StatefulWidget {
 class _TimeLineState extends State<TimeLine> {
   late Timer _timer;
   late TimeOfDay _currentTime;
+  late DateTime _date;
+  late double _halfHourHeight;
 
   @override
   void initState() {
     super.initState();
+    _date = DateTime.now();
+    _halfHourHeight = widget.hourHeight / 2;
     _currentTime = widget.liveTimeIndicatorSettings.showTime
         ? TimeOfDay.now()
         : TimeOfDay(hour: 0, minute: 16);
@@ -194,36 +200,56 @@ class _TimeLineState extends State<TimeLine> {
       child: Stack(
         children: [
           for (int i = 1; i < Constants.hoursADay; i++)
-
-            /// To avoid overlap of live time line indicator, show timeline when
-            /// current min is less than 45 min and is previous hour or
-            /// current min is greater than 15 min and is current hour
+            /// To avoid overlap of live time line indicator with timeline.
+            /// Timeline will be hidden for below scenario
+            /// Eg: Between 1:45 and 2:15
             Visibility(
               visible:
                   !((_currentTime.minute >= 45 && _currentTime.hour == i - 1) ||
                       (_currentTime.minute <= 15 && _currentTime.hour == i)),
-              child: Positioned(
-                top: widget.hourHeight * i - widget.timeLineOffset,
-                left: 0,
-                right: 0,
-                bottom: widget.height -
-                    (widget.hourHeight * (i + 1)) +
-                    widget.timeLineOffset,
-                child: Container(
-                  height: widget.hourHeight,
-                  width: widget.timeLineWidth,
-                  child: widget.timeLineBuilder.call(
-                    DateTime(
-                      TimeLine._date.year,
-                      TimeLine._date.month,
-                      TimeLine._date.day,
-                      i,
-                    ),
-                  ),
-                ),
+              child: _timelinePositioned(
+                topPosition: widget.hourHeight * i - widget.timeLineOffset,
+                bottomPosition: widget.height - (widget.hourHeight * (i + 1)) + widget.timeLineOffset,
+                hour: i,
               ),
             ),
+          if (widget.showHalfHours)
+            for (int i = 0; i < Constants.hoursADay; i++)
+              _timelinePositioned(
+                topPosition: widget.hourHeight * i - widget.timeLineOffset + _halfHourHeight,
+                bottomPosition:
+                    widget.height - (widget.hourHeight * (i + 1)) + widget.timeLineOffset,
+                hour: i,
+                minutes: 30,
+              ),
         ],
+      ),
+    );
+  }
+
+  Widget _timelinePositioned({
+    required double topPosition,
+    required double bottomPosition,
+    required int hour,
+    int minutes = 0,
+  }) {
+    return Positioned(
+      top: topPosition,
+      left: 0,
+      right: 0,
+      bottom: bottomPosition,
+      child: Container(
+        height: widget.hourHeight,
+        width: widget.timeLineWidth,
+        child: widget.timeLineBuilder.call(
+          DateTime(
+            _date.year,
+            _date.month,
+            _date.day,
+            hour,
+            minutes,
+          ),
+        ),
       ),
     );
   }

@@ -140,6 +140,7 @@ class DayPageHeader extends CalendarPageHeader {
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,
           headerStyle: headerStyle,
         );
+
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }
@@ -164,9 +165,12 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hour = ((date.hour - 1) % 12) + 1;
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
-        : "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+        : date.minute != 0
+            ? "$hour:${date.minute}"
+            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
@@ -224,7 +228,7 @@ class FullDayEventView<T> extends StatelessWidget {
       constraints: boxConstraints,
       child: ListView.builder(
         itemCount: events.length,
-        padding: padding,
+        padding: padding ?? EdgeInsets.zero,
         shrinkWrap: true,
         itemBuilder: (context, index) => InkWell(
           onTap: () => onEventTap?.call(events[index], date),

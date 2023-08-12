@@ -1,6 +1,5 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:test/test.dart';
-
-import '../calendar_view.dart';
 
 void main() {
   group('DateTimeExtensions', () {
