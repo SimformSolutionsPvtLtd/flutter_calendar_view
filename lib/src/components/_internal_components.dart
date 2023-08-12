@@ -200,6 +200,7 @@ class _TimeLineState extends State<TimeLine> {
       child: Stack(
         children: [
           for (int i = 1; i < Constants.hoursADay; i++)
+
             /// To avoid overlap of live time line indicator with timeline.
             /// Timeline will be hidden for below scenario
             /// Eg: Between 1:45 and 2:15
@@ -209,16 +210,21 @@ class _TimeLineState extends State<TimeLine> {
                       (_currentTime.minute <= 15 && _currentTime.hour == i)),
               child: _timelinePositioned(
                 topPosition: widget.hourHeight * i - widget.timeLineOffset,
-                bottomPosition: widget.height - (widget.hourHeight * (i + 1)) + widget.timeLineOffset,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset,
                 hour: i,
               ),
             ),
           if (widget.showHalfHours)
             for (int i = 0; i < Constants.hoursADay; i++)
               _timelinePositioned(
-                topPosition: widget.hourHeight * i - widget.timeLineOffset + _halfHourHeight,
-                bottomPosition:
-                    widget.height - (widget.hourHeight * (i + 1)) + widget.timeLineOffset,
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    _halfHourHeight,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
               ),

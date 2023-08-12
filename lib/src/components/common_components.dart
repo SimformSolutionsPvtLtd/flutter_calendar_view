@@ -54,9 +54,9 @@ class CalendarPageHeader extends StatelessWidget {
     this.onPreviousDay,
     this.secondaryDate,
     @Deprecated("Use Header Style to provide background")
-    this.backgroundColor = Constants.headerBackground,
+        this.backgroundColor = Constants.headerBackground,
     @Deprecated("Use Header Style to provide icon color")
-    this.iconColor = Constants.black,
+        this.iconColor = Constants.black,
     this.headerStyle = const HeaderStyle(),
   }) : super(key: key);
 
