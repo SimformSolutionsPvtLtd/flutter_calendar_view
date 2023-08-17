@@ -220,6 +220,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                           height: height,
                           heightPerMinute: heightPerMinute,
                           timeLineWidth: timeLineWidth,
+                          utcDuration: Duration(hours: 4),
                         ),
                       ),
                   ],

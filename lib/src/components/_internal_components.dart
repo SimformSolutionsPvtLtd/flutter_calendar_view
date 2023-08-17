@@ -35,15 +35,18 @@ class LiveTimeIndicator extends StatefulWidget {
   /// Defines height occupied by one minute.
   final double heightPerMinute;
 
+  final Duration? utcDuration;
+
   /// Widget to display tile line according to current time.
-  const LiveTimeIndicator(
-      {Key? key,
-      required this.width,
-      required this.height,
-      required this.timeLineWidth,
-      required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute})
-      : super(key: key);
+  const LiveTimeIndicator({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.timeLineWidth,
+    required this.liveTimeIndicatorSettings,
+    required this.heightPerMinute,
+    this.utcDuration,
+  }) : super(key: key);
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -52,12 +55,18 @@ class LiveTimeIndicator extends StatefulWidget {
 class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   late Timer _timer;
   late DateTime _currentDate;
+  final _now = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    initLiveTimeLine();
+  }
 
-    _currentDate = DateTime.now();
+  void initLiveTimeLine() {
+    _currentDate = widget.utcDuration != null
+        ? _now.toUtc().add(widget.utcDuration!)
+        : _now;
     _timer = Timer(Duration(seconds: 1), setTimer);
   }
 
@@ -73,7 +82,9 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   void setTimer() {
     if (mounted) {
       setState(() {
-        _currentDate = DateTime.now();
+        _currentDate = widget.utcDuration != null
+            ? _now.toUtc().add(widget.utcDuration!)
+            : _now;
         _timer = Timer(Duration(seconds: 1), setTimer);
       });
     }
@@ -81,6 +92,13 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
+    print('utc timeZoneOffset ${DateTime.now().timeZoneOffset}');
+    print('utc timeZoneName ${DateTime.now().timeZoneName}');
+
+    final currentUtcTime = DateTime.now().toUtc();
+    print('utc $currentUtcTime');
+    final Utc4TimeZone = currentUtcTime.add(Duration(hours: 4));
+    print('UTC+4 TimeZone $Utc4TimeZone------------');
     return CustomPaint(
       size: Size(widget.width, widget.height),
       painter: CurrentTimeLinePainter(
