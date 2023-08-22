@@ -140,6 +140,7 @@ class DayPageHeader extends CalendarPageHeader {
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,
           headerStyle: headerStyle,
         );
+
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }
@@ -227,7 +228,7 @@ class FullDayEventView<T> extends StatelessWidget {
       constraints: boxConstraints,
       child: ListView.builder(
         itemCount: events.length,
-        padding: padding,
+        padding: padding ?? EdgeInsets.zero,
         shrinkWrap: true,
         itemBuilder: (context, index) => InkWell(
           onTap: () => onEventTap?.call(events[index], date),

@@ -18,6 +18,7 @@ class DayViewWidget extends StatelessWidget {
     return DayView<Event>(
       key: state,
       width: width,
+      startDuration: Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 3,
       timeLineBuilder: _timeLineBuilder,

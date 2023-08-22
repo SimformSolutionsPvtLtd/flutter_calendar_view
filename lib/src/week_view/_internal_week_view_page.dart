@@ -109,7 +109,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   final EventScrollConfiguration scrollConfiguration;
 
   /// Display full day events.
-  final FullDayEventBuilder<T>? fullDayEventBuilder;
+  final FullDayEventBuilder<T> fullDayEventBuilder;
 
   /// First hour displayed in the layout
   final int startHour;
@@ -145,7 +145,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.minuteSlotSize,
     required this.scrollConfiguration,
     required this.startHour,
-    this.fullDayEventBuilder,
+    required this.fullDayEventBuilder,
     required this.weekDetectorBuilder,
   }) : super(key: key);
 
@@ -193,13 +193,19 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 SizedBox(width: timeLineWidth + hourIndicatorSettings.offset),
                 ...List.generate(
                   filteredDates.length,
-                  (index) => SizedBox(
-                    width: weekTitleWidth,
-                    child: fullDayEventBuilder?.call(
-                      controller.getFullDayEvent(filteredDates[index]),
-                      dates[index],
-                    ),
-                  ),
+                  (index) {
+                    final fullDayEventList =
+                        controller.getFullDayEvent(filteredDates[index]);
+                    return fullDayEventList.isEmpty
+                        ? SizedBox.shrink()
+                        : SizedBox(
+                            width: weekTitleWidth,
+                            child: fullDayEventBuilder.call(
+                              fullDayEventList,
+                              dates[index],
+                            ),
+                          );
+                  },
                 )
               ],
             ),

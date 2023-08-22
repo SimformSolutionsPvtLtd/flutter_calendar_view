@@ -137,12 +137,15 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fullDayEventList = controller.getFullDayEvent(date);
     return Container(
       height: height,
       width: width,
       child: Column(
         children: [
-          fullDayEventBuilder(controller.getFullDayEvent(date), date),
+          fullDayEventList.isEmpty
+              ? SizedBox.shrink()
+              : fullDayEventBuilder(fullDayEventList, date),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
