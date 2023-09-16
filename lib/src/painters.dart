@@ -36,6 +36,14 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// Indicates if the layout direction is right-to-left (RTL).
+  ///
+  /// This value is crucial for correctly drawing the table, especially
+  /// elements like the vertical line which change position based on
+  /// the layout direction. Pass this from parent contexts to ensure
+  /// accurate representation in RTL layouts.
+  final bool isRtl;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -47,6 +55,7 @@ class HourLinePainter extends CustomPainter {
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    required this.isRtl,
   });
 
   @override
@@ -55,30 +64,37 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
+    // Determine RTL
+
     for (var i = 1; i < Constants.hoursADay; i++) {
       final dy = i * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(
-              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
+          if (isRtl && startX > size.width) break; // Stop drawing extra dashes
         }
       } else {
-        canvas.drawLine(Offset(offset, dy), Offset(size.width, dy), paint);
+        canvas.drawLine(Offset(isRtl ? size.width - offset : offset, dy), Offset(isRtl ? 0 : size.width, dy), paint);
       }
     }
 
-    if (showVerticalLine) if (lineStyle == LineStyle.dashed) {
-      var startY = 0.0;
-      while (startY < size.height) {
-        canvas.drawLine(Offset(offset + verticalLineOffset, startY),
-            Offset(offset + verticalLineOffset, startY + dashWidth), paint);
-        startY += dashWidth + dashSpaceWidth;
+    if (showVerticalLine) {
+      final verticalOffset = isRtl ? size.width - offset : offset;
+      if (lineStyle == LineStyle.dashed) {
+        var startY = 0.0;
+        while (startY < size.height) {
+          canvas.drawLine(Offset(verticalOffset + verticalLineOffset, startY), Offset(verticalOffset + verticalLineOffset, startY + dashWidth), paint);
+          startY += dashWidth + dashSpaceWidth;
+        }
+      } else {
+        canvas.drawLine(
+          Offset(verticalOffset, 0),
+          Offset(verticalOffset, size.height),
+          paint,
+        );
       }
-    } else {
-      canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + verticalLineOffset, size.height), paint);
     }
   }
 
@@ -137,8 +153,7 @@ class HalfHourLinePainter extends CustomPainter {
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(
-              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
         }
       } else {
@@ -193,15 +208,10 @@ class CurrentTimeLinePainter extends CustomPainter {
         ..strokeWidth = height,
     );
 
-    if (showBullet)
-      canvas.drawCircle(
-          Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+    if (showBullet) canvas.drawCircle(Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is CurrentTimeLinePainter &&
-      (color != oldDelegate.color ||
-          height != oldDelegate.height ||
-          offset != oldDelegate.offset);
+      oldDelegate is CurrentTimeLinePainter && (color != oldDelegate.color || height != oldDelegate.height || offset != oldDelegate.offset);
 }

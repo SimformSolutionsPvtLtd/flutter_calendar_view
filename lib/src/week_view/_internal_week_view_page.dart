@@ -148,7 +148,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
-    return Container(
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    return SizedBox(
       height: height + weekTitleHeight,
       width: width,
       child: Column(
@@ -177,7 +179,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
               ],
             ),
           ),
-          Divider(
+          const Divider(
             thickness: 1,
             height: 1,
           ),
@@ -190,10 +192,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 ...List.generate(
                   filteredDates.length,
                   (index) {
-                    final fullDayEventList =
-                        controller.getFullDayEvent(filteredDates[index]);
+                    final fullDayEventList = controller.getFullDayEvent(filteredDates[index]);
                     return fullDayEventList.isEmpty
-                        ? SizedBox.shrink()
+                        ? const SizedBox.shrink()
                         : SizedBox(
                             width: weekTitleWidth,
                             child: fullDayEventBuilder.call(
@@ -217,6 +218,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                     CustomPaint(
                       size: Size(width, height),
                       painter: HourLinePainter(
+                        isRtl: isRtl,
                         lineColor: hourIndicatorSettings.color,
                         lineHeight: hourIndicatorSettings.height,
                         offset: timeLineWidth + hourIndicatorSettings.offset,
@@ -270,8 +272,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,
                                       scrollNotifier: scrollConfiguration,
-                                      events: controller
-                                          .getEventsOnDay(filteredDates[index]),
+                                      events: controller.getEventsOnDay(filteredDates[index]),
                                       heightPerMinute: heightPerMinute,
                                     ),
                                   ],

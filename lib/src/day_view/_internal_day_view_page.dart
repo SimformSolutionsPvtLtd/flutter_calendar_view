@@ -102,7 +102,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   /// Defines a single day page.
   const InternalDayViewPage({
-    Key? key,
+    super.key,
     required this.showVerticalLine,
     required this.width,
     required this.date,
@@ -129,19 +129,19 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final fullDayEventList = controller.getFullDayEvent(date);
-    return Container(
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    return SizedBox(
       height: height,
       width: width,
       child: Column(
         children: [
-          fullDayEventList.isEmpty
-              ? SizedBox.shrink()
-              : fullDayEventBuilder(fullDayEventList, date),
+          fullDayEventList.isEmpty ? const SizedBox.shrink() : fullDayEventBuilder(fullDayEventList, date),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
@@ -162,6 +162,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         lineStyle: hourIndicatorSettings.lineStyle,
                         dashWidth: hourIndicatorSettings.dashWidth,
                         dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                        isRtl: isRtl,
                       ),
                     ),
                     if (showHalfHours)
@@ -170,13 +171,11 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         painter: HalfHourLinePainter(
                           lineColor: halfHourIndicatorSettings.color,
                           lineHeight: halfHourIndicatorSettings.height,
-                          offset:
-                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          offset: timeLineWidth + halfHourIndicatorSettings.offset,
                           minuteHeight: heightPerMinute,
                           lineStyle: halfHourIndicatorSettings.lineStyle,
                           dashWidth: halfHourIndicatorSettings.dashWidth,
-                          dashSpaceWidth:
-                              halfHourIndicatorSettings.dashSpaceWidth,
+                          dashSpaceWidth: halfHourIndicatorSettings.dashSpaceWidth,
                         ),
                       ),
                     dayDetectorBuilder(
@@ -187,7 +186,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       minuteSlotSize: minuteSlotSize,
                     ),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: isRtl ? Alignment.centerLeft : Alignment.centerRight, // adjust alignment based on directionality
                       child: EventGenerator<T>(
                         height: height,
                         date: date,
@@ -197,10 +196,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         heightPerMinute: heightPerMinute,
                         eventTileBuilder: eventTileBuilder,
                         scrollNotifier: scrollNotifier,
-                        width: width -
-                            timeLineWidth -
-                            hourIndicatorSettings.offset -
-                            verticalLineOffset,
+                        width: width - timeLineWidth - hourIndicatorSettings.offset - verticalLineOffset,
                       ),
                     ),
                     TimeLine(
