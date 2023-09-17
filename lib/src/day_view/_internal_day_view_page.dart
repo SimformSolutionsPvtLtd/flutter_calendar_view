@@ -102,7 +102,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   /// Defines a single day page.
   const InternalDayViewPage({
-    super.key,
+    Key? key,
     required this.showVerticalLine,
     required this.width,
     required this.date,
@@ -129,19 +129,19 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final fullDayEventList = controller.getFullDayEvent(date);
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-    return SizedBox(
+    return Container(
       height: height,
       width: width,
       child: Column(
         children: [
-          fullDayEventList.isEmpty ? const SizedBox.shrink() : fullDayEventBuilder(fullDayEventList, date),
+          fullDayEventList.isEmpty ? SizedBox.shrink() : fullDayEventBuilder(fullDayEventList, date),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
