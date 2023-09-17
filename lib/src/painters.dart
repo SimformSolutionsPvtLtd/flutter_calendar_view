@@ -190,28 +190,33 @@ class CurrentTimeLinePainter extends CustomPainter {
   /// Radius of bullet.
   final double bulletRadius;
 
+  final bool isRtl;
+
   /// Paints a single horizontal line at [offset].
-  CurrentTimeLinePainter({
-    this.showBullet = true,
-    required this.color,
-    required this.height,
-    required this.offset,
-    this.bulletRadius = 5,
-  });
+  CurrentTimeLinePainter(
+      {this.showBullet = true,
+      required this.color,
+      required this.height,
+      required this.offset,
+      this.bulletRadius = 5,
+      required this.isRtl});
 
   @override
   void paint(Canvas canvas, Size size) {
+    double startX = isRtl ? 0 : size.width;
+    double endX = isRtl ? size.width - offset.dx : offset.dx;
     canvas.drawLine(
-      Offset(offset.dx, offset.dy),
-      Offset(size.width, offset.dy),
+      Offset(startX, offset.dy),
+      Offset(endX, offset.dy),
       Paint()
         ..color = color
         ..strokeWidth = height,
     );
 
-    if (showBullet)
+    if (showBullet) {
       canvas.drawCircle(
-          Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+          Offset(endX, offset.dy), bulletRadius, Paint()..color = color);
+    }
   }
 
   @override

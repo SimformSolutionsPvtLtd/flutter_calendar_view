@@ -188,6 +188,14 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// By default it will be Duration(hours:0)
   final Duration startDuration;
 
+  /// Indicates if the layout direction is right-to-left (RTL).
+  ///
+  /// This value is crucial for correctly drawing the table, especially
+  /// elements like the vertical line which change position based on
+  /// the layout direction. Pass this from parent contexts to ensure
+  /// accurate representation in RTL layouts.
+  final bool? isRtl;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -228,6 +236,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.halfHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
+    this.isRtl,
   })  : assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -286,9 +295,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   final _scrollConfiguration = EventScrollConfiguration<T>();
 
+  late bool isRtl;
+
   @override
   void initState() {
     super.initState();
+    isRtl = widget.isRtl ?? Directionality.of(context) == TextDirection.rtl;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -428,6 +440,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
+                            isRtl: isRtl,
                           ),
                         );
                       },

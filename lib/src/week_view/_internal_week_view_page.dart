@@ -235,6 +235,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         height: height,
                         heightPerMinute: heightPerMinute,
                         timeLineWidth: timeLineWidth,
+                        isRtl: isRtl,
                       ),
                     Align(
                       alignment: Alignment.centerRight,
