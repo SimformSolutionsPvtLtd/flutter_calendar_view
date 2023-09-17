@@ -150,7 +150,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     final filteredDates = _filteredDate();
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-    return SizedBox(
+    return Container(
       height: height + weekTitleHeight,
       width: width,
       child: Column(
@@ -179,7 +179,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(
+          Divider(
             thickness: 1,
             height: 1,
           ),
@@ -194,7 +194,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                   (index) {
                     final fullDayEventList = controller.getFullDayEvent(filteredDates[index]);
                     return fullDayEventList.isEmpty
-                        ? const SizedBox.shrink()
+                        ? SizedBox.shrink()
                         : SizedBox(
                             width: weekTitleWidth,
                             child: fullDayEventBuilder.call(
