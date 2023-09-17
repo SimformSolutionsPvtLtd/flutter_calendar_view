@@ -64,8 +64,6 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    // Determine RTL
-
     for (var i = 1; i < Constants.hoursADay; i++) {
       final dy = i * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
@@ -89,11 +87,7 @@ class HourLinePainter extends CustomPainter {
           startY += dashWidth + dashSpaceWidth;
         }
       } else {
-        canvas.drawLine(
-          Offset(verticalOffset, 0),
-          Offset(verticalOffset, size.height),
-          paint,
-        );
+        canvas.drawLine(Offset(verticalOffset, 0), Offset(verticalOffset, size.height), paint);
       }
     }
   }
