@@ -192,7 +192,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 ...List.generate(
                   filteredDates.length,
                   (index) {
-                    final fullDayEventList = controller.getFullDayEvent(filteredDates[index]);
+                    final fullDayEventList =
+                        controller.getFullDayEvent(filteredDates[index]);
                     return fullDayEventList.isEmpty
                         ? SizedBox.shrink()
                         : SizedBox(
@@ -272,7 +273,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,
                                       scrollNotifier: scrollConfiguration,
-                                      events: controller.getEventsOnDay(filteredDates[index]),
+                                      events: controller
+                                          .getEventsOnDay(filteredDates[index]),
                                       heightPerMinute: heightPerMinute,
                                     ),
                                   ],

@@ -69,12 +69,14 @@ class HourLinePainter extends CustomPainter {
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(
+              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
           if (isRtl && startX > size.width) break; // Stop drawing extra dashes
         }
       } else {
-        canvas.drawLine(Offset(isRtl ? size.width - offset : offset, dy), Offset(isRtl ? 0 : size.width, dy), paint);
+        canvas.drawLine(Offset(isRtl ? size.width - offset : offset, dy),
+            Offset(isRtl ? 0 : size.width, dy), paint);
       }
     }
 
@@ -83,11 +85,15 @@ class HourLinePainter extends CustomPainter {
       if (lineStyle == LineStyle.dashed) {
         var startY = 0.0;
         while (startY < size.height) {
-          canvas.drawLine(Offset(verticalOffset + verticalLineOffset, startY), Offset(verticalOffset + verticalLineOffset, startY + dashWidth), paint);
+          canvas.drawLine(
+              Offset(verticalOffset + verticalLineOffset, startY),
+              Offset(verticalOffset + verticalLineOffset, startY + dashWidth),
+              paint);
           startY += dashWidth + dashSpaceWidth;
         }
       } else {
-        canvas.drawLine(Offset(verticalOffset, 0), Offset(verticalOffset, size.height), paint);
+        canvas.drawLine(Offset(verticalOffset, 0),
+            Offset(verticalOffset, size.height), paint);
       }
     }
   }
@@ -147,7 +153,8 @@ class HalfHourLinePainter extends CustomPainter {
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(
+              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
         }
       } else {
@@ -202,10 +209,15 @@ class CurrentTimeLinePainter extends CustomPainter {
         ..strokeWidth = height,
     );
 
-    if (showBullet) canvas.drawCircle(Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+    if (showBullet)
+      canvas.drawCircle(
+          Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is CurrentTimeLinePainter && (color != oldDelegate.color || height != oldDelegate.height || offset != oldDelegate.offset);
+      oldDelegate is CurrentTimeLinePainter &&
+      (color != oldDelegate.color ||
+          height != oldDelegate.height ||
+          offset != oldDelegate.offset);
 }
