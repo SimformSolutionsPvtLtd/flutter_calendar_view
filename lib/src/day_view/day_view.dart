@@ -142,7 +142,7 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Defines offset of vertical line from hour line starts.
   final double verticalLineOffset;
 
-  /// Background colour of day view page.
+  /// Background color of day view page.
   final Color? backgroundColor;
 
   /// Scroll offset of day view page.
@@ -182,7 +182,11 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Show half hour lines
   final bool showHalfHours;
+
+  /// Show quarter hour lines 
+  final bool showQuarterHours;
 
   /// Duration from where default day view will be visible
   /// By default it will be Duration(hours:0)
@@ -226,6 +230,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.pageViewPhysics,
     this.dayDetectorBuilder,
     this.showHalfHours = false,
+    this.showQuarterHours = false,
     this.halfHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
   })  : assert(timeLineOffset >= 0,
@@ -426,6 +431,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             fullDayEventBuilder: _fullDayEventBuilder,
                             scrollController: _scrollController,
                             showHalfHours: widget.showHalfHours,
+                            showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
                           ),
