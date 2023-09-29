@@ -182,10 +182,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
-  /// Show half hour lines
+  /// Show half hour indicator
   final bool showHalfHours;
 
-  /// Show quarter hour lines 
+  /// Show quarter hour indicator 
   final bool showQuarterHours;
 
   /// Duration from where default day view will be visible

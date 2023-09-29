@@ -37,6 +37,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
 
+  /// Settings for half hour indicator lines. 
+  final HourIndicatorSettings halfHourIndicatorSettings;
+
   /// Flag to display live line.
   final bool showLiveLine;
 
@@ -111,6 +114,12 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
+  /// Flag to display half hours
+  final bool showHalfHours; 
+
+  /// Flag to display quarter hours 
+  final bool showQuarterHours; 
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -123,7 +132,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.eventTileBuilder,
     required this.controller,
     required this.timeLineBuilder,
-    required this.hourIndicatorSettings,
+    required this.hourIndicatorSettings, 
+    required this.halfHourIndicatorSettings,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -143,6 +153,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.scrollConfiguration,
     required this.fullDayEventBuilder,
     required this.weekDetectorBuilder,
+    required this.showHalfHours, 
+    required this.showQuarterHours,
   }) : super(key: key);
 
   @override
@@ -225,6 +237,36 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         showVerticalLine: showVerticalLine,
                       ),
                     ),
+                          if (showHalfHours)
+                      CustomPaint(
+                        size: Size(width, height),
+                        painter: HalfHourLinePainter(
+                          lineColor: halfHourIndicatorSettings.color,
+                          lineHeight: halfHourIndicatorSettings.height,
+                          offset:
+                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          lineStyle: halfHourIndicatorSettings.lineStyle,
+                          dashWidth: halfHourIndicatorSettings.dashWidth,
+                          dashSpaceWidth:
+                              halfHourIndicatorSettings.dashSpaceWidth,
+                        ),
+                      ), 
+                     if (showQuarterHours)
+                      CustomPaint(
+                        size: Size(width, height),
+                        painter: QuarterHourLinePainter(
+                          lineColor: halfHourIndicatorSettings.color,
+                          lineHeight: halfHourIndicatorSettings.height,
+                          offset:
+                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          lineStyle: halfHourIndicatorSettings.lineStyle,
+                          dashWidth: halfHourIndicatorSettings.dashWidth,
+                          dashSpaceWidth:
+                              halfHourIndicatorSettings.dashSpaceWidth,
+                        ),
+                      ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings: liveTimeIndicatorSettings,
