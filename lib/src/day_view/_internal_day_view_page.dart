@@ -93,7 +93,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
   /// Flag to display half hours.
-  final bool showHalfHours;
+  final bool showHalfHours; 
+
+  /// Flag to display quarter hours.
+  final bool showQuarterHours;
 
   /// Settings for half hour indicator lines.
   final HourIndicatorSettings halfHourIndicatorSettings;
@@ -127,7 +130,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.fullDayEventBuilder,
     required this.scrollController,
     required this.dayDetectorBuilder,
-    required this.showHalfHours,
+    required this.showHalfHours, 
+    required this.showQuarterHours,
     required this.halfHourIndicatorSettings,
   }) : super(key: key);
 
@@ -168,6 +172,21 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       CustomPaint(
                         size: Size(width, height),
                         painter: HalfHourLinePainter(
+                          lineColor: halfHourIndicatorSettings.color,
+                          lineHeight: halfHourIndicatorSettings.height,
+                          offset:
+                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          lineStyle: halfHourIndicatorSettings.lineStyle,
+                          dashWidth: halfHourIndicatorSettings.dashWidth,
+                          dashSpaceWidth:
+                              halfHourIndicatorSettings.dashSpaceWidth,
+                        ),
+                      ), 
+                     if (showQuarterHours)
+                      CustomPaint(
+                        size: Size(width, height),
+                        painter: QuarterHourLinePainter(
                           lineColor: halfHourIndicatorSettings.color,
                           lineHeight: halfHourIndicatorSettings.height,
                           offset:

@@ -36,6 +36,9 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// Emulates offset of vertical line from hour line starts.
+  final double emulateVerticalOffsetBy;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -47,6 +50,7 @@ class HourLinePainter extends CustomPainter {
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    this.emulateVerticalOffsetBy = 0,
   });
 
   @override
@@ -58,7 +62,7 @@ class HourLinePainter extends CustomPainter {
     for (var i = 1; i < Constants.hoursADay; i++) {
       final dy = i * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
-        var startX = offset;
+        var startX = offset + emulateVerticalOffsetBy;
         while (startX < size.width) {
           canvas.drawLine(
               Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
@@ -143,6 +147,86 @@ class HalfHourLinePainter extends CustomPainter {
         }
       } else {
         canvas.drawLine(Offset(offset, dy), Offset(size.width, dy), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return oldDelegate is HourLinePainter &&
+        (oldDelegate.lineColor != lineColor ||
+            oldDelegate.offset != offset ||
+            lineHeight != oldDelegate.lineHeight ||
+            minuteHeight != oldDelegate.minuteHeight);
+  }
+}
+
+//using HalfHourIndicatorSettings for this too
+class QuarterHourLinePainter extends CustomPainter {
+  /// Color of quarter hour line
+  final Color lineColor;
+
+  /// Height of quarter hour line
+  final double lineHeight;
+
+  /// Offset of quarter hour line from left.
+  final double offset;
+
+  /// Height occupied by one minute of time stamp.
+  final double minuteHeight;
+
+  /// Style of the quarter hour line
+  final LineStyle lineStyle;
+
+  /// Line dash width when using the [LineStyle.dashed] style
+  final double dashWidth;
+
+  /// Line dash space width when using the [LineStyle.dashed] style
+  final double dashSpaceWidth;
+
+  /// Paint quarter hour lines
+  QuarterHourLinePainter({
+    required this.lineColor,
+    required this.lineHeight,
+    required this.offset,
+    required this.minuteHeight,
+    required this.lineStyle,
+    this.dashWidth = 4,
+    this.dashSpaceWidth = 4,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = lineHeight;
+
+    for (var i = 0; i < Constants.hoursADay; i++) {
+      final dy1 = i * minuteHeight * 60 + (minuteHeight * 15);
+      final dy2 = i * minuteHeight * 60 + (minuteHeight * 45);
+
+      //for the 15 minute line
+      if (lineStyle == LineStyle.dashed) {
+        var startX = offset;
+        while (startX < size.width) {
+          canvas.drawLine(
+              Offset(startX, dy1), Offset(startX + dashWidth, dy1), paint);
+          startX += dashWidth + dashSpaceWidth;
+        }
+      } else {
+        canvas.drawLine(Offset(offset, dy1), Offset(size.width, dy1), paint);
+      }
+
+      // for the 45 minutes line
+      if (lineStyle == LineStyle.dashed) {
+        var startX = offset;
+        while (startX < size.width) {
+          canvas.drawLine(
+              Offset(startX, dy2), Offset(startX + dashWidth, dy2), paint);
+          startX += dashWidth + dashSpaceWidth;
+        }
+      } else {
+        canvas.drawLine(Offset(offset, dy2), Offset(size.width, dy2), paint);
       }
     }
   }
