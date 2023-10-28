@@ -286,9 +286,28 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: _width,
-              child: _headerBuilder(_currentDate),
+            Row(
+              children: [
+                const Text(
+                  'Calendar',
+                  style: TextStyle(
+                    color: Color(0xFF475466),
+                    fontSize: 18,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Container(
+                  width: 128,
+                  height: 50,
+                  margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xffD0D5DD), width: 1),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white),
+                  child: _headerBuilder(_currentDate),
+                ),
+              ],
             ),
             Expanded(
               child: PageView.builder(

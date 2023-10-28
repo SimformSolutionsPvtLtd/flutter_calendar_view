@@ -4,6 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../calendar_event_data.dart';
 import '../constants.dart';
@@ -213,14 +214,16 @@ class MonthPageHeader extends CalendarPageHeader {
           onPreviousDay: onPreviousMonth,
           onTitleTapped: onTitleTapped,
           // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
+          backgroundColor: Colors.white,
           iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
           headerStyle: headerStyle,
         );
-  static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
-      "${date.month} - ${date.year}";
+  static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}){
+     final DateFormat dateFormat = DateFormat('MMM yyyy');
+            return dateFormat.format(date).toUpperCase();
+  }
 }
 
 class WeekDayTile extends StatelessWidget {
