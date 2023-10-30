@@ -36,6 +36,9 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -43,6 +46,7 @@ class HourLinePainter extends CustomPainter {
     required this.minuteHeight,
     required this.offset,
     required this.showVerticalLine,
+    required this.startHour,
     this.verticalLineOffset = 10,
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
@@ -55,13 +59,12 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 1; i < Constants.hoursADay; i++) {
-      final dy = i * minuteHeight * 60;
+    for (var i = startHour + 1; i < Constants.hoursADay; i++) {
+      final dy = (i - startHour) * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(
-              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
         }
       } else {
@@ -77,8 +80,7 @@ class HourLinePainter extends CustomPainter {
         startY += dashWidth + dashSpaceWidth;
       }
     } else {
-      canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + verticalLineOffset, size.height), paint);
+      canvas.drawLine(Offset(offset + verticalLineOffset, 0), Offset(offset + verticalLineOffset, size.height), paint);
     }
   }
 
@@ -115,6 +117,9 @@ class HalfHourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Paint half hour lines
   HalfHourLinePainter({
     required this.lineColor,
@@ -122,6 +127,7 @@ class HalfHourLinePainter extends CustomPainter {
     required this.offset,
     required this.minuteHeight,
     required this.lineStyle,
+    required this.startHour,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
   });
@@ -132,13 +138,12 @@ class HalfHourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 0; i < Constants.hoursADay; i++) {
-      final dy = i * minuteHeight * 60 + (minuteHeight * 30);
+    for (var i = startHour; i < Constants.hoursADay; i++) {
+      final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
-          canvas.drawLine(
-              Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
+          canvas.drawLine(Offset(startX, dy), Offset(startX + dashWidth, dy), paint);
           startX += dashWidth + dashSpaceWidth;
         }
       } else {
@@ -193,15 +198,11 @@ class CurrentTimeLinePainter extends CustomPainter {
         ..strokeWidth = height,
     );
 
-    if (showBullet)
-      canvas.drawCircle(
-          Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+    if (showBullet) canvas.drawCircle(Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) =>
       oldDelegate is CurrentTimeLinePainter &&
-      (color != oldDelegate.color ||
-          height != oldDelegate.height ||
-          offset != oldDelegate.offset);
+      (color != oldDelegate.color || height != oldDelegate.height || offset != oldDelegate.offset);
 }

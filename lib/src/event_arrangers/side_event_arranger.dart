@@ -15,12 +15,14 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required int startHour,
   }) {
     final mergedEvents = MergeEventArranger<T>().arrange(
       events: events,
       height: height,
       width: width,
       heightPerMinute: heightPerMinute,
+      startHour: startHour,
     );
 
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
@@ -84,15 +86,24 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         final startTime = sideEvent.event.startTime!;
         final endTime = sideEvent.event.endTime!;
+
+        // startTime.getTotalMinutes returns the number of minutes from 00h00 to the beginning hour of the event
+        // But the first hour to be displayed (startHour) could be 06h00, so we have to substract
+        // The number of minutes from 00h00 to startHour which is equal to startHour * 60
+
         final bottom = height -
-            (endTime.getTotalMinutes == 0
-                    ? Constants.minutesADay
-                    : endTime.getTotalMinutes) *
+            (endTime.getTotalMinutes - (startHour * 60) == 0
+                ? Constants.minutesADay - (startHour * 60)
+                : endTime.getTotalMinutes - (startHour * 60)) *
                 heightPerMinute;
+
+        final top =
+            (startTime.getTotalMinutes - (startHour * 60)) * heightPerMinute;
+
         arrangedEvents.add(OrganizedCalendarEventData<T>(
           left: slotWidth * (sideEvent.column - 1),
           right: slotWidth * (column - sideEvent.column),
-          top: startTime.getTotalMinutes * heightPerMinute,
+          top: top,
           bottom: bottom,
           startDuration: startTime,
           endDuration: endTime,

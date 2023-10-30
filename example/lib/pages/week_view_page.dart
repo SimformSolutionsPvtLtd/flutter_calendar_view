@@ -22,7 +22,8 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
         elevation: 8,
         onPressed: _addEvent,
       ),
-      body: WeekViewWidget(),
+      body: WeekViewWidget(
+      ),
     );
   }
 

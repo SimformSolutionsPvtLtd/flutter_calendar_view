@@ -98,6 +98,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Settings for half hour indicator lines.
   final HourIndicatorSettings halfHourIndicatorSettings;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   final ScrollController scrollController;
 
   /// Defines a single day page.
@@ -129,6 +132,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
+    required this.startHour,
   }) : super(key: key);
 
   @override
@@ -139,9 +143,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
       width: width,
       child: Column(
         children: [
-          fullDayEventList.isEmpty
-              ? SizedBox.shrink()
-              : fullDayEventBuilder(fullDayEventList, date),
+          fullDayEventList.isEmpty ? SizedBox.shrink() : fullDayEventBuilder(fullDayEventList, date),
           Expanded(
             child: SingleChildScrollView(
               controller: scrollController,
@@ -153,16 +155,16 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                     CustomPaint(
                       size: Size(width, height),
                       painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
-                        lineStyle: hourIndicatorSettings.lineStyle,
-                        dashWidth: hourIndicatorSettings.dashWidth,
-                        dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
-                      ),
+                          lineColor: hourIndicatorSettings.color,
+                          lineHeight: hourIndicatorSettings.height,
+                          offset: timeLineWidth + hourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          verticalLineOffset: verticalLineOffset,
+                          showVerticalLine: showVerticalLine,
+                          lineStyle: hourIndicatorSettings.lineStyle,
+                          dashWidth: hourIndicatorSettings.dashWidth,
+                          dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                          startHour: startHour),
                     ),
                     if (showHalfHours)
                       CustomPaint(
@@ -170,13 +172,12 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         painter: HalfHourLinePainter(
                           lineColor: halfHourIndicatorSettings.color,
                           lineHeight: halfHourIndicatorSettings.height,
-                          offset:
-                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          offset: timeLineWidth + halfHourIndicatorSettings.offset,
                           minuteHeight: heightPerMinute,
                           lineStyle: halfHourIndicatorSettings.lineStyle,
                           dashWidth: halfHourIndicatorSettings.dashWidth,
-                          dashSpaceWidth:
-                              halfHourIndicatorSettings.dashSpaceWidth,
+                          dashSpaceWidth: halfHourIndicatorSettings.dashSpaceWidth,
+                          startHour: startHour,
                         ),
                       ),
                     dayDetectorBuilder(
@@ -197,10 +198,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         heightPerMinute: heightPerMinute,
                         eventTileBuilder: eventTileBuilder,
                         scrollNotifier: scrollNotifier,
-                        width: width -
-                            timeLineWidth -
-                            hourIndicatorSettings.offset -
-                            verticalLineOffset,
+                        startHour: startHour,
+                        width: width - timeLineWidth - hourIndicatorSettings.offset - verticalLineOffset,
                       ),
                     ),
                     TimeLine(
@@ -210,6 +209,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       timeLineOffset: timeLineOffset,
                       timeLineWidth: timeLineWidth,
                       showHalfHours: showHalfHours,
+                      startHour: startHour,
                       key: ValueKey(heightPerMinute),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
