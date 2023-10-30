@@ -18,6 +18,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
     required int startHour,
+    required int endHour,
   }) {
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 

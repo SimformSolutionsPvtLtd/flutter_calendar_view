@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
 import 'enumerations.dart';
 
 /// Paints 24 hour lines.
@@ -39,6 +38,9 @@ class HourLinePainter extends CustomPainter {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// Last hour displayed in the layout
+  final int endHour;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -47,6 +49,7 @@ class HourLinePainter extends CustomPainter {
     required this.offset,
     required this.showVerticalLine,
     required this.startHour,
+    required this.endHour,
     this.verticalLineOffset = 10,
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
@@ -59,7 +62,7 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour + 1; i < Constants.hoursADay; i++) {
+    for (var i = startHour + 1; i < endHour; i++) {
       final dy = (i - startHour) * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
@@ -120,6 +123,9 @@ class HalfHourLinePainter extends CustomPainter {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// Last hour displayed in the layout
+  final int endHour;
+
   /// Paint half hour lines
   HalfHourLinePainter({
     required this.lineColor,
@@ -128,6 +134,7 @@ class HalfHourLinePainter extends CustomPainter {
     required this.minuteHeight,
     required this.lineStyle,
     required this.startHour,
+    required this.endHour,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
   });
@@ -138,7 +145,7 @@ class HalfHourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour; i < Constants.hoursADay; i++) {
+    for (var i = startHour; i < endHour; i++) {
       final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;

@@ -15,6 +15,7 @@ class WeekViewWidget extends StatelessWidget {
       key: state,
       width: width,
       startHour: 6,
+      endHour: 21,
     );
   }
 }

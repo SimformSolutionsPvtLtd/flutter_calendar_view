@@ -16,6 +16,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
     required int startHour,
+    required int endHour,
   }) {
     final mergedEvents = MergeEventArranger<T>().arrange(
       events: events,
@@ -23,6 +24,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
       width: width,
       heightPerMinute: heightPerMinute,
       startHour: startHour,
+      endHour: endHour,
     );
 
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];

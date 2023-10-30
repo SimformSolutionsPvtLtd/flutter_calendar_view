@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
-import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../extensions.dart';
@@ -118,6 +117,9 @@ class TimeLine extends StatelessWidget {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// Last hour displayed in the layout
+  final int endHour;
+
   static DateTime get _date => DateTime.now();
 
   double get _halfHourHeight => hourHeight / 2;
@@ -131,6 +133,7 @@ class TimeLine extends StatelessWidget {
     required this.timeLineOffset,
     required this.timeLineBuilder,
     required this.startHour,
+    required this.endHour,
     this.showHalfHours = false,
   }) : super(key: key);
 
@@ -146,14 +149,14 @@ class TimeLine extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          for (int i = startHour + 1; i < Constants.hoursADay; i++)
+          for (int i = startHour + 1; i < endHour; i++)
             _timelinePositioned(
               topPosition: hourHeight * (i - startHour) - timeLineOffset,
               bottomPosition: height - (hourHeight * (i - startHour + 1)) + timeLineOffset,
               hour: i,
             ),
           if (showHalfHours)
-            for (int i = startHour; i < Constants.hoursADay; i++)
+            for (int i = startHour; i < endHour; i++)
               _timelinePositioned(
                 topPosition: hourHeight * (i - startHour) - timeLineOffset + _halfHourHeight,
                 bottomPosition: height - (hourHeight * (i - startHour + 1)) + timeLineOffset,
@@ -219,6 +222,9 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// Last hour displayed in the layout
+  final int endHour;
+
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -233,6 +239,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.heightPerMinute,
     required this.eventArranger,
     required this.startHour,
+    required this.endHour,
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
@@ -249,6 +256,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       width: width,
       heightPerMinute: heightPerMinute,
       startHour: startHour,
+      endHour: endHour,
     );
 
     return List.generate(events.length, (index) {
@@ -342,6 +350,9 @@ class PressDetector extends StatelessWidget {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// Last hour displayed in the layout
+  final int endHour;
+
   /// A widget that display event tiles in day/week view.
   const PressDetector({
     Key? key,
@@ -353,12 +364,13 @@ class PressDetector extends StatelessWidget {
     required this.onDateTap,
     required this.minuteSlotSize,
     required this.startHour,
+    required this.endHour,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = ((Constants.hoursADay - startHour) * 60) ~/ minuteSlotSize.minutes;
+    final slots = ((endHour - startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,

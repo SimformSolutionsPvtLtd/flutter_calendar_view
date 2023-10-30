@@ -185,6 +185,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// First hour displayed in the layout, goes from 0 to 24
   final int? startHour;
 
+  /// Last hour displayed in the layout, goes from 0 to 24
+  final int? endHour;
+
   final bool showHalfHours;
 
   /// Duration from where default day view will be visible
@@ -231,6 +234,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.halfHourIndicatorSettings,
     this.startHour,
+    this.endHour,
     this.startDuration = const Duration(hours: 0),
   })  : assert(timeLineOffset >= 0, "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0, "Calendar width must be greater than 0."),
@@ -258,6 +262,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late int _totalDays;
   late int _currentIndex;
   late int _startHour;
+  late int _endHour;
 
   late EventArranger<T> _eventArranger;
 
@@ -293,6 +298,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     _startHour = widget.startHour ?? 0;
     if (_startHour > 24) _startHour = 0;
+
+    _endHour = widget.endHour ?? 24;
+    if (_endHour > 24) _endHour = 24;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -424,6 +432,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             halfHourIndicatorSettings: _halfHourIndicatorSettings,
                             startHour: _startHour,
+                            endHour: _endHour,
                           ),
                         );
                       },
@@ -494,7 +503,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * (Constants.hoursADay - _startHour);
+    _height = _hourHeight * (_endHour - _startHour);
   }
 
   void _assignBuilders() {
