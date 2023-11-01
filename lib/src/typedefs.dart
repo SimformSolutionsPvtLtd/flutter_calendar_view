@@ -4,8 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'calendar_event_data.dart';
-import 'enumerations.dart';
+import '../calendar_view.dart';
 
 typedef CellBuilder<T extends Object?> = Widget Function(
   DateTime date,
@@ -70,3 +69,15 @@ typedef DateTapCallback = void Function(DateTime date);
 
 typedef EventFilter<T extends Object?> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);
+
+typedef CustomHourLinePainter = CustomPainter Function(
+  Color lineColor,
+  double lineHeight,
+  double offset,
+  double minuteHeight,
+  bool showVerticalLine,
+  double verticalLineOffset,
+  LineStyle lineStyle,
+  double dashWidth,
+  double dashSpaceWidth,
+);
