@@ -145,8 +145,12 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Background colour of day view page.
   final Color? backgroundColor;
 
-  /// Scroll offset of day view page.
-  final double scrollOffset;
+  /// Defines initial offset of first page that will be displayed when
+  /// [DayView] is initialized.
+  ///
+  /// If [scrollOffset] is null then [startDuration] will be considered for
+  /// initial offset.
+  final double? scrollOffset;
 
   /// This method will be called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
@@ -184,7 +188,7 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   final bool showHalfHours;
 
-  /// Duration from where default day view will be visible
+  /// It define the starting duration from where day view page will be visible
   /// By default it will be Duration(hours:0)
   final Duration startDuration;
 
@@ -214,7 +218,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.eventArranger,
     this.verticalLineOffset = 10,
     this.backgroundColor = Colors.white,
-    this.scrollOffset = 0.0,
+    this.scrollOffset,
     this.onEventTap,
     this.onDateLongPress,
     this.onDateTap,
@@ -298,8 +302,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _regulateCurrentDate();
 
     _calculateHeights();
-    _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+    _scrollController = ScrollController(
+        initialScrollOffset: widget.scrollOffset ??
+            widget.startDuration.inMinutes * widget.heightPerMinute);
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _assignBuilders();
@@ -323,10 +328,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         // user adds new events.
         ..addListener(_reloadCallback);
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      animateToDuration(widget.startDuration);
-    });
   }
 
   @override
@@ -799,8 +800,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     // above 24 hrs then we take it max as 24 hours only
     final offset = offSetForSingleMinute *
         (startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes);
-    debugPrint("offSet $offset");
-    _scrollController.animateTo(
+    animateTo(
       offset.toDouble(),
       duration: duration,
       curve: curve,
