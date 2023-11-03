@@ -138,6 +138,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
 
+  /// Callback for the Header title
+  final HeaderTitleCallback? onHeaderTitleTap;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -166,7 +169,10 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.weekDayStringBuilder,
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
-  }) : super(key: key);
+    this.onHeaderTitleTap,
+  })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
+            "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
+        super(key: key);
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -462,15 +468,19 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Widget _defaultHeaderBuilder(DateTime date) {
     return MonthPageHeader(
       onTitleTapped: () async {
-        final selectedDate = await showDatePicker(
-          context: context,
-          initialDate: date,
-          firstDate: _minDate,
-          lastDate: _maxDate,
-        );
+        if (widget.onHeaderTitleTap != null) {
+          widget.onHeaderTitleTap!(date);
+        } else {
+          final selectedDate = await showDatePicker(
+            context: context,
+            initialDate: date,
+            firstDate: _minDate,
+            lastDate: _maxDate,
+          );
 
-        if (selectedDate == null) return;
-        jumpToMonth(selectedDate);
+          if (selectedDate == null) return;
+          jumpToMonth(selectedDate);
+        }
       },
       onPreviousMonth: previousPage,
       date: date,

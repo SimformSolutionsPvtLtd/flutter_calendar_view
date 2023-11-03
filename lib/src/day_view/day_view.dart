@@ -198,6 +198,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// By default it will be Duration(hours:0)
   final Duration startDuration;
 
+  /// Callback for the Header title
+  final HeaderTitleCallback? onHeaderTitleTap;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -239,7 +242,10 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.halfHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
-  })  : assert(timeLineOffset >= 0,
+    this.onHeaderTitleTap,
+  })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
+            "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
+        assert(timeLineOffset >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
             "Calendar width must be greater than 0."),
@@ -650,15 +656,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
-        final selectedDate = await showDatePicker(
-          context: context,
-          initialDate: date,
-          firstDate: _minDate,
-          lastDate: _maxDate,
-        );
+        if (widget.onHeaderTitleTap != null) {
+          widget.onHeaderTitleTap!(date);
+        } else {
+          final selectedDate = await showDatePicker(
+            context: context,
+            initialDate: date,
+            firstDate: _minDate,
+            lastDate: _maxDate,
+          );
 
-        if (selectedDate == null) return;
-        jumpToDate(selectedDate);
+          if (selectedDate == null) return;
+          jumpToDate(selectedDate);
+        }
       },
       headerStyle: widget.headerStyle,
     );
