@@ -5,6 +5,10 @@
 - Added
   feature added a callback for the default header title
   - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
+- Added
+  feature added an option to show initial time(12am) in the timeLine for dayView & weekView 
+  - [#267.](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/267)
+
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 

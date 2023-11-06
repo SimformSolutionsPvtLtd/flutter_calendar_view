@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
 import '../components/event_scroll_notifier.dart';
+import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -103,6 +104,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
 
   final ScrollController scrollController;
 
+  /// Flag for displaying initial hour(12am)
+  final bool showInitialTime;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -133,6 +137,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.halfHourIndicatorSettings,
+    this.showInitialTime = false,
   }) : super(key: key);
 
   @override
@@ -148,6 +153,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
               : fullDayEventBuilder(fullDayEventList, date),
           Expanded(
             child: SingleChildScrollView(
+              padding: showInitialTime
+                  ? EdgeInsets.only(top: Constants.initialTimeSpacing)
+                  : EdgeInsets.zero,
               controller: scrollController,
               child: SizedBox(
                 height: height,
@@ -215,6 +223,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       timeLineWidth: timeLineWidth,
                       showHalfHours: showHalfHours,
                       key: ValueKey(heightPerMinute),
+                      showInitialTime: showInitialTime,
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
                       IgnorePointer(

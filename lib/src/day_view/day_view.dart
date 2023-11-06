@@ -201,6 +201,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
 
+  /// Flag for displaying initial hour(12am)
+  final bool showInitialTime;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -243,6 +246,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.halfHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
     this.onHeaderTitleTap,
+    this.showInitialTime = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -445,6 +449,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
+                            showInitialTime: widget.showInitialTime,
                           ),
                         );
                       },
@@ -699,6 +704,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       lineStyle: lineStyle,
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
+      showInitialTime: widget.showInitialTime,
     );
   }
 

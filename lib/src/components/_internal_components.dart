@@ -119,6 +119,11 @@ class TimeLine extends StatelessWidget {
 
   double get _halfHourHeight => hourHeight / 2;
 
+  /// Flag for displaying initial hour(12am)
+  final bool showInitialTime;
+
+  final bool isFromWeekView;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -128,6 +133,8 @@ class TimeLine extends StatelessWidget {
     required this.timeLineOffset,
     required this.timeLineBuilder,
     this.showHalfHours = false,
+    this.showInitialTime = false,
+    this.isFromWeekView = false,
   }) : super(key: key);
 
   @override
@@ -142,19 +149,36 @@ class TimeLine extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          for (int i = 1; i < Constants.hoursADay; i++)
-            _timelinePositioned(
-              topPosition: hourHeight * i - timeLineOffset,
-              bottomPosition: height - (hourHeight * (i + 1)) + timeLineOffset,
-              hour: i,
-            ),
+          for (int i = showInitialTime ? 0 : 1;
+              i < Constants.hoursADay;
+              i++) ...{
+            /// Here we are changing the top-position for the first index
+            /// hour which is 12am for the WeekView only.
+            if (i == 0 && showInitialTime && isFromWeekView) ...{
+              _timelinePositioned(
+                topPosition: hourHeight * i -
+                    timeLineOffset +
+                    Constants.initialTimeSpacing,
+                bottomPosition:
+                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                hour: i,
+              ),
+            } else ...{
+              _timelinePositioned(
+                topPosition: hourHeight * i - timeLineOffset,
+                bottomPosition:
+                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                hour: i,
+              ),
+            }
+          },
           if (showHalfHours)
             for (int i = 0; i < Constants.hoursADay; i++)
               _timelinePositioned(
                 topPosition: hourHeight * i - timeLineOffset + _halfHourHeight,
                 bottomPosition:
                     height - (hourHeight * (i + 1)) + timeLineOffset,
-                hour: i,
+                hour: showInitialTime && i == 0 ? 12 : i,
                 minutes: 30,
               ),
         ],

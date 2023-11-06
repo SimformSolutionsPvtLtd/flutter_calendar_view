@@ -195,6 +195,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
 
+  /// Flag for displaying initial hour(12am)
+  final bool showInitialTime;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -239,6 +242,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
     this.onHeaderTitleTap,
+    this.showInitialTime = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -456,6 +460,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
+                            showInitialTime: widget.showInitialTime,
                           ),
                         );
                       },
@@ -784,6 +789,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       lineStyle: lineStyle,
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
+      showInitialTime: widget.showInitialTime,
     );
   }
 
