@@ -10,7 +10,6 @@ import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../modals.dart';
-import '../painters.dart';
 import '../typedefs.dart';
 
 /// A single page for week view.
@@ -36,6 +35,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
 
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
+
+  /// Custom painter for hour line.
+  final CustomHourLinePainter hourLinePainter;
 
   /// Flag to display live line.
   final bool showLiveLine;
@@ -124,6 +126,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.timeLineBuilder,
     required this.hourIndicatorSettings,
+    required this.hourLinePainter,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -216,13 +219,16 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                   children: [
                     CustomPaint(
                       size: Size(width, height),
-                      painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
+                      painter: hourLinePainter(
+                        hourIndicatorSettings.color,
+                        hourIndicatorSettings.height,
+                        timeLineWidth + hourIndicatorSettings.offset,
+                        heightPerMinute,
+                        showVerticalLine,
+                        verticalLineOffset,
+                        hourIndicatorSettings.lineStyle,
+                        hourIndicatorSettings.dashWidth,
+                        hourIndicatorSettings.dashSpaceWidth,
                       ),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
@@ -243,14 +249,16 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                             ...List.generate(
                               filteredDates.length,
                               (index) => Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: hourIndicatorSettings.color,
-                                      width: hourIndicatorSettings.height,
-                                    ),
-                                  ),
-                                ),
+                                decoration: showVerticalLine
+                                    ? BoxDecoration(
+                                        border: Border(
+                                          right: BorderSide(
+                                            color: hourIndicatorSettings.color,
+                                            width: hourIndicatorSettings.height,
+                                          ),
+                                        ),
+                                      )
+                                    : null,
                                 height: height,
                                 width: weekTitleWidth,
                                 child: Stack(

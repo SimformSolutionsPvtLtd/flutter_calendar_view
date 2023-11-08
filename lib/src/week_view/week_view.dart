@@ -16,6 +16,7 @@ import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
 import '../modals.dart';
+import '../painters.dart';
 import '../style/header_style.dart';
 import '../typedefs.dart';
 import '_internal_week_view_page.dart';
@@ -85,6 +86,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
 
+  /// A funtion that returns a [CustomPainter].
+  ///
+  /// Use this if you want to paint custom hour lines.
+  final CustomHourLinePainter? hourLinePainter;
+
   /// Settings for live time indicator settings.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
@@ -113,6 +119,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// Width of week view. If null provided device width will be considered.
   final double? width;
+
+  /// If true this will display vertical lines between each day.
+  final bool showVerticalLines;
 
   /// Height of week day title,
   final double weekTitleHeight;
@@ -183,6 +192,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Callback for the Header title
+  final HeaderTitleCallback? onHeaderTitleTap;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -193,11 +205,13 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.heightPerMinute = 1,
     this.timeLineOffset = 0,
     this.showLiveTimeLineInAllDays = false,
+    this.showVerticalLines = true,
     this.width,
     this.minDay,
     this.maxDay,
     this.initialDay,
     this.hourIndicatorSettings,
+    this.hourLinePainter,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -224,7 +238,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
-  })  : assert((timeLineOffset) >= 0,
+    this.onHeaderTitleTap,
+  })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
+            "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
+        assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
             "Calendar width must be greater than 0."),
@@ -259,6 +276,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late EventArranger<T> _eventArranger;
 
   late HourIndicatorSettings _hourIndicatorSettings;
+  late CustomHourLinePainter _hourLinePainter;
+
   late HourIndicatorSettings _liveTimeIndicatorSettings;
 
   late PageController _pageController;
@@ -381,7 +400,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(_currentStartDate, _currentEndDate),
+              _weekHeaderBuilder(
+                _currentStartDate,
+                _currentEndDate,
+              ),
               Expanded(
                 child: DecoratedBox(
                   decoration: BoxDecoration(color: widget.backgroundColor),
@@ -418,13 +440,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             eventTileBuilder: _eventTileBuilder,
                             heightPerMinute: widget.heightPerMinute,
                             hourIndicatorSettings: _hourIndicatorSettings,
+                            hourLinePainter: _hourLinePainter,
                             dates: dates,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
                                 _showLiveTimeIndicator(dates),
                             timeLineOffset: widget.timeLineOffset,
                             timeLineWidth: _timeLineWidth,
                             verticalLineOffset: 0,
-                            showVerticalLine: true,
+                            showVerticalLine: widget.showVerticalLines,
                             controller: controller,
                             hourHeight: _hourHeight,
                             scrollController: _scrollController,
@@ -528,6 +551,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
   Widget _defaultFullDayEventBuilder(
@@ -710,25 +734,56 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.
-  Widget _defaultWeekPageHeaderBuilder(DateTime startDate, DateTime endDate) {
+  Widget _defaultWeekPageHeaderBuilder(
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     return WeekPageHeader(
       startDate: _currentStartDate,
       endDate: _currentEndDate,
       onNextDay: nextPage,
       onPreviousDay: previousPage,
       onTitleTapped: () async {
-        final selectedDate = await showDatePicker(
-          context: context,
-          initialDate: startDate,
-          firstDate: _minDate,
-          lastDate: _maxDate,
-        );
+        if (widget.onHeaderTitleTap != null) {
+          widget.onHeaderTitleTap!(startDate);
+        } else {
+          final selectedDate = await showDatePicker(
+            context: context,
+            initialDate: startDate,
+            firstDate: _minDate,
+            lastDate: _maxDate,
+          );
 
-        if (selectedDate == null) return;
-        jumpToWeek(selectedDate);
+          if (selectedDate == null) return;
+          jumpToWeek(selectedDate);
+        }
       },
       headerStringBuilder: widget.headerStringBuilder,
       headerStyle: widget.headerStyle,
+    );
+  }
+
+  HourLinePainter _defaultHourLinePainter(
+    Color lineColor,
+    double lineHeight,
+    double offset,
+    double minuteHeight,
+    bool showVerticalLine,
+    double verticalLineOffset,
+    LineStyle lineStyle,
+    double dashWidth,
+    double dashSpaceWidth,
+  ) {
+    return HourLinePainter(
+      lineColor: lineColor,
+      lineHeight: lineHeight,
+      offset: offset,
+      minuteHeight: minuteHeight,
+      verticalLineOffset: verticalLineOffset,
+      showVerticalLine: showVerticalLine,
+      lineStyle: lineStyle,
+      dashWidth: dashWidth,
+      dashSpaceWidth: dashSpaceWidth,
     );
   }
 
