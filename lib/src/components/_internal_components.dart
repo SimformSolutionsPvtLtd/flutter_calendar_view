@@ -115,6 +115,9 @@ class TimeLine extends StatelessWidget {
   /// Flag to display half hours.
   final bool showHalfHours;
 
+  /// Flag to display quarter hours.
+  final bool showQuarterHours;
+
   static DateTime get _date => DateTime.now();
 
   double get _halfHourHeight => hourHeight / 2;
@@ -128,6 +131,7 @@ class TimeLine extends StatelessWidget {
     required this.timeLineOffset,
     required this.timeLineBuilder,
     this.showHalfHours = false,
+    this.showQuarterHours = false,
   }) : super(key: key);
 
   @override
@@ -157,6 +161,28 @@ class TimeLine extends StatelessWidget {
                 hour: i,
                 minutes: 30,
               ),
+          if (showQuarterHours)
+            for (int i = 0; i < Constants.hoursADay; i++) ...[
+              /// this is for 15 minutes
+              _timelinePositioned(
+                topPosition:
+                    hourHeight * i - timeLineOffset + hourHeight * 0.25,
+                bottomPosition:
+                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                hour: i,
+                minutes: 15,
+              ),
+
+              /// this is for 45 minutes
+              _timelinePositioned(
+                topPosition:
+                    hourHeight * i - timeLineOffset + hourHeight * 0.75,
+                bottomPosition:
+                    height - (hourHeight * (i + 1)) + timeLineOffset,
+                hour: i,
+                minutes: 45,
+              ),
+            ],
         ],
       ),
     );
