@@ -91,6 +91,12 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
 
+  /// Settings for half hour indicator settings.
+  final HourIndicatorSettings? halfHourIndicatorSettings;
+
+  /// Settings for quarter hour indicator settings.
+  final HourIndicatorSettings? quarterHourIndicatorSettings;
+
   /// Settings for live time indicator settings.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
@@ -192,6 +198,15 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  ///Show half hour indicator
+  final bool showHalfHours;
+
+  ///Show quarter hour indicator
+  final bool showQuarterHours;
+
+  ///Emulates offset of vertical line from hour line starts.
+  final double emulateVerticalOffsetBy;
+
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
 
@@ -212,6 +227,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.initialDay,
     this.hourIndicatorSettings,
     this.hourLinePainter,
+    this.halfHourIndicatorSettings,
+    this.quarterHourIndicatorSettings,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -239,6 +256,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
     this.onHeaderTitleTap,
+    this.showHalfHours = false,
+    this.showQuarterHours = false,
+    this.emulateVerticalOffsetBy = 0,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -278,7 +298,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late HourIndicatorSettings _hourIndicatorSettings;
   late CustomHourLinePainter _hourLinePainter;
 
+  late HourIndicatorSettings _halfHourIndicatorSettings;
   late HourIndicatorSettings _liveTimeIndicatorSettings;
+  late HourIndicatorSettings _quarterHourIndicatorSettings;
 
   late PageController _pageController;
 
@@ -441,6 +463,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             heightPerMinute: widget.heightPerMinute,
                             hourIndicatorSettings: _hourIndicatorSettings,
                             hourLinePainter: _hourLinePainter,
+                            halfHourIndicatorSettings:
+                                _halfHourIndicatorSettings,
+                            quarterHourIndicatorSettings:
+                                _quarterHourIndicatorSettings,
                             dates: dates,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
                                 _showLiveTimeIndicator(dates),
@@ -456,6 +482,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
+                            showHalfHours: widget.showHalfHours,
+                            showQuarterHours: widget.showQuarterHours,
+                            emulateVerticalOffsetBy:
+                                widget.emulateVerticalOffsetBy,
                           ),
                         );
                       },
@@ -533,6 +563,24 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekTitleWidth =
         (_width - _timeLineWidth - _hourIndicatorSettings.offset) /
             _totalDaysInWeek;
+
+    _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_halfHourIndicatorSettings.height < _hourHeight,
+        "halfHourIndicator height must be less than minuteHeight * 60");
+
+    _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
+        HourIndicatorSettings(
+          color: Constants.defaultBorderColor,
+        );
+
+    assert(_quarterHourIndicatorSettings.height < _hourHeight,
+        "quarterHourIndicator height must be less than minuteHeight * 60");
   }
 
   void _calculateHeights() {
@@ -689,8 +737,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(DateTime date) {
-    final timeLineString = widget.timeLineStringBuilder?.call(date) ??
-        "${((date.hour - 1) % 12) + 1} ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+    final hour = ((date.hour - 1) % 12) + 1;
+    final timeLineString = (widget.timeLineStringBuilder != null)
+        ? widget.timeLineStringBuilder!(date)
+        : date.minute != 0
+            ? "$hour:${date.minute}"
+            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
@@ -773,6 +826,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     LineStyle lineStyle,
     double dashWidth,
     double dashSpaceWidth,
+    double emulateVerticalOffsetBy,
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -784,6 +838,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       lineStyle: lineStyle,
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
+      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
     );
   }
 

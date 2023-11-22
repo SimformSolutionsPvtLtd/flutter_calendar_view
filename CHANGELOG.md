@@ -4,7 +4,11 @@
   view-[#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
 - Added
   feature added a callback for the default header title
-  - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
+    - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
+- Added
+  feature added the quarterHourIndicator for the DayView & halfHourIndicator and
+  quarterHourIndicator for WeekView
+    - [#270](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/270)
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 

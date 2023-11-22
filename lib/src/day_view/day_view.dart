@@ -95,6 +95,11 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Pass [HourIndicatorSettings.none] to remove half hour lines.
   final HourIndicatorSettings? halfHourIndicatorSettings;
 
+  /// Defines settings for quarter hour indication lines.
+  ///
+  /// Pass [HourIndicatorSettings.none] to remove quarter hour lines.
+  final HourIndicatorSettings? quarterHourIndicatorSettings;
+
   /// Page transition duration used when user try to change page using
   /// [DayViewState.nextPage] or [DayViewState.previousPage]
   final Duration pageTransitionDuration;
@@ -192,7 +197,11 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Show half hour indicator
   final bool showHalfHours;
+
+  /// Show quarter hour indicator(15min & 45min).
+  final bool showQuarterHours;
 
   /// It define the starting duration from where day view page will be visible
   /// By default it will be Duration(hours:0)
@@ -200,6 +209,9 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
+
+  /// Emulate vertical line offset from hour line starts.
+  final double emulateVerticalOffsetBy;
 
   /// Main widget for day view.
   const DayView({
@@ -240,9 +252,12 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.pageViewPhysics,
     this.dayDetectorBuilder,
     this.showHalfHours = false,
+    this.showQuarterHours = false,
     this.halfHourIndicatorSettings,
+    this.quarterHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
     this.onHeaderTitleTap,
+    this.emulateVerticalOffsetBy = 0,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -279,6 +294,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late HourIndicatorSettings _hourIndicatorSettings;
   late HourIndicatorSettings _halfHourIndicatorSettings;
+  late HourIndicatorSettings _quarterHourIndicatorSettings;
   late CustomHourLinePainter _hourLinePainter;
 
   late HourIndicatorSettings _liveTimeIndicatorSettings;
@@ -443,8 +459,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             fullDayEventBuilder: _fullDayEventBuilder,
                             scrollController: _scrollController,
                             showHalfHours: widget.showHalfHours,
+                            showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
+                            quarterHourIndicatorSettings:
+                                _quarterHourIndicatorSettings,
+                            emulateVerticalOffsetBy:
+                                widget.emulateVerticalOffsetBy,
                           ),
                         );
                       },
@@ -512,6 +533,16 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     assert(_halfHourIndicatorSettings.height < _hourHeight,
         "halfHourIndicator height must be less than minuteHeight * 60");
+
+    _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_quarterHourIndicatorSettings.height < _hourHeight,
+        "quarterHourIndicator height must be less than minuteHeight * 60");
   }
 
   void _calculateHeights() {
@@ -688,6 +719,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     LineStyle lineStyle,
     double dashWidth,
     double dashSpaceWidth,
+    double emulateVerticalOffsetBy,
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -699,6 +731,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       lineStyle: lineStyle,
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
+      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
     );
   }
 

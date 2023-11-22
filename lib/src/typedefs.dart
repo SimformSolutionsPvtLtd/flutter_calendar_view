@@ -82,4 +82,5 @@ typedef CustomHourLinePainter = CustomPainter Function(
   LineStyle lineStyle,
   double dashWidth,
   double dashSpaceWidth,
+  double emulateVerticalOffsetBy,
 );
