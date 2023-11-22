@@ -141,6 +141,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
 
+  /// Defines scroll physics for a page of a month view.
+  ///
+  /// This can be used to disable the vertical scroll of a page.
+  /// Default value is [ClampingScrollPhysics].
+  final ScrollPhysics pagePhysics;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -170,6 +176,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
+    this.pagePhysics = const ClampingScrollPhysics(),
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -349,6 +356,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               date: date,
                               showBorder: widget.showBorder,
                               startDay: widget.startDay,
+                              physics: widget.pagePhysics,
                             ),
                           );
                         }),
@@ -598,6 +606,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final CellTapCallback<T>? onCellTap;
   final DatePressCallback? onDateLongPress;
   final WeekDays startDay;
+  final ScrollPhysics physics;
 
   const _MonthPageBuilder({
     Key? key,
@@ -613,6 +622,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.onCellTap,
     required this.onDateLongPress,
     required this.startDay,
+    required this.physics,
   }) : super(key: key);
 
   @override
@@ -623,7 +633,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
       height: height,
       child: GridView.builder(
         padding: EdgeInsets.zero,
-        physics: ClampingScrollPhysics(),
+        physics: physics,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
           childAspectRatio: cellRatio,
