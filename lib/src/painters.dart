@@ -36,6 +36,9 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// Flag for displaying initial hour(12am)
+  final bool showInitialTime;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -47,6 +50,7 @@ class HourLinePainter extends CustomPainter {
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    this.showInitialTime = false,
   });
 
   @override
@@ -55,7 +59,7 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 1; i < Constants.hoursADay; i++) {
+    for (var i = showInitialTime ? 0 : 1; i < Constants.hoursADay; i++) {
       final dy = i * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
@@ -70,15 +74,18 @@ class HourLinePainter extends CustomPainter {
     }
 
     if (showVerticalLine) if (lineStyle == LineStyle.dashed) {
-      var startY = 0.0;
+      var startY = showInitialTime ? -Constants.initialTimeSpacing : 0.0;
       while (startY < size.height) {
         canvas.drawLine(Offset(offset + verticalLineOffset, startY),
             Offset(offset + verticalLineOffset, startY + dashWidth), paint);
         startY += dashWidth + dashSpaceWidth;
       }
     } else {
-      canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + verticalLineOffset, size.height), paint);
+      canvas.drawLine(
+          Offset(offset + verticalLineOffset,
+              showInitialTime ? -Constants.initialTimeSpacing : 0),
+          Offset(offset + verticalLineOffset, size.height),
+          paint);
     }
   }
 
