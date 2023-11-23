@@ -159,7 +159,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
         'The end date must be greater or equal to the start date');
     if (_calendarData.eventList.contains(event)) return;
     if (event.endDate.difference(event.date).inDays > 0) {
-      if (event.startTime!.isDayStart && event.endTime!.isDayStart) {
+      if (event.startTime == null ||
+          event.endTime == null ||
+          (event.startTime!.isDayStart && event.endTime!.isDayStart)) {
         _calendarData.fullDayEventList.addEventInSortedManner(event);
       } else {
         _calendarData.rangingEventList.addEventInSortedManner(event);

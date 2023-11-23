@@ -170,17 +170,20 @@ extension MyList on List<CalendarEventData> {
   // the existing list of CalendarEventData.
   void addEventInSortedManner(CalendarEventData event) {
     var addIndex = -1;
+
     for (var i = 0; i < this.length; i++) {
-      if (event.startTime!.compareTo(this[i].startTime!) <= 0) {
+      if ((event.startTime?.getTotalMinutes ?? 0) -
+              (this[i].startTime?.getTotalMinutes ?? 0) <=
+          0) {
         addIndex = i;
         break;
       }
     }
 
     if (addIndex > -1) {
-      this.insert(addIndex, event);
+      insert(addIndex, event);
     } else {
-      this.add(event);
+      add(event);
     }
   }
 }

@@ -10,6 +10,7 @@
 - Added
   feature added Support for changing the week day position(top/bottom) in weekView. [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
 - Adds new flag `includeEdges` in `EventArrangers`. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/294)
+- Fixes null check exception while adding events. [#282](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/282)
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
