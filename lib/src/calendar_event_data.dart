@@ -26,7 +26,7 @@ class CalendarEventData<T extends Object?> {
   final String title;
 
   /// Description of the event.
-  final String description;
+  final String? description;
 
   /// Defines color of event.
   /// This color will be used in default widgets provided by plugin.
@@ -43,10 +43,14 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
-  /// Stores all the events on [date]
+  /// Stores all the events on [date].
+  ///
+  /// If [startTime] and [endTime] both are 0 or either of them is null, then
+  /// event will be considered a full day event.
+  ///
   const CalendarEventData({
     required this.title,
-    this.description = "",
+    this.description,
     this.event,
     this.color = Colors.blue,
     this.startTime,
@@ -59,6 +63,18 @@ class CalendarEventData<T extends Object?> {
 
   DateTime get endDate => _endDate ?? date;
 
+  bool get isRangingEvent {
+    final diff = endDate.withoutTime.difference(date.withoutTime).inDays;
+
+    return diff > 0 && !isFullDayEvent;
+  }
+
+  bool get isFullDayEvent {
+    return (startTime == null ||
+        endTime == null ||
+        (startTime!.isDayStart && endTime!.isDayStart));
+  }
+
   Map<String, dynamic> toJson() => {
         "date": date,
         "startTime": startTime,
@@ -68,6 +84,32 @@ class CalendarEventData<T extends Object?> {
         "description": description,
         "endDate": endDate,
       };
+
+  CalendarEventData<T> copyWith({
+    String? title,
+    String? description,
+    T? event,
+    Color? color,
+    DateTime? startTime,
+    DateTime? endTime,
+    TextStyle? titleStyle,
+    TextStyle? descriptionStyle,
+    DateTime? endDate,
+    DateTime? date,
+  }) {
+    return CalendarEventData(
+      title: title ?? this.title,
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      color: color ?? this.color,
+      description: description ?? this.description,
+      descriptionStyle: descriptionStyle ?? this.descriptionStyle,
+      endDate: endDate ?? this.endDate,
+      event: event ?? this.event,
+      titleStyle: titleStyle ?? this.titleStyle,
+    );
+  }
 
   @override
   String toString() => '${toJson()}';

@@ -18,7 +18,7 @@ class RoundedEventTile extends StatelessWidget {
   final String title;
 
   /// Description of the tile.
-  final String description;
+  final String? description;
 
   /// Background color of tile.
   /// Default color is [Colors.blue]
@@ -49,7 +49,7 @@ class RoundedEventTile extends StatelessWidget {
     required this.title,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
-    this.description = "",
+    this.description,
     this.borderRadius = BorderRadius.zero,
     this.totalEvents = 1,
     this.backgroundColor = Colors.blue,
@@ -83,12 +83,12 @@ class RoundedEventTile extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             ),
-          if (description.isNotEmpty)
+          if (description?.isNotEmpty ?? false)
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Text(
-                  description,
+                  description!,
                   style: descriptionStyle ??
                       TextStyle(
                         fontSize: 17,
