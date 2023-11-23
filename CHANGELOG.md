@@ -9,6 +9,9 @@
   feature added the quarterHourIndicator for the DayView & halfHourIndicator and
   quarterHourIndicator for WeekView
     - [#270](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/270)
+- Added
+  feature added Support for changing the week day position(top/bottom) in weekView
+  - [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 

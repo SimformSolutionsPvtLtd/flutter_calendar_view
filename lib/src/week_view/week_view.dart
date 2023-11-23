@@ -210,6 +210,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
 
+  /// If true this will show week day at bottom position.
+  final bool showWeekDayAtBottom;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -259,6 +262,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.showQuarterHours = false,
     this.emulateVerticalOffsetBy = 0,
+    this.showWeekDayAtBottom = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -486,6 +490,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             showQuarterHours: widget.showQuarterHours,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
+                            showWeekDayAtBottom: widget.showWeekDayAtBottom,
                           ),
                         );
                       },

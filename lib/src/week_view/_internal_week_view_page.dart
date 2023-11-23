@@ -120,6 +120,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
+  /// If true this will show week day at bottom position.
+  final bool showWeekDayAtBottom;
+
   /// Flag to display half hours
   final bool showHalfHours;
 
@@ -164,6 +167,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
       required this.scrollConfiguration,
       required this.fullDayEventBuilder,
       required this.weekDetectorBuilder,
+      required this.showWeekDayAtBottom,
       required this.showHalfHours,
       required this.showQuarterHours,
       required this.emulateVerticalOffsetBy})
@@ -176,6 +180,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
       height: height + weekTitleHeight,
       width: width,
       child: Column(
+        verticalDirection:
+            showWeekDayAtBottom ? VerticalDirection.up : VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
