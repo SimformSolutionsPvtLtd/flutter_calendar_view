@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/pages/create_event_page.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
@@ -76,14 +77,49 @@ class DetailsPage extends StatelessWidget {
               height: 30.0,
             ),
           ],
-          if (event.description != "") ...[
+          if (event.description?.isNotEmpty ?? false) ...[
             Divider(),
             Text("Description"),
             SizedBox(
               height: 10.0,
             ),
-            Text(event.description),
-          ]
+            Text(event.description!),
+          ],
+          const SizedBox(height: 50),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    CalendarControllerProvider.of(context)
+                        .controller
+                        .remove(event);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Delete Event'),
+                ),
+              ),
+              SizedBox(width: 30),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CreateEventPage(
+                          event: event,
+                        ),
+                      ),
+                    );
+
+                    if (result) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Text('Edit Event'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

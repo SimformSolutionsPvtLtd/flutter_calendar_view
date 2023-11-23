@@ -5,73 +5,53 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../app_colors.dart';
 import '../constants.dart';
 import '../extension.dart';
-import '../model/event.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
-class AddEventWidget extends StatefulWidget {
-  final void Function(CalendarEventData<Event>)? onEventAdd;
+class AddOrEditEventForm extends StatefulWidget {
+  final void Function(CalendarEventData)? onEventAdd;
+  final CalendarEventData? event;
 
-  const AddEventWidget({
-    Key? key,
+  const AddOrEditEventForm({
+    super.key,
     this.onEventAdd,
-  }) : super(key: key);
+    this.event,
+  });
 
   @override
-  _AddEventWidgetState createState() => _AddEventWidgetState();
+  _AddOrEditEventFormState createState() => _AddOrEditEventFormState();
 }
 
-class _AddEventWidgetState extends State<AddEventWidget> {
-  late DateTime _startDate;
-  late DateTime _endDate;
+class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
+  late DateTime _startDate = DateTime.now().withoutTime;
+  late DateTime _endDate = DateTime.now().withoutTime;
 
   DateTime? _startTime;
-
   DateTime? _endTime;
-
-  String _title = "";
-
-  String _description = "";
 
   Color _color = Colors.blue;
 
-  late FocusNode _titleNode;
+  final _form = GlobalKey<FormState>();
 
-  late FocusNode _descriptionNode;
-
-  late FocusNode _dateNode;
-
-  final GlobalKey<FormState> _form = GlobalKey();
-
-  late TextEditingController _startDateController;
-  late TextEditingController _startTimeController;
-  late TextEditingController _endTimeController;
-  late TextEditingController _endDateController;
+  late final _descriptionController = TextEditingController();
+  late final _titleController = TextEditingController();
+  late final _titleNode = FocusNode();
+  late final _descriptionNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
 
-    _titleNode = FocusNode();
-    _descriptionNode = FocusNode();
-    _dateNode = FocusNode();
-
-    _startDateController = TextEditingController();
-    _endDateController = TextEditingController();
-    _startTimeController = TextEditingController();
-    _endTimeController = TextEditingController();
+    _setDefaults();
   }
 
   @override
   void dispose() {
     _titleNode.dispose();
     _descriptionNode.dispose();
-    _dateNode.dispose();
 
-    _startDateController.dispose();
-    _endDateController.dispose();
-    _startTimeController.dispose();
-    _endTimeController.dispose();
+    _descriptionController.dispose();
+    _titleController.dispose();
 
     super.dispose();
   }
@@ -84,6 +64,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
+            controller: _titleController,
             decoration: AppConstants.inputDecoration.copyWith(
               labelText: "Event Title",
             ),
@@ -91,9 +72,10 @@ class _AddEventWidgetState extends State<AddEventWidget> {
               color: AppColors.black,
               fontSize: 17.0,
             ),
-            onSaved: (value) => _title = value?.trim() ?? "",
             validator: (value) {
-              if (value == null || value == "")
+              final title = value?.trim();
+
+              if (title == null || title == "")
                 return "Please enter event title.";
 
               return null;
@@ -108,13 +90,25 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
-                  controller: _startDateController,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "Start Date",
                   ),
+                  initialDateTime: _startDate,
+                  onSelect: (date) {
+                    if (date.withoutTime.withoutTime
+                        .isAfter(_endDate.withoutTime)) {
+                      _endDate = date.withoutTime;
+                    }
+
+                    _startDate = date.withoutTime;
+
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
                   validator: (value) {
                     if (value == null || value == "")
-                      return "Please select date.";
+                      return "Please select start date.";
 
                     return null;
                   },
@@ -122,20 +116,34 @@ class _AddEventWidgetState extends State<AddEventWidget> {
                     color: AppColors.black,
                     fontSize: 17.0,
                   ),
-                  onSave: (date) => _startDate = date,
+                  onSave: (date) => _startDate = date ?? _startDate,
                   type: DateTimeSelectionType.date,
                 ),
               ),
               SizedBox(width: 20.0),
               Expanded(
                 child: DateTimeSelectorFormField(
-                  controller: _endDateController,
+                  initialDateTime: _endDate,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "End Date",
                   ),
+                  onSelect: (date) {
+                    if (date.withoutTime.withoutTime
+                        .isBefore(_startDate.withoutTime)) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('End date occurs before start date.'),
+                      ));
+                    } else {
+                      _endDate = date.withoutTime;
+                    }
+
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
                   validator: (value) {
                     if (value == null || value == "")
-                      return "Please select date.";
+                      return "Please select end date.";
 
                     return null;
                   },
@@ -143,28 +151,32 @@ class _AddEventWidgetState extends State<AddEventWidget> {
                     color: AppColors.black,
                     fontSize: 17.0,
                   ),
-                  onSave: (date) => _endDate = date,
+                  onSave: (date) => _endDate = date ?? _endDate,
                   type: DateTimeSelectionType.date,
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: 15,
-          ),
+          SizedBox(height: 15),
           Row(
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
-                  controller: _startTimeController,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "Start Time",
                   ),
-                  validator: (value) {
-                    if (value == null || value == "")
-                      return "Please select start time.";
+                  initialDateTime: _startTime,
+                  minimumDateTime: CalendarConstants.epochDate,
+                  onSelect: (date) {
+                    if (_endTime != null &&
+                        date.getTotalMinutes > _endTime!.getTotalMinutes) {
+                      _endTime = date.add(Duration(minutes: 1));
+                    }
+                    _startTime = date;
 
-                    return null;
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   onSave: (date) => _startTime = date,
                   textStyle: TextStyle(
@@ -177,15 +189,23 @@ class _AddEventWidgetState extends State<AddEventWidget> {
               SizedBox(width: 20.0),
               Expanded(
                 child: DateTimeSelectorFormField(
-                  controller: _endTimeController,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "End Time",
                   ),
-                  validator: (value) {
-                    if (value == null || value == "")
-                      return "Please select end time.";
+                  initialDateTime: _endTime,
+                  onSelect: (date) {
+                    if (_startTime != null &&
+                        date.getTotalMinutes < _startTime!.getTotalMinutes) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('End time is less then start time.'),
+                      ));
+                    } else {
+                      _endTime = date;
+                    }
 
-                    return null;
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
                   onSave: (date) => _endTime = date,
                   textStyle: TextStyle(
@@ -201,6 +221,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             height: 15,
           ),
           TextFormField(
+            controller: _descriptionController,
             focusNode: _descriptionNode,
             style: TextStyle(
               color: AppColors.black,
@@ -218,7 +239,6 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
               return null;
             },
-            onSaved: (value) => _description = value?.trim() ?? "",
             decoration: AppConstants.inputDecoration.copyWith(
               hintText: "Event Description",
             ),
@@ -249,7 +269,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
           ),
           CustomButton(
             onTap: _createEvent,
-            title: "Add Event",
+            title: widget.event == null ? "Add Event" : "Update Event",
           ),
         ],
       ),
@@ -261,28 +281,39 @@ class _AddEventWidgetState extends State<AddEventWidget> {
 
     _form.currentState?.save();
 
-    final event = CalendarEventData<Event>(
+    final event = CalendarEventData(
       date: _startDate,
-      color: _color,
       endTime: _endTime,
       startTime: _startTime,
-      description: _description,
       endDate: _endDate,
-      title: _title,
-      event: Event(
-        title: _title,
-      ),
+      color: _color,
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
     );
 
     widget.onEventAdd?.call(event);
     _resetForm();
   }
 
+  void _setDefaults() {
+    if (widget.event == null) return;
+
+    final event = widget.event!;
+
+    _startDate = event.date;
+    _endDate = event.endDate;
+    _startTime = event.startTime ?? _startTime;
+    _endTime = event.endTime ?? _endTime;
+    _titleController.text = event.title;
+    _descriptionController.text = event.description ?? '';
+  }
+
   void _resetForm() {
     _form.currentState?.reset();
-    _startDateController.text = "";
-    _endTimeController.text = "";
-    _startTimeController.text = "";
+    _startDate = DateTime.now().withoutTime;
+    _endDate = DateTime.now().withoutTime;
+    _startTime = null;
+    _endTime = null;
   }
 
   void _displayColorPicker() {
@@ -294,16 +325,12 @@ class _AddEventWidgetState extends State<AddEventWidget> {
       builder: (_) => SimpleDialog(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-          side: BorderSide(
-            color: AppColors.bluishGrey,
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(20.0),
         ),
         contentPadding: EdgeInsets.all(20.0),
         children: [
           Text(
-            "Event Color",
+            "Select event color",
             style: TextStyle(
               color: AppColors.black,
               fontSize: 25.0,
