@@ -225,7 +225,10 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         date: date,
                         onTileTap: onTileTap,
                         eventArranger: eventArranger,
-                        events: controller.getEventsOnDay(date),
+                        events: controller.getEventsOnDay(
+                          date,
+                          includeFullDayEvents: false,
+                        ),
                         heightPerMinute: heightPerMinute,
                         eventTileBuilder: eventTileBuilder,
                         scrollNotifier: scrollNotifier,

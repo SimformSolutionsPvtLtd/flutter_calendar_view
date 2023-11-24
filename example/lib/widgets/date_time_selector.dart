@@ -46,8 +46,6 @@ class DateTimeSelectorFormField extends StatefulWidget {
 }
 
 class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
-  bool _isSelectorOpen = false;
-
   late var _minimumDate = CalendarConstants.minDate.withoutTime;
 
   late var _textEditingController =

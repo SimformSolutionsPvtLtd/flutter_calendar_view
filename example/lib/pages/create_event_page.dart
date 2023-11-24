@@ -42,7 +42,7 @@ class CreateEventPage extends StatelessWidget {
               if (this.event != null) {
                 CalendarControllerProvider.of(context)
                     .controller
-                    .updateEvent(this.event!, newEvent);
+                    .update(this.event!, newEvent);
               } else {
                 CalendarControllerProvider.of(context).controller.add(newEvent);
               }

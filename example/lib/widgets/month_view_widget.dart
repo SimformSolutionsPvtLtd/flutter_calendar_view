@@ -8,10 +8,10 @@ class MonthViewWidget extends StatelessWidget {
   final double? width;
 
   const MonthViewWidget({
-    Key? key,
+    super.key,
     this.state,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

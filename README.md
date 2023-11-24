@@ -226,12 +226,19 @@ assigned.
 
 Methods provided by `EventController`
 
-| Name           | Parameters                            | Description                                          |
-|----------------|---------------------------------------|------------------------------------------------------|
-| add            | CalendarEventData\<T\> event          | Adds one event in controller and rebuilds view.      |
-| addAll         | List\<CalendarEventData\<T\>\> events | Adds list of events in controller and rebuilds view. |
-| remove         | CalendarEventData\<T\> event          | Removes an event from controller and rebuilds view.  |
-| getEventsOnDay | DateTime date                         | Returns list of events on `date`                     |
+| Name            | Parameters                                                   | Description                                               |
+|-----------------|--------------------------------------------------------------|-----------------------------------------------------------|
+| add             | CalendarEventData\<T\> event                                 | Adds one event in controller and rebuilds view.           |
+| addAll          | List\<CalendarEventData\<T\>\> events                        | Adds list of events in controller and rebuilds view.      |
+| remove          | CalendarEventData\<T\> event                                 | Removes an event from controller and rebuilds view.       |
+| removeAll       | List\<CalendarEventData\<T\>\> events                        | Removes all event defined in the list                     |
+| removeWhere     | TestPredicate\<CalendarEventData\<T\>\> test                 | Removes all events for which test returns true.           |
+| update          | CalendarEventData\<T\> event, CalendarEventData\<T\> updated | Updates event with updated event.                         |
+| getFullDayEvent | DateTime date                                                | Returns the list of full day events stored in controller  |
+| updateFilter    | EventFilter\<T\> newFilter                                   | Updates the event filter of the controller.               |
+| getEventsOnDay  | DateTime date                                                | Returns list of events on `date`                          |
+
+Check [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/EventController-class.html) for more info.
 
 ### Use of `GlobalKey`
 
@@ -256,6 +263,9 @@ Methods defined by `MonthViewState` class:
 | jumpToMonth    | DateTime month | Jumps to the page that has a calendar for month defined by `month`   |
 | animateToMonth | DateTime month | Animate to the page that has a calendar for month defined by `month` |
 
+Check [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/MonthViewState-class.html) for more info.
+
+
 Methods defined by `DayViewState` class.
 
 | Name              | Parameters              | Description                                                                                                |
@@ -270,6 +280,8 @@ Methods defined by `DayViewState` class.
 | animateToEvent    | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
 | jumpToEvent       | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen.    |
 
+Check [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/DayViewState-class.html) for more info.
+
 Methods defined by `WeekViewState` class.
 
 | Name           | Parameters              | Description                                                                                                |
@@ -282,6 +294,8 @@ Methods defined by `WeekViewState` class.
 | animateToWeek  | DateTime week           | Animate to the page that has a calendar for month defined by `week`                                        |
 | animateToEvent | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
 | jumpToEvent    | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen.    |
+
+Check [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/WeekViewState-class.html) for more info.
 
 ### Synchronize events between calendar views
 
@@ -353,7 +367,7 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE

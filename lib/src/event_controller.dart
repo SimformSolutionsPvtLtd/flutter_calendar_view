@@ -44,9 +44,14 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// Returns list of [CalendarEventData<T>] stored in this controller.
   @Deprecated('This is deprecated and will be removed in next major release. '
       'Use allEvents instead.')
+
+  /// Lists all the events that are added in the Controller.
+  ///
+  /// NOTE: This field is deprecated. use [allEvents] instead.
   List<CalendarEventData<T>> get events =>
       _calendarData.events.toList(growable: false);
 
+  /// Lists all the events that are added in the Controller.
   UnmodifiableListView<CalendarEventData<T>> get allEvents =>
       _calendarData.events;
 
@@ -88,7 +93,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// If [event] is not found in the controller, it will add the [updated]
   /// event in the controller.
   ///
-  void updateEvent(CalendarEventData<T> event, CalendarEventData<T> updated) {
+  void update(CalendarEventData<T> event, CalendarEventData<T> updated) {
     _calendarData.updateEvent(event, updated);
     notifyListeners();
   }
@@ -108,13 +113,13 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// Returns events on given day.
   ///
   /// To overwrite default behaviour of this function,
-  /// provide [_eventFilter] argument in [EventController] constructor.
+  /// provide [eventFilter] argument in [EventController] constructor.
   ///
   /// if [includeFullDayEvents] is true, it will include full day events
   /// as well else, it will exclude full day events.
   ///
   /// NOTE: If [eventFilter] is set i.e, not null, [includeFullDayEvents] will
-  /// have no effect. As what events to be included will be totally governed
+  /// have no effect. As what events to be included will be decided
   /// by the [eventFilter].
   ///
   /// To get full day events exclusively, check [getFullDayEvent] method.
@@ -124,13 +129,13 @@ class EventController<T extends Object?> extends ChangeNotifier {
     //ignore: deprecated_member_use_from_same_package
     if (_eventFilter != null) return _eventFilter!.call(date, this.events);
 
-    return _calendarData.getEventsOnDay(date,
-        includeFullDays: includeFullDayEvents);
+    return _calendarData.getEventsOnDay(date.withoutTime,
+        includeFullDayEvents: includeFullDayEvents);
   }
 
   /// Returns full day events on given day.
   List<CalendarEventData<T>> getFullDayEvent(DateTime date) {
-    return _calendarData.getFullDayEvent(date);
+    return _calendarData.getFullDayEvent(date.withoutTime);
   }
 
   /// Updates the [eventFilter].
@@ -186,13 +191,18 @@ class CalendarData<T> {
   UnmodifiableListView<CalendarEventData<T>> get rangingEventList =>
       UnmodifiableListView(_rangingEventList);
 
-  /// Stores all full day events(24hr event)
+  /// Stores all full day events(24hr event).
+  ///
+  /// This includes all full day events that are recurring day events as well.
+  ///
+  ///
   final _fullDayEventList = <CalendarEventData<T>>[];
   UnmodifiableListView<CalendarEventData<T>> get fullDayEventList =>
       UnmodifiableListView(_fullDayEventList);
 
   //#region Data Manipulation Methods
   void addFullDayEvent(CalendarEventData<T> event) {
+    // TODO: add separate logic for adding full day event and ranging event.
     _fullDayEventList.addEventInSortedManner(event);
     _eventList.add(event);
   }
@@ -203,7 +213,7 @@ class CalendarData<T> {
   }
 
   void addSingleDayEvent(CalendarEventData<T> event) {
-    final date = event.date.withoutTime;
+    final date = event.date;
 
     if (_singleDayEvents[date] == null) {
       _singleDayEvents.addAll({
@@ -245,7 +255,7 @@ class CalendarData<T> {
   }
 
   void removeSingleDayEvent(CalendarEventData<T> event) {
-    if (_singleDayEvents[event.date.withoutTime]?.remove(event) ?? false) {
+    if (_singleDayEvents[event.date]?.remove(event) ?? false) {
       _eventList.remove(event);
     }
   }
@@ -286,7 +296,7 @@ class CalendarData<T> {
 
   //#region Data Fetch Methods
   List<CalendarEventData<T>> getEventsOnDay(DateTime date,
-      {bool includeFullDays = true}) {
+      {bool includeFullDayEvents = true}) {
     final events = <CalendarEventData<T>>[];
 
     if (_singleDayEvents[date] != null) {
@@ -294,15 +304,12 @@ class CalendarData<T> {
     }
 
     for (final rangingEvent in _rangingEventList) {
-      if (date == rangingEvent.date ||
-          date == rangingEvent.endDate ||
-          (date.isBefore(rangingEvent.endDate) &&
-              date.isAfter(rangingEvent.date))) {
+      if (rangingEvent.occursOnDate(date)) {
         events.add(rangingEvent);
       }
     }
 
-    if (includeFullDays) {
+    if (includeFullDayEvents) {
       events.addAll(getFullDayEvent(date));
     }
 
@@ -312,45 +319,13 @@ class CalendarData<T> {
   /// Returns full day events on given day.
   List<CalendarEventData<T>> getFullDayEvent(DateTime date) {
     final events = <CalendarEventData<T>>[];
+
     for (final event in fullDayEventList) {
-      if (date.difference(event.date).inDays >= 0 &&
-          event.endDate.difference(date).inDays > 0) {
+      if (event.occursOnDate(date)) {
         events.add(event);
       }
     }
     return events;
   }
   //#endregion
-
-  //#region Private Methods
-  void _addEvent(CalendarEventData<T> event) {
-    assert(event.endDate.difference(event.date).inDays >= 0,
-        'The end date must be greater or equal to the start date');
-    if (_calendarData.eventList.contains(event)) return;
-    if (event.endDate.difference(event.date).inDays > 0) {
-      if (event.startTime == null ||
-          event.endTime == null ||
-          (event.startTime!.isDayStart && event.endTime!.isDayStart)) {
-        _calendarData.fullDayEventList.addEventInSortedManner(event);
-      } else {
-        _calendarData.rangingEventList.addEventInSortedManner(event);
-      }
-    } else {
-      final date = event.date.withoutTime;
-
-      if (_calendarData.events[date] == null) {
-        _calendarData.events.addAll({
-          date: [event],
-        });
-      } else {
-        _calendarData.events[date]!.addEventInSortedManner(event);
-      }
-    }
-
-    _calendarData.eventList.add(event);
-
-    notifyListeners();
-  }
-
-//#endregion
 }

@@ -1,15 +1,14 @@
-import 'package:calendar_view/calendar_view.dart';
-import 'package:example/enumerations.dart';
-import 'package:example/widgets/responsive_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../enumerations.dart';
 import '../extension.dart';
+import '../widgets/responsive_widget.dart';
 import '../widgets/week_view_widget.dart';
 import 'create_event_page.dart';
 import 'web/web_home_page.dart';
 
 class WeekViewDemo extends StatefulWidget {
-  const WeekViewDemo({Key? key}) : super(key: key);
+  const WeekViewDemo({super.key});
 
   @override
   _WeekViewDemoState createState() => _WeekViewDemoState();

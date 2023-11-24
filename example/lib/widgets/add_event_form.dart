@@ -314,6 +314,11 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     _endDate = DateTime.now().withoutTime;
     _startTime = null;
     _endTime = null;
+    _color = Colors.blue;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _displayColorPicker() {

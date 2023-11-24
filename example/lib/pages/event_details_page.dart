@@ -1,13 +1,13 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:example/pages/create_event_page.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
+import 'create_event_page.dart';
 
 class DetailsPage extends StatelessWidget {
   final CalendarEventData event;
 
-  const DetailsPage({Key? key, required this.event}) : super(key: key);
+  const DetailsPage({super.key, required this.event});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
