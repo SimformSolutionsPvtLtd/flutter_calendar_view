@@ -11,6 +11,7 @@ import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
+
 part 'side_event_arranger.dart';
 
 abstract class EventArranger<T extends Object?> {
