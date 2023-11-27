@@ -1,3 +1,18 @@
+# [1.0.5] (UnReleased)(https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.5)
+
+- Fixed issue related to auto scroll to initial duration for day
+  view-[#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
+- Added
+  feature added a callback for the default header title
+    - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
+- Added
+  feature added the quarterHourIndicator for the DayView & halfHourIndicator and
+  quarterHourIndicator for WeekView
+    - [#270](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/270)
+- Added
+  feature added Support for changing the week day position(top/bottom) in weekView
+  - [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
+
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
 - Fixed
@@ -8,9 +23,8 @@
   Issue [#237 - DayView & MonthView layout issue in landscape mode](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/237)
 - Added Feature
   [#57 - Change default start hour in DayView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/57)
-- Fixed 
+- Fixed
   Issue [#225 - Unwanted space at top in DayView while using sliver](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/225)
-
 
 # [1.0.3 - 3 Apr 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.3)
 

@@ -174,6 +174,9 @@ DayView(
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
+    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
+        return //Your custom painter.
+    }
 );
 ```
 
@@ -200,8 +203,14 @@ WeekView(
     onEventTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
     startDay: WeekDays.sunday, // To change the first day of the week.
+    showVerticalLines: false, // Show the vertical line between days.
+    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
+        return //Your custom painter.
+    }
 );
 ```
+
+
 
 To see the list of all parameters and detailed description of parameters
 visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html)
