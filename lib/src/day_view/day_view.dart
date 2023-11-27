@@ -268,22 +268,23 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.emulateVerticalOffsetBy = 0,
     this.isRtl,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
-            "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
+  "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
-  })  : assert(timeLineOffset >= 0,
-            "timeLineOffset must be greater than or equal to 0"),
-        assert(width == null || width > 0,
-            "Calendar width must be greater than 0."),
-        assert(timeLineWidth == null || timeLineWidth > 0,
-            "Time line width must be greater than 0."),
-        assert(
-            heightPerMinute > 0, "Height per minute must be greater than 0."),
-        assert(
-          dayDetectorBuilder == null || onDateLongPress == null,
-          """If you use [dayPressDetectorBuilder]
+        )  : assert(timeLineOffset >= 0,
+  "timeLineOffset must be greater than or equal to 0"),
+  assert(width == null || width > 0,
+  "Calendar width must be greater than 0."),
+  assert(timeLineWidth == null || timeLineWidth > 0,
+  "Time line width must be greater than 0."),
+  assert(
+  heightPerMinute > 0, "Height per minute must be greater than 0."),
+  assert(
+  dayDetectorBuilder == null || onDateLongPress == null,
+  """If you use [dayPressDetectorBuilder]
           do not provide [onDateLongPress]""",
-        ),
-        super(key: key);
+  ),
+  super(key: key);
+
 
   @override
   DayViewState<T> createState() => DayViewState<T>();
