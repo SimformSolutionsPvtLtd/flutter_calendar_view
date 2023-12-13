@@ -184,3 +184,7 @@ extension MyList on List<CalendarEventData> {
     }
   }
 }
+
+extension TimerOfDayExtension on TimeOfDay {
+  int get getTotalMinutes => hour * 60 + minute;
+}
