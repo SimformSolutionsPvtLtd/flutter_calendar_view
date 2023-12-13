@@ -70,7 +70,7 @@ class CalendarEventData<T extends Object?> {
       };
 
   @override
-  String toString() => toJson().toString();
+  String toString() => '${toJson()}';
 
   @override
   bool operator ==(Object other) {

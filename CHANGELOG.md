@@ -1,17 +1,15 @@
 # [1.0.5] (UnReleased)(https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.5)
 
 - Fixed issue related to auto scroll to initial duration for day
-  view-[#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
+  view. [#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
 - Added
-  feature added a callback for the default header title
-    - [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
+  feature added a callback for the default header title. [#241](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/241)
 - Added
   feature added the quarterHourIndicator for the DayView & halfHourIndicator and
-  quarterHourIndicator for WeekView
-    - [#270](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/270)
+  quarterHourIndicator for WeekView. [#270](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/270)
 - Added
-  feature added Support for changing the week day position(top/bottom) in weekView
-  - [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
+  feature added Support for changing the week day position(top/bottom) in weekView. [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
+- Adds new flag `includeEdges` in `EventArrangers`. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/294)
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
