@@ -1,13 +1,14 @@
-import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
+import '../enumerations.dart';
 import '../extension.dart';
-import '../model/event.dart';
 import '../widgets/day_view_widget.dart';
+import '../widgets/responsive_widget.dart';
 import 'create_event_page.dart';
+import 'web/web_home_page.dart';
 
 class DayViewPageDemo extends StatefulWidget {
-  const DayViewPageDemo({Key? key}) : super(key: key);
+  const DayViewPageDemo({super.key});
 
   @override
   _DayViewPageDemoState createState() => _DayViewPageDemoState();
@@ -16,20 +17,18 @@ class DayViewPageDemo extends StatefulWidget {
 class _DayViewPageDemoState extends State<DayViewPageDemo> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        elevation: 8,
-        onPressed: () async {
-          final event =
-              await context.pushRoute<CalendarEventData<Event>>(CreateEventPage(
-            withDuration: true,
-          ));
-          if (event == null) return;
-          CalendarControllerProvider.of<Event>(context).controller.add(event);
-        },
+    return ResponsiveWidget(
+      webWidget: WebHomePage(
+        selectedView: CalendarView.day,
       ),
-      body: DayViewWidget(),
+      mobileWidget: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          elevation: 8,
+          onPressed: () => context.pushRoute(CreateEventPage()),
+        ),
+        body: DayViewWidget(),
+      ),
     );
   }
 }

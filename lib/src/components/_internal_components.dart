@@ -321,6 +321,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Use SizedBox If possible.
     return Container(
       height: height,
       width: width,

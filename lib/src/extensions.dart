@@ -168,6 +168,7 @@ extension MinutesExtension on MinuteSlotSize {
 extension MyList on List<CalendarEventData> {
   // Below function will add the new event in sorted manner(startTimeWise) in
   // the existing list of CalendarEventData.
+
   void addEventInSortedManner(CalendarEventData event) {
     var addIndex = -1;
 

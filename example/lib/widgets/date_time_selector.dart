@@ -8,28 +8,36 @@ typedef Validator = String? Function(String? value);
 enum DateTimeSelectionType { date, time }
 
 class DateTimeSelectorFormField extends StatefulWidget {
-  final Function(DateTime?)? onSelect;
-  final DateTimeSelectionType? type;
+  /// Called when date is selected.
+  final Function(DateTime)? onSelect;
+
+  /// Selection time, date or time.
+  final DateTimeSelectionType type;
+
   final FocusNode? focusNode;
+
+  /// Minimum date that can be selected.
   final DateTime? minimumDateTime;
+
   final Validator? validator;
-  final bool displayDefault;
+
   final TextStyle? textStyle;
-  final void Function(DateTime date)? onSave;
+  final void Function(DateTime? date)? onSave;
   final InputDecoration? decoration;
-  final TextEditingController controller;
+  final TextEditingController? controller;
+  final DateTime? initialDateTime;
 
   const DateTimeSelectorFormField({
     this.onSelect,
-    this.type,
+    this.type = DateTimeSelectionType.time,
     this.onSave,
     this.decoration,
     this.focusNode,
     this.minimumDateTime,
     this.validator,
-    this.displayDefault = false,
     this.textStyle,
-    required this.controller,
+    this.controller,
+    this.initialDateTime,
   });
 
   @override
@@ -38,96 +46,59 @@ class DateTimeSelectorFormField extends StatefulWidget {
 }
 
 class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
-  late TextEditingController _textEditingController;
-  late FocusNode _focusNode;
+  late var _minimumDate = CalendarConstants.minDate.withoutTime;
 
-  late DateTime _selectedDate;
+  late var _textEditingController =
+      widget.controller ?? TextEditingController();
+  late var _focusNode = _getFocusNode();
+
+  late DateTime? _selectedDate;
 
   @override
   void initState() {
     super.initState();
 
-    _textEditingController = widget.controller;
-    _focusNode = FocusNode();
+    _setDates();
+  }
 
-    _selectedDate = widget.minimumDateTime ?? DateTime.now();
+  @override
+  void didUpdateWidget(covariant DateTimeSelectorFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (widget.displayDefault && widget.minimumDateTime != null) {
-      if (widget.type == DateTimeSelectionType.date) {
-        _textEditingController.text = widget.minimumDateTime
-                ?.dateToStringWithFormat(format: "dd/MM/yyyy") ??
-            "";
-      } else {
-        _textEditingController.text =
-            widget.minimumDateTime?.getTimeInFormat(TimeStampFormat.parse_12) ??
-                "";
-      }
+    if (widget.focusNode != oldWidget.focusNode) {
+      _focusNode.dispose();
+      _focusNode = _getFocusNode();
     }
+
+    if (widget.controller != oldWidget.controller) {
+      _textEditingController.dispose();
+      _textEditingController = widget.controller ?? TextEditingController();
+    }
+
+    if (_selectedDate != oldWidget.initialDateTime ||
+        widget.minimumDateTime != oldWidget.minimumDateTime) {
+      _setDates();
+    }
+  }
+
+  FocusNode _getFocusNode() {
+    final node = widget.focusNode ?? FocusNode();
+
+    // node.addListener(() {
+    //   if (node.hasFocus) {
+    //     _showSelector();
+    //   }
+    // });
+
+    return node;
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    if (widget.controller == null) _textEditingController.dispose();
+    if (widget.focusNode == null) _focusNode.dispose();
+
     super.dispose();
-  }
-
-  Future<void> _showSelector() async {
-    DateTime? date;
-
-    if (widget.type == DateTimeSelectionType.date) {
-      date = await _showDateSelector();
-      _textEditingController.text =
-          (date ?? _selectedDate).dateToStringWithFormat(format: "dd/MM/yyyy");
-    } else {
-      date = await _showTimeSelector();
-      _textEditingController.text =
-          (date ?? _selectedDate).getTimeInFormat(TimeStampFormat.parse_12);
-    }
-
-    _selectedDate = date ?? DateTime.now();
-
-    if (mounted) {
-      setState(() {});
-    }
-
-    widget.onSelect?.call(date);
-  }
-
-  Future<DateTime?> _showDateSelector() async {
-    final now = widget.minimumDateTime ?? DateTime.now();
-
-    final date = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: widget.minimumDateTime ?? now,
-      lastDate: CalendarConstants.maxDate,
-    );
-
-    if (date == null) return null;
-
-    return date;
-  }
-
-  Future<DateTime?> _showTimeSelector() async {
-    final now = widget.minimumDateTime ?? DateTime.now();
-    final time = await showTimePicker(
-      context: context,
-      builder: (context, widget) {
-        return widget ?? Container();
-      },
-      initialTime: TimeOfDay(hour: now.hour, minute: now.minute),
-    );
-
-    if (time == null) return null;
-
-    final date = now.copyWith(
-      hour: time.hour,
-      minute: time.minute,
-    );
-
-    if (widget.minimumDateTime == null) return date;
-
-    return date;
   }
 
   @override
@@ -135,6 +106,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
     return GestureDetector(
       onTap: _showSelector,
       child: TextFormField(
+        focusNode: _focusNode,
         style: widget.textStyle,
         controller: _textEditingController,
         validator: widget.validator,
@@ -144,5 +116,102 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
         decoration: widget.decoration,
       ),
     );
+  }
+
+  Future<void> _showSelector() async {
+    DateTime? date;
+
+    if (widget.type == DateTimeSelectionType.date) {
+      date = await _showDateSelector();
+
+      _textEditingController.text = (date ?? _selectedDate)
+              ?.dateToStringWithFormat(format: "dd/MM/yyyy") ??
+          '';
+    } else {
+      date = await _showTimeSelector();
+
+      _textEditingController.text =
+          (date ?? _selectedDate)?.getTimeInFormat(TimeStampFormat.parse_12) ??
+              '';
+    }
+
+    _selectedDate = date ?? _selectedDate;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    if (date != null) {
+      widget.onSelect?.call(date);
+    }
+  }
+
+  Future<DateTime?> _showDateSelector() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: widget.minimumDateTime ?? CalendarConstants.minDate,
+      lastDate: CalendarConstants.maxDate,
+    );
+
+    return date;
+  }
+
+  Future<DateTime?> _showTimeSelector() async {
+    final now = _selectedDate ?? DateTime.now();
+
+    final time = await showTimePicker(
+      context: context,
+      builder: (context, widget) {
+        return widget ?? SizedBox.shrink();
+      },
+      initialTime: TimeOfDay.fromDateTime(now),
+    );
+
+    if (time == null) return null;
+
+    final date = now.copyWith(
+      hour: time.hour,
+      minute: time.minute,
+    );
+
+    return date;
+  }
+
+  void _setDates() {
+    _minimumDate = widget.minimumDateTime ?? CalendarConstants.minDate;
+    _selectedDate = widget.initialDateTime;
+
+    switch (widget.type) {
+      case DateTimeSelectionType.date:
+        if (_selectedDate?.withoutTime.isBefore(_minimumDate.withoutTime) ??
+            false) {
+          throw 'InitialDate is smaller than Minimum date';
+        }
+
+        // We are adding this to avoid internal error while
+        // rebuilding the widget.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _textEditingController.text =
+              _selectedDate?.dateToStringWithFormat(format: "dd/MM/yyyy") ?? '';
+        });
+
+        break;
+
+      case DateTimeSelectionType.time:
+        if (_selectedDate != null &&
+            _selectedDate!.getTotalMinutes < _minimumDate.getTotalMinutes) {
+          throw 'InitialDate is smaller than Minimum date';
+        }
+
+        // We are adding this to avoid internal error while
+        // rebuilding the widget.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _textEditingController.text =
+              _selectedDate?.getTimeInFormat(TimeStampFormat.parse_12) ?? '';
+        });
+
+        break;
+    }
   }
 }
