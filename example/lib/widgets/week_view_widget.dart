@@ -1,17 +1,17 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/event_details_page.dart';
 
 class WeekViewWidget extends StatelessWidget {
   final GlobalKey<WeekViewState>? state;
   final double? width;
 
-  const WeekViewWidget({Key? key, this.state, this.width}) : super(key: key);
+  const WeekViewWidget({super.key, this.state, this.width});
 
   @override
   Widget build(BuildContext context) {
-    return WeekView<Event>(
+    return WeekView(
       key: state,
       width: width,
       showLiveTimeLineInAllDays: true,
@@ -20,6 +20,15 @@ class WeekViewWidget extends StatelessWidget {
         color: Colors.redAccent,
         showTime: true,
       ),
+      onEventTap: (events, date) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DetailsPage(
+              event: events.first,
+            ),
+          ),
+        );
+      },
     );
   }
 }

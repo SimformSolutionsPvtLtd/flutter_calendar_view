@@ -9,12 +9,12 @@ class ResponsiveWidget extends StatelessWidget {
   final Widget mobileWidget;
 
   const ResponsiveWidget({
-    Key? key,
+    super.key,
     this.width,
     this.breakPoint = BreakPoints.web,
     required this.webWidget,
     required this.mobileWidget,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

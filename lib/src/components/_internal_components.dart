@@ -51,14 +51,13 @@ class LiveTimeIndicator extends StatefulWidget {
 
 class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   late Timer _timer;
-  late DateTime _currentDate;
+  late TimeOfDay _currentTime = TimeOfDay.now();
 
   @override
   void initState() {
     super.initState();
 
-    _currentDate = DateTime.now();
-    _timer = Timer(Duration(seconds: 1), setTimer);
+    _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
   @override
@@ -70,23 +69,21 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   /// Creates an recursive call that runs every 1 seconds.
   /// This will rebuild TimeLineIndicator every second. This will allow us
   /// to indicate live time in Week and Day view.
-  void setTimer() {
-    if (mounted) {
-      setState(() {
-        _currentDate = DateTime.now();
-        _timer = Timer(Duration(seconds: 1), setTimer);
-      });
+  void _onTick(Timer? timer) {
+    final time = TimeOfDay.now();
+    if (time != _currentTime && mounted) {
+      _currentTime = time;
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentTime = TimeOfDay.fromDateTime(_currentDate);
-    final currentHour = currentTime.hourOfPeriod.appendLeadingZero();
-    final currentMinute = currentTime.minute.appendLeadingZero();
-    final currentPeriod = currentTime.period.name;
+    final currentHour = _currentTime.hourOfPeriod.appendLeadingZero();
+    final currentMinute = _currentTime.minute.appendLeadingZero();
+    final currentPeriod = _currentTime.period.name;
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
-            ?.call(_currentDate) ??
+            ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
     return CustomPaint(
       size: Size(widget.width, widget.height),
@@ -95,7 +92,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
           widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
-          _currentDate.getTotalMinutes * widget.heightPerMinute,
+          _currentTime.getTotalMinutes * widget.heightPerMinute,
         ),
         timeString: timeString,
         showBullet: widget.liveTimeIndicatorSettings.showBullet,
@@ -396,6 +393,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Use SizedBox If possible.
     return Container(
       height: height,
       width: width,

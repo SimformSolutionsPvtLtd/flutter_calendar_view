@@ -9,8 +9,22 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
   /// events. and that will act like one single event.
   /// [OrganizedCalendarEventData.events] will gives
   /// list of all the combined events.
-  const MergeEventArranger();
+  const MergeEventArranger({
+    this.includeEdges = true,
+  });
 
+  /// Decides whether events that are overlapping on edge
+  /// (ex, event1 has the same end-time as the start-time of event 2)
+  /// should be merged together or not.
+  ///
+  /// If includeEdges is true, it will merge the events else it will not.
+  ///
+  final bool includeEdges;
+
+  /// {@macro event_arranger_arrange_method_doc}
+  ///
+  /// Make sure that all the events that are passed in [events], must be in
+  /// ascending order of start time.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -18,9 +32,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
   }) {
+    // TODO: Right now all the events that are passed in this function must be
+    // sorted in ascending order of the start time.
+    //
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
 
     for (final event in events) {
+      // Checks if an event has valid start and end time.
       if (event.startTime == null ||
           event.endTime == null ||
           event.endTime!.getTotalMinutes <= event.startTime!.getTotalMinutes) {
@@ -56,6 +74,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       for (var i = 0; i < arrangeEventLen; i++) {
         final arrangedEventStart =
             arrangedEvents[i].startDuration.getTotalMinutes;
+
         final arrangedEventEnd =
             arrangedEvents[i].endDuration.getTotalMinutes == 0
                 ? Constants.minutesADay
@@ -122,17 +141,17 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     return arrangedEvents;
   }
 
-  bool _checkIsOverlapping(int arrangedEventStart, int arrangedEventEnd,
-      int eventStart, int eventEnd) {
-    var result = (arrangedEventStart >= eventStart &&
-            arrangedEventStart <= eventEnd) ||
-        (arrangedEventEnd >= eventStart && arrangedEventEnd <= eventEnd) ||
-        (eventStart >= arrangedEventStart && eventStart <= arrangedEventEnd) ||
-        (eventEnd >= arrangedEventStart && eventEnd <= arrangedEventEnd);
+  bool _checkIsOverlapping(int eStart1, int eEnd1, int eStart2, int eEnd2) {
+    final result = (eStart1 >= eStart2 && eStart1 < eEnd2) ||
+        (eEnd1 > eStart2 && eEnd1 <= eEnd2) ||
+        (eStart2 >= eStart1 && eStart2 < eEnd1) ||
+        (eEnd2 > eStart1 && eEnd2 <= eEnd1) ||
+        (includeEdges &&
+            (eStart1 == eEnd2 ||
+                eEnd1 == eStart2 ||
+                eStart2 == eEnd1 ||
+                eEnd2 == eStart1));
 
-    if (result) {
-      result = result && (arrangedEventEnd != eventStart);
-    }
     return result;
   }
 }
