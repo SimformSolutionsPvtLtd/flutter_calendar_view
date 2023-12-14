@@ -157,16 +157,12 @@ class TimeLine extends StatefulWidget {
 
 class _TimeLineState extends State<TimeLine> {
   late Timer _timer;
-  late TimeOfDay _currentTime;
+  late TimeOfDay _currentTime = TimeOfDay.now();
 
   @override
   void initState() {
     super.initState();
-    _currentTime = widget.liveTimeIndicatorSettings.showTime
-        ? TimeOfDay.now()
-        : TimeOfDay(hour: 0, minute: 16);
-    _timer = Timer(Duration(minutes: 60 - _currentTime.minute),
-        widget.liveTimeIndicatorSettings.showTime ? setTimer : () {});
+    _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
   @override
@@ -175,16 +171,15 @@ class _TimeLineState extends State<TimeLine> {
     super.dispose();
   }
 
-  /// Creates an recursive call that runs every 1 minutes.
-  /// This will rebuild TimeLine every minute. This will allow us
+  /// Creates an recursive call that runs every 1 seconds.
+  /// This will rebuild TimeLine every second. This will allow us
   /// to show/hide time line when there is overlap with
   /// live time line indicator in Week and Day view.
-  void setTimer() {
-    if (mounted) {
-      setState(() {
-        _currentTime = TimeOfDay.now();
-        _timer = Timer(Duration(minutes: 60 - _currentTime.minute), setTimer);
-      });
+  void _onTick(Timer? timer) {
+    final time = TimeOfDay.now();
+    if (time != _currentTime && mounted) {
+      _currentTime = time;
+      setState(() {});
     }
   }
 
