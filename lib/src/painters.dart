@@ -321,7 +321,7 @@ class CurrentTimeLinePainter extends CustomPainter {
         ),
       )
         ..layout()
-        ..paint(canvas, Offset((offset.dx - 15) * 0.20, offset.dy - 6));
+        ..paint(canvas, Offset(offset.dx - 62, offset.dy - 6));
   }
 
   @override

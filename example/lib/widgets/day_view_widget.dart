@@ -46,7 +46,6 @@ class DayViewWidget extends StatelessWidget {
         showBullet: false,
         showTime: true,
         showTimeBackgroundView: true,
-        offset: 0,
       ),
     );
   }
