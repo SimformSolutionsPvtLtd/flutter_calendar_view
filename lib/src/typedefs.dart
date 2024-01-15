@@ -72,6 +72,10 @@ typedef DateTapCallback = void Function(DateTime date);
 typedef EventFilter<T extends Object?> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);
 
+/// Comparator for sorting events.
+typedef EventSorter<T extends Object?> = int Function(
+    CalendarEventData<T> a, CalendarEventData<T> b);
+
 typedef CustomHourLinePainter = CustomPainter Function(
   Color lineColor,
   double lineHeight,
