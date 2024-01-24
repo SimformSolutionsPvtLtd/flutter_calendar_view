@@ -183,6 +183,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// Title of the full day events row
+  final String? fullDayHeaderTitle;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -224,6 +227,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
+    this.fullDayHeaderTitle,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -255,6 +259,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late DateTime _currentWeek;
   late int _totalWeeks;
   late int _currentIndex;
+  late String? _fullDayHeaderTitle;
 
   late EventArranger<T> _eventArranger;
 
@@ -306,6 +311,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
     _assignBuilders();
+    _fullDayHeaderTitle = widget.fullDayHeaderTitle;
   }
 
   @override
@@ -433,6 +439,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
+                            fullDayHeaderTitle: _fullDayHeaderTitle,
                           ),
                         );
                       },
