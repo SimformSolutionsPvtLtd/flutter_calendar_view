@@ -231,6 +231,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// This can be used to disable the horizontal scroll of a page.
   final ScrollPhysics? pageViewPhysics;
 
+  /// Title of the full day events row
+  final String? fullDayHeaderTitle;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -286,6 +289,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.pageViewPhysics,
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
+    this.fullDayHeaderTitle,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -327,6 +331,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late DateTime _currentWeek;
   late int _totalWeeks;
   late int _currentIndex;
+  late String? _fullDayHeaderTitle;
 
   late EventArranger<T> _eventArranger;
 
@@ -388,6 +393,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
     _assignBuilders();
+    _fullDayHeaderTitle = widget.fullDayHeaderTitle;
   }
 
   @override
@@ -533,6 +539,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
                             endHour: _endHour,
+                            fullDayHeaderTitle: _fullDayHeaderTitle,
                           ),
                         );
                       },
