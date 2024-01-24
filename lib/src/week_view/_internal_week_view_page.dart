@@ -191,7 +191,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Constants.defaultBorderColor, width: 2),
+                  bottom: BorderSide(color: hourIndicatorSettings.color, width: 2),
                 ),
               ),
               child: Row(
