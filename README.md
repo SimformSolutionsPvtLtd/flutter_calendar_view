@@ -220,7 +220,13 @@ WeekView(
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },
-    weekPageHeaderBuilder: WeekHeader.hidden // To hide week header
+    weekPageHeaderBuilder: WeekHeader.hidden, // To hide week header
+    fullDayHeaderTitle: 'All day', // To set full day events header title
+    fullDayHeaderTextConfig: FullDayHeaderTextConfig(
+      textAlign: TextAlign.center,
+      textOverflow: TextOverflow.ellipsis,
+      maxLines: 2,
+    ), // To set full day events header text config
 );
 ```
 

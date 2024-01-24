@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/week_view_components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -12,7 +13,6 @@ import '../event_controller.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../typedefs.dart';
-import '../constants.dart';
 
 /// A single page for week view.
 class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
@@ -146,7 +146,10 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   final int endHour;
 
   /// Title of the full day events row
-  final String? fullDayHeaderTitle;
+  final String fullDayHeaderTitle;
+
+  /// Defines full day events header text config
+  final FullDayHeaderTextConfig fullDayHeaderTextConfig;
 
   /// A single page for week view.
   const InternalWeekViewPage({
@@ -191,7 +194,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.endHour,
-    this.fullDayHeaderTitle,
+    this.fullDayHeaderTitle = '',
+    required this.fullDayHeaderTextConfig,
   }) : super(key: key);
 
   @override
@@ -237,36 +241,42 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: hourIndicatorSettings.color, width: 2),
+                  bottom: BorderSide(
+                    color: hourIndicatorSettings.color,
+                    width: 2,
+                  ),
                 ),
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: timeLineWidth + hourIndicatorSettings.offset,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 1),
+                  if (fullDayHeaderTitle.isNotEmpty)
+                    Container(
+                      width: timeLineWidth + hourIndicatorSettings.offset,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 1,
+                      ),
                       child: Text(
-                        fullDayHeaderTitle ?? "",
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        fullDayHeaderTitle,
+                        textAlign: fullDayHeaderTextConfig.textAlign,
+                        maxLines: fullDayHeaderTextConfig.maxLines,
+                        overflow: fullDayHeaderTextConfig.textOverflow,
                       ),
                     ),
-                  ),
                   ...List.generate(
                     filteredDates.length,
-                        (index) {
-                      final fullDayEventList = controller.getFullDayEvent(filteredDates[index]);
+                    (index) {
+                      final fullDayEventList =
+                          controller.getFullDayEvent(filteredDates[index]);
                       return Container(
                         width: weekTitleWidth,
                         child: fullDayEventList.isEmpty
                             ? null
                             : fullDayEventBuilder.call(
-                          fullDayEventList,
-                          dates[index],
-                        ),
+                                fullDayEventList,
+                                dates[index],
+                              ),
                       );
                     },
                   )
