@@ -17,15 +17,15 @@ class HourIndicatorSettings {
   final int startHour;
 
   /// Settings for hour lines
-  const HourIndicatorSettings({
-    this.height = 1.0,
-    this.offset = 0.0,
-    this.color = Colors.grey,
-    this.lineStyle = LineStyle.solid,
-    this.dashWidth = 4,
-    this.dashSpaceWidth = 4,
-    this.startHour = 0
-  }) : assert(height >= 0, "Height must be greater than or equal to 0.");
+  const HourIndicatorSettings(
+      {this.height = 1.0,
+      this.offset = 0.0,
+      this.color = Colors.grey,
+      this.lineStyle = LineStyle.solid,
+      this.dashWidth = 4,
+      this.dashSpaceWidth = 4,
+      this.startHour = 0})
+      : assert(height >= 0, "Height must be greater than or equal to 0.");
 
   factory HourIndicatorSettings.none() => HourIndicatorSettings(
         color: Colors.transparent,

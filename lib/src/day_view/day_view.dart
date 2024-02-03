@@ -438,10 +438,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           valueListenable: _scrollConfiguration,
                           builder: (_, __, ___) => InternalDayViewPage<T>(
                             key: ValueKey(
-                            _hourHeight.toString() + date.toString()),
+                                _hourHeight.toString() + date.toString()),
                             width: _width,
                             liveTimeIndicatorSettings:
-                            _liveTimeIndicatorSettings,
+                                _liveTimeIndicatorSettings,
                             timeLineBuilder: _timeLineBuilder,
                             dayDetectorBuilder: _dayDetectorBuilder,
                             eventTileBuilder: _eventTileBuilder,
@@ -453,7 +453,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             onDateLongPress: widget.onDateLongPress,
                             onDateTap: widget.onDateTap,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
-                            date.compareWithoutTime(DateTime.now()),
+                                date.compareWithoutTime(DateTime.now()),
                             timeLineOffset: widget.timeLineOffset,
                             timeLineWidth: _timeLineWidth,
                             verticalLineOffset: widget.verticalLineOffset,
@@ -469,12 +469,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
-                            _halfHourIndicatorSettings,
+                                _halfHourIndicatorSettings,
                             startHour: _startHour,
                             quarterHourIndicatorSettings:
-                            _quarterHourIndicatorSettings,
+                                _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
-                            widget.emulateVerticalOffsetBy,
+                                widget.emulateVerticalOffsetBy,
                           ),
                         );
                       },
@@ -719,31 +719,29 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       FullDayEventView(events: events, date: date);
 
   HourLinePainter _defaultHourLinePainter(
-    Color lineColor,
-    double lineHeight,
-    double offset,
-    double minuteHeight,
-    bool showVerticalLine,
-    double verticalLineOffset,
-    LineStyle lineStyle,
-    double dashWidth,
-    double dashSpaceWidth,
-    double emulateVerticalOffsetBy,
-    int startHour
-  ) {
+      Color lineColor,
+      double lineHeight,
+      double offset,
+      double minuteHeight,
+      bool showVerticalLine,
+      double verticalLineOffset,
+      LineStyle lineStyle,
+      double dashWidth,
+      double dashSpaceWidth,
+      double emulateVerticalOffsetBy,
+      int startHour) {
     return HourLinePainter(
-      lineColor: lineColor,
-      lineHeight: lineHeight,
-      offset: offset,
-      minuteHeight: minuteHeight,
-      verticalLineOffset: verticalLineOffset,
-      showVerticalLine: showVerticalLine,
-      lineStyle: lineStyle,
-      dashWidth: dashWidth,
-      dashSpaceWidth: dashSpaceWidth,
-      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-      startHour: startHour
-    );
+        lineColor: lineColor,
+        lineHeight: lineHeight,
+        offset: offset,
+        minuteHeight: minuteHeight,
+        verticalLineOffset: verticalLineOffset,
+        showVerticalLine: showVerticalLine,
+        lineStyle: lineStyle,
+        dashWidth: dashWidth,
+        dashSpaceWidth: dashSpaceWidth,
+        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+        startHour: startHour);
   }
 
   /// Called when user change page using any gesture or inbuilt functions.

@@ -499,7 +499,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
-                            emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
+                            emulateVerticalOffsetBy:
+                                widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
                           ),
                         );
@@ -606,11 +607,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void _assignBuilders() {
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
     _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _weekHeaderBuilder = widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
+    _weekHeaderBuilder =
+        widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
-    _weekDetectorBuilder = widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
+    _weekDetectorBuilder =
+        widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
-    _fullDayEventBuilder = widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _fullDayEventBuilder =
+        widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
@@ -830,31 +834,29 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   HourLinePainter _defaultHourLinePainter(
-    Color lineColor,
-    double lineHeight,
-    double offset,
-    double minuteHeight,
-    bool showVerticalLine,
-    double verticalLineOffset,
-    LineStyle lineStyle,
-    double dashWidth,
-    double dashSpaceWidth,
-    double emulateVerticalOffsetBy,
-    int startHour
-  ) {
+      Color lineColor,
+      double lineHeight,
+      double offset,
+      double minuteHeight,
+      bool showVerticalLine,
+      double verticalLineOffset,
+      LineStyle lineStyle,
+      double dashWidth,
+      double dashSpaceWidth,
+      double emulateVerticalOffsetBy,
+      int startHour) {
     return HourLinePainter(
-      lineColor: lineColor,
-      lineHeight: lineHeight,
-      offset: offset,
-      minuteHeight: minuteHeight,
-      verticalLineOffset: verticalLineOffset,
-      showVerticalLine: showVerticalLine,
-      lineStyle: lineStyle,
-      dashWidth: dashWidth,
-      dashSpaceWidth: dashSpaceWidth,
-      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-      startHour: startHour
-    );
+        lineColor: lineColor,
+        lineHeight: lineHeight,
+        offset: offset,
+        minuteHeight: minuteHeight,
+        verticalLineOffset: verticalLineOffset,
+        showVerticalLine: showVerticalLine,
+        lineStyle: lineStyle,
+        dashWidth: dashWidth,
+        dashSpaceWidth: dashSpaceWidth,
+        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+        startHour: startHour);
   }
 
   /// Called when user change page using any gesture or inbuilt functions.

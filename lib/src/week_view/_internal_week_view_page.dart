@@ -249,32 +249,31 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 child: Stack(
                   children: [
                     CustomPaint(
-                      size: Size(width, height),
-                      painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
-                        startHour: startHour,
-                        emulateVerticalOffsetBy: emulateVerticalOffsetBy)
-                    ),
+                        size: Size(width, height),
+                        painter: HourLinePainter(
+                            lineColor: hourIndicatorSettings.color,
+                            lineHeight: hourIndicatorSettings.height,
+                            offset:
+                                timeLineWidth + hourIndicatorSettings.offset,
+                            minuteHeight: heightPerMinute,
+                            verticalLineOffset: verticalLineOffset,
+                            showVerticalLine: showVerticalLine,
+                            startHour: startHour,
+                            emulateVerticalOffsetBy: emulateVerticalOffsetBy)),
                     if (showHalfHours)
                       CustomPaint(
                         size: Size(width, height),
                         painter: HalfHourLinePainter(
-                          lineColor: halfHourIndicatorSettings.color,
-                          lineHeight: halfHourIndicatorSettings.height,
-                          offset:
-                              timeLineWidth + halfHourIndicatorSettings.offset,
-                          minuteHeight: heightPerMinute,
-                          lineStyle: halfHourIndicatorSettings.lineStyle,
-                          dashWidth: halfHourIndicatorSettings.dashWidth,
-                          dashSpaceWidth:
-                              halfHourIndicatorSettings.dashSpaceWidth,
-                          startHour: halfHourIndicatorSettings.startHour
-                        ),
+                            lineColor: halfHourIndicatorSettings.color,
+                            lineHeight: halfHourIndicatorSettings.height,
+                            offset: timeLineWidth +
+                                halfHourIndicatorSettings.offset,
+                            minuteHeight: heightPerMinute,
+                            lineStyle: halfHourIndicatorSettings.lineStyle,
+                            dashWidth: halfHourIndicatorSettings.dashWidth,
+                            dashSpaceWidth:
+                                halfHourIndicatorSettings.dashSpaceWidth,
+                            startHour: halfHourIndicatorSettings.startHour),
                       ),
                     if (showQuarterHours)
                       CustomPaint(
