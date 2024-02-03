@@ -259,7 +259,6 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         showVerticalLine: showVerticalLine,
                         startHour: startHour,
                         emulateVerticalOffsetBy: emulateVerticalOffsetBy)
-                      ),
                     ),
                     if (showHalfHours)
                       CustomPaint(
@@ -274,6 +273,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                           dashWidth: halfHourIndicatorSettings.dashWidth,
                           dashSpaceWidth:
                               halfHourIndicatorSettings.dashSpaceWidth,
+                          startHour: halfHourIndicatorSettings.startHour
                         ),
                       ),
                     if (showQuarterHours)

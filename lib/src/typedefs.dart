@@ -83,6 +83,7 @@ typedef CustomHourLinePainter = CustomPainter Function(
   double dashWidth,
   double dashSpaceWidth,
   double emulateVerticalOffsetBy,
+  int startHour
 );
 
 typedef TestPredicate<T> = bool Function(T element);

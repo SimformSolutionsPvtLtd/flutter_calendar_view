@@ -729,6 +729,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     double dashWidth,
     double dashSpaceWidth,
     double emulateVerticalOffsetBy,
+    int startHour
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -741,6 +742,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+      startHour: startHour
     );
   }
 

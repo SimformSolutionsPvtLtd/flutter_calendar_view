@@ -496,7 +496,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
-                            startHour: _startHour
+                            startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
@@ -606,14 +606,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void _assignBuilders() {
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
     _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _weekHeaderBuilder =
-        widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
+    _weekHeaderBuilder = widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
-    _weekDetectorBuilder =
-        widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
+    _weekDetectorBuilder = widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
-    _fullDayEventBuilder =
-        widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _fullDayEventBuilder = widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
@@ -843,6 +840,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     double dashWidth,
     double dashSpaceWidth,
     double emulateVerticalOffsetBy,
+    int startHour
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -855,6 +853,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       dashWidth: dashWidth,
       dashSpaceWidth: dashSpaceWidth,
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+      startHour: startHour
     );
   }
 
