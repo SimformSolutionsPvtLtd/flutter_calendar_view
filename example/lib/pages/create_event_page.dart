@@ -1,29 +1,14 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../extension.dart';
-import '../widgets/add_event_widget.dart';
+import '../widgets/add_event_form.dart';
 
-class CreateEventPage extends StatefulWidget {
-  final bool withDuration;
+class CreateEventPage extends StatelessWidget {
+  const CreateEventPage({super.key, this.event});
 
-  const CreateEventPage({Key? key, this.withDuration = false})
-      : super(key: key);
-
-  @override
-  _CreateEventPageState createState() => _CreateEventPageState();
-}
-
-class _CreateEventPageState extends State<CreateEventPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  final CalendarEventData? event;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +25,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           ),
         ),
         title: Text(
-          "Create New Event",
+          event == null ? "Create New Event" : "Update Event",
           style: TextStyle(
             color: AppColors.black,
             fontSize: 20.0,
@@ -52,8 +37,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
         physics: ClampingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.all(20.0),
-          child: AddEventWidget(
-            onEventAdd: context.pop,
+          child: AddOrEditEventForm(
+            onEventAdd: (newEvent) {
+              if (this.event != null) {
+                CalendarControllerProvider.of(context)
+                    .controller
+                    .update(this.event!, newEvent);
+              } else {
+                CalendarControllerProvider.of(context).controller.add(newEvent);
+              }
+
+              context.pop(true);
+            },
+            event: event,
           ),
         ),
       ),

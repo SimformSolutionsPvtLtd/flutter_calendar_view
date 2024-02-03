@@ -11,7 +11,14 @@ import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
+
 part 'side_event_arranger.dart';
+
+/// {@template event_arranger_arrange_method_doc}
+/// This method will arrange all the events in and return List of
+/// [OrganizedCalendarEventData].
+///
+/// {@endtemplate}
 
 abstract class EventArranger<T extends Object?> {
   /// [EventArranger] defines how simultaneous events will be arranged.
@@ -23,9 +30,7 @@ abstract class EventArranger<T extends Object?> {
   ///
   const EventArranger();
 
-  /// This method will arrange all the events in and return List of
-  /// [OrganizedCalendarEventData].
-  ///
+  /// {@macro event_arranger_arrange_method_doc}
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
     required double height,

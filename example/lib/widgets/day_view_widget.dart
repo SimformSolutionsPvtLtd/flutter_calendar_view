@@ -1,21 +1,21 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/event_details_page.dart';
 
 class DayViewWidget extends StatelessWidget {
   final GlobalKey<DayViewState>? state;
   final double? width;
 
   const DayViewWidget({
-    Key? key,
+    super.key,
     this.state,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return DayView<Event>(
+    return DayView(
       key: state,
       width: width,
       startDuration: Duration(hours: 8),
@@ -25,6 +25,15 @@ class DayViewWidget extends StatelessWidget {
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
+      onEventTap: (events, date) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DetailsPage(
+              event: events.first,
+            ),
+          ),
+        );
+      },
       halfHourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
         lineStyle: LineStyle.dashed,

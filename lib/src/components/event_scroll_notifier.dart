@@ -15,8 +15,11 @@ class EventScrollConfiguration<T extends Object?> extends ValueNotifier<bool> {
   EventScrollConfiguration() : super(false);
 
   bool get shouldScroll => _shouldScroll;
+
   CalendarEventData<T>? get event => _event;
+
   Duration? get duration => _duration;
+
   Curve? get curve => _curve;
 
   // This function will be completed once [completeScroll] is called.

@@ -219,6 +219,7 @@ class MonthPageHeader extends CalendarPageHeader {
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
           headerStyle: headerStyle,
         );
+
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.month} - ${date.year}";
 }

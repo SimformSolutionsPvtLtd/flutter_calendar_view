@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
-import '../model/event.dart';
-import 'add_event_widget.dart';
+import 'add_event_form.dart';
 
 class CalendarConfig extends StatelessWidget {
   final void Function(CalendarView view) onViewChange;
   final CalendarView currentView;
 
   const CalendarConfig({
-    Key? key,
+    super.key,
     required this.onViewChange,
     this.currentView = CalendarView.month,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +98,9 @@ class CalendarConfig extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                AddEventWidget(
+                AddOrEditEventForm(
                   onEventAdd: (event) {
-                    CalendarControllerProvider.of<Event>(context)
+                    CalendarControllerProvider.of(context)
                         .controller
                         .add(event);
                   },

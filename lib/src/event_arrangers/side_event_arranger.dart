@@ -7,8 +7,22 @@ part of 'event_arrangers.dart';
 class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will arrange
   /// all the events side by side.
-  const SideEventArranger();
+  const SideEventArranger({
+    this.includeEdges = false,
+  });
 
+  /// Decides whether events that are overlapping on edge
+  /// (ex, event1 has the same end-time as the start-time of event 2)
+  /// should be offset or not.
+  ///
+  /// If includeEdges is true, it will offset the events else it will not.
+  ///
+  final bool includeEdges;
+
+  /// {@macro event_arranger_arrange_method_doc}
+  ///
+  /// Make sure that all the events that are passed in [events], must be in
+  /// ascending order of start time.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -17,7 +31,9 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double heightPerMinute,
     required int startHour,
   }) {
-    final mergedEvents = MergeEventArranger<T>().arrange(
+    final mergedEvents = MergeEventArranger<T>(
+      includeEdges: includeEdges,
+    ).arrange(
       events: events,
       height: height,
       width: width,
