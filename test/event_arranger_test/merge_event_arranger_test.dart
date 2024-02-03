@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 const height = 1440.0;
 const width = 500.0;
 const heightPerMinute = 1.0;
+const startHour = 0;
 
 void main() {
   final now = DateTime.now().withoutTime;
@@ -58,6 +59,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, events.length);
@@ -87,6 +89,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -116,6 +119,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -145,6 +149,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -174,6 +179,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -203,6 +209,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -264,6 +271,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 4);
@@ -328,6 +336,7 @@ void main() {
         height: height,
         width: width,
         heightPerMinute: heightPerMinute,
+        startHour: startHour
       );
 
       expect(mergedEvents.length, 1);
@@ -362,6 +371,7 @@ void main() {
           height: height,
           width: width,
           heightPerMinute: heightPerMinute,
+          startHour: startHour
         );
 
         expect(mergedEvents.length, 2);
@@ -395,6 +405,7 @@ void main() {
           height: height,
           width: width,
           heightPerMinute: heightPerMinute,
+          startHour: startHour
         );
 
         expect(mergedEvents.length, 2);
@@ -429,6 +440,7 @@ void main() {
           height: height,
           width: width,
           heightPerMinute: heightPerMinute,
+          startHour: startHour
         );
 
         expect(mergedEvents.length, 1);
@@ -462,6 +474,7 @@ void main() {
           height: height,
           width: width,
           heightPerMinute: heightPerMinute,
+          startHour: startHour
         );
 
         expect(mergedEvents.length, 1);
