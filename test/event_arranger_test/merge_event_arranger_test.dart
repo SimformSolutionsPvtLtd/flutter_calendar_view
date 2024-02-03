@@ -55,12 +55,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, events.length);
     });
@@ -85,12 +84,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -115,12 +113,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -145,12 +142,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -175,12 +171,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -205,12 +200,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -267,12 +261,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 4);
     });
@@ -329,15 +322,14 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events
-          ..sort((e1, e2) =>
-              (e1.startTime?.getTotalMinutes ?? 0) -
-              (e2.startTime?.getTotalMinutes ?? 0)),
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour
-      );
+          events: events
+            ..sort((e1, e2) =>
+                (e1.startTime?.getTotalMinutes ?? 0) -
+                (e2.startTime?.getTotalMinutes ?? 0)),
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -364,15 +356,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: false).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-          startHour: startHour
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 2);
       });
@@ -398,15 +389,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: false).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-          startHour: startHour
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 2);
       });
@@ -433,15 +423,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: true).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-          startHour: startHour
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 1);
       });
@@ -467,15 +456,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: true).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-          startHour: startHour
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 1);
       });
