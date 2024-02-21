@@ -192,3 +192,9 @@ extension MyList on List<CalendarEventData> {
 extension TimerOfDayExtension on TimeOfDay {
   int get getTotalMinutes => hour * 60 + minute;
 }
+
+extension IntExtension on int {
+  String appendLeadingZero() {
+    return toString().padLeft(2, '0');
+  }
+}

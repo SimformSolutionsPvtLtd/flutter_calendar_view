@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -251,19 +253,35 @@ class CurrentTimeLinePainter extends CustomPainter {
   /// Radius of bullet.
   final double bulletRadius;
 
+  /// Time string
+  final String timeString;
+
+  /// Flag to show time at left side or not.
+  final bool showTime;
+
+  /// Flag to show time backgroud view.
+  final bool showTimeBackgroundView;
+
+  /// Width of time backgroud view.
+  final double timeBackgroundViewWidth;
+
   /// Paints a single horizontal line at [offset].
   CurrentTimeLinePainter({
-    this.showBullet = true,
+    required this.showBullet,
     required this.color,
     required this.height,
     required this.offset,
-    this.bulletRadius = 5,
+    required this.bulletRadius,
+    required this.timeString,
+    required this.showTime,
+    required this.showTimeBackgroundView,
+    required this.timeBackgroundViewWidth,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawLine(
-      Offset(offset.dx, offset.dy),
+      Offset(offset.dx - (showBullet ? 0 : 8), offset.dy),
       Offset(size.width, offset.dy),
       Paint()
         ..color = color
@@ -273,6 +291,37 @@ class CurrentTimeLinePainter extends CustomPainter {
     if (showBullet)
       canvas.drawCircle(
           Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+
+    if (showTimeBackgroundView)
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            max(3, offset.dx - 68),
+            offset.dy - 11,
+            timeBackgroundViewWidth,
+            24,
+          ),
+          Radius.circular(12),
+        ),
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill
+          ..strokeWidth = bulletRadius,
+      );
+
+    if (showTime)
+      TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(
+          text: timeString,
+          style: TextStyle(
+            fontSize: 12.0,
+            color: showTimeBackgroundView ? Colors.white : color,
+          ),
+        ),
+      )
+        ..layout()
+        ..paint(canvas, Offset(offset.dx - 62, offset.dy - 6));
   }
 
   @override
@@ -280,5 +329,11 @@ class CurrentTimeLinePainter extends CustomPainter {
       oldDelegate is CurrentTimeLinePainter &&
       (color != oldDelegate.color ||
           height != oldDelegate.height ||
-          offset != oldDelegate.offset);
+          offset != oldDelegate.offset ||
+          bulletRadius != oldDelegate.bulletRadius ||
+          timeString != oldDelegate.timeString ||
+          timeBackgroundViewWidth != oldDelegate.timeBackgroundViewWidth ||
+          showBullet != oldDelegate.showBullet ||
+          showTime != oldDelegate.showTime ||
+          showTimeBackgroundView != oldDelegate.showTimeBackgroundView);
 }
