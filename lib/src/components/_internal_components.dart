@@ -199,21 +199,21 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = startHour + 1; i < Constants.hoursADay; i++)
+          for (int i = widget.startHour + 1; i < Constants.hoursADay; i++)
             _timelinePositioned(
-              topPosition: widget.hourHeight * (i - startHour) - widget.timeLineOffset,
+              topPosition: widget.hourHeight * (i - widget.startHour) - widget.timeLineOffset,
               bottomPosition: widget.height -
-                  (widget.hourHeight * (i - startHour + 1)) + widget.timeLineOffset,
+                  (widget.hourHeight * (i - widget.startHour + 1)) + widget.timeLineOffset,
               hour: i,
             ),
           if (widget.showHalfHours)
-            for (int i = startHour; i < Constants.hoursADay; i++)
+            for (int i = widget.startHour; i < Constants.hoursADay; i++)
               _timelinePositioned(
-                topPosition: widget.hourHeight * (i - startHour) -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget._halfHourHeight,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i - startHour + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
