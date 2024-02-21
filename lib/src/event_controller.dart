@@ -169,7 +169,7 @@ class CalendarData<T extends Object?> {
   }) : _eventSorter = eventSorter;
 
   //#region Private Fields
-  EventSorter<T>? _eventSorter;
+  final EventSorter<T>? _eventSorter;
 
   /// Stores all the events in a list(all the items in below 3 list will be
   /// available in this list as global itemList of all events).

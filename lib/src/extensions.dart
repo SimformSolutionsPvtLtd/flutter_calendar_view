@@ -176,12 +176,7 @@ extension MyList<T extends Object?> on List<CalendarEventData<T>> {
     var addIndex = -1;
 
     for (var i = 0; i < this.length; i++) {
-      var result = sorter?.call(event, this[i]) ?? 0;
-
-      /// If result is 0 then use the default startTimeWiseCompare
-      if (result == 0) {
-        result = _startTimeWiseCompare(event, this[i]);
-      }
+      var result = (sorter ?? defaultEventSorter).call(event, this[i]);
       if (result <= 0) {
         addIndex = i;
         break;
@@ -196,7 +191,12 @@ extension MyList<T extends Object?> on List<CalendarEventData<T>> {
   }
 }
 
-int _startTimeWiseCompare(CalendarEventData a, CalendarEventData b) {
+/// Default [EventSorter] for [CalendarEventData]
+/// It will sort the events based on their [CalendarEventData.startTime].
+int defaultEventSorter<T extends Object?>(
+  CalendarEventData<T> a,
+  CalendarEventData<T> b,
+) {
   return (a.startTime?.getTotalMinutes ?? 0) -
       (b.startTime?.getTotalMinutes ?? 0);
 }
