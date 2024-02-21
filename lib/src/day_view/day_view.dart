@@ -197,6 +197,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// First hour displayed in the layout, goes from 0 to 24
+  final int? startHour;
+
   /// Show half hour indicator
   final bool showHalfHours;
 
@@ -254,6 +257,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.showHalfHours = false,
     this.showQuarterHours = false,
     this.halfHourIndicatorSettings,
+    this.startHour,
     this.quarterHourIndicatorSettings,
     this.startDuration = const Duration(hours: 0),
     this.onHeaderTitleTap,
@@ -289,6 +293,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late DateTime _minDate;
   late int _totalDays;
   late int _currentIndex;
+  late int _startHour;
 
   late EventArranger<T> _eventArranger;
 
@@ -324,6 +329,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
+
+    _startHour = widget.startHour ?? 0;
+    if (_startHour > 24) _startHour = 0;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -462,6 +470,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
                                 _halfHourIndicatorSettings,
+                            startHour: _startHour,
                             quarterHourIndicatorSettings:
                                 _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
@@ -547,7 +556,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
+    _height = _hourHeight * (Constants.hoursADay - _startHour);
   }
 
   void _assignBuilders() {
@@ -710,29 +719,29 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       FullDayEventView(events: events, date: date);
 
   HourLinePainter _defaultHourLinePainter(
-    Color lineColor,
-    double lineHeight,
-    double offset,
-    double minuteHeight,
-    bool showVerticalLine,
-    double verticalLineOffset,
-    LineStyle lineStyle,
-    double dashWidth,
-    double dashSpaceWidth,
-    double emulateVerticalOffsetBy,
-  ) {
+      Color lineColor,
+      double lineHeight,
+      double offset,
+      double minuteHeight,
+      bool showVerticalLine,
+      double verticalLineOffset,
+      LineStyle lineStyle,
+      double dashWidth,
+      double dashSpaceWidth,
+      double emulateVerticalOffsetBy,
+      int startHour) {
     return HourLinePainter(
-      lineColor: lineColor,
-      lineHeight: lineHeight,
-      offset: offset,
-      minuteHeight: minuteHeight,
-      verticalLineOffset: verticalLineOffset,
-      showVerticalLine: showVerticalLine,
-      lineStyle: lineStyle,
-      dashWidth: dashWidth,
-      dashSpaceWidth: dashSpaceWidth,
-      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-    );
+        lineColor: lineColor,
+        lineHeight: lineHeight,
+        offset: offset,
+        minuteHeight: minuteHeight,
+        verticalLineOffset: verticalLineOffset,
+        showVerticalLine: showVerticalLine,
+        lineStyle: lineStyle,
+        dashWidth: dashWidth,
+        dashSpaceWidth: dashSpaceWidth,
+        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+        startHour: startHour);
   }
 
   /// Called when user change page using any gesture or inbuilt functions.

@@ -38,6 +38,9 @@ class HourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Emulates offset of vertical line from hour line starts.
   final double emulateVerticalOffsetBy;
 
@@ -48,6 +51,7 @@ class HourLinePainter extends CustomPainter {
     required this.minuteHeight,
     required this.offset,
     required this.showVerticalLine,
+    required this.startHour,
     required this.emulateVerticalOffsetBy,
     this.verticalLineOffset = 10,
     this.lineStyle = LineStyle.solid,
@@ -62,8 +66,8 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 1; i < Constants.hoursADay; i++) {
-      final dy = i * minuteHeight * 60;
+    for (var i = startHour + 1; i < Constants.hoursADay; i++) {
+      final dy = (i - startHour) * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = dx;
         while (startX < size.width) {
@@ -122,6 +126,9 @@ class HalfHourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Paint half hour lines
   HalfHourLinePainter({
     required this.lineColor,
@@ -129,6 +136,7 @@ class HalfHourLinePainter extends CustomPainter {
     required this.offset,
     required this.minuteHeight,
     required this.lineStyle,
+    required this.startHour,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
   });
@@ -139,8 +147,8 @@ class HalfHourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = 0; i < Constants.hoursADay; i++) {
-      final dy = i * minuteHeight * 60 + (minuteHeight * 30);
+    for (var i = startHour; i < Constants.hoursADay; i++) {
+      final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {

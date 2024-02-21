@@ -120,6 +120,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// If true this will show week day at bottom position.
   final bool showWeekDayAtBottom;
 
@@ -165,6 +168,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
       required this.weekDays,
       required this.minuteSlotSize,
       required this.scrollConfiguration,
+      required this.startHour,
       required this.fullDayEventBuilder,
       required this.weekDetectorBuilder,
       required this.showWeekDayAtBottom,
@@ -245,34 +249,31 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 child: Stack(
                   children: [
                     CustomPaint(
-                      size: Size(width, height),
-                      painter: hourLinePainter(
-                        hourIndicatorSettings.color,
-                        hourIndicatorSettings.height,
-                        timeLineWidth + hourIndicatorSettings.offset,
-                        heightPerMinute,
-                        showVerticalLine,
-                        verticalLineOffset,
-                        hourIndicatorSettings.lineStyle,
-                        hourIndicatorSettings.dashWidth,
-                        hourIndicatorSettings.dashSpaceWidth,
-                        emulateVerticalOffsetBy,
-                      ),
-                    ),
+                        size: Size(width, height),
+                        painter: HourLinePainter(
+                            lineColor: hourIndicatorSettings.color,
+                            lineHeight: hourIndicatorSettings.height,
+                            offset:
+                                timeLineWidth + hourIndicatorSettings.offset,
+                            minuteHeight: heightPerMinute,
+                            verticalLineOffset: verticalLineOffset,
+                            showVerticalLine: showVerticalLine,
+                            startHour: startHour,
+                            emulateVerticalOffsetBy: emulateVerticalOffsetBy)),
                     if (showHalfHours)
                       CustomPaint(
                         size: Size(width, height),
                         painter: HalfHourLinePainter(
-                          lineColor: halfHourIndicatorSettings.color,
-                          lineHeight: halfHourIndicatorSettings.height,
-                          offset:
-                              timeLineWidth + halfHourIndicatorSettings.offset,
-                          minuteHeight: heightPerMinute,
-                          lineStyle: halfHourIndicatorSettings.lineStyle,
-                          dashWidth: halfHourIndicatorSettings.dashWidth,
-                          dashSpaceWidth:
-                              halfHourIndicatorSettings.dashSpaceWidth,
-                        ),
+                            lineColor: halfHourIndicatorSettings.color,
+                            lineHeight: halfHourIndicatorSettings.height,
+                            offset: timeLineWidth +
+                                halfHourIndicatorSettings.offset,
+                            minuteHeight: heightPerMinute,
+                            lineStyle: halfHourIndicatorSettings.lineStyle,
+                            dashWidth: halfHourIndicatorSettings.dashWidth,
+                            dashSpaceWidth:
+                                halfHourIndicatorSettings.dashSpaceWidth,
+                            startHour: halfHourIndicatorSettings.startHour),
                       ),
                     if (showQuarterHours)
                       CustomPaint(
@@ -328,6 +329,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,
                                       scrollNotifier: scrollConfiguration,
+                                      startHour: startHour,
                                       events: controller.getEventsOnDay(
                                         filteredDates[index],
                                         includeFullDayEvents: false,
@@ -348,6 +350,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       height: height,
                       timeLineOffset: timeLineOffset,
                       timeLineBuilder: timeLineBuilder,
+                      startHour: startHour,
                       showHalfHours: showHalfHours,
                       showQuarterHours: showQuarterHours,
                       liveTimeIndicatorSettings: liveTimeIndicatorSettings,

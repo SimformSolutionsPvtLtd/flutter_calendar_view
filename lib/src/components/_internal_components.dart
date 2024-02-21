@@ -127,6 +127,9 @@ class TimeLine extends StatefulWidget {
   /// Flag to display half hours.
   final bool showHalfHours;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Flag to display quarter hours.
   final bool showQuarterHours;
 
@@ -146,6 +149,7 @@ class TimeLine extends StatefulWidget {
     required this.height,
     required this.timeLineOffset,
     required this.timeLineBuilder,
+    required this.startHour,
     this.showHalfHours = false,
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
@@ -195,22 +199,23 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = 1; i < Constants.hoursADay; i++)
+          for (int i = widget.startHour + 1; i < Constants.hoursADay; i++)
             _timelinePositioned(
-              topPosition: widget.hourHeight * i - widget.timeLineOffset,
+              topPosition: widget.hourHeight * (i - widget.startHour) -
+                  widget.timeLineOffset,
               bottomPosition: widget.height -
-                  (widget.hourHeight * (i + 1)) +
+                  (widget.hourHeight * (i - widget.startHour + 1)) +
                   widget.timeLineOffset,
               hour: i,
             ),
           if (widget.showHalfHours)
-            for (int i = 0; i < Constants.hoursADay; i++)
+            for (int i = widget.startHour; i < Constants.hoursADay; i++)
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget._halfHourHeight,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
@@ -304,6 +309,9 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Defines date for which events will be displayed in given display area.
   final DateTime date;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -317,6 +325,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.events,
     required this.heightPerMinute,
     required this.eventArranger,
+    required this.startHour,
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
@@ -328,11 +337,11 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
-      events: this.events,
-      height: height,
-      width: width,
-      heightPerMinute: heightPerMinute,
-    );
+        events: this.events,
+        height: height,
+        width: width,
+        heightPerMinute: heightPerMinute,
+        startHour: startHour);
 
     return List.generate(events.length, (index) {
       return Positioned(
@@ -429,6 +438,9 @@ class PressDetector extends StatelessWidget {
   /// where events are not available.
   final MinuteSlotSize minuteSlotSize;
 
+  /// First hour displayed in the layout
+  final int startHour;
+
   /// A widget that display event tiles in day/week view.
   const PressDetector({
     Key? key,
@@ -439,12 +451,14 @@ class PressDetector extends StatelessWidget {
     required this.onDateLongPress,
     required this.onDateTap,
     required this.minuteSlotSize,
+    required this.startHour,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+    final slots =
+        ((Constants.hoursADay - startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,

@@ -73,16 +73,16 @@ typedef EventFilter<T extends Object?> = List<CalendarEventData<T>> Function(
     DateTime date, List<CalendarEventData<T>> events);
 
 typedef CustomHourLinePainter = CustomPainter Function(
-  Color lineColor,
-  double lineHeight,
-  double offset,
-  double minuteHeight,
-  bool showVerticalLine,
-  double verticalLineOffset,
-  LineStyle lineStyle,
-  double dashWidth,
-  double dashSpaceWidth,
-  double emulateVerticalOffsetBy,
-);
+    Color lineColor,
+    double lineHeight,
+    double offset,
+    double minuteHeight,
+    bool showVerticalLine,
+    double verticalLineOffset,
+    LineStyle lineStyle,
+    double dashWidth,
+    double dashSpaceWidth,
+    double emulateVerticalOffsetBy,
+    int startHour);
 
 typedef TestPredicate<T> = bool Function(T element);

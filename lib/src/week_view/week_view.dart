@@ -198,6 +198,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  /// First hour displayed in the layout, goes from 0 to 24
+  final int? startHour;
+
   ///Show half hour indicator
   final bool showHalfHours;
 
@@ -258,6 +261,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
+    this.startHour,
     this.onHeaderTitleTap,
     this.showHalfHours = false,
     this.showQuarterHours = false,
@@ -329,11 +333,17 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late List<WeekDays> _weekDays;
 
+  late int _startHour;
+
   final _scrollConfiguration = EventScrollConfiguration();
 
   @override
   void initState() {
     super.initState();
+
+    _startHour = widget.startHour ?? 0;
+    //Security to avoid any height bug
+    if (_startHour > 24) _startHour = 0;
 
     _reloadCallback = _reload;
 
@@ -486,6 +496,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
+                            startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             emulateVerticalOffsetBy:
@@ -589,7 +600,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
+    _height = _hourHeight * (Constants.hoursADay - _startHour);
   }
 
   void _assignBuilders() {
@@ -667,7 +678,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     required MinuteSlotSize minuteSlotSize,
   }) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+    final slots =
+        ((Constants.hoursADay - _startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return Container(
       height: height,
@@ -821,29 +833,29 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   HourLinePainter _defaultHourLinePainter(
-    Color lineColor,
-    double lineHeight,
-    double offset,
-    double minuteHeight,
-    bool showVerticalLine,
-    double verticalLineOffset,
-    LineStyle lineStyle,
-    double dashWidth,
-    double dashSpaceWidth,
-    double emulateVerticalOffsetBy,
-  ) {
+      Color lineColor,
+      double lineHeight,
+      double offset,
+      double minuteHeight,
+      bool showVerticalLine,
+      double verticalLineOffset,
+      LineStyle lineStyle,
+      double dashWidth,
+      double dashSpaceWidth,
+      double emulateVerticalOffsetBy,
+      int startHour) {
     return HourLinePainter(
-      lineColor: lineColor,
-      lineHeight: lineHeight,
-      offset: offset,
-      minuteHeight: minuteHeight,
-      verticalLineOffset: verticalLineOffset,
-      showVerticalLine: showVerticalLine,
-      lineStyle: lineStyle,
-      dashWidth: dashWidth,
-      dashSpaceWidth: dashSpaceWidth,
-      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-    );
+        lineColor: lineColor,
+        lineHeight: lineHeight,
+        offset: offset,
+        minuteHeight: minuteHeight,
+        verticalLineOffset: verticalLineOffset,
+        showVerticalLine: showVerticalLine,
+        lineStyle: lineStyle,
+        dashWidth: dashWidth,
+        dashSpaceWidth: dashSpaceWidth,
+        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+        startHour: startHour);
   }
 
   /// Called when user change page using any gesture or inbuilt functions.

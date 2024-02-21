@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 const height = 1440.0;
 const width = 500.0;
 const heightPerMinute = 1.0;
+const startHour = 0;
 
 void main() {
   final now = DateTime.now().withoutTime;
@@ -54,11 +55,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, events.length);
     });
@@ -83,11 +84,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -112,11 +113,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -141,11 +142,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -170,11 +171,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -199,11 +200,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -260,11 +261,11 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events,
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 4);
     });
@@ -321,14 +322,14 @@ void main() {
       ];
 
       final mergedEvents = MergeEventArranger().arrange(
-        events: events
-          ..sort((e1, e2) =>
-              (e1.startTime?.getTotalMinutes ?? 0) -
-              (e2.startTime?.getTotalMinutes ?? 0)),
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-      );
+          events: events
+            ..sort((e1, e2) =>
+                (e1.startTime?.getTotalMinutes ?? 0) -
+                (e2.startTime?.getTotalMinutes ?? 0)),
+          height: height,
+          width: width,
+          heightPerMinute: heightPerMinute,
+          startHour: startHour);
 
       expect(mergedEvents.length, 1);
     });
@@ -355,14 +356,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: false).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 2);
       });
@@ -388,14 +389,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: false).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 2);
       });
@@ -422,14 +423,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: true).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 1);
       });
@@ -455,14 +456,14 @@ void main() {
         ];
 
         final mergedEvents = MergeEventArranger(includeEdges: true).arrange(
-          events: events
-            ..sort((e1, e2) =>
-                (e1.startTime?.getTotalMinutes ?? 0) -
-                (e2.startTime?.getTotalMinutes ?? 0)),
-          height: height,
-          width: width,
-          heightPerMinute: heightPerMinute,
-        );
+            events: events
+              ..sort((e1, e2) =>
+                  (e1.startTime?.getTotalMinutes ?? 0) -
+                  (e2.startTime?.getTotalMinutes ?? 0)),
+            height: height,
+            width: width,
+            heightPerMinute: heightPerMinute,
+            startHour: startHour);
 
         expect(mergedEvents.length, 1);
       });
