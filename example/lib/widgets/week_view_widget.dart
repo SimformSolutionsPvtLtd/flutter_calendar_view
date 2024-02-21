@@ -14,6 +14,12 @@ class WeekViewWidget extends StatelessWidget {
     return WeekView(
       key: state,
       width: width,
+      showLiveTimeLineInAllDays: true,
+      timeLineWidth: 65,
+      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+        color: Colors.redAccent,
+        showTime: true,
+      ),
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(

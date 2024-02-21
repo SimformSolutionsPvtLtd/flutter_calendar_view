@@ -204,3 +204,9 @@ int _startTimeWiseCompare(CalendarEventData a, CalendarEventData b) {
 extension TimerOfDayExtension on TimeOfDay {
   int get getTotalMinutes => hour * 60 + minute;
 }
+
+extension IntExtension on int {
+  String appendLeadingZero() {
+    return toString().padLeft(2, '0');
+  }
+}
