@@ -87,8 +87,8 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Defines settings for live time indicator.
   ///
-  /// Pass [HourIndicatorSettings.none] to remove live time indicator.
-  final HourIndicatorSettings? liveTimeIndicatorSettings;
+  /// Pass [LiveTimeIndicatorSettings.none] to remove live time indicator.
+  final LiveTimeIndicatorSettings? liveTimeIndicatorSettings;
 
   /// Defines settings for half hour indication lines.
   ///
@@ -302,7 +302,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late HourIndicatorSettings _quarterHourIndicatorSettings;
   late CustomHourLinePainter _hourLinePainter;
 
-  late HourIndicatorSettings _liveTimeIndicatorSettings;
+  late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
 
   late PageController _pageController;
 
@@ -514,7 +514,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
-        HourIndicatorSettings(
+        LiveTimeIndicatorSettings(
           color: Constants.defaultLiveTimeIndicatorColor,
           height: widget.heightPerMinute,
           offset: 5 + widget.verticalLineOffset,

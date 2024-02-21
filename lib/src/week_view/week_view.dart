@@ -98,7 +98,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final HourIndicatorSettings? quarterHourIndicatorSettings;
 
   /// Settings for live time indicator settings.
-  final HourIndicatorSettings? liveTimeIndicatorSettings;
+  final LiveTimeIndicatorSettings? liveTimeIndicatorSettings;
 
   /// duration for page transition while changing the week.
   final Duration pageTransitionDuration;
@@ -307,7 +307,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late CustomHourLinePainter _hourLinePainter;
 
   late HourIndicatorSettings _halfHourIndicatorSettings;
-  late HourIndicatorSettings _liveTimeIndicatorSettings;
+  late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
   late HourIndicatorSettings _quarterHourIndicatorSettings;
 
   late PageController _pageController;
@@ -557,10 +557,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
-        HourIndicatorSettings(
+        LiveTimeIndicatorSettings(
           color: Constants.defaultLiveTimeIndicatorColor,
           height: widget.heightPerMinute,
-          offset: 5,
         );
 
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
