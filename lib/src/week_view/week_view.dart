@@ -1003,3 +1003,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
       dates.any((date) => date.compareWithoutTime(DateTime.now()));
 }
+
+class WeekHeader {
+  /// Hide Header Widget
+  static Widget hidden(DateTime date, DateTime date1) => SizedBox.shrink();
+}

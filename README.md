@@ -149,6 +149,7 @@ MonthView(
     // This callback will only work if cellBuilder is null.
     onEventTap: (event, date) => print(event),
     onDateLongPress: (date) => print(date),
+    headerBuilder: MonthHeader.hidden // To hide month header
 );
 ```
 
@@ -177,7 +178,8 @@ DayView(
     startHour: 5 // To set the first hour displayed (ex: 05:00)
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
-    }
+    },
+    dayTitleBuilder: DayHeader.hidden // To Hide day header
 );
 ```
 
@@ -208,7 +210,8 @@ WeekView(
     showVerticalLines: false, // Show the vertical line between days.
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
-    }
+    },
+    weekPageHeaderBuilder: WeekHeader.hidden // To hide week header
 );
 ```
 

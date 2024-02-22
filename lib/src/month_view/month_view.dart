@@ -667,3 +667,8 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     );
   }
 }
+
+class MonthHeader {
+  /// Hide Header Widget
+  static Widget hidden(DateTime date) => SizedBox.shrink();
+}
