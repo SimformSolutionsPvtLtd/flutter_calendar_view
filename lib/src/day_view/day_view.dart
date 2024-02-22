@@ -911,3 +911,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   DateTime get currentDate =>
       DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
 }
+
+class DayHeader {
+  /// Hide Header Widget
+  static Widget hidden(DateTime date) => SizedBox.shrink();
+}

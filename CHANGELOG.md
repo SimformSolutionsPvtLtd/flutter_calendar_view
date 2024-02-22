@@ -1,5 +1,5 @@
 # [1.0.5] (UnReleased)
-
+- Fixed issue related to Hiding Header [#299](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/299)
 - Fixed issue related to auto scroll to initial duration for day
   view. [#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
 - Added
