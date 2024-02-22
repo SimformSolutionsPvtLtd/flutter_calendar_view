@@ -24,13 +24,18 @@ class EventController<T extends Object?> extends ChangeNotifier {
     /// [MonthView], [DayView] and [WeekView].
     ///
     EventFilter<T>? eventFilter,
-  }) : _eventFilter = eventFilter;
+
+    /// This allows for custom sorting of events.
+    /// By default, events are sorted in a start time wise order.
+    EventSorter<T>? eventSorter,
+  })  : _eventFilter = eventFilter,
+        _calendarData = CalendarData(eventSorter: eventSorter);
 
   //#region Private Fields
   EventFilter<T>? _eventFilter;
 
   /// Store all calendar event data
-  final CalendarData<T> _calendarData = CalendarData();
+  final CalendarData<T> _calendarData;
 
   //#endregion
 
@@ -157,7 +162,15 @@ class EventController<T extends Object?> extends ChangeNotifier {
 /// Exposes methods to manipulate stored data.
 ///
 ///
-class CalendarData<T> {
+class CalendarData<T extends Object?> {
+  /// Creates a new instance of [CalendarData].
+  CalendarData({
+    EventSorter<T>? eventSorter,
+  }) : _eventSorter = eventSorter;
+
+  //#region Private Fields
+  final EventSorter<T>? _eventSorter;
+
   /// Stores all the events in a list(all the items in below 3 list will be
   /// available in this list as global itemList of all events).
   final _eventList = <CalendarEventData<T>>[];
@@ -203,12 +216,12 @@ class CalendarData<T> {
   //#region Data Manipulation Methods
   void addFullDayEvent(CalendarEventData<T> event) {
     // TODO: add separate logic for adding full day event and ranging event.
-    _fullDayEventList.addEventInSortedManner(event);
+    _fullDayEventList.addEventInSortedManner(event, _eventSorter);
     _eventList.add(event);
   }
 
   void addRangingEvent(CalendarEventData<T> event) {
-    _rangingEventList.addEventInSortedManner(event);
+    _rangingEventList.addEventInSortedManner(event, _eventSorter);
     _eventList.add(event);
   }
 
@@ -220,7 +233,7 @@ class CalendarData<T> {
         date: [event],
       });
     } else {
-      _singleDayEvents[date]!.addEventInSortedManner(event);
+      _singleDayEvents[date]!.addEventInSortedManner(event, _eventSorter);
     }
 
     _eventList.add(event);
