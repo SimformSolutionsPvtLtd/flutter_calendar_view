@@ -158,7 +158,13 @@ class CalendarEventData<T extends Object?> {
   }
 
   @override
-  int get hashCode => super.hashCode;
+  int get hashCode =>
+      description.hashCode ^
+      descriptionStyle.hashCode ^
+      titleStyle.hashCode ^
+      color.hashCode ^
+      title.hashCode ^
+      date.hashCode;
 }
 
 /// {@template calendar_event_data_doc}

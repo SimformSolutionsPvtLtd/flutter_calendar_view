@@ -783,7 +783,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       Rect boundary,
       DateTime startDuration,
       DateTime endDuration) {
-    if (events.isNotEmpty)
+    if (events.isNotEmpty) {
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
         title: events[0].title,
@@ -797,8 +797,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         padding: EdgeInsets.all(7.0),
         backgroundColor: events[0].color,
       );
-    else
+    } else {
       return Container();
+    }
   }
 
   /// Default view header builder. This builder will be used if

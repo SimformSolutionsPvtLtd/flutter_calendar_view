@@ -53,7 +53,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
                   "\n1. Start time or end time might be null"
                   "\n2. endTime occurs before or at the same time as startTime."
                   "\nEvent data: \n$event\n");
-            } catch (e) {} // Suppress exceptions.
+            } catch (e) {} // ignore:empty_catches
 
             return true;
           }(), "Can not add event in the list.");

@@ -77,7 +77,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// Add all the events in the list
   /// If there is an event with same date then
   void addAll(List<CalendarEventData<T>> events) {
-    for (final event in events) _calendarData.addEvent(event);
+    for (final event in events) {
+      _calendarData.addEvent(event);
+    }
     notifyListeners();
   }
 
@@ -105,7 +107,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
   /// Removes all the [events] from this controller.
   void removeAll(List<CalendarEventData<T>> events) {
-    for (final event in events) _calendarData.removeEvent(event);
+    for (final event in events) {
+      _calendarData.removeEvent(event);
+    }
     notifyListeners();
   }
 

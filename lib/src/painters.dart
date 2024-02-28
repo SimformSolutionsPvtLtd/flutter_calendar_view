@@ -80,16 +80,18 @@ class HourLinePainter extends CustomPainter {
       }
     }
 
-    if (showVerticalLine) if (lineStyle == LineStyle.dashed) {
-      var startY = 0.0;
-      while (startY < size.height) {
-        canvas.drawLine(Offset(offset + verticalLineOffset, startY),
-            Offset(offset + verticalLineOffset, startY + dashWidth), paint);
-        startY += dashWidth + dashSpaceWidth;
+    if (showVerticalLine) {
+      if (lineStyle == LineStyle.dashed) {
+        var startY = 0.0;
+        while (startY < size.height) {
+          canvas.drawLine(Offset(offset + verticalLineOffset, startY),
+              Offset(offset + verticalLineOffset, startY + dashWidth), paint);
+          startY += dashWidth + dashSpaceWidth;
+        }
+      } else {
+        canvas.drawLine(Offset(offset + verticalLineOffset, 0),
+            Offset(offset + verticalLineOffset, size.height), paint);
       }
-    } else {
-      canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + verticalLineOffset, size.height), paint);
     }
   }
 
@@ -296,11 +298,12 @@ class CurrentTimeLinePainter extends CustomPainter {
         ..strokeWidth = height,
     );
 
-    if (showBullet)
+    if (showBullet) {
       canvas.drawCircle(
           Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+    }
 
-    if (showTimeBackgroundView)
+    if (showTimeBackgroundView) {
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(
@@ -316,8 +319,9 @@ class CurrentTimeLinePainter extends CustomPainter {
           ..style = PaintingStyle.fill
           ..strokeWidth = bulletRadius,
       );
+    }
 
-    if (showTime)
+    if (showTime) {
       TextPainter(
         textDirection: TextDirection.ltr,
         text: TextSpan(
@@ -330,6 +334,7 @@ class CurrentTimeLinePainter extends CustomPainter {
       )
         ..layout()
         ..paint(canvas, Offset(offset.dx - 62, offset.dy - 6));
+    }
   }
 
   @override

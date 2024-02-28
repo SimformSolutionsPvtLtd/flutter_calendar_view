@@ -670,7 +670,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     DateTime startDuration,
     DateTime endDuration,
   ) {
-    if (events.isNotEmpty)
+    if (events.isNotEmpty) {
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
         title: events[0].title,
@@ -682,8 +682,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         titleStyle: events[0].titleStyle,
         descriptionStyle: events[0].descriptionStyle,
       );
-    else
+    } else {
       return SizedBox.shrink();
+    }
   }
 
   /// Default view header builder. This builder will be used if
