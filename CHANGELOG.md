@@ -1,4 +1,4 @@
-# [1.0.5] (UnReleased)
+# [1.1.0 - 28 Feb 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.1.0) 
 - Fixed issue related to Hiding Header [#299](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/299)
 - Fixed issue related to auto scroll to initial duration for day
   view. [#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
@@ -10,14 +10,15 @@
 - Added
   feature added Support for changing the week day position(top/bottom) in weekView. [#283](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/283)
 - Adds new flag `includeEdges` in `EventArrangers`. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/294)
-- Fixes null check exception while adding events. [#282](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/282)
+- Fixed null check exception while adding events. [#282](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/282)
 - Added new method `update` to update the events in `EventController`. [#125](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/125)
-- Adds new parameter `includeFullDayEvents` in `getEventsOnDay` to decide whether to include full-day events in the returned list or not.
-- Adds getters `isRangingEvent` and `isFullDayEvent` in `CalendarEventData` to check if the event is a ranging event or a full-day event.
-- Adds new method `occursOnDate` in `CalendarEventData` to check if the event occurs on the given date or not.
-- Make `description` in `CalendarEventData` nullable.
-- #### Deprecations
-  - Deprecate `events` getter in `EventController` and adds `allEvents` to replace it.
+- Added new parameter `includeFullDayEvents` in `getEventsOnDay` to decide whether to include full-day events in the returned list or not.
+- Added getters `isRangingEvent` and `isFullDayEvent` in `CalendarEventData` to check if the event is a ranging event or a full-day event.
+- Added new method `occursOnDate` in `CalendarEventData` to check if the event occurs on the given date or not.
+- Made `description` in `CalendarEventData` nullable.
+- Fixed issue in `MonthView` event's titleStyle to set the style from specific event.[#325](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/325)
+### Deprecations
+  - Deprecated `events` getter in `EventController` and adds `allEvents` to replace it.
 
 # [1.0.4 - 9 Aug 2023](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.0.4)
 
@@ -85,7 +86,7 @@
       parameters
       in `WeekView`,
 - Added onTap lister in day and week views. issue #50.
-- Updates calculation of day difference. issue #80, #97.
+- Updated calculation of day difference. issue #80, #97.
 - Fixed
   Issue [#93 - Showing only 1 day in DayView](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/93)
 - Fixed
