@@ -1,3 +1,5 @@
+include: package:lints/core.yaml
+
 analyzer:
   exclude:
     - example/build/**
