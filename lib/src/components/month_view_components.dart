@@ -98,6 +98,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// color of highlighted cell title
   final Color highlightedTitleColor;
 
+  /// defines that show and hide cell not is in current month
+  final bool hideDayNotInMonth;
+
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({
@@ -105,6 +108,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     required this.date,
     required this.events,
     this.isInMonth = false,
+    this.hideDayNotInMonth = true,
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightColor = Colors.blue,
@@ -125,7 +129,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
           SizedBox(
             height: 5.0,
           ),
-          CircleAvatar(
+          (isInMonth == false && hideDayNotInMonth)
+              ? SizedBox.shrink()
+              : CircleAvatar(
             radius: highlightRadius,
             backgroundColor:
                 shouldHighlight ? highlightColor : Colors.transparent,

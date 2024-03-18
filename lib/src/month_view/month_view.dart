@@ -147,6 +147,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [ClampingScrollPhysics].
   final ScrollPhysics pagePhysics;
 
+  /// defines that show and hide cell not is in current month
+  final bool hideDayNotInMonth;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -177,6 +180,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
+    this.hideDayNotInMonth = false
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -357,6 +361,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               showBorder: widget.showBorder,
                               startDay: widget.startDay,
                               physics: widget.pagePhysics,
+                              hideDayNotInMonth: widget.hideDayNotInMonth,
                             ),
                           );
                         }),
@@ -508,7 +513,19 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   /// Default cell builder. Used when [widget.cellBuilder] is null
   Widget _defaultCellBuilder(
-      date, List<CalendarEventData<T>> events, isToday, isInMonth) {
+      date, List<CalendarEventData<T>> events, isToday, isInMonth, hideDayNotInMonth) {
+    if(hideDayNotInMonth) {
+      return FilledCell<T>(
+        date: date,
+        shouldHighlight: isToday,
+        backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+        events: events,
+        isInMonth: isInMonth,
+        onTileTap: widget.onEventTap,
+        dateStringBuilder: widget.dateStringBuilder,
+        hideDayNotInMonth: hideDayNotInMonth,
+      );
+    }
     return FilledCell<T>(
       date: date,
       shouldHighlight: isToday,
@@ -516,6 +533,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       events: events,
       onTileTap: widget.onEventTap,
       dateStringBuilder: widget.dateStringBuilder,
+      hideDayNotInMonth: hideDayNotInMonth,
     );
   }
 
@@ -607,6 +625,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final DatePressCallback? onDateLongPress;
   final WeekDays startDay;
   final ScrollPhysics physics;
+  final bool hideDayNotInMonth;
 
   const _MonthPageBuilder({
     Key? key,
@@ -623,6 +642,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.onDateLongPress,
     required this.startDay,
     required this.physics,
+    required this.hideDayNotInMonth,
   }) : super(key: key);
 
   @override
@@ -659,6 +679,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
                 events,
                 monthDays[index].compareWithoutTime(DateTime.now()),
                 monthDays[index].month == date.month,
+                hideDayNotInMonth,
               ),
             ),
           );
