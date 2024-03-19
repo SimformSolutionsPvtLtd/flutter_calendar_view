@@ -86,7 +86,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
             ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
     return CustomPaint(
-      size: Size(widget.width, widget.height),
+      size: Size(widget.width, widget.liveTimeIndicatorSettings.height),
       painter: CurrentTimeLinePainter(
         color: widget.liveTimeIndicatorSettings.color,
         height: widget.liveTimeIndicatorSettings.height,
