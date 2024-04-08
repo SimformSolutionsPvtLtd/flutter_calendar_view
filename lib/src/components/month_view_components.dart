@@ -86,6 +86,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// Called when user taps on any event tile.
   final TileTapCallback<T>? onTileTap;
 
+  /// Called when user long press on any event tile.
+  final TileTapCallback<T>? onTileLongTap;
+
   /// defines that [date] is in current month or not.
   final bool isInMonth;
 
@@ -109,6 +112,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.highlightColor = Colors.blue,
     this.onTileTap,
+    this.onTileLongTap,
     this.tileColor = Colors.blue,
     this.highlightRadius = 11,
     this.titleColor = Constants.black,
@@ -156,6 +160,8 @@ class FilledCell<T extends Object?> extends StatelessWidget {
                       (index) => GestureDetector(
                         onTap: () =>
                             onTileTap?.call(events[index], events[index].date),
+                        onLongPress: () => onTileLongTap?.call(
+                            events[index], events[index].date),
                         child: Container(
                           decoration: BoxDecoration(
                             color: events[index].color,

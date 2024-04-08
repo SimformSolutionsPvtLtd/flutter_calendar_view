@@ -166,6 +166,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
+  /// This method will be called when user long press on event tile.
+  final CellTapCallback<T>? onEventLongTap;
+
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
@@ -245,6 +248,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.backgroundColor = Colors.white,
     this.scrollOffset,
     this.onEventTap,
+    this.onEventLongTap,
     this.onDateLongPress,
     this.onDateTap,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
@@ -450,6 +454,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             hourLinePainter: _hourLinePainter,
                             date: date,
                             onTileTap: widget.onEventTap,
+                            onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,
                             onDateTap: widget.onDateTap,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||

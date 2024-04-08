@@ -73,6 +73,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  /// Called when user long press on event tile.
+  final CellTapCallback<T>? onTileLongTap;
+
   /// Called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
@@ -136,6 +139,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.onTileTap,
+    required this.onTileLongTap,
     required this.onDateLongPress,
     required this.onDateTap,
     required this.minuteSlotSize,
@@ -228,6 +232,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       child: EventGenerator<T>(
                         height: height,
                         date: date,
+                        onTileLongTap: onTileLongTap,
                         onTileTap: onTileTap,
                         eventArranger: eventArranger,
                         events: controller.getEventsOnDay(

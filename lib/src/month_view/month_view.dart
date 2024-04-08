@@ -51,6 +51,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// This function will only work if [cellBuilder] is null.
   final TileTapCallback<T>? onEventTap;
 
+  /// This function will be called when user will long press on a single event
+  /// tile inside a cell.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileTapCallback<T>? onEventLongTap;
+
   /// Builds the name of the weeks.
   ///
   /// Used default week builder if null.
@@ -168,6 +174,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onPageChange,
     this.onCellTap,
     this.onEventTap,
+    this.onEventLongTap,
     this.onDateLongPress,
     this.startDay = WeekDays.monday,
     this.headerStringBuilder,
@@ -515,6 +522,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
       events: events,
       onTileTap: widget.onEventTap,
+      onTileLongTap: widget.onEventLongTap,
       dateStringBuilder: widget.dateStringBuilder,
     );
   }

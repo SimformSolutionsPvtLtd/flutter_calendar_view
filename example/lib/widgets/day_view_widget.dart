@@ -34,6 +34,10 @@ class DayViewWidget extends StatelessWidget {
           ),
         );
       },
+      onEventLongTap: (events, date) {
+        SnackBar snackBar = SnackBar(content: Text("on LongTap"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
       halfHourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
         lineStyle: LineStyle.dashed,
