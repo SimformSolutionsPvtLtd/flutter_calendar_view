@@ -262,7 +262,9 @@ class _TimeLineState extends State<TimeLine> {
   }) {
     return Visibility(
       visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
-          (_currentTime.minute <= 15 && _currentTime.hour == hour)),
+              (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
+          !(widget.liveTimeIndicatorSettings.showTime ||
+              widget.liveTimeIndicatorSettings.showTimeBackgroundView),
       child: Positioned(
         top: topPosition,
         left: 0,
