@@ -147,6 +147,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [ClampingScrollPhysics].
   final ScrollPhysics pagePhysics;
 
+  /// Will be passed to the datePicker if provided.
+  final Locale? locale;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -177,6 +180,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
+    this.locale,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -480,6 +484,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           widget.onHeaderTitleTap!(date);
         } else {
           final selectedDate = await showDatePicker(
+            locale: widget.locale,
             context: context,
             initialDate: date,
             firstDate: _minDate,

@@ -216,6 +216,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
+  /// Will be passed to the datePicker if provided.
+  final Locale? locale;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -262,6 +265,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.startDuration = const Duration(hours: 0),
     this.onHeaderTitleTap,
     this.emulateVerticalOffsetBy = 0,
+    this.locale,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -701,6 +705,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
           widget.onHeaderTitleTap!(date);
         } else {
           final selectedDate = await showDatePicker(
+            locale: widget.locale,
             context: context,
             initialDate: date,
             firstDate: _minDate,
