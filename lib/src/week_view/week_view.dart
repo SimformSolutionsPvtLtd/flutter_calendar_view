@@ -216,6 +216,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// If true this will show week day at bottom position.
   final bool showWeekDayAtBottom;
 
+  /// Will be passed to the datePicker if provided.
+  final Locale? locale;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -267,6 +270,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showQuarterHours = false,
     this.emulateVerticalOffsetBy = 0,
     this.showWeekDayAtBottom = false,
+    this.locale,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -818,6 +822,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
           widget.onHeaderTitleTap!(startDate);
         } else {
           final selectedDate = await showDatePicker(
+            locale: widget.locale,
             context: context,
             initialDate: startDate,
             firstDate: _minDate,
