@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
+import '../components/common_components.dart';
 import '../components/day_view_components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../components/safe_area_wrapper.dart';
@@ -611,48 +612,16 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     required double width,
     required double heightPerMinute,
     required MinuteSlotSize minuteSlotSize,
-  }) {
-    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
-
-    return Container(
-      height: height,
-      width: width,
-      child: Stack(
-        children: [
-          for (int i = 0; i < slots; i++)
-            Positioned(
-              top: heightPerSlot * i,
-              left: 0,
-              right: 0,
-              bottom: height - (heightPerSlot * (i + 1)),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onLongPress: () => widget.onDateLongPress?.call(
-                  DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    0,
-                    minuteSlotSize.minutes * i,
-                  ),
-                ),
-                onTap: () => widget.onDateTap?.call(
-                  DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    0,
-                    minuteSlotSize.minutes * i,
-                  ),
-                ),
-                child: SizedBox(width: width, height: heightPerSlot),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+  }) =>
+      DefaultPressDetector(
+        date: date,
+        height: height,
+        width: width,
+        heightPerMinute: heightPerMinute,
+        minuteSlotSize: minuteSlotSize,
+        onDateTap: widget.onDateTap,
+        onDateLongPress: widget.onDateLongPress,
+      );
 
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -669,23 +638,14 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
-  ) {
-    if (events.isNotEmpty) {
-      return RoundedEventTile(
-        borderRadius: BorderRadius.circular(10.0),
-        title: events[0].title,
-        totalEvents: events.length - 1,
-        description: events[0].description,
-        padding: EdgeInsets.all(10.0),
-        backgroundColor: events[0].color,
-        margin: EdgeInsets.all(2.0),
-        titleStyle: events[0].titleStyle,
-        descriptionStyle: events[0].descriptionStyle,
+  ) =>
+      DefaultEventTile(
+        date: date,
+        events: events,
+        boundary: boundary,
+        startDuration: startDuration,
+        endDuration: endDuration,
       );
-    } else {
-      return SizedBox.shrink();
-    }
-  }
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.

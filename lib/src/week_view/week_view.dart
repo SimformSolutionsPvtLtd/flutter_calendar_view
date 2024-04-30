@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
+import '../components/common_components.dart';
 import '../components/components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../components/safe_area_wrapper.dart';
@@ -676,49 +677,16 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     required double width,
     required double heightPerMinute,
     required MinuteSlotSize minuteSlotSize,
-  }) {
-    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots =
-        ((Constants.hoursADay - _startHour) * 60) ~/ minuteSlotSize.minutes;
-
-    return Container(
-      height: height,
-      width: width,
-      child: Stack(
-        children: [
-          for (int i = 0; i < slots; i++)
-            Positioned(
-              top: heightPerSlot * i,
-              left: 0,
-              right: 0,
-              bottom: height - (heightPerSlot * (i + 1)),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onLongPress: () => widget.onDateLongPress?.call(
-                  DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    0,
-                    minuteSlotSize.minutes * i,
-                  ),
-                ),
-                onTap: () => widget.onDateTap?.call(
-                  DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    0,
-                    minuteSlotSize.minutes * i,
-                  ),
-                ),
-                child: SizedBox(width: width, height: heightPerSlot),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+  }) =>
+      DefaultPressDetector(
+        date: date,
+        height: height,
+        width: width,
+        heightPerMinute: heightPerMinute,
+        minuteSlotSize: minuteSlotSize,
+        onDateTap: widget.onDateTap,
+        onDateLongPress: widget.onDateLongPress,
+      );
 
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(DateTime date) {
@@ -752,55 +720,27 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(DateTime date) {
-    final hour = ((date.hour - 1) % 12) + 1;
-    final timeLineString = (widget.timeLineStringBuilder != null)
-        ? widget.timeLineStringBuilder!(date)
-        : date.minute != 0
-            ? "$hour:${date.minute}"
-            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
-
-    return Transform.translate(
-      offset: Offset(0, -7.5),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 7.0),
-        child: Text(
-          timeLineString,
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            fontSize: 15.0,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
+        date: date,
+        timeStringBuilder: widget.timeLineStringBuilder,
+      );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
   Widget _defaultEventTileBuilder(
-      DateTime date,
-      List<CalendarEventData<T>> events,
-      Rect boundary,
-      DateTime startDuration,
-      DateTime endDuration) {
-    if (events.isNotEmpty) {
-      return RoundedEventTile(
-        borderRadius: BorderRadius.circular(6.0),
-        title: events[0].title,
-        titleStyle: events[0].titleStyle ??
-            TextStyle(
-              fontSize: 12,
-              color: events[0].color.accent,
-            ),
-        descriptionStyle: events[0].descriptionStyle,
-        totalEvents: events.length,
-        padding: EdgeInsets.all(7.0),
-        backgroundColor: events[0].color,
+    DateTime date,
+    List<CalendarEventData<T>> events,
+    Rect boundary,
+    DateTime startDuration,
+    DateTime endDuration,
+  ) =>
+      DefaultEventTile(
+        date: date,
+        events: events,
+        boundary: boundary,
+        startDuration: startDuration,
+        endDuration: endDuration,
       );
-    } else {
-      return Container();
-    }
-  }
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.
