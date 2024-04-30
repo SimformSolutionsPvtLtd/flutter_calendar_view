@@ -35,15 +35,19 @@ class LiveTimeIndicator extends StatefulWidget {
   /// Defines height occupied by one minute.
   final double heightPerMinute;
 
+  /// First hour displayed in the layout, goes from 0 to 24
+  final int startHour;
+
   /// Widget to display tile line according to current time.
-  const LiveTimeIndicator(
-      {Key? key,
-      required this.width,
-      required this.height,
-      required this.timeLineWidth,
-      required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute})
-      : super(key: key);
+  const LiveTimeIndicator({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.timeLineWidth,
+    required this.liveTimeIndicatorSettings,
+    required this.heightPerMinute,
+    required this.startHour,
+  }) : super(key: key);
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -85,6 +89,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
             ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
+
+    /// remove startHour minute from [_currentTime.getTotalMinutes]
+    /// to set dy offset of live time indicator
+    final startMinutes = widget.startHour * 60;
     return CustomPaint(
       size: Size(widget.width, widget.liveTimeIndicatorSettings.height),
       painter: CurrentTimeLinePainter(
@@ -92,7 +100,8 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
           widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
-          _currentTime.getTotalMinutes * widget.heightPerMinute,
+          (_currentTime.getTotalMinutes - startMinutes) *
+              widget.heightPerMinute,
         ),
         timeString: timeString,
         showBullet: widget.liveTimeIndicatorSettings.showBullet,
