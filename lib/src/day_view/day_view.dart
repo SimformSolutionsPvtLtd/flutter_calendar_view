@@ -646,6 +646,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         startDuration: startDuration,
         endDuration: endDuration,
       );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
 
   /// Default view header builder. This builder will be used if
   /// [widget.dayTitleBuilder] is null.
