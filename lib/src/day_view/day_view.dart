@@ -621,6 +621,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         minuteSlotSize: minuteSlotSize,
         onDateTap: widget.onDateTap,
         onDateLongPress: widget.onDateLongPress,
+        startHour: _startHour,
       );
 
   /// Default timeline builder this builder will be used if

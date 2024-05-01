@@ -133,6 +133,7 @@ class DefaultPressDetector extends StatelessWidget {
     required this.minuteSlotSize,
     this.onDateTap,
     this.onDateLongPress,
+    this.startHour = 0,
   });
 
   final DateTime date;
@@ -142,6 +143,7 @@ class DefaultPressDetector extends StatelessWidget {
   final MinuteSlotSize minuteSlotSize;
   final DateTapCallback? onDateTap;
   final DatePressCallback? onDateLongPress;
+  final int startHour;
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +185,7 @@ class DefaultPressDetector extends StatelessWidget {
         date.month,
         date.day,
         0,
-        (minuteSlotSize.minutes * slot),
+        (minuteSlotSize.minutes * slot) + (startHour * 60),
       );
 }
 
