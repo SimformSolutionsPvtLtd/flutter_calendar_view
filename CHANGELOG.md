@@ -1,5 +1,7 @@
 - # [1.1.1] (UnReleased)
 - Added support for horizontal scroll physics of week and month view page. [#314](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/314)
+- Fixed issue related to the live time indicator is that it is not in the correct position when startHour is set for the week and day view. [#346](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/346)
+- Fixed issue of onDateTap returns wrong date when startHour is set for week and day view. [#341](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/341)
 - Fixed issue related to onDateTap no triggered in WeekView and dayView. [#332](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/332)
 # [1.1.0 - 28 Feb 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.1.0) 
 - Fixed issue related to Hiding Header [#299](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/299)
