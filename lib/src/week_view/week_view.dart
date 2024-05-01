@@ -686,6 +686,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         minuteSlotSize: minuteSlotSize,
         onDateTap: widget.onDateTap,
         onDateLongPress: widget.onDateLongPress,
+        startHour: _startHour,
       );
 
   /// Default builder for week line.
