@@ -49,7 +49,7 @@ please read these instructions carefully.
 For a contribution to be accepted:
 
 - Follow the [Style Guide] when writing the code;
-- Format the code using `flutter format .`;
+- Format the code using `dart format .`;
 - Documentation should always be updated or added (if applicable);
 - Examples should always be updated or added (if applicable);
 - Tests should always be updated or added (if applicable) -- check the [Test writing guide] for
