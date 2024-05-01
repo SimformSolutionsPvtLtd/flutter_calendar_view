@@ -217,6 +217,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// If true this will show week day at bottom position.
   final bool showWeekDayAtBottom;
 
+  /// Defines scroll physics for a page of a week view.
+  ///
+  /// This can be used to disable the horizontal scroll of a page.
+  final ScrollPhysics? pageViewPhysics;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -268,6 +273,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showQuarterHours = false,
     this.emulateVerticalOffsetBy = 0,
     this.showWeekDayAtBottom = false,
+    this.pageViewPhysics,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -450,6 +456,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                     child: PageView.builder(
                       itemCount: _totalWeeks,
                       controller: _pageController,
+                      physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
                         final dates = DateTime(_minDate.year, _minDate.month,

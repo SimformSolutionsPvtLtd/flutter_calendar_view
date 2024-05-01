@@ -147,6 +147,11 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [ClampingScrollPhysics].
   final ScrollPhysics pagePhysics;
 
+  /// Defines scroll physics for a page of a month view.
+  ///
+  /// This can be used to disable the horizontal scroll of a page.
+  final ScrollPhysics? pageViewPhysics;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -177,6 +182,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
+    this.pageViewPhysics,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -306,6 +312,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
+                physics: widget.pageViewPhysics,
                 onPageChanged: _onPageChange,
                 itemBuilder: (_, index) {
                   final date = DateTime(_minDate.year, _minDate.month + index);
