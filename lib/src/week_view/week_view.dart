@@ -148,6 +148,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
+  /// Called when user long press on event tile.
+  final CellTapCallback<T>? onEventLongTap;
+
   /// Show weekends or not
   ///
   /// Default value is true.
@@ -253,6 +256,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.backgroundColor = Colors.white,
     this.scrollOffset = 0.0,
     this.onEventTap,
+    this.onEventLongTap,
     this.onDateLongPress,
     this.onDateTap,
     this.weekDays = WeekDays.values,
@@ -479,6 +483,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 _liveTimeIndicatorSettings,
                             timeLineBuilder: _timeLineBuilder,
                             onTileTap: widget.onEventTap,
+                            onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,
                             onDateTap: widget.onDateTap,
                             eventTileBuilder: _eventTileBuilder,

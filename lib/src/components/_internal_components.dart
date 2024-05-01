@@ -326,6 +326,9 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
+  /// Called when user long press on event tile.
+  final CellTapCallback<T>? onTileLongTap;
+
   final EventScrollConfiguration scrollNotifier;
 
   /// A widget that display event tiles in day/week view.
@@ -340,6 +343,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.eventTileBuilder,
     required this.date,
     required this.onTileTap,
+    required this.onTileLongTap,
     required this.scrollNotifier,
   }) : super(key: key);
 
@@ -361,6 +365,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
         left: events[index].left,
         right: events[index].right,
         child: GestureDetector(
+          onLongPress: () => onTileLongTap?.call(events[index].events, date),
           onTap: () => onTileTap?.call(events[index].events, date),
           child: Builder(builder: (context) {
             if (scrollNotifier.shouldScroll &&

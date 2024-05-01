@@ -148,6 +148,7 @@ MonthView(
     startDay: WeekDays.sunday, // To change the first day of the week.
     // This callback will only work if cellBuilder is null.
     onEventTap: (event, date) => print(event),
+    onEventLongTap: (event, date) => print(event),
     onDateLongPress: (date) => print(date),
     headerBuilder: MonthHeader.hidden // To hide month header
 );
@@ -174,6 +175,7 @@ DayView(
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
+    onEventLongTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
     startHour: 5 // To set the first hour displayed (ex: 05:00)
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
@@ -203,6 +205,7 @@ WeekView(
     initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
+    onEventTap: (events, date) => print(events),
     onEventTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
     startDay: WeekDays.sunday, // To change the first day of the week.

@@ -29,6 +29,10 @@ class WeekViewWidget extends StatelessWidget {
           ),
         );
       },
+      onEventLongTap: (events, date) {
+        SnackBar snackBar = SnackBar(content: Text("on LongTap"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }
