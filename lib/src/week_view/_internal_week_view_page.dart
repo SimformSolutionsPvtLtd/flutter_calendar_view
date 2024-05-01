@@ -96,6 +96,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Called when user long press on event tile.
   final CellTapCallback<T>? onTileLongTap;
 
+  /// Called when user double tap on any event tile.
+  final CellTapCallback<T>? onTileDoubleTap;
+
   /// Defines which days should be displayed in one week.
   ///
   /// By default all the days will be visible.
@@ -139,47 +142,48 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   final double emulateVerticalOffsetBy;
 
   /// A single page for week view.
-  const InternalWeekViewPage(
-      {Key? key,
-      required this.showVerticalLine,
-      required this.weekTitleHeight,
-      required this.weekDayBuilder,
-      required this.weekNumberBuilder,
-      required this.width,
-      required this.dates,
-      required this.eventTileBuilder,
-      required this.controller,
-      required this.timeLineBuilder,
-      required this.hourIndicatorSettings,
-      required this.hourLinePainter,
-      required this.halfHourIndicatorSettings,
-      required this.quarterHourIndicatorSettings,
-      required this.showLiveLine,
-      required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute,
-      required this.timeLineWidth,
-      required this.timeLineOffset,
-      required this.height,
-      required this.hourHeight,
-      required this.eventArranger,
-      required this.verticalLineOffset,
-      required this.weekTitleWidth,
-      required this.scrollController,
-      required this.onTileTap,
-      required this.onTileLongTap,
-      required this.onDateLongPress,
-      required this.onDateTap,
-      required this.weekDays,
-      required this.minuteSlotSize,
-      required this.scrollConfiguration,
-      required this.startHour,
-      required this.fullDayEventBuilder,
-      required this.weekDetectorBuilder,
-      required this.showWeekDayAtBottom,
-      required this.showHalfHours,
-      required this.showQuarterHours,
-      required this.emulateVerticalOffsetBy})
-      : super(key: key);
+  const InternalWeekViewPage({
+    Key? key,
+    required this.showVerticalLine,
+    required this.weekTitleHeight,
+    required this.weekDayBuilder,
+    required this.weekNumberBuilder,
+    required this.width,
+    required this.dates,
+    required this.eventTileBuilder,
+    required this.controller,
+    required this.timeLineBuilder,
+    required this.hourIndicatorSettings,
+    required this.hourLinePainter,
+    required this.halfHourIndicatorSettings,
+    required this.quarterHourIndicatorSettings,
+    required this.showLiveLine,
+    required this.liveTimeIndicatorSettings,
+    required this.heightPerMinute,
+    required this.timeLineWidth,
+    required this.timeLineOffset,
+    required this.height,
+    required this.hourHeight,
+    required this.eventArranger,
+    required this.verticalLineOffset,
+    required this.weekTitleWidth,
+    required this.scrollController,
+    required this.onTileTap,
+    required this.onTileLongTap,
+    required this.onDateLongPress,
+    required this.onDateTap,
+    required this.weekDays,
+    required this.minuteSlotSize,
+    required this.scrollConfiguration,
+    required this.startHour,
+    required this.fullDayEventBuilder,
+    required this.weekDetectorBuilder,
+    required this.showWeekDayAtBottom,
+    required this.showHalfHours,
+    required this.showQuarterHours,
+    required this.emulateVerticalOffsetBy,
+    required this.onTileDoubleTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -328,6 +332,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       date: filteredDates[index],
                                       onTileTap: onTileTap,
                                       onTileLongTap: onTileLongTap,
+                                      onTileDoubleTap: onTileDoubleTap,
                                       width: weekTitleWidth,
                                       eventArranger: eventArranger,
                                       eventTileBuilder: eventTileBuilder,

@@ -170,6 +170,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user long press on event tile.
   final CellTapCallback<T>? onEventLongTap;
 
+  /// This method will be called when user double taps on event tile.
+  final CellTapCallback<T>? onEventDoubleTap;
+
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
@@ -267,6 +270,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.startDuration = const Duration(hours: 0),
     this.onHeaderTitleTap,
     this.emulateVerticalOffsetBy = 0,
+    this.onEventDoubleTap,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -458,6 +462,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,
                             onDateTap: widget.onDateTap,
+                            onTileDoubleTap: widget.onEventDoubleTap,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
                                 date.compareWithoutTime(DateTime.now()),
                             timeLineOffset: widget.timeLineOffset,

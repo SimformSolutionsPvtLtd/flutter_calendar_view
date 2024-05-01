@@ -151,6 +151,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Called when user long press on event tile.
   final CellTapCallback<T>? onEventLongTap;
 
+  /// Called when user double taps on any event tile.
+  final CellTapCallback<T>? onEventDoubleTap;
+
   /// Show weekends or not
   ///
   /// Default value is true.
@@ -278,6 +281,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.emulateVerticalOffsetBy = 0,
     this.showWeekDayAtBottom = false,
     this.pageViewPhysics,
+    this.onEventDoubleTap,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -486,6 +490,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,
                             onDateTap: widget.onDateTap,
+                            onTileDoubleTap: widget.onEventDoubleTap,
                             eventTileBuilder: _eventTileBuilder,
                             heightPerMinute: widget.heightPerMinute,
                             hourIndicatorSettings: _hourIndicatorSettings,
