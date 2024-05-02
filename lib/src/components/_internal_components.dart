@@ -38,6 +38,9 @@ class LiveTimeIndicator extends StatefulWidget {
   /// First hour displayed in the layout, goes from 0 to 24
   final int startHour;
 
+  /// This field will be used to set end hour for day and week view
+  final int endHour;
+
   /// Widget to display tile line according to current time.
   const LiveTimeIndicator({
     Key? key,
@@ -47,6 +50,7 @@ class LiveTimeIndicator extends StatefulWidget {
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
     required this.startHour,
+    this.endHour = Constants.hoursADay,
   }) : super(key: key);
 
   @override
@@ -93,6 +97,13 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     /// remove startHour minute from [_currentTime.getTotalMinutes]
     /// to set dy offset of live time indicator
     final startMinutes = widget.startHour * 60;
+
+    /// Check if live time is not between startHour and endHour then
+    /// don't show live time indicator
+    if (_currentTime.hour > widget.startHour ||
+        widget.endHour < _currentTime.hour) {
+      return SizedBox.shrink();
+    }
     return CustomPaint(
       size: Size(widget.width, widget.liveTimeIndicatorSettings.height),
       painter: CurrentTimeLinePainter(
@@ -150,6 +161,9 @@ class TimeLine extends StatefulWidget {
 
   double get _halfHourHeight => hourHeight / 2;
 
+  /// This field will be used to set end hour for day and week view
+  final int endHour;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -162,6 +176,7 @@ class TimeLine extends StatefulWidget {
     this.showHalfHours = false,
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
+    this.endHour = Constants.hoursADay,
   }) : super(key: key);
 
   @override
@@ -208,7 +223,7 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = widget.startHour + 1; i < Constants.hoursADay; i++)
+          for (int i = widget.startHour + 1; i < widget.endHour; i++)
             _timelinePositioned(
               topPosition: widget.hourHeight * (i - widget.startHour) -
                   widget.timeLineOffset,
@@ -218,7 +233,7 @@ class _TimeLineState extends State<TimeLine> {
               hour: i,
             ),
           if (widget.showHalfHours)
-            for (int i = widget.startHour; i < Constants.hoursADay; i++)
+            for (int i = widget.startHour; i < widget.endHour; i++)
               _timelinePositioned(
                 topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
@@ -230,7 +245,7 @@ class _TimeLineState extends State<TimeLine> {
                 minutes: 30,
               ),
           if (widget.showQuarterHours)
-            for (int i = 0; i < Constants.hoursADay; i++) ...[
+            for (int i = 0; i < widget.endHour; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
                 topPosition: widget.hourHeight * i -
@@ -334,6 +349,9 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollNotifier;
 
+  /// This field will be used to set end hour for day and week view
+  final int endHour;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -349,6 +367,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.onTileLongTap,
     required this.scrollNotifier,
     required this.onTileDoubleTap,
+    this.endHour = Constants.hoursADay,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event

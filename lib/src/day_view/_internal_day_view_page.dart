@@ -121,6 +121,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
+  /// This field will be used to set end hour for day view
+  final int endHour;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -154,6 +157,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.showQuarterHours,
     required this.halfHourIndicatorSettings,
     required this.startHour,
+    required this.endHour,
     required this.quarterHourIndicatorSettings,
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
@@ -181,17 +185,19 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                     CustomPaint(
                       size: Size(width, height),
                       painter: HourLinePainter(
-                          lineColor: hourIndicatorSettings.color,
-                          lineHeight: hourIndicatorSettings.height,
-                          offset: timeLineWidth + hourIndicatorSettings.offset,
-                          minuteHeight: heightPerMinute,
-                          verticalLineOffset: verticalLineOffset,
-                          showVerticalLine: showVerticalLine,
-                          lineStyle: hourIndicatorSettings.lineStyle,
-                          dashWidth: hourIndicatorSettings.dashWidth,
-                          dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
-                          emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-                          startHour: startHour),
+                        lineColor: hourIndicatorSettings.color,
+                        lineHeight: hourIndicatorSettings.height,
+                        offset: timeLineWidth + hourIndicatorSettings.offset,
+                        minuteHeight: heightPerMinute,
+                        verticalLineOffset: verticalLineOffset,
+                        showVerticalLine: showVerticalLine,
+                        lineStyle: hourIndicatorSettings.lineStyle,
+                        dashWidth: hourIndicatorSettings.dashWidth,
+                        dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+                        startHour: startHour,
+                        endHour: endHour,
+                      ),
                     ),
                     if (showHalfHours)
                       CustomPaint(
@@ -207,6 +213,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                           dashSpaceWidth:
                               halfHourIndicatorSettings.dashSpaceWidth,
                           startHour: startHour,
+                          endHour: endHour,
                         ),
                       ),
                     if (showQuarterHours)
@@ -248,6 +255,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                         eventTileBuilder: eventTileBuilder,
                         scrollNotifier: scrollNotifier,
                         startHour: startHour,
+                        endHour: endHour,
                         width: width -
                             timeLineWidth -
                             hourIndicatorSettings.offset -
@@ -262,6 +270,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                       timeLineWidth: timeLineWidth,
                       showHalfHours: showHalfHours,
                       startHour: startHour,
+                      endHour: endHour,
                       showQuarterHours: showQuarterHours,
                       key: ValueKey(heightPerMinute),
                       liveTimeIndicatorSettings: liveTimeIndicatorSettings,
@@ -275,6 +284,7 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
                           heightPerMinute: heightPerMinute,
                           timeLineWidth: timeLineWidth,
                           startHour: startHour,
+                          endHour: endHour,
                         ),
                       ),
                   ],

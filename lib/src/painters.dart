@@ -44,6 +44,9 @@ class HourLinePainter extends CustomPainter {
   /// Emulates offset of vertical line from hour line starts.
   final double emulateVerticalOffsetBy;
 
+  /// This field will be used to set end hour for day and week view
+  final int endHour;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -53,6 +56,7 @@ class HourLinePainter extends CustomPainter {
     required this.showVerticalLine,
     required this.startHour,
     required this.emulateVerticalOffsetBy,
+    this.endHour = Constants.hoursADay,
     this.verticalLineOffset = 10,
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
@@ -66,7 +70,7 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour + 1; i < Constants.hoursADay; i++) {
+    for (var i = startHour + 1; i < endHour; i++) {
       final dy = (i - startHour) * minuteHeight * 60;
       if (lineStyle == LineStyle.dashed) {
         var startX = dx;
@@ -131,6 +135,9 @@ class HalfHourLinePainter extends CustomPainter {
   /// First hour displayed in the layout
   final int startHour;
 
+  /// This field will be used to set end hour for day and week view
+  final int endHour;
+
   /// Paint half hour lines
   HalfHourLinePainter({
     required this.lineColor,
@@ -141,6 +148,7 @@ class HalfHourLinePainter extends CustomPainter {
     required this.startHour,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    this.endHour = Constants.hoursADay,
   });
 
   @override
@@ -149,7 +157,7 @@ class HalfHourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour; i < Constants.hoursADay; i++) {
+    for (var i = startHour; i < endHour; i++) {
       final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;

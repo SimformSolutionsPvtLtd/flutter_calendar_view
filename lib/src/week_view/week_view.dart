@@ -206,7 +206,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
   /// First hour displayed in the layout, goes from 0 to 24
-  final int? startHour;
+  final int startHour;
+
+  /// This field will be used to set end hour for week view
+  final int endHour;
 
   ///Show half hour indicator
   final bool showHalfHours;
@@ -274,7 +277,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
-    this.startHour,
+    this.startHour = 0,
     this.onHeaderTitleTap,
     this.showHalfHours = false,
     this.showQuarterHours = false,
@@ -282,6 +285,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.showWeekDayAtBottom = false,
     this.pageViewPhysics,
     this.onEventDoubleTap,
+    this.endHour = Constants.hoursADay,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -296,6 +300,14 @@ class WeekView<T extends Object?> extends StatefulWidget {
           weekDetectorBuilder == null || onDateLongPress == null,
           """If you use [weekPressDetectorBuilder] 
           do not provide [onDateLongPress]""",
+        ),
+        assert(
+          startHour <= 0 || startHour != endHour,
+          "startHour must be greater than 0 or startHour should not equal to endHour",
+        ),
+        assert(
+          endHour <= Constants.hoursADay || endHour < startHour,
+          "End hour must be less than 24 or startHour must be less than endHour",
         ),
         super(key: key);
 
@@ -349,6 +361,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late List<WeekDays> _weekDays;
 
   late int _startHour;
+  late int _endHour;
 
   final _scrollConfiguration = EventScrollConfiguration();
 
@@ -356,9 +369,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void initState() {
     super.initState();
 
-    _startHour = widget.startHour ?? 0;
-    //Security to avoid any height bug
-    if (_startHour > 24) _startHour = 0;
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
 
     _reloadCallback = _reload;
 
@@ -520,6 +532,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
+                            endHour: _endHour,
                           ),
                         );
                       },
@@ -618,7 +631,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * (Constants.hoursADay - _startHour);
+    _height = _hourHeight * (_endHour - _startHour);
   }
 
   void _assignBuilders() {
@@ -792,29 +805,33 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   HourLinePainter _defaultHourLinePainter(
-      Color lineColor,
-      double lineHeight,
-      double offset,
-      double minuteHeight,
-      bool showVerticalLine,
-      double verticalLineOffset,
-      LineStyle lineStyle,
-      double dashWidth,
-      double dashSpaceWidth,
-      double emulateVerticalOffsetBy,
-      int startHour) {
+    Color lineColor,
+    double lineHeight,
+    double offset,
+    double minuteHeight,
+    bool showVerticalLine,
+    double verticalLineOffset,
+    LineStyle lineStyle,
+    double dashWidth,
+    double dashSpaceWidth,
+    double emulateVerticalOffsetBy,
+    int startHour,
+    int endHour,
+  ) {
     return HourLinePainter(
-        lineColor: lineColor,
-        lineHeight: lineHeight,
-        offset: offset,
-        minuteHeight: minuteHeight,
-        verticalLineOffset: verticalLineOffset,
-        showVerticalLine: showVerticalLine,
-        lineStyle: lineStyle,
-        dashWidth: dashWidth,
-        dashSpaceWidth: dashSpaceWidth,
-        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
-        startHour: startHour);
+      lineColor: lineColor,
+      lineHeight: lineHeight,
+      offset: offset,
+      minuteHeight: minuteHeight,
+      verticalLineOffset: verticalLineOffset,
+      showVerticalLine: showVerticalLine,
+      lineStyle: lineStyle,
+      dashWidth: dashWidth,
+      dashSpaceWidth: dashSpaceWidth,
+      emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+      startHour: startHour,
+      endHour: endHour,
+    );
   }
 
   /// Called when user change page using any gesture or inbuilt functions.
