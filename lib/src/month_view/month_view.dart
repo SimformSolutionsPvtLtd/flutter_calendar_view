@@ -57,6 +57,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// This function will only work if [cellBuilder] is null.
   final TileTapCallback<T>? onEventLongTap;
 
+  /// This method will be called when user double taps on event tile.
+  final TileTapCallback<T>? onEventDoubleTap;
+
   /// Builds the name of the weeks.
   ///
   /// Used default week builder if null.
@@ -190,6 +193,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
     this.pageViewPhysics,
+    this.onEventDoubleTap,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -531,6 +535,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       onTileTap: widget.onEventTap,
       onTileLongTap: widget.onEventLongTap,
       dateStringBuilder: widget.dateStringBuilder,
+      onTileDoubleTap: widget.onEventDoubleTap,
     );
   }
 
