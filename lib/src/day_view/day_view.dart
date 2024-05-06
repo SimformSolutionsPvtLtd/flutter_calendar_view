@@ -229,6 +229,12 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -279,6 +285,8 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    this.showInitialTime = false,
+    this.showEndTime = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -504,6 +512,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             dayViewScrollController: _scrollController,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            showInitialTime: widget.showInitialTime,
+                            showEndTime: widget.showEndTime,
                           ),
                         );
                       },
@@ -586,6 +596,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
     _height = _hourHeight * (widget.endHour - widget.startHour);
+
+    /// Adding extra height for end hour to be display on timeline
+    _height += widget.showEndTime ? (_hourHeight * 0.16) : 0;
   }
 
   void _assignBuilders() {
@@ -741,6 +754,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      showInitialTime: widget.showInitialTime,
+      showEndTime: widget.showEndTime,
     );
   }
 

@@ -186,6 +186,8 @@ DayView(
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },
+    showInitialTime:false, // To show startHour or initial time on timeline
+    showEndTime:true, // To show endHour or end time on timeline
     dayTitleBuilder: DayHeader.hidden, // To Hide day header
     keepScrollOffset: true, // To maintain scroll offset when the page changes
 );
@@ -221,6 +223,8 @@ WeekView(
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },
+    showInitialTime:false, // To show startHour or initial time on timeline
+    showEndTime:true, // To show endHour or end time on timeline
     weekPageHeaderBuilder: WeekHeader.hidden, // To hide week header
     fullDayHeaderTitle: 'All day', // To set full day events header title
     fullDayHeaderTextConfig: FullDayHeaderTextConfig(

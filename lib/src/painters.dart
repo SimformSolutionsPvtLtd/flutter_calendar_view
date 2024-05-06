@@ -47,6 +47,15 @@ class HourLinePainter extends CustomPainter {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for setting first hour index on timeline for week view only
+  final bool setDisplayHoursForWeek;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -61,6 +70,9 @@ class HourLinePainter extends CustomPainter {
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    this.showInitialTime = false,
+    this.setDisplayHoursForWeek = false,
+    this.showEndTime = false,
   });
 
   @override
@@ -70,8 +82,16 @@ class HourLinePainter extends CustomPainter {
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour + 1; i < endHour; i++) {
-      final dy = (i - startHour) * minuteHeight * 60;
+    final displayStartHour =
+        showInitialTime || showEndTime ? startHour : startHour + 1;
+
+    for (var i = displayStartHour; i < endHour + 1; i++) {
+      /// Added initialTimeSpacing to calculate from where line starts to
+      /// display to display hours lines align to hours tag for day view only
+      final dy = (i - displayStartHour) * minuteHeight * 60 +
+          (showInitialTime && !setDisplayHoursForWeek
+              ? Constants.initialTimeSpacing
+              : 0);
       if (lineStyle == LineStyle.dashed) {
         var startX = dx;
         while (startX < size.width) {
@@ -86,15 +106,21 @@ class HourLinePainter extends CustomPainter {
 
     if (showVerticalLine) {
       if (lineStyle == LineStyle.dashed) {
-        var startY = 0.0;
+        var startY = showInitialTime ? -Constants.initialTimeSpacing : 0.0;
         while (startY < size.height) {
           canvas.drawLine(Offset(offset + verticalLineOffset, startY),
               Offset(offset + verticalLineOffset, startY + dashWidth), paint);
           startY += dashWidth + dashSpaceWidth;
         }
       } else {
-        canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-            Offset(offset + verticalLineOffset, size.height), paint);
+        canvas.drawLine(
+            Offset(
+              offset + verticalLineOffset,
+              showInitialTime ? -Constants.initialTimeSpacing : 0.0,
+            ),
+            Offset(offset + verticalLineOffset,
+                size.height + (showEndTime ? Constants.initialTimeSpacing : 0)),
+            paint);
       }
     }
   }

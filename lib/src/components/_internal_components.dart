@@ -167,6 +167,15 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for setting first hour index on timeline for week view only
+  final bool setDisplayHoursForWeek;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -180,6 +189,9 @@ class TimeLine extends StatefulWidget {
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
+    this.showInitialTime = false,
+    this.setDisplayHoursForWeek = false,
+    this.showEndTime = false,
   }) : super(key: key);
 
   @override
@@ -216,6 +228,10 @@ class _TimeLineState extends State<TimeLine> {
 
   @override
   Widget build(BuildContext context) {
+    final displayStartHour =
+        widget.showInitialTime ? widget.startHour : widget.startHour + 1;
+    final displayEndHour =
+        widget.showEndTime ? Constants.hoursADay + 1 : Constants.hoursADay;
     return ConstrainedBox(
       key: ValueKey(widget.hourHeight),
       constraints: BoxConstraints(
@@ -226,15 +242,59 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = widget.startHour + 1; i < widget.endHour; i++)
-            _timelinePositioned(
-              topPosition: widget.hourHeight * (i - widget.startHour) -
-                  widget.timeLineOffset,
-              bottomPosition: widget.height -
-                  (widget.hourHeight * (i - widget.startHour + 1)) +
-                  widget.timeLineOffset,
-              hour: i,
-            ),
+          for (int i = displayStartHour; i < displayEndHour; i++) ...{
+            /// Display initial time on timeline for week
+            if (i == widget.startHour &&
+                widget.showInitialTime &&
+                widget.setDisplayHoursForWeek) ...{
+              /// Here we are changing the top-position for the first index
+              /// hour with [Constants.initialTimeSpacing] for the WeekView only.
+              _timelinePositioned(
+                topPosition: widget.hourHeight * (i - widget.startHour) -
+                    widget.timeLineOffset +
+                    Constants.initialTimeSpacing,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
+                    widget.timeLineOffset,
+                hour: i,
+              ),
+            }
+
+            /// Here we are changing end Hour's top position
+            /// Display end time on timeline for weekView only
+            else if (i == Constants.hoursADay &&
+                widget.showEndTime &&
+                widget.setDisplayHoursForWeek) ...{
+              _timelinePositioned(
+                topPosition: widget.hourHeight * (i - widget.startHour) -
+                    widget.timeLineOffset -
+                    Constants.initialTimeSpacing,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
+                    widget.timeLineOffset,
+                hour: i,
+              ),
+            }
+
+            /// Display rest of time on timeline for day and week
+            else ...{
+              /// Added initialTimeSpacing to topPosition for rest of time to display hours
+              /// on timeline properly from top position for day view only
+              _timelinePositioned(
+                topPosition: widget.hourHeight * (i - widget.startHour) -
+                    widget.timeLineOffset +
+                    (widget.showInitialTime && !widget.setDisplayHoursForWeek
+                        ? Constants.initialTimeSpacing
+                        : 0),
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
+                    widget.timeLineOffset,
+                hour: i,
+              ),
+            }
+          },
+
+          /// Display half hours on timeline for day and week
           if (widget.showHalfHours)
             for (int i = widget.startHour; i < widget.endHour; i++)
               _timelinePositioned(
@@ -247,15 +307,17 @@ class _TimeLineState extends State<TimeLine> {
                 hour: i,
                 minutes: 30,
               ),
+
+          /// Display quarter hours on timeline for day and week
           if (widget.showQuarterHours)
-            for (int i = 0; i < widget.endHour; i++) ...[
+            for (int i = widget.startHour; i < widget.endHour; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget.hourHeight * 0.25,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 15,
@@ -263,11 +325,11 @@ class _TimeLineState extends State<TimeLine> {
 
               /// this is for 45 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget.hourHeight * 0.75,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 45,

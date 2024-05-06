@@ -240,6 +240,12 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -298,6 +304,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    this.showInitialTime = false,
+    this.showEndTime = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -559,6 +567,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             lastScrollOffset: _lastScrollOffset,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            showInitialTime: widget.showInitialTime,
+                            showEndTime: widget.showEndTime,
                           ),
                         );
                       },
@@ -860,6 +870,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      showInitialTime: widget.showInitialTime,
+      showEndTime: widget.showEndTime,
+      setDisplayHoursForWeek: true,
     );
   }
 

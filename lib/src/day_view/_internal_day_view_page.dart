@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
 import '../components/event_scroll_notifier.dart';
+import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -133,6 +134,12 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -173,6 +180,8 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     this.keepScrollOffset = false,
+    required this.showInitialTime,
+    required this.showEndTime,
   }) : super(key: key);
 
   @override
@@ -223,6 +232,10 @@ class _InternalDayViewPageState<T extends Object?>
               controller: widget.keepScrollOffset
                   ? scrollController
                   : widget.dayViewScrollController,
+              padding: EdgeInsets.only(
+                top: widget.showInitialTime ? Constants.initialTimeSpacing : 0,
+                bottom: widget.showEndTime ? Constants.initialTimeSpacing : 0,
+              ),
               child: SizedBox(
                 height: widget.height,
                 width: widget.width,
@@ -245,6 +258,8 @@ class _InternalDayViewPageState<T extends Object?>
                         emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
                         startHour: widget.startHour,
                         endHour: widget.endHour,
+                        showInitialTime: widget.showInitialTime,
+                        showEndTime: widget.showEndTime,
                       ),
                     ),
                     if (widget.showHalfHours)
@@ -326,6 +341,8 @@ class _InternalDayViewPageState<T extends Object?>
                       key: ValueKey(widget.heightPerMinute),
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
+                      showInitialTime: widget.showInitialTime,
+                      showEndTime: widget.showEndTime,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

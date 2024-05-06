@@ -160,6 +160,12 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag for displaying initial hour on timeline
+  final bool showInitialTime;
+
+  /// Flag for displaying end hour on timeline
+  final bool showEndTime;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -208,6 +214,8 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
+    required this.showInitialTime,
+    required this.showEndTime,
   }) : super(key: key);
 
   @override
@@ -351,6 +359,9 @@ class _InternalWeekViewPageState<T extends Object?>
                         startHour: widget.startHour,
                         emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
                         endHour: widget.endHour,
+                        showInitialTime: widget.showInitialTime,
+                        showEndTime: widget.showEndTime,
+                        setDisplayHoursForWeek: true,
                       ),
                     ),
                     if (widget.showHalfHours)
@@ -460,6 +471,9 @@ class _InternalWeekViewPageState<T extends Object?>
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
                       endHour: widget.endHour,
+                      showInitialTime: widget.showInitialTime,
+                      setDisplayHoursForWeek: true,
+                      showEndTime: widget.showEndTime,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

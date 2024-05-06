@@ -1,4 +1,5 @@
 - # [1.1.1] (UnReleased)
+- Added support for start and end hour to be display on timeline for day and week view. [#267](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/267)
 - Fixed issue when adding full-day events to WeekView, event is not display at correct date.  [#259](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/259)
 - Added support for onLongPress of event in day, week and month view. [#342](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/342)
 - Added check to keep hour in timeline (in day and week view) if LiveTimeIndicator time or backgroundView dosen't overlap. [#336](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/336)
