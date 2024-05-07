@@ -199,6 +199,8 @@ class FullDayEventView<T> extends StatelessWidget {
     this.titleStyle,
     this.onEventTap,
     required this.date,
+    this.onEventDoubleTap,
+    this.onEventLongPress,
   }) : super(key: key);
 
   /// Constraints for view
@@ -217,7 +219,13 @@ class FullDayEventView<T> extends StatelessWidget {
   final TextStyle? titleStyle;
 
   /// Called when user taps on event tile.
-  final TileTapCallback<T>? onEventTap;
+  final CellTapCallback<T>? onEventTap;
+
+  /// Called when user long press on event tile.
+  final CellTapCallback<T>? onEventLongPress;
+
+  /// Called when user double taps on any event tile.
+  final CellTapCallback<T>? onEventDoubleTap;
 
   /// Defines date for which events will be displayed.
   final DateTime date;
@@ -231,7 +239,9 @@ class FullDayEventView<T> extends StatelessWidget {
         padding: padding ?? EdgeInsets.zero,
         shrinkWrap: true,
         itemBuilder: (context, index) => InkWell(
-          onTap: () => onEventTap?.call(events[index], date),
+          onLongPress: () => onEventLongPress?.call(events, date),
+          onTap: () => onEventTap?.call(events, date),
+          onDoubleTap: () => onEventDoubleTap?.call(events, date),
           child: itemView?.call(events[index]) ??
               Container(
                 margin: const EdgeInsets.all(5.0),

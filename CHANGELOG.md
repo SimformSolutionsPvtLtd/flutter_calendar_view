@@ -1,4 +1,5 @@
 - # [1.1.1] (UnReleased)
+- Added event tap, double tap and long press for full day event in day and week view. [#260](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/260)
 - Fixed live time indicator not displaying on correct position when start and end hour is set. [#366](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/366)
 - Fixed synchronization of scroll between pages in day and week view. [#186](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/186)
 - Added showWeekTileBorder field whether to show border for header in month view. [#306](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/306)

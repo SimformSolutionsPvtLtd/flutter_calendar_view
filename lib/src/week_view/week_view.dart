@@ -680,6 +680,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       events: events,
       boxConstraints: BoxConstraints(maxHeight: 65),
       date: dateTime,
+      onEventTap: widget.onEventTap,
+      onEventDoubleTap: widget.onEventDoubleTap,
+      onEventLongPress: widget.onEventLongTap,
     );
   }
 
