@@ -197,6 +197,8 @@ class DefaultEventTile<T> extends StatelessWidget {
     required this.boundary,
     required this.startDuration,
     required this.endDuration,
+    required this.heightPerMinute,
+    this.isMinEventTileHeight = false,
   });
 
   final DateTime date;
@@ -204,9 +206,24 @@ class DefaultEventTile<T> extends StatelessWidget {
   final Rect boundary;
   final DateTime startDuration;
   final DateTime endDuration;
+  final double heightPerMinute;
+  final bool isMinEventTileHeight;
 
   @override
   Widget build(BuildContext context) {
+    final double? eventTileHeight;
+    bool isEventTileHasSpace = false;
+    if (isMinEventTileHeight) {
+      eventTileHeight =
+          (endDuration.getTotalMinutes - startDuration.getTotalMinutes) *
+              heightPerMinute;
+
+      isEventTileHasSpace =
+          (events.first.titleStyle?.fontSize ?? Constants.maxFontSize) * 2.5 <=
+                  eventTileHeight &&
+              eventTileHeight >
+                  (events.first.titleStyle?.fontSize ?? Constants.maxFontSize);
+    }
     if (events.isNotEmpty) {
       final event = events[0];
       return RoundedEventTile(
@@ -214,11 +231,17 @@ class DefaultEventTile<T> extends StatelessWidget {
         title: event.title,
         totalEvents: events.length - 1,
         description: event.description,
-        padding: EdgeInsets.all(10.0),
+        padding: isMinEventTileHeight
+            ? isEventTileHasSpace
+                ? EdgeInsets.all(6)
+                : EdgeInsets.zero
+            : EdgeInsets.all(10),
         backgroundColor: event.color,
-        margin: EdgeInsets.all(2.0),
+        margin: EdgeInsets.all(1.0),
         titleStyle: event.titleStyle,
         descriptionStyle: event.descriptionStyle,
+        showDescription: isMinEventTileHeight ? isEventTileHasSpace : false,
+        centerTitle: isMinEventTileHeight,
       );
     } else {
       return SizedBox.shrink();

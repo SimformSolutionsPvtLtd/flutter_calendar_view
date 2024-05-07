@@ -240,6 +240,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -298,6 +302,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    this.isMinEventTileHeight = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -559,6 +564,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             lastScrollOffset: _lastScrollOffset,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            isMinEventTileHeight: widget.isMinEventTileHeight,
                           ),
                         );
                       },
@@ -793,13 +799,17 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
-  ) =>
+    double heightPerMinute, {
+    bool isMinEventTileHeight = false,
+  }) =>
       DefaultEventTile(
         date: date,
         events: events,
         boundary: boundary,
         startDuration: startDuration,
         endDuration: endDuration,
+        heightPerMinute: heightPerMinute,
+        isMinEventTileHeight: isMinEventTileHeight,
       );
 
   /// Default view header builder. This builder will be used if

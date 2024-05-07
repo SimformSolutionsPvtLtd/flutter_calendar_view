@@ -20,7 +20,9 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   Rect boundary,
   DateTime startDuration,
   DateTime endDuration,
-);
+  double heightPerMinute, {
+  bool isMinEventTileHeight,
+});
 
 typedef DetectorBuilder<T extends Object?> = Widget Function({
   required DateTime date,

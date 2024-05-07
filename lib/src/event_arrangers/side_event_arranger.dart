@@ -30,6 +30,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
     required int startHour,
+    required TextScaler textScaleFactor,
+    bool isMinEventTileHeight = false,
   }) {
     final mergedEvents = MergeEventArranger<T>(
       includeEdges: includeEdges,
@@ -39,6 +41,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
       width: width,
       heightPerMinute: heightPerMinute,
       startHour: startHour,
+      isMinEventTileHeight: isMinEventTileHeight,
+      textScaleFactor: textScaleFactor,
     );
 
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
@@ -102,15 +106,47 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         final startTime = sideEvent.event.startTime!;
         final endTime = sideEvent.event.endTime!;
+        int? newEndTime;
+
+        /// For getting the event title height as per its font size
+        if (isMinEventTileHeight) {
+          final endTimeInMin = endTime.getTotalMinutes;
+          final eventTitleSpan = TextSpan(
+            text: sideEvent.event.title,
+            style: sideEvent.event.titleStyle ??
+                TextStyle(
+                  fontSize: Constants.maxFontSize,
+                ),
+          );
+          final eventTitle = TextPainter(
+              textScaler: textScaleFactor,
+              text: eventTitleSpan,
+              textDirection: TextDirection.ltr);
+          eventTitle.layout();
+
+          final eventTileHeightAsPerDuration =
+              (endTimeInMin - startTime.getTotalMinutes) * heightPerMinute;
+
+          if (eventTileHeightAsPerDuration <= eventTitle.height) {
+            final addHeight = eventTitle.height - eventTileHeightAsPerDuration;
+
+            ///converting the height into time
+            final addTime = (addHeight / heightPerMinute).ceil();
+
+            newEndTime = endTimeInMin + addTime;
+          }
+        }
 
         // startTime.getTotalMinutes returns the number of minutes from 00h00 to the beginning hour of the event
         // But the first hour to be displayed (startHour) could be 06h00, so we have to substract
         // The number of minutes from 00h00 to startHour which is equal to startHour * 60
 
+        final differenceInMinutes =
+            ((newEndTime ?? endTime.getTotalMinutes) - (startHour * 60));
         final bottom = height -
-            (endTime.getTotalMinutes - (startHour * 60) == 0
+            (differenceInMinutes == 0
                     ? Constants.minutesADay - (startHour * 60)
-                    : endTime.getTotalMinutes - (startHour * 60)) *
+                    : differenceInMinutes) *
                 heightPerMinute;
 
         final top =

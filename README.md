@@ -176,6 +176,7 @@ DayView(
     maxDay: DateTime(2050),
     initialDay: DateTime(2021),
     heightPerMinute: 1, // height occupied by 1 minute time span.
+    isMinEventTileHeight: true,
     eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
     onEventTap: (events, date) => print(events),
     onEventDoubleTap: (events, date) => print(events),
@@ -218,6 +219,7 @@ WeekView(
     startHour: 5, // To set the first hour displayed (ex: 05:00)
     endHour:20, // To set the end hour displayed
     showVerticalLines: false, // Show the vertical line between days.
+    isMinEventTileHeight: true,
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },

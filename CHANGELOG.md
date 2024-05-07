@@ -1,3 +1,6 @@
+- # [1.2.1] (UnReleased)
+- Fixed width issue of event in day and week view. [#238](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/238)
+
 # [1.2.0 - 10 May 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.2.0)
 
 - Fixed issue when adding full-day events to WeekView, event is not display at correct date.  [#259](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/259)

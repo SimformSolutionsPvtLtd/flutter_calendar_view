@@ -355,6 +355,10 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
@@ -371,6 +375,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.scrollNotifier,
     required this.onTileDoubleTap,
     this.endHour = Constants.hoursADay,
+    this.isMinEventTileHeight = false,
   }) : super(key: key);
 
   /// Arrange events and returns list of [Widget] that displays event
@@ -378,11 +383,14 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
-        events: this.events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour);
+      events: this.events,
+      height: height,
+      width: width,
+      heightPerMinute: heightPerMinute,
+      startHour: startHour,
+      isMinEventTileHeight: isMinEventTileHeight,
+      textScaleFactor: MediaQuery.of(context).textScaler,
+    );
 
     return List.generate(events.length, (index) {
       return Positioned(
@@ -411,6 +419,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
                   height - events[index].bottom - events[index].top),
               events[index].startDuration,
               events[index].endDuration,
+              heightPerMinute,
+              isMinEventTileHeight: isMinEventTileHeight,
             );
           }),
         ),

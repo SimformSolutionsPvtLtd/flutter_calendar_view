@@ -43,6 +43,13 @@ class RoundedEventTile extends StatelessWidget {
   /// Style for description
   final TextStyle? descriptionStyle;
 
+  /// Show description according to tile available space
+  final bool showDescription;
+
+  /// When we are not showing description & there some space available we
+  /// center the title
+  final bool centerTitle;
+
   /// This is default tile to display in day view.
   const RoundedEventTile({
     Key? key,
@@ -55,6 +62,8 @@ class RoundedEventTile extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
+    this.showDescription = true,
+    this.centerTitle = false,
   }) : super(key: key);
 
   @override
@@ -67,6 +76,8 @@ class RoundedEventTile extends StatelessWidget {
         borderRadius: borderRadius,
       ),
       child: Column(
+        mainAxisAlignment:
+            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,6 +85,9 @@ class RoundedEventTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
+                textScaler: showDescription
+                    ? TextScaler.linear(0.8)
+                    : TextScaler.noScaling,
                 style: titleStyle ??
                     TextStyle(
                       fontSize: 20,
@@ -83,18 +97,15 @@ class RoundedEventTile extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             ),
-          if (description?.isNotEmpty ?? false)
+          if ((description?.isNotEmpty ?? false) && showDescription)
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  description!,
-                  style: descriptionStyle ??
-                      TextStyle(
-                        fontSize: 17,
-                        color: backgroundColor.accent.withAlpha(200),
-                      ),
-                ),
+              child: Text(
+                description!,
+                style: descriptionStyle ??
+                    TextStyle(
+                      fontSize: 17,
+                      color: backgroundColor.accent.withAlpha(200),
+                    ),
               ),
             ),
           if (totalEvents > 1)

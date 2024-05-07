@@ -133,6 +133,10 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -173,6 +177,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     this.keepScrollOffset = false,
+    this.isMinEventTileHeight = false,
   }) : super(key: key);
 
   @override
@@ -311,6 +316,7 @@ class _InternalDayViewPageState<T extends Object?>
                             widget.timeLineWidth -
                             widget.hourIndicatorSettings.offset -
                             widget.verticalLineOffset,
+                        isMinEventTileHeight: widget.isMinEventTileHeight,
                       ),
                     ),
                     TimeLine(

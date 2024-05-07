@@ -229,6 +229,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Setting the min height of an event tile such that event title is readable
+  /// when event duration difference is in range of 1 min to 15 min.
+  final bool isMinEventTileHeight;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -279,6 +283,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    this.isMinEventTileHeight = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -505,6 +510,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             dayViewScrollController: _scrollController,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            isMinEventTileHeight: widget.isMinEventTileHeight,
                           ),
                         );
                       },
@@ -668,13 +674,17 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
-  ) =>
+    double heightPerMinute, {
+    bool isMinEventTileHeight = false,
+  }) =>
       DefaultEventTile(
         date: date,
         events: events,
         boundary: boundary,
         startDuration: startDuration,
         endDuration: endDuration,
+        heightPerMinute: heightPerMinute,
+        isMinEventTileHeight: isMinEventTileHeight,
       );
 
   /// Default view header builder. This builder will be used if

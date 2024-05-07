@@ -44,6 +44,8 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
+  final DateTime? newEndTime;
+
   /// {@macro calendar_event_data_doc}
   CalendarEventData({
     required this.title,
@@ -56,7 +58,9 @@ class CalendarEventData<T extends Object?> {
     this.titleStyle,
     this.descriptionStyle,
     DateTime? endDate,
-  })  : _endDate = endDate?.withoutTime,
+    this.newEndTime,
+  })
+      : _endDate = endDate?.withoutTime,
         date = date.withoutTime;
 
   DateTime get endDate => _endDate ?? date;
@@ -65,7 +69,9 @@ class CalendarEventData<T extends Object?> {
   /// days and is not a full day event.
   ///
   bool get isRangingEvent {
-    final diff = endDate.withoutTime.difference(date.withoutTime).inDays;
+    final diff = endDate.withoutTime
+        .difference(date.withoutTime)
+        .inDays;
 
     return diff > 0 && !isFullDayEvent;
   }
@@ -91,9 +97,30 @@ class CalendarEventData<T extends Object?> {
             currentDate.isAfter(date.withoutTime));
   }
 
+  CalendarEventData<T> updateEventTime({
+    DateTime? newStartTime,
+    DateTime? newEndTime,
+  }) {
+    return CalendarEventData(
+      title: title,
+      description: description,
+      event: event,
+      color: color,
+      startTime: newStartTime ?? startTime,
+      endTime: endTime,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      endDate: endDate,
+      date: date,
+      newEndTime: newEndTime,
+    );
+  }
+
+
   /// Returns event data in [Map<String, dynamic>] format.
   ///
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "date": date,
         "startTime": startTime,
         "endTime": endTime,
