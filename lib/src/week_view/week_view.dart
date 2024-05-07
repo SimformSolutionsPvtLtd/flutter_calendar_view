@@ -183,6 +183,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  final bool isMinEventTileHeight;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -224,6 +226,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.headerStyle = const HeaderStyle(),
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
+    this.isMinEventTileHeight = false,
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -433,6 +436,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
+                            isMinEventTileHeight: widget.isMinEventTileHeight,
                           ),
                         );
                       },
@@ -690,13 +694,31 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     Rect boundary,
     DateTime startDuration,
     DateTime endDuration,
-    double? heightPerMinute, {
+    double heightPerMinute, {
     bool isMinEventTileHeight = false,
   }) {
+    final double? eventTileHeight;
+    bool isEventTileHasSpace = false;
+    if (isMinEventTileHeight) {
+      eventTileHeight =
+          (endDuration.getTotalMinutes - startDuration.getTotalMinutes) *
+              heightPerMinute;
+
+      isEventTileHasSpace =
+          (events.first.titleStyle?.fontSize ?? Constants.maxFontSize) * 2.5 <=
+                  eventTileHeight &&
+              eventTileHeight >
+                  (events.first.titleStyle?.fontSize ?? Constants.maxFontSize);
+    }
     if (events.isNotEmpty)
       return RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
         title: events[0].title,
+        padding: isMinEventTileHeight
+            ? isEventTileHasSpace
+                ? EdgeInsets.all(6)
+                : EdgeInsets.zero
+            : EdgeInsets.all(10),
         titleStyle: events[0].titleStyle ??
             TextStyle(
               fontSize: 12,
@@ -705,6 +727,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         descriptionStyle: events[0].descriptionStyle,
         totalEvents: events.length,
         backgroundColor: events[0].color,
+        showDescription: isMinEventTileHeight ? isEventTileHasSpace : false,
+        isTitleCenter: isMinEventTileHeight,
       );
     else
       return Container();

@@ -649,8 +649,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         margin: EdgeInsets.all(1.0),
         titleStyle: events[0].titleStyle,
         descriptionStyle: events[0].descriptionStyle,
-        showDescription: false,//isMinEventTileHeight ? isEventTileHasSpace : true,
-        isTitleCenter: false,// isMinEventTileHeight,
+        showDescription: isMinEventTileHeight ? isEventTileHasSpace : false,
+        isTitleCenter: isMinEventTileHeight,
       );
     else
       return SizedBox.shrink();

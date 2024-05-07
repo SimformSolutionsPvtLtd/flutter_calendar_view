@@ -111,6 +111,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
+  final bool isMinEventTileHeight;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -143,6 +145,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.scrollConfiguration,
     required this.fullDayEventBuilder,
     required this.weekDetectorBuilder,
+    required this.isMinEventTileHeight,
   }) : super(key: key);
 
   @override
@@ -273,6 +276,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       events: controller
                                           .getEventsOnDay(filteredDates[index]),
                                       heightPerMinute: heightPerMinute,
+                                      isMinEventTileHeight: isMinEventTileHeight,
                                     ),
                                   ],
                                 ),
