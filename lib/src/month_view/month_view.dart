@@ -90,6 +90,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// [borderColor] to define color of the border.
   final bool showBorder;
 
+  /// Defines whether to show default borders or not for weekTile.
+  ///
+  /// Default value is true
+  ///
+  final bool showWeekTileBorder;
+
   /// Defines width of default border
   ///
   /// Default value is [Colors.blue]
@@ -194,6 +200,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.pagePhysics = const ClampingScrollPhysics(),
     this.pageViewPhysics,
     this.onEventDoubleTap,
+    this.showWeekTileBorder = true,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -521,6 +528,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     return WeekDayTile(
       dayIndex: index,
       weekDayStringBuilder: widget.weekDayStringBuilder,
+      displayBorder: widget.showWeekTileBorder,
     );
   }
 

@@ -151,7 +151,8 @@ MonthView(
     onEventDoubleTap: (events, date) => print(events),
     onEventLongTap: (event, date) => print(event),
     onDateLongPress: (date) => print(date),
-    headerBuilder: MonthHeader.hidden // To hide month header
+    headerBuilder: MonthHeader.hidden, // To hide month header
+    showWeekTileBorder: false, // To show or hide header border
 );
 ```
 
