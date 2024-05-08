@@ -1,4 +1,5 @@
 - # [1.1.1] (UnReleased)
+- Fixed synchronization of scroll between pages in day and week view. [#186](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/186)
 - Added showWeekTileBorder field whether to show border for header in month view. [#306](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/306)
 - Fixed an issue related to hiding day, which is not in the current month in MonthView. [#328](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/328)
 - Added header title for full day events in week view. [#308](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/308) 

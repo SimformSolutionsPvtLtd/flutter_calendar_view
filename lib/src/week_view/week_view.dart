@@ -237,6 +237,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Defines full day events header text config
   final FullDayHeaderTextConfig? fullDayHeaderTextConfig;
 
+  /// Flag to keep scrollOffset of pages on page change
+  final bool keepScrollOffset;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -294,6 +297,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.endHour = Constants.hoursADay,
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
+    this.keepScrollOffset = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -380,6 +384,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void initState() {
     super.initState();
     _lastScrollOffset = widget.scrollOffset;
+
+    _scrollController =
+        ScrollController(initialScrollOffset: widget.scrollOffset);
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -534,7 +541,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             showVerticalLine: widget.showVerticalLines,
                             controller: controller,
                             hourHeight: _hourHeight,
-                            scrollController: _scrollController,
+                            weekViewScrollController: _scrollController,
                             eventArranger: _eventArranger,
                             weekDays: _weekDays,
                             minuteSlotSize: widget.minuteSlotSize,
@@ -549,8 +556,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             endHour: _endHour,
                             fullDayHeaderTitle: _fullDayHeaderTitle,
                             fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
-                            scrollOffset: _lastScrollOffset,
+                            lastScrollOffset: _lastScrollOffset,
                             scrollListener: _scrollPageListener,
+                            keepScrollOffset: widget.keepScrollOffset,
                           ),
                         );
                       },
