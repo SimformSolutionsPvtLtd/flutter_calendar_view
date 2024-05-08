@@ -141,6 +141,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
+  /// This field will be used to set end hour for week view
+  final int endHour;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -183,6 +186,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.showQuarterHours,
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
+    required this.endHour,
   }) : super(key: key);
 
   @override
@@ -255,31 +259,35 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                 child: Stack(
                   children: [
                     CustomPaint(
-                        size: Size(width, height),
-                        painter: HourLinePainter(
-                            lineColor: hourIndicatorSettings.color,
-                            lineHeight: hourIndicatorSettings.height,
-                            offset:
-                                timeLineWidth + hourIndicatorSettings.offset,
-                            minuteHeight: heightPerMinute,
-                            verticalLineOffset: verticalLineOffset,
-                            showVerticalLine: showVerticalLine,
-                            startHour: startHour,
-                            emulateVerticalOffsetBy: emulateVerticalOffsetBy)),
+                      size: Size(width, height),
+                      painter: HourLinePainter(
+                        lineColor: hourIndicatorSettings.color,
+                        lineHeight: hourIndicatorSettings.height,
+                        offset: timeLineWidth + hourIndicatorSettings.offset,
+                        minuteHeight: heightPerMinute,
+                        verticalLineOffset: verticalLineOffset,
+                        showVerticalLine: showVerticalLine,
+                        startHour: startHour,
+                        emulateVerticalOffsetBy: emulateVerticalOffsetBy,
+                        endHour: endHour,
+                      ),
+                    ),
                     if (showHalfHours)
                       CustomPaint(
                         size: Size(width, height),
                         painter: HalfHourLinePainter(
-                            lineColor: halfHourIndicatorSettings.color,
-                            lineHeight: halfHourIndicatorSettings.height,
-                            offset: timeLineWidth +
-                                halfHourIndicatorSettings.offset,
-                            minuteHeight: heightPerMinute,
-                            lineStyle: halfHourIndicatorSettings.lineStyle,
-                            dashWidth: halfHourIndicatorSettings.dashWidth,
-                            dashSpaceWidth:
-                                halfHourIndicatorSettings.dashSpaceWidth,
-                            startHour: halfHourIndicatorSettings.startHour),
+                          lineColor: halfHourIndicatorSettings.color,
+                          lineHeight: halfHourIndicatorSettings.height,
+                          offset:
+                              timeLineWidth + halfHourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          lineStyle: halfHourIndicatorSettings.lineStyle,
+                          dashWidth: halfHourIndicatorSettings.dashWidth,
+                          dashSpaceWidth:
+                              halfHourIndicatorSettings.dashSpaceWidth,
+                          startHour: halfHourIndicatorSettings.startHour,
+                          endHour: endHour,
+                        ),
                       ),
                     if (showQuarterHours)
                       CustomPaint(
@@ -343,6 +351,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                         includeFullDayEvents: false,
                                       ),
                                       heightPerMinute: heightPerMinute,
+                                      endHour: endHour,
                                     ),
                                   ],
                                 ),
@@ -362,6 +371,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       showHalfHours: showHalfHours,
                       showQuarterHours: showQuarterHours,
                       liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                      endHour: endHour,
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
                       LiveTimeIndicator(
@@ -371,6 +381,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         heightPerMinute: heightPerMinute,
                         timeLineWidth: timeLineWidth,
                         startHour: startHour,
+                        endHour: endHour,
                       ),
                   ],
                 ),

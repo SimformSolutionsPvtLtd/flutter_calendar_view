@@ -180,6 +180,7 @@ DayView(
     onEventLongTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
     startHour: 5 // To set the first hour displayed (ex: 05:00)
+    endHour:20, // To set the end hour displayed
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },
@@ -211,7 +212,8 @@ WeekView(
     onEventDoubleTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
     startDay: WeekDays.sunday, // To change the first day of the week.
-    startHour: 5 // To set the first hour displayed (ex: 05:00)
+    startHour: 5, // To set the first hour displayed (ex: 05:00)
+    endHour:20, // To set the end hour displayed
     showVerticalLines: false, // Show the vertical line between days.
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
