@@ -1,4 +1,5 @@
 - # [1.1.1] (UnReleased)
+- Migrate to Flutter 3.
 - Added support for double tapping gestures on any event in day, week, and month view. [#195](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/195)
 - Added support for horizontal scroll physics of week and month view page. [#314](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/314)
 - Fixed issue related to the live time indicator is that it is not in the correct position when startHour is set for the week and day view. [#346](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/346)

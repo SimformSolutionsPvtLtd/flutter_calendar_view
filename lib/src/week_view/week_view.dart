@@ -230,7 +230,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// Main widget for week view.
   const WeekView({
-    Key? key,
+    super.key,
     this.controller,
     this.eventTileBuilder,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
@@ -296,8 +296,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
           weekDetectorBuilder == null || onDateLongPress == null,
           """If you use [weekPressDetectorBuilder] 
           do not provide [onDateLongPress]""",
-        ),
-        super(key: key);
+        );
 
   @override
   WeekViewState<T> createState() => WeekViewState<T>();
