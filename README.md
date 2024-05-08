@@ -153,6 +153,7 @@ MonthView(
     onDateLongPress: (date) => print(date),
     headerBuilder: MonthHeader.hidden, // To hide month header
     showWeekTileBorder: false, // To show or hide header border
+    hideDaysNotInMonth: true, // To hide days or cell that are not in current month
 );
 ```
 

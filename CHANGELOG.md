@@ -1,5 +1,6 @@
 - # [1.1.1] (UnReleased)
 - Added showWeekTileBorder field whether to show border for header in month view. [#306](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/306)
+- Fixed an issue related to hiding day, which is not in the current month in MonthView. [#328](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/328)
 - Added support for double tapping gestures on any event in day, week, and month view. [#195](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/195)
 - Added support to set end time of day and week view. [#298](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/298)
 - Added support for horizontal scroll physics of week and month view page. [#314](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/314)
