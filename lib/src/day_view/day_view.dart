@@ -706,7 +706,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   Widget _defaultFullDayEventBuilder(
           List<CalendarEventData<T>> events, DateTime date) =>
-      FullDayEventView(events: events, date: date);
+      FullDayEventView(
+        events: events,
+        date: date,
+        onEventTap: widget.onEventTap,
+        onEventDoubleTap: widget.onEventDoubleTap,
+        onEventLongPress: widget.onEventLongTap,
+      );
 
   HourLinePainter _defaultHourLinePainter(
     Color lineColor,
