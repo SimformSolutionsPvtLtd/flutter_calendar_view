@@ -98,10 +98,13 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     /// to set dy offset of live time indicator
     final startMinutes = widget.startHour * 60;
 
-    /// Check if live time is not between startHour and endHour then
+    /// Check if live time is not between startHour and endHour if it is then
     /// don't show live time indicator
-    if (_currentTime.hour > widget.startHour ||
-        widget.endHour < _currentTime.hour) {
+    ///
+    /// e.g. startHour : 1:00, endHour : 13:00 and live time is 17:00
+    /// then no need to display live time indicator on timeline
+    if (_currentTime.hour > widget.startHour &&
+        widget.endHour <= _currentTime.hour) {
       return SizedBox.shrink();
     }
     return CustomPaint(
