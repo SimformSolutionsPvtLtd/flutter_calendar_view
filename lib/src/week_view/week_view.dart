@@ -231,6 +231,12 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// This can be used to disable the horizontal scroll of a page.
   final ScrollPhysics? pageViewPhysics;
 
+  /// Title of the full day events row
+  final String fullDayHeaderTitle;
+
+  /// Defines full day events header text config
+  final FullDayHeaderTextConfig? fullDayHeaderTextConfig;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -286,6 +292,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.pageViewPhysics,
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
+    this.fullDayHeaderTitle = '',
+    this.fullDayHeaderTextConfig,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -327,6 +335,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late DateTime _currentWeek;
   late int _totalWeeks;
   late int _currentIndex;
+  late String _fullDayHeaderTitle;
 
   late EventArranger<T> _eventArranger;
 
@@ -346,6 +355,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late WeekNumberBuilder _weekNumberBuilder;
   late FullDayEventBuilder<T> _fullDayEventBuilder;
   late DetectorBuilder _weekDetectorBuilder;
+  late FullDayHeaderTextConfig _fullDayHeaderTextConfig;
 
   late double _weekTitleWidth;
   late int _totalDaysInWeek;
@@ -388,6 +398,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
     _assignBuilders();
+    _fullDayHeaderTitle = widget.fullDayHeaderTitle;
+    _fullDayHeaderTextConfig =
+        widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
   }
 
   @override
@@ -533,6 +546,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
                             endHour: _endHour,
+                            fullDayHeaderTitle: _fullDayHeaderTitle,
+                            fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
                           ),
                         );
                       },
