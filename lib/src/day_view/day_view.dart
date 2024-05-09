@@ -226,6 +226,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This field will be used to set end hour for day view
   final int endHour;
 
+  /// Flag to keep scrollOffset of pages on page change
+  final bool keepScrollOffset;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -275,6 +278,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.emulateVerticalOffsetBy = 0,
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
+    this.keepScrollOffset = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -309,6 +313,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late double _height;
   late double _timeLineWidth;
   late double _hourHeight;
+  late double _lastScrollOffset;
   late DateTime _currentDate;
   late DateTime _maxDate;
   late DateTime _minDate;
@@ -349,6 +354,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
+    _lastScrollOffset = widget.scrollOffset ?? 0.0;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -484,7 +490,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollNotifier: _scrollConfiguration,
                             fullDayEventBuilder: _fullDayEventBuilder,
-                            scrollController: _scrollController,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
@@ -495,6 +500,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                 _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
+                            lastScrollOffset: _lastScrollOffset,
+                            dayViewScrollController: _scrollController,
+                            scrollListener: _scrollPageListener,
+                            keepScrollOffset: widget.keepScrollOffset,
                           ),
                         );
                       },
@@ -742,7 +751,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         _currentIndex = index;
       });
     }
-    animateToDuration(widget.startDuration);
+    if (!widget.keepScrollOffset) {
+      animateToDuration(widget.startDuration);
+    }
     widget.onPageChange?.call(_currentDate, _currentIndex);
   }
 
@@ -895,6 +906,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Returns the current visible date in day view.
   DateTime get currentDate =>
       DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
+
+  /// Listener for every day page ScrollController
+  void _scrollPageListener(ScrollController controller) {
+    _lastScrollOffset = controller.offset;
+  }
 }
 
 class DayHeader {

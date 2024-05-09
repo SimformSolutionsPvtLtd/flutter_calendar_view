@@ -186,7 +186,8 @@ DayView(
     hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
         return //Your custom painter.
     },
-    dayTitleBuilder: DayHeader.hidden // To Hide day header
+    dayTitleBuilder: DayHeader.hidden, // To Hide day header
+    keepScrollOffset: true, // To maintain scroll offset when the page changes
 );
 ```
 
@@ -227,6 +228,7 @@ WeekView(
       textOverflow: TextOverflow.ellipsis,
       maxLines: 2,
     ), // To set full day events header text config
+    keepScrollOffset: true, // To maintain scroll offset when the page changes
 );
 ```
 
