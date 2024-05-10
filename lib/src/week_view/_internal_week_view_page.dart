@@ -293,21 +293,26 @@ class _InternalWeekViewPageState<T extends Object?>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (widget.fullDayHeaderTitle.isNotEmpty)
-                    Container(
-                      width: widget.timeLineWidth +
-                          widget.hourIndicatorSettings.offset,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 2,
-                        horizontal: 1,
-                      ),
-                      child: Text(
-                        widget.fullDayHeaderTitle,
-                        textAlign: widget.fullDayHeaderTextConfig.textAlign,
-                        maxLines: widget.fullDayHeaderTextConfig.maxLines,
-                        overflow: widget.fullDayHeaderTextConfig.textOverflow,
-                      ),
-                    ),
+                  SizedBox(
+                    width: widget.timeLineWidth +
+                        widget.hourIndicatorSettings.offset,
+                    child: widget.fullDayHeaderTitle.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 1,
+                            ),
+                            child: Text(
+                              widget.fullDayHeaderTitle,
+                              textAlign:
+                                  widget.fullDayHeaderTextConfig.textAlign,
+                              maxLines: widget.fullDayHeaderTextConfig.maxLines,
+                              overflow:
+                                  widget.fullDayHeaderTextConfig.textOverflow,
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ),
                   ...List.generate(
                     filteredDates.length,
                     (index) {
