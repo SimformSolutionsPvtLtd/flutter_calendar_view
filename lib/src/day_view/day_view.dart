@@ -354,7 +354,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = widget.scrollOffset ?? 0.0;
+    _lastScrollOffset = widget.scrollOffset ??
+        widget.startDuration.inMinutes * widget.heightPerMinute;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -365,8 +366,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     _calculateHeights();
     _scrollController = ScrollController(
-        initialScrollOffset: widget.scrollOffset ??
-            widget.startDuration.inMinutes * widget.heightPerMinute);
+      initialScrollOffset: _lastScrollOffset,
+    );
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _assignBuilders();
