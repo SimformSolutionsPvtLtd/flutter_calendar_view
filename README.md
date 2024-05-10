@@ -361,6 +361,7 @@ Above code will create `WeekView` with only five days, from monday to friday.
     <td align="center"><a href="https://github.com/DhavalRKansara"><img 
     src="https://avatars.githubusercontent.com/u/44993081?v=4" width="100px;" 
     alt=""/><br /><sub><b>Dhaval Kansara</b></sub></a></td>
+    <td align="center"><a href="https://github.com/apurva780"><img src="https://avatars.githubusercontent.com/u/65003381?v=4" width="100px;" alt=""/><br /><sub><b>Apurva Kanthraviya</b></sub></a></td>
 </tr>
 </table>
 <br/>

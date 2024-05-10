@@ -1,4 +1,5 @@
-- # [1.1.1] (UnReleased)
+# [1.2.0 - 10 May 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.2.0)
+
 - Fixed issue when adding full-day events to WeekView, event is not display at correct date.  [#259](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/259)
 - Added support for onLongPress of event in day, week and month view. [#342](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/342)
 - Added check to keep hour in timeline (in day and week view) if LiveTimeIndicator time or backgroundView dosen't overlap. [#336](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/336)
@@ -14,7 +15,9 @@
 - Fixed issue related to the live time indicator is that it is not in the correct position when startHour is set for the week and day view. [#346](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/346)
 - Fixed issue of onDateTap returns wrong date when startHour is set for week and day view. [#341](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/341)
 - Fixed issue related to onDateTap no triggered in WeekView and dayView. [#332](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/332)
+
 # [1.1.0 - 28 Feb 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.1.0) 
+
 - Fixed issue related to Hiding Header [#299](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/299)
 - Fixed issue related to auto scroll to initial duration for day
   view. [#269](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/269)
