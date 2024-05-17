@@ -436,6 +436,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       child: LayoutBuilder(builder: (context, constraint) {
         _width = widget.width ?? constraint.maxWidth;
         _updateViewDimensions();
+        if (widget.showLiveTimeLineInAllDays) {
+          animateToLiveTimeLineIndicator();
+        }
         return SizedBox(
           width: _width,
           child: Column(
@@ -582,6 +585,23 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     assert(_quarterHourIndicatorSettings.height < _hourHeight,
         "quarterHourIndicator height must be less than minuteHeight * 60");
+  }
+
+  void animateToLiveTimeLineIndicator() {
+    final offSetForSingleMinute = _height / 24 / 60;
+    final currentTime = TimeOfDay.now();
+    final currentDuration =
+        Duration(hours: currentTime.hour, minutes: currentTime.minute)
+            .inMinutes;
+    var offset = offSetForSingleMinute *
+        (currentDuration > 3600 ? 3600 : currentDuration);
+    Future.delayed(Duration(milliseconds: 500), () {
+      animateTo(
+        offset.toDouble() - (MediaQuery.of(context).size.height / 2),
+        duration: Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   void _calculateHeights() {
@@ -894,6 +914,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     // above 24 hrs then we take it max as 24 hours only
     final offset = offSetForSingleMinute *
         (startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes);
+
     animateTo(
       offset.toDouble(),
       duration: duration,
