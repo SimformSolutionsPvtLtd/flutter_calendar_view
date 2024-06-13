@@ -1,4 +1,4 @@
-package com.calendar.page.example.example
+package com.simformsolutions.calendarview
 
 import io.flutter.embedding.android.FlutterActivity
 
