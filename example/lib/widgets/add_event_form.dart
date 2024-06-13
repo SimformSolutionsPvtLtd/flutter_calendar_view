@@ -75,8 +75,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             validator: (value) {
               final title = value?.trim();
 
-              if (title == null || title == "")
+              if (title == null || title == "") {
                 return "Please enter event title.";
+              }
 
               return null;
             },
@@ -107,8 +108,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   },
                   validator: (value) {
-                    if (value == null || value == "")
+                    if (value == null || value == "") {
                       return "Please select start date.";
+                    }
 
                     return null;
                   },
@@ -142,8 +144,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   },
                   validator: (value) {
-                    if (value == null || value == "")
+                    if (value == null || value == "") {
                       return "Please select end date.";
+                    }
 
                     return null;
                   },
@@ -234,8 +237,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             maxLines: 10,
             maxLength: 1000,
             validator: (value) {
-              if (value == null || value.trim() == "")
+              if (value == null || value.trim() == "") {
                 return "Please enter event description.";
+              }
 
               return null;
             },
@@ -360,10 +364,11 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               child: CustomButton(
                 title: "Select",
                 onTap: () {
-                  if (mounted)
+                  if (mounted) {
                     setState(() {
                       _color = color;
                     });
+                  }
                   context.pop();
                 },
               ),
