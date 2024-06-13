@@ -146,11 +146,14 @@ class DayPageHeader extends CalendarPageHeader {
 }
 
 class DefaultTimeLineMark extends StatelessWidget {
-  /// Defines time to display
+  /// Defines the date for which the time if being displayed.
   final DateTime date;
 
-  /// StringProvider for time string
-  final StringProvider? timeStringBuilder;
+  // Defines the time to show.
+  final TimeOfDay time;
+
+  /// String provider for time string
+  final TimeStringBuilder? timeStringBuilder;
 
   /// Text style for time string.
   final TextStyle? markingStyle;
@@ -159,20 +162,22 @@ class DefaultTimeLineMark extends StatelessWidget {
   const DefaultTimeLineMark({
     Key? key,
     required this.date,
+    required this.time,
     this.markingStyle,
     this.timeStringBuilder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final hour = ((date.hour - 1) % 12) + 1;
+    final hour = ((time.hour - 1) % 12) + 1;
     final timeString = (timeStringBuilder != null)
-        ? timeStringBuilder!(date)
-        : date.minute != 0
-            ? "$hour:${date.minute}"
-            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+        ? timeStringBuilder!(time, date)
+        : time.minute != 0
+            ? "$hour:${time.minute}"
+            : "$hour ${time.hour ~/ 12 == 0 ? "am" : "pm"}";
+
     return Transform.translate(
-      offset: Offset(0, -7.5),
+      offset: Offset(0, -8),
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
         child: Text(

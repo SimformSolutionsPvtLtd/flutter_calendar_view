@@ -21,10 +21,11 @@ class DayViewWidget extends StatelessWidget {
       startDuration: Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 3,
-      timeLineBuilder: _timeLineBuilder,
+      // timeLineBuilder: _timeLineBuilder,
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
+      showQuarterHours: true,
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -48,14 +49,16 @@ class DayViewWidget extends StatelessWidget {
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,
         showBullet: false,
-        showTime: true,
-        showTimeBackgroundView: true,
+        showTime: false,
+        showTimeBackgroundView: false,
       ),
+      showEndHours: true,
+      showStartHours: true,
     );
   }
 
-  Widget _timeLineBuilder(DateTime date) {
-    if (date.minute != 0) {
+  Widget _timeLineBuilder(TimeOfDay time, DateTime _) {
+    if (time.minute != 0) {
       return Stack(
         clipBehavior: Clip.none,
         children: [
@@ -63,7 +66,7 @@ class DayViewWidget extends StatelessWidget {
             top: -8,
             right: 8,
             child: Text(
-              "${date.hour}:${date.minute}",
+              "${time.hour}:${time.minute}",
               textAlign: TextAlign.right,
               style: TextStyle(
                 color: Colors.black.withAlpha(50),
@@ -76,7 +79,40 @@ class DayViewWidget extends StatelessWidget {
       );
     }
 
-    final hour = ((date.hour - 1) % 12) + 1;
+    final hour = ((time.hour - 1) % 12) + 1;
+
+    if (time.hour == 0 && time.minute == 0) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            top: -7,
+            right: 8,
+            child: Text(
+              "$hour ${time.hour ~/ 12 == 0 ? "am" : "pm"}",
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (time.hour == 24 && time.minute == 0) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            top: -18,
+            right: 8,
+            child: Text(
+              "$hour ${time.hour ~/ 12 == 0 ? "am" : "pm"}",
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -84,7 +120,7 @@ class DayViewWidget extends StatelessWidget {
           top: -8,
           right: 8,
           child: Text(
-            "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+            "$hour ${time.hour ~/ 12 == 0 ? "am" : "pm"}",
             textAlign: TextAlign.right,
           ),
         ),

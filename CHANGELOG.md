@@ -1,3 +1,11 @@
+# [2.0.0 - Unreleased]
+
+- Adds flag `showEndHours` to show start and end time. [#267](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/267)
+  - Introduced 2 new typedefs `TimeLineTimeBuilder` and `TimeStringBuilder`.
+###  Breaking Changes
+- Use `TimeLineTimeBuilder` instead of `DateWidgetBuilder` to show time widget in timer line for `WeekView` and `DayView`.
+- User `TimeStringBuilder` instead of `StringProvider` to get the time string in time line for `WeekView` and `DayView`.
+ 
 # [1.2.0 - 10 May 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.2.0)
 
 - Fixed issue when adding full-day events to WeekView, event is not display at correct date.  [#259](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/259)

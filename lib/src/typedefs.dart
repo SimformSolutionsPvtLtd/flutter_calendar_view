@@ -28,6 +28,7 @@ typedef DetectorBuilder<T extends Object?> = Widget Function({
   required double width,
   required double heightPerMinute,
   required MinuteSlotSize minuteSlotSize,
+  required EdgeInsets pagePadding,
 });
 
 typedef WeekDayBuilder = Widget Function(
@@ -35,6 +36,8 @@ typedef WeekDayBuilder = Widget Function(
 );
 
 typedef DateWidgetBuilder = Widget Function(DateTime date);
+
+typedef TimeLineTimeBuilder = Widget Function(TimeOfDay time, DateTime date);
 
 typedef HeaderTitleCallback = Future<void> Function(DateTime date);
 
@@ -54,6 +57,8 @@ typedef PageChangeCallback = void Function(
 
 typedef StringProvider = String Function(DateTime date,
     {DateTime? secondaryDate});
+
+typedef TimeStringBuilder = String Function(TimeOfDay time, DateTime date);
 
 typedef WeekPageHeaderBuilder = Widget Function(
   DateTime startDate,
@@ -90,6 +95,9 @@ typedef CustomHourLinePainter = CustomPainter Function(
   double emulateVerticalOffsetBy,
   int startHour,
   int endHour,
+  bool showStartHour,
+  bool showEndHour,
+  EdgeInsets padding,
 );
 
 typedef TestPredicate<T> = bool Function(T element);

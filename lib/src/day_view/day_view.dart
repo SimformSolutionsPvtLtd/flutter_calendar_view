@@ -35,14 +35,14 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// A function to generate the TimeString in the timeline.
   /// Useful for I18n
-  final StringProvider? timeStringBuilder;
+  final TimeStringBuilder? timeStringBuilder;
 
   /// A function that returns a [Widget] that will be displayed left side of
   /// day view.
   ///
   /// If null is provided then no time line will be visible.
   ///
-  final DateWidgetBuilder? timeLineBuilder;
+  final TimeLineTimeBuilder? timeLineBuilder;
 
   /// Builds day title bar.
   final DateWidgetBuilder? dayTitleBuilder;
@@ -81,7 +81,7 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Pass [HourIndicatorSettings.none] to remove Hour lines.
   final HourIndicatorSettings? hourIndicatorSettings;
 
-  /// A funtion that returns a [CustomPainter].
+  /// A function that returns a [CustomPainter].
   ///
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
@@ -229,6 +229,15 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showEndHours;
+
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showStartHours;
+
+  /// Padding used in the day's page.
+  final EdgeInsets? dayPagePadding;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -279,6 +288,9 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    this.showEndHours = false,
+    this.showStartHours = false,
+    this.dayPagePadding,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -331,7 +343,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   late PageController _pageController;
 
-  late DateWidgetBuilder _timeLineBuilder;
+  late TimeLineTimeBuilder _timeLineBuilder;
 
   late EventTileBuilder<T> _eventTileBuilder;
 
@@ -350,6 +362,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late VoidCallback _reloadCallback;
 
   final _scrollConfiguration = EventScrollConfiguration<T>();
+
+  late EdgeInsets _pagePadding;
 
   @override
   void initState() {
@@ -505,6 +519,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             dayViewScrollController: _scrollController,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            showEndHours: widget.showEndHours,
+                            showStartHours: widget.showStartHours,
+                            pagePadding: _pagePadding,
                           ),
                         );
                       },
@@ -585,8 +602,15 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   }
 
   void _calculateHeights() {
+    _pagePadding = widget.dayPagePadding ??
+        EdgeInsets.only(
+          top: widget.showStartHours ? 12 : 0,
+          bottom: widget.showEndHours ? 12 : 0,
+        );
+
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * (widget.endHour - widget.startHour);
+    _height = (_hourHeight * (widget.endHour - widget.startHour)) +
+        _pagePadding.vertical;
   }
 
   void _assignBuilders() {
@@ -641,6 +665,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     required double width,
     required double heightPerMinute,
     required MinuteSlotSize minuteSlotSize,
+    required EdgeInsets pagePadding,
   }) =>
       DefaultPressDetector(
         date: date,
@@ -651,13 +676,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         onDateTap: widget.onDateTap,
         onDateLongPress: widget.onDateLongPress,
         startHour: widget.startHour,
+        endHour: widget.endHour,
+        padding: pagePadding,
       );
 
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
-      date: date, timeStringBuilder: widget.timeStringBuilder);
+  Widget _defaultTimeLineBuilder(TimeOfDay time, DateTime date) =>
+      DefaultTimeLineMark(
+        time: time,
+        date: date,
+        timeStringBuilder: widget.timeStringBuilder,
+      );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -728,6 +759,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     double emulateVerticalOffsetBy,
     int startHour,
     int endHour,
+    bool showStartHour,
+    bool showEndHour,
+    EdgeInsets padding,
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -742,6 +776,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      showStartHour: showStartHour,
+      showEndHour: showEndHour,
+      padding: padding,
     );
   }
 

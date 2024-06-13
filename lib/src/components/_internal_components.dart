@@ -145,7 +145,7 @@ class TimeLine extends StatefulWidget {
   final double timeLineOffset;
 
   /// This will display time string in timeline.
-  final DateWidgetBuilder timeLineBuilder;
+  final TimeLineTimeBuilder timeLineBuilder;
 
   /// Flag to display half hours.
   final bool showHalfHours;
@@ -167,6 +167,14 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showEndHours;
+
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showStartHours;
+
+  final EdgeInsets padding;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -180,6 +188,9 @@ class TimeLine extends StatefulWidget {
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
+    required this.showEndHours,
+    required this.showStartHours,
+    required this.padding,
   }) : super(key: key);
 
   @override
@@ -194,6 +205,80 @@ class _TimeLineState extends State<TimeLine> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(Duration(seconds: 1), _onTick);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      key: ValueKey(widget.hourHeight),
+      constraints: BoxConstraints(
+        maxWidth: widget.timeLineWidth,
+        minWidth: widget.timeLineWidth,
+        maxHeight: widget.height,
+        minHeight: widget.height,
+      ),
+      child: Stack(
+        children: [
+          for (int i = widget.startHour + (widget.showStartHours ? 0 : 1);
+              i < widget.endHour + (widget.showEndHours ? 1 : 0);
+              i++)
+            _timelinePositioned(
+              topPosition: widget.hourHeight * (i - widget.startHour) -
+                  widget.timeLineOffset +
+                  widget.padding.top,
+              bottomPosition: widget.height -
+                  (widget.hourHeight * (i - widget.startHour + 1)) +
+                  widget.timeLineOffset -
+                  widget.padding.bottom,
+              hour: i,
+            ),
+          if (widget.showHalfHours)
+            for (int i = widget.startHour; i < widget.endHour; i++)
+              _timelinePositioned(
+                topPosition: widget.hourHeight * (i - widget.startHour) -
+                    widget.timeLineOffset +
+                    widget._halfHourHeight +
+                    widget.padding.top,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
+                    widget.timeLineOffset -
+                    widget.padding.bottom,
+                hour: i,
+                minutes: 30,
+              ),
+          if (widget.showQuarterHours)
+            for (int i = 0; i < widget.endHour; i++) ...[
+              /// this is for 15 minutes
+              _timelinePositioned(
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    widget.hourHeight * 0.25 +
+                    widget.padding.top,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset -
+                    widget.padding.bottom,
+                hour: i,
+                minutes: 15,
+              ),
+
+              /// this is for 45 minutes
+              _timelinePositioned(
+                topPosition: widget.hourHeight * i -
+                    widget.timeLineOffset +
+                    widget.hourHeight * 0.75 +
+                    widget.padding.top,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i + 1)) +
+                    widget.timeLineOffset -
+                    widget.padding.bottom,
+                hour: i,
+                minutes: 45,
+              ),
+            ],
+        ],
+      ),
+    );
   }
 
   @override
@@ -212,70 +297,6 @@ class _TimeLineState extends State<TimeLine> {
       _currentTime = time;
       setState(() {});
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      key: ValueKey(widget.hourHeight),
-      constraints: BoxConstraints(
-        maxWidth: widget.timeLineWidth,
-        minWidth: widget.timeLineWidth,
-        maxHeight: widget.height,
-        minHeight: widget.height,
-      ),
-      child: Stack(
-        children: [
-          for (int i = widget.startHour + 1; i < widget.endHour; i++)
-            _timelinePositioned(
-              topPosition: widget.hourHeight * (i - widget.startHour) -
-                  widget.timeLineOffset,
-              bottomPosition: widget.height -
-                  (widget.hourHeight * (i - widget.startHour + 1)) +
-                  widget.timeLineOffset,
-              hour: i,
-            ),
-          if (widget.showHalfHours)
-            for (int i = widget.startHour; i < widget.endHour; i++)
-              _timelinePositioned(
-                topPosition: widget.hourHeight * (i - widget.startHour) -
-                    widget.timeLineOffset +
-                    widget._halfHourHeight,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i - widget.startHour + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 30,
-              ),
-          if (widget.showQuarterHours)
-            for (int i = 0; i < widget.endHour; i++) ...[
-              /// this is for 15 minutes
-              _timelinePositioned(
-                topPosition: widget.hourHeight * i -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.25,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 15,
-              ),
-
-              /// this is for 45 minutes
-              _timelinePositioned(
-                topPosition: widget.hourHeight * i -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.75,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 45,
-              ),
-            ],
-        ],
-      ),
-    );
   }
 
   /// To avoid overlap of live time line indicator, show time line when
@@ -297,16 +318,15 @@ class _TimeLineState extends State<TimeLine> {
         left: 0,
         right: 0,
         bottom: bottomPosition,
-        child: Container(
+        child: SizedBox(
           height: widget.hourHeight,
           width: widget.timeLineWidth,
           child: widget.timeLineBuilder.call(
+            TimeOfDay(hour: hour, minute: minutes),
             DateTime(
               TimeLine._date.year,
               TimeLine._date.month,
               TimeLine._date.day,
-              hour,
-              minutes,
             ),
           ),
         ),
