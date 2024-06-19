@@ -229,6 +229,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag to keep the visibility of the current hour to be optional
+  final bool currentHourVisibility;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -279,28 +282,29 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    this.currentHourVisibility = false
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
-            "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
+  "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
-            "timeLineOffset must be greater than or equal to 0"),
+        "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
-            "Calendar width must be greater than 0."),
+        "Calendar width must be greater than 0."),
         assert(timeLineWidth == null || timeLineWidth > 0,
-            "Time line width must be greater than 0."),
+        "Time line width must be greater than 0."),
         assert(
-            heightPerMinute > 0, "Height per minute must be greater than 0."),
+        heightPerMinute > 0, "Height per minute must be greater than 0."),
         assert(
-          dayDetectorBuilder == null || onDateLongPress == null,
-          """If you use [dayPressDetectorBuilder]
+        dayDetectorBuilder == null || onDateLongPress == null,
+        """If you use [dayPressDetectorBuilder]
           do not provide [onDateLongPress]""",
         ),
         assert(
-          startHour <= 0 || startHour != endHour,
-          "startHour must be greater than 0 or startHour should not equal to endHour",
+        startHour <= 0 || startHour != endHour,
+        "startHour must be greater than 0 or startHour should not equal to endHour",
         ),
         assert(
-          endHour <= Constants.hoursADay || endHour < startHour,
-          "End hour must be less than 24 or startHour must be less than endHour",
+        endHour <= Constants.hoursADay || endHour < startHour,
+        "End hour must be less than 24 or startHour must be less than endHour",
         ),
         super(key: key);
 
@@ -384,11 +388,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       _controller = newController;
 
       _controller!
-        // Removes existing callback.
+      // Removes existing callback.
         ..removeListener(_reloadCallback)
 
-        // Reloads the view if there is any change in controller or
-        // user adds new events.
+      // Reloads the view if there is any change in controller or
+      // user adds new events.
         ..addListener(_reloadCallback);
     }
   }
@@ -465,7 +469,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                 _hourHeight.toString() + date.toString()),
                             width: _width,
                             liveTimeIndicatorSettings:
-                                _liveTimeIndicatorSettings,
+                            _liveTimeIndicatorSettings,
                             timeLineBuilder: _timeLineBuilder,
                             dayDetectorBuilder: _dayDetectorBuilder,
                             eventTileBuilder: _eventTileBuilder,
@@ -494,17 +498,18 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
                             halfHourIndicatorSettings:
-                                _halfHourIndicatorSettings,
+                            _halfHourIndicatorSettings,
                             startHour: widget.startHour,
                             endHour: widget.endHour,
                             quarterHourIndicatorSettings:
-                                _quarterHourIndicatorSettings,
+                            _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
-                                widget.emulateVerticalOffsetBy,
+                            widget.emulateVerticalOffsetBy,
                             lastScrollOffset: _lastScrollOffset,
                             dayViewScrollController: _scrollController,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            currentHourVisibility:  widget.currentHourVisibility,
                           ),
                         );
                       },
@@ -551,7 +556,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         );
 
     assert(_liveTimeIndicatorSettings.height < _hourHeight,
-        "liveTimeIndicator height must be less than minuteHeight * 60");
+    "liveTimeIndicator height must be less than minuteHeight * 60");
 
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
@@ -561,7 +566,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         );
 
     assert(_hourIndicatorSettings.height < _hourHeight,
-        "hourIndicator height must be less than minuteHeight * 60");
+    "hourIndicator height must be less than minuteHeight * 60");
 
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
@@ -571,7 +576,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         );
 
     assert(_halfHourIndicatorSettings.height < _hourHeight,
-        "halfHourIndicator height must be less than minuteHeight * 60");
+    "halfHourIndicator height must be less than minuteHeight * 60");
 
     _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
         HourIndicatorSettings(
@@ -581,7 +586,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         );
 
     assert(_quarterHourIndicatorSettings.height < _hourHeight,
-        "quarterHourIndicator height must be less than minuteHeight * 60");
+    "quarterHourIndicator height must be less than minuteHeight * 60");
   }
 
   void _calculateHeights() {
@@ -624,9 +629,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _maxDate = (widget.maxDay ?? CalendarConstants.maxDate).withoutTime;
 
     assert(
-      !_maxDate.isBefore(_minDate),
-      "Minimum date should be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+    !_maxDate.isBefore(_minDate),
+    "Minimum date should be less than maximum date.\n"
+        "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
 
     _totalDays = _maxDate.getDayDifference(_minDate) + 1;
@@ -663,12 +668,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultEventTileBuilder(
-    DateTime date,
-    List<CalendarEventData<T>> events,
-    Rect boundary,
-    DateTime startDuration,
-    DateTime endDuration,
-  ) =>
+      DateTime date,
+      List<CalendarEventData<T>> events,
+      Rect boundary,
+      DateTime startDuration,
+      DateTime endDuration,
+      ) =>
       DefaultEventTile(
         date: date,
         events: events,
@@ -706,7 +711,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   }
 
   Widget _defaultFullDayEventBuilder(
-          List<CalendarEventData<T>> events, DateTime date) =>
+      List<CalendarEventData<T>> events, DateTime date) =>
       FullDayEventView(
         events: events,
         date: date,
@@ -716,19 +721,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       );
 
   HourLinePainter _defaultHourLinePainter(
-    Color lineColor,
-    double lineHeight,
-    double offset,
-    double minuteHeight,
-    bool showVerticalLine,
-    double verticalLineOffset,
-    LineStyle lineStyle,
-    double dashWidth,
-    double dashSpaceWidth,
-    double emulateVerticalOffsetBy,
-    int startHour,
-    int endHour,
-  ) {
+      Color lineColor,
+      double lineHeight,
+      double offset,
+      double minuteHeight,
+      bool showVerticalLine,
+      double verticalLineOffset,
+      LineStyle lineStyle,
+      double dashWidth,
+      double dashSpaceWidth,
+      double emulateVerticalOffsetBy,
+      int startHour,
+      int endHour,
+      ) {
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
@@ -772,9 +777,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ///
   ///
   void nextPage({Duration? duration, Curve? curve}) => _pageController.nextPage(
-        duration: duration ?? widget.pageTransitionDuration,
-        curve: curve ?? widget.pageTransitionCurve,
-      );
+    duration: duration ?? widget.pageTransitionDuration,
+    curve: curve ?? widget.pageTransitionCurve,
+  );
 
   /// Animate to previous page
   ///
@@ -879,10 +884,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to specific offset in a day view using the start duration
   Future<void> animateToDuration(
-    Duration startDuration, {
-    Duration duration = const Duration(milliseconds: 200),
-    Curve curve = Curves.linear,
-  }) async {
+      Duration startDuration, {
+        Duration duration = const Duration(milliseconds: 200),
+        Curve curve = Curves.linear,
+      }) async {
     final offSetForSingleMinute = _height / 24 / 60;
     final startDurationInMinutes = startDuration.inMinutes;
 
@@ -899,10 +904,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to specific scroll controller offset
   void animateTo(
-    double offset, {
-    Duration duration = const Duration(milliseconds: 200),
-    Curve curve = Curves.linear,
-  }) {
+      double offset, {
+        Duration duration = const Duration(milliseconds: 200),
+        Curve curve = Curves.linear,
+      }) {
     _scrollController.animateTo(
       offset,
       duration: duration,

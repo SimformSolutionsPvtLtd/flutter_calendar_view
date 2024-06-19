@@ -91,7 +91,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final currentMinute = _currentTime.minute.appendLeadingZero();
     final currentPeriod = _currentTime.period.name;
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
-            ?.call(DateTime.now()) ??
+        ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
 
     /// remove startHour minute from [_currentTime.getTotalMinutes]
@@ -121,10 +121,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         showBullet: widget.liveTimeIndicatorSettings.showBullet,
         showTime: widget.liveTimeIndicatorSettings.showTime,
         showTimeBackgroundView:
-            widget.liveTimeIndicatorSettings.showTimeBackgroundView,
+        widget.liveTimeIndicatorSettings.showTimeBackgroundView,
         bulletRadius: widget.liveTimeIndicatorSettings.bulletRadius,
         timeBackgroundViewWidth:
-            widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
+        widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
       ),
     );
   }
@@ -167,6 +167,9 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// This field will be optional if set true then the current timeline hour will be visible else default
+  final bool currentHourVisibility;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -178,6 +181,7 @@ class TimeLine extends StatefulWidget {
     required this.startHour,
     this.showHalfHours = false,
     this.showQuarterHours = false,
+    this.currentHourVisibility = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
   }) : super(key: key);
@@ -228,49 +232,53 @@ class _TimeLineState extends State<TimeLine> {
         children: [
           for (int i = widget.startHour + 1; i < widget.endHour; i++)
             _timelinePositioned(
-              topPosition: widget.hourHeight * (i - widget.startHour) -
-                  widget.timeLineOffset,
-              bottomPosition: widget.height -
-                  (widget.hourHeight * (i - widget.startHour + 1)) +
-                  widget.timeLineOffset,
-              hour: i,
-            ),
-          if (widget.showHalfHours)
-            for (int i = widget.startHour; i < widget.endHour; i++)
-              _timelinePositioned(
                 topPosition: widget.hourHeight * (i - widget.startHour) -
-                    widget.timeLineOffset +
-                    widget._halfHourHeight,
+                    widget.timeLineOffset,
                 bottomPosition: widget.height -
                     (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
-                minutes: 30,
+                visibility: widget.currentHourVisibility
+            ),
+          if (widget.showHalfHours)
+            for (int i = widget.startHour; i < widget.endHour; i++)
+              _timelinePositioned(
+                  topPosition: widget.hourHeight * (i - widget.startHour) -
+                      widget.timeLineOffset +
+                      widget._halfHourHeight,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i - widget.startHour + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 30,
+                  visibility: widget.currentHourVisibility
               ),
           if (widget.showQuarterHours)
             for (int i = 0; i < widget.endHour; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.25,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 15,
+                  topPosition: widget.hourHeight * i -
+                      widget.timeLineOffset +
+                      widget.hourHeight * 0.25,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 15,
+                  visibility: widget.currentHourVisibility
               ),
 
               /// this is for 45 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.75,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 45,
+                  topPosition: widget.hourHeight * i -
+                      widget.timeLineOffset +
+                      widget.hourHeight * 0.75,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 45,
+                  visibility: widget.currentHourVisibility
               ),
             ],
         ],
@@ -285,13 +293,14 @@ class _TimeLineState extends State<TimeLine> {
     required double topPosition,
     required double bottomPosition,
     required int hour,
+    bool visibility = false,
     int minutes = 0,
   }) {
     return Visibility(
-      visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
-              (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
+      visible: visibility == false ? !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
+          (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
           !(widget.liveTimeIndicatorSettings.showTime ||
-              widget.liveTimeIndicatorSettings.showTimeBackgroundView),
+              widget.liveTimeIndicatorSettings.showTimeBackgroundView) : true,
       child: Positioned(
         top: topPosition,
         left: 0,
