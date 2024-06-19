@@ -188,6 +188,7 @@ DayView(
     },
     dayTitleBuilder: DayHeader.hidden, // To Hide day header
     keepScrollOffset: true, // To maintain scroll offset when the page changes
+    currentHourVisibility : true // To display the current Hour, False by Default
 );
 ```
 
