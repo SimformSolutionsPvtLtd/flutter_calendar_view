@@ -219,9 +219,9 @@ class _InternalDayViewPageState<T extends Object?>
           fullDayEventList.isEmpty
               ? SizedBox.shrink()
               : widget.fullDayEventBuilder(
-            widget.controller.getFullDayEvent(widget.date),
-            widget.date,
-          ),
+                  widget.controller.getFullDayEvent(widget.date),
+                  widget.date,
+                ),
           Expanded(
             child: SingleChildScrollView(
               controller: widget.keepScrollOffset
@@ -245,7 +245,7 @@ class _InternalDayViewPageState<T extends Object?>
                         lineStyle: widget.hourIndicatorSettings.lineStyle,
                         dashWidth: widget.hourIndicatorSettings.dashWidth,
                         dashSpaceWidth:
-                        widget.hourIndicatorSettings.dashSpaceWidth,
+                            widget.hourIndicatorSettings.dashSpaceWidth,
                         emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
                         startHour: widget.startHour,
                         endHour: widget.endHour,
@@ -263,7 +263,7 @@ class _InternalDayViewPageState<T extends Object?>
                           lineStyle: widget.halfHourIndicatorSettings.lineStyle,
                           dashWidth: widget.halfHourIndicatorSettings.dashWidth,
                           dashSpaceWidth:
-                          widget.halfHourIndicatorSettings.dashSpaceWidth,
+                              widget.halfHourIndicatorSettings.dashSpaceWidth,
                           startHour: widget.startHour,
                           endHour: widget.endHour,
                         ),
@@ -274,14 +274,14 @@ class _InternalDayViewPageState<T extends Object?>
                         painter: QuarterHourLinePainter(
                           lineColor: widget.quarterHourIndicatorSettings.color,
                           lineHeight:
-                          widget.quarterHourIndicatorSettings.height,
+                              widget.quarterHourIndicatorSettings.height,
                           offset: widget.timeLineWidth +
                               widget.quarterHourIndicatorSettings.offset,
                           minuteHeight: widget.heightPerMinute,
                           lineStyle:
-                          widget.quarterHourIndicatorSettings.lineStyle,
+                              widget.quarterHourIndicatorSettings.lineStyle,
                           dashWidth:
-                          widget.quarterHourIndicatorSettings.dashWidth,
+                              widget.quarterHourIndicatorSettings.dashWidth,
                           dashSpaceWidth: widget
                               .quarterHourIndicatorSettings.dashSpaceWidth,
                         ),
@@ -329,7 +329,7 @@ class _InternalDayViewPageState<T extends Object?>
                       showQuarterHours: widget.showQuarterHours,
                       key: ValueKey(widget.heightPerMinute),
                       liveTimeIndicatorSettings:
-                      widget.liveTimeIndicatorSettings,
+                          widget.liveTimeIndicatorSettings,
                       currentHourVisibility: widget.currentHourVisibility,
                     ),
                     if (widget.showLiveLine &&
@@ -337,7 +337,7 @@ class _InternalDayViewPageState<T extends Object?>
                       IgnorePointer(
                         child: LiveTimeIndicator(
                           liveTimeIndicatorSettings:
-                          widget.liveTimeIndicatorSettings,
+                              widget.liveTimeIndicatorSettings,
                           width: widget.width,
                           height: widget.height,
                           heightPerMinute: widget.heightPerMinute,
