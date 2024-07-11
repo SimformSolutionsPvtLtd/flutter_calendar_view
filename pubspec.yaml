@@ -6,7 +6,7 @@ issue_tracker: https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/i
 
 environment:
   sdk: ">=2.15.0 <4.0.0"
-  flutter: ">=1.17.0"
+  flutter: ">=2.8.0"
 
 dependencies:
   flutter:

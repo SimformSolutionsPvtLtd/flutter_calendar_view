@@ -28,7 +28,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final EventTileBuilder<T>? eventTileBuilder;
 
   /// Builder for timeline.
-  final DateWidgetBuilder? timeLineBuilder;
+  final TimeLineTimeBuilder? timeLineBuilder;
 
   /// Header builder for week page header.
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
@@ -45,7 +45,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// This function will generate the TimeString in the timeline.
   /// Useful for I18n
-  final StringProvider? timeLineStringBuilder;
+  final TimeStringBuilder? timeLineStringBuilder;
 
   /// This function will generate WeekDayString in the weekday.
   /// Useful for I18n
@@ -87,7 +87,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
 
-  /// A funtion that returns a [CustomPainter].
+  /// A function that returns a [CustomPainter].
   ///
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
@@ -240,6 +240,14 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showEndHours;
+
+  /// Defines if we need to display the 0 hr and 24 hr text in time line or not.
+  final bool showStartHours;
+
+  final EdgeInsets? weekPagePadding;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -298,6 +306,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    this.showEndHours = false,
+    this.showStartHours = false,
+    this.weekPagePadding,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -353,7 +364,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late PageController _pageController;
 
-  late DateWidgetBuilder _timeLineBuilder;
+  late TimeLineTimeBuilder _timeLineBuilder;
   late EventTileBuilder<T> _eventTileBuilder;
   late WeekPageHeaderBuilder _weekHeaderBuilder;
   late DateWidgetBuilder _weekDayBuilder;
@@ -379,6 +390,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late int _endHour;
 
   final _scrollConfiguration = EventScrollConfiguration();
+
+  late EdgeInsets _pagePadding;
 
   @override
   void initState() {
@@ -559,6 +572,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             lastScrollOffset: _lastScrollOffset,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            showEndHours: widget.showEndHours,
+                            showStartHours: widget.showStartHours,
+                            pagePadding: _pagePadding,
                           ),
                         );
                       },
@@ -656,8 +672,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   void _calculateHeights() {
+    _pagePadding = widget.weekPagePadding ??
+        EdgeInsets.only(
+          top: widget.showStartHours ? 12 : 0,
+          bottom: widget.showEndHours ? 12 : 0,
+        );
+
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * (_endHour - _startHour);
+    _height = _hourHeight * (_endHour - _startHour) + _pagePadding.vertical;
   }
 
   void _assignBuilders() {
@@ -736,6 +758,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     required double width,
     required double heightPerMinute,
     required MinuteSlotSize minuteSlotSize,
+    required EdgeInsets pagePadding,
   }) =>
       DefaultPressDetector(
         date: date,
@@ -746,6 +769,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         onDateTap: widget.onDateTap,
         onDateLongPress: widget.onDateLongPress,
         startHour: _startHour,
+        endHour: _endHour,
+        padding: pagePadding,
       );
 
   /// Default builder for week line.
@@ -780,8 +805,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
+  Widget _defaultTimeLineBuilder(TimeOfDay time, DateTime date) =>
+      DefaultTimeLineMark(
         date: date,
+        time: time,
         timeStringBuilder: widget.timeLineStringBuilder,
       );
 
@@ -846,6 +873,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     double emulateVerticalOffsetBy,
     int startHour,
     int endHour,
+    bool showStartHour,
+    bool showEndHour,
+    EdgeInsets padding,
   ) {
     return HourLinePainter(
       lineColor: lineColor,
@@ -860,6 +890,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      showStartHour: showStartHour,
+      showEndHour: showEndHour,
+      padding: padding,
     );
   }
 
