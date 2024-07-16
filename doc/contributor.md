@@ -1,0 +1,10 @@
+## Main Contributors
+
+|                       ![img](https://avatars.githubusercontent.com/u/25323183?v=4)                       |       ![img](https://avatars.githubusercontent.com/u/65167856?v=4)                    |                     ![img](https://avatars.githubusercontent.com/u/36261739?v=4)                     | ![img](https://avatars.githubusercontent.com/u/56400956?v=4) | ![img](https://avatars.githubusercontent.com/u/38405884?v=4)   |
+|:--------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------|:---------------------------------------------------------------|
+|                              [Vatsal Tanna](https://github.com/vatsaltanna)                              |               [Sanket Kachhela](https://github.com/sanket-simform?v=4)                |                [Parth Baraiya](https://github.com/ParthBaraiya)                                      | [Ujas Majithiya](https://github.com/Ujas-Majithiya)️          | [Ankit Panchal](https://github.com/AnkitPanchal10)️             |
+
+| ![img](https://avatars.githubusercontent.com/u/60209725?v=4) | ![img](https://avatars.githubusercontent.com/u/89002539?v=4)  | ![img](https://avatars.githubusercontent.com/u/44993081?v=4)  | ![img](https://avatars.githubusercontent.com/u/65003381?v=4)                                           |
+|:-------------------------------------------------------------|:---------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------------------------|
+| [Mehul Kabaria](https://github.com/MehulKK)️                 |     [Faiyaz Shaikh](https://github.com/faiyaz-shaikh)      |     [Dhaval Kansara](https://github.com/DhavalRKansara)      | [Apurva Kanthraviya](https://github.com/apurva780) |
+
