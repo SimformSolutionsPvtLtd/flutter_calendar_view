@@ -463,7 +463,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     // Update builders and callbacks
     _assignBuilders();
 
-    if(widget.scrollOffset != oldWidget.scrollOffset) {
+    if (widget.scrollOffset != oldWidget.scrollOffset) {
       _lastScrollOffset = widget.scrollOffset;
       _scrollController.jumpTo(widget.scrollOffset);
     }
