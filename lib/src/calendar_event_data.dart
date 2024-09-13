@@ -15,7 +15,7 @@ class CalendarEventData<T extends Object?> {
 
   /// Defines the start time of the event.
   /// [endTime] and [startTime] will defines time on same day.
-  /// This is required when you are using [CalendarEventData] for [DayView]
+  /// This is required when you are using [CalendarEventData] for [DayView] or [WeekView]
   final DateTime? startTime;
 
   /// Defines the end time of the event.
@@ -79,6 +79,24 @@ class CalendarEventData<T extends Object?> {
     return (startTime == null ||
         endTime == null ||
         (startTime!.isDayStart && endTime!.isDayStart));
+  }
+
+  Duration get duration {
+    if (isFullDayEvent) return Duration(days: 1);
+
+    final now = DateTime.now();
+
+    final end = now.copyFromMinutes(endTime!.getTotalMinutes);
+    final start = now.copyFromMinutes(startTime!.getTotalMinutes);
+
+    if (end.isDayStart) {
+      final difference =
+          end.add(Duration(days: 1) - Duration(seconds: 1)).difference(start);
+
+      return difference + Duration(seconds: 1);
+    } else {
+      return end.difference(start);
+    }
   }
 
   /// Returns a boolean that defines whether current event is occurring on

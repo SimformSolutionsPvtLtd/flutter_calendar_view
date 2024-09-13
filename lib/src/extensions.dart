@@ -126,7 +126,7 @@ extension DateTimeExtensions on DateTime {
         other.microsecond == microsecond;
   }
 
-  bool get isDayStart => hour % 24 == 0 && minute % 60 == 0;
+  bool get isDayStart => hour == 0 && minute == 0;
 
   @Deprecated(
       "This extension is not being used in this package and will be removed "
@@ -209,4 +209,14 @@ extension IntExtension on int {
   String appendLeadingZero() {
     return toString().padLeft(2, '0');
   }
+}
+
+void debugLog(String message) {
+  assert(() {
+    try {
+      debugPrint(message);
+    } catch (e) {} //ignore: empty_catches Suppress exception...
+
+    return false;
+  }(), '');
 }
