@@ -5,8 +5,8 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
-import '../components/week_view_components.dart';
 import '../components/event_scroll_notifier.dart';
+import '../components/week_view_components.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
@@ -353,8 +353,12 @@ class _InternalWeekViewPageState<T extends Object?>
                         minuteHeight: widget.heightPerMinute,
                         verticalLineOffset: widget.verticalLineOffset,
                         showVerticalLine: widget.showVerticalLine,
-                        startHour: widget.startHour,
+                        lineStyle: widget.hourIndicatorSettings.lineStyle,
+                        dashWidth: widget.hourIndicatorSettings.dashWidth,
+                        dashSpaceWidth:
+                            widget.hourIndicatorSettings.dashSpaceWidth,
                         emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
+                        startHour: widget.startHour,
                         endHour: widget.endHour,
                       ),
                     ),

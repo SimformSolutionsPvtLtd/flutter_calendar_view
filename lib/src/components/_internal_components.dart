@@ -175,7 +175,7 @@ class TimeLine extends StatefulWidget {
     required this.height,
     required this.timeLineOffset,
     required this.timeLineBuilder,
-    required this.startHour,
+    this.startHour = 0,
     this.showHalfHours = false,
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
@@ -248,14 +248,14 @@ class _TimeLineState extends State<TimeLine> {
                 minutes: 30,
               ),
           if (widget.showQuarterHours)
-            for (int i = 0; i < widget.endHour; i++) ...[
+            for (int i = widget.startHour; i < widget.endHour; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget.hourHeight * 0.25,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 15,
@@ -263,11 +263,11 @@ class _TimeLineState extends State<TimeLine> {
 
               /// this is for 45 minutes
               _timelinePositioned(
-                topPosition: widget.hourHeight * i -
+                topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
                     widget.hourHeight * 0.75,
                 bottomPosition: widget.height -
-                    (widget.hourHeight * (i + 1)) +
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 45,
