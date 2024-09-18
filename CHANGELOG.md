@@ -2,6 +2,7 @@
 
 - Fixes issue in showing quarter hours when startHour is provided. [#387](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/387)
 - Use `hourLinePainter` in `DayView` [#386](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/386)
+- Refactor `SideEventArranger` to arrange events properly. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/290)
 
 # [1.2.0 - 10 May 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.2.0)
 

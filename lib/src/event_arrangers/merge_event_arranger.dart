@@ -40,10 +40,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
     //Checking if startTime and endTime are correct
     for (final event in events) {
+      if (event.startTime == null || event.endTime == null) {
+        debugLog('startTime or endTime is null for ${event.title}');
+        continue;
+      }
+
       // Checks if an event has valid start and end time.
-      if (event.startTime == null ||
-          event.endTime == null ||
-          event.endTime!.getTotalMinutes <= event.startTime!.getTotalMinutes) {
+      if (event.endTime!.getTotalMinutes <= event.startTime!.getTotalMinutes) {
         if (!(event.endTime!.getTotalMinutes == 0 &&
             event.startTime!.getTotalMinutes > 0)) {
           assert(() {
