@@ -4,6 +4,15 @@
 - Use `hourLinePainter` in `DayView` [#386](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/386)
 - Refactor `SideEventArranger` to arrange events properly. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/290)
 - Adds generic type in `_InternalWeekViewPageState`. [#380](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/380)
+- Adds additional configurations for `HeaderStyle`.
+    - Added `mainAxisSize`, `mainAxisAlignment`, `rightIconConfig` and `leftIconConfig`.
+- Adds additional configurations for `CalendarPageHeader`, `MonthPageHeader`, `DayPageHeader` and `WeekPageHeader`.
+    - Added `titleBuilder` to build custom title for header.
+- `Deprecations`:
+    - deprecated `backgroundColor` and `iconColor` from `CalendarPageHeader`, `DayPageHeader`, `MonthPageHeader` and `WeekPageHeader`.
+        - **Solution:** use `headerStyle` instead.
+    - deprecated `leftIconVisible`, `rightIconVisible`, `leftIconPadding`, `rightIconPadding`, `leftIcon` and `rightIcon` from `HeaderStyle`.
+        - **Solution:** use `rightIconConfig` and `leftIconConfig` instead.
 
 # [1.2.0 - 10 May 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.2.0)
 

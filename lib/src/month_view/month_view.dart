@@ -8,7 +8,6 @@ import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
 import '../components/components.dart';
-import '../components/safe_area_wrapper.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../event_controller.dart';
@@ -23,7 +22,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// Builds month page title.
   ///
-  /// Used default title builder if null.
+  /// If there are some configurations that is not directly available
+  /// in [MonthView], override this to create your custom header or reuse,
+  /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
+  /// [WeekPageHeader] widgets provided by this package with your custom
+  /// configurations.
+  ///
   final DateWidgetBuilder? headerBuilder;
 
   /// This function will generate DateString in the calendar header.

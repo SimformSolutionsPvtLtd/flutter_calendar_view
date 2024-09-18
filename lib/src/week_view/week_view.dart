@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
-import '../components/common_components.dart';
 import '../components/components.dart';
-import '../components/event_scroll_notifier.dart';
-import '../components/safe_area_wrapper.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -31,6 +28,13 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final DateWidgetBuilder? timeLineBuilder;
 
   /// Header builder for week page header.
+  ///
+  /// If there are some configurations that is not directly available
+  /// in [WeekView], override this to create your custom header or reuse,
+  /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
+  /// [WeekPageHeader] widgets provided by this package with your custom
+  /// configurations.
+  ///
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
 
   /// Builds custom PressDetector widget
