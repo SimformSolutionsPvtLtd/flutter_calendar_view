@@ -133,6 +133,9 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag to keep the visibility of the current hour to be optional
+  final bool currentHourVisibility;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -173,6 +176,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     this.keepScrollOffset = false,
+    this.currentHourVisibility = false
   }) : super(key: key);
 
   @override
@@ -325,6 +329,7 @@ class _InternalDayViewPageState<T extends Object?>
                       key: ValueKey(widget.heightPerMinute),
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
+                      currentHourVisibility: widget.currentHourVisibility,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

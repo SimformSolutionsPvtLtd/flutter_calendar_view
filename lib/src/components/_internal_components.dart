@@ -167,6 +167,9 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// This field will be optional if set true then the current timeline hour will be visible else default
+  final bool currentHourVisibility;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -178,6 +181,7 @@ class TimeLine extends StatefulWidget {
     this.startHour = 0,
     this.showHalfHours = false,
     this.showQuarterHours = false,
+    this.currentHourVisibility = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
   }) : super(key: key);
@@ -234,6 +238,7 @@ class _TimeLineState extends State<TimeLine> {
                   (widget.hourHeight * (i - widget.startHour + 1)) +
                   widget.timeLineOffset,
               hour: i,
+              visibility: widget.currentHourVisibility
             ),
           if (widget.showHalfHours)
             for (int i = widget.startHour; i < widget.endHour; i++)
@@ -246,6 +251,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 30,
+                  visibility: widget.currentHourVisibility
               ),
           if (widget.showQuarterHours)
             for (int i = widget.startHour; i < widget.endHour; i++) ...[
@@ -259,6 +265,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 15,
+                  visibility: widget.currentHourVisibility
               ),
 
               /// this is for 45 minutes
@@ -271,6 +278,7 @@ class _TimeLineState extends State<TimeLine> {
                     widget.timeLineOffset,
                 hour: i,
                 minutes: 45,
+                  visibility: widget.currentHourVisibility
               ),
             ],
         ],
@@ -285,13 +293,14 @@ class _TimeLineState extends State<TimeLine> {
     required double topPosition,
     required double bottomPosition,
     required int hour,
+    bool visibility = false,
     int minutes = 0,
   }) {
     return Visibility(
-      visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
+      visible: visibility == false ? !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
               (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
           !(widget.liveTimeIndicatorSettings.showTime ||
-              widget.liveTimeIndicatorSettings.showTimeBackgroundView),
+              widget.liveTimeIndicatorSettings.showTimeBackgroundView) : true,
       child: Positioned(
         top: topPosition,
         left: 0,
