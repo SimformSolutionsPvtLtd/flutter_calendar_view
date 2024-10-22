@@ -6,22 +6,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../calendar_constants.dart';
-import '../calendar_controller_provider.dart';
-import '../calendar_event_data.dart';
-import '../components/common_components.dart';
-import '../components/day_view_components.dart';
-import '../components/event_scroll_notifier.dart';
-import '../components/safe_area_wrapper.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
-import '../enumerations.dart';
-import '../event_arrangers/event_arrangers.dart';
-import '../event_controller.dart';
-import '../extensions.dart';
-import '../modals.dart';
 import '../painters.dart';
-import '../style/header_style.dart';
-import '../typedefs.dart';
 import '_internal_day_view_page.dart';
 
 class DayView<T extends Object?> extends StatefulWidget {
@@ -45,6 +32,13 @@ class DayView<T extends Object?> extends StatefulWidget {
   final DateWidgetBuilder? timeLineBuilder;
 
   /// Builds day title bar.
+  ///
+  /// If there are some configurations that is not directly available
+  /// in [DayView], override this to create your custom header or reuse,
+  /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
+  /// [WeekPageHeader] widgets provided by this package with your custom
+  /// configurations.
+  ///
   final DateWidgetBuilder? dayTitleBuilder;
 
   /// Builds custom PressDetector widget
