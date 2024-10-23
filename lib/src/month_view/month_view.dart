@@ -726,7 +726,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         itemBuilder: (context, index) {
           // Hide events if `hideDaysNotInMonth` true
           final events =
-              hideDaysNotInMonth & (monthDays[index].month != date.month)
+              hideDaysNotInMonth && (monthDays[index].month != date.month)
                   ? <CalendarEventData<T>>[]
                   : controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(
