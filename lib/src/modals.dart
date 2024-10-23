@@ -83,3 +83,39 @@ class LiveTimeIndicatorSettings {
         showBullet: false,
       );
 }
+
+/// Set `frequency = RepeatFrequency.daily` to repeat every day after current date & event day.
+/// Set `frequency = RepeatFrequency.weekly` & provide list of weekdays to repeat on.
+/// [startDate]: Defines start date of repeating events.
+/// [endDate]: Defines end date of repeating events.
+/// [interval]: Defines repetition of event after given [interval] in days.
+/// [frequency]: Defines repeat daily, weekly, monthly or yearly.
+/// [weekdays]: Contains list of weekdays to repeat on.
+/// By default weekday of event is considered if not provided.
+class RecurrenceSettings {
+  final DateTime startDate;
+  final DateTime? endDate;
+  final int? interval;
+  final RepeatFrequency frequency;
+  final RecurrenceEnd recurrenceEndOn;
+  final List<int> weekdays;
+
+  RecurrenceSettings(
+    this.startDate, {
+    this.endDate,
+    this.interval,
+    this.frequency = RepeatFrequency.weekly,
+    this.recurrenceEndOn = RecurrenceEnd.never,
+    List<int>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekday];
+
+  @override
+  String toString() {
+    return "start date: ${startDate}, "
+        "end date: ${endDate}, "
+        "interval: ${interval}, "
+        "frequency: ${frequency} "
+        "weekdays: ${weekdays.toString()}"
+        "recurrence Ends on: ${recurrenceEndOn}";
+  }
+}

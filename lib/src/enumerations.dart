@@ -48,3 +48,22 @@ enum LineStyle {
   /// Dashed line
   dashed,
 }
+
+/// Defines reoccurrence of event: Daily, weekly, monthly or yearly
+enum RepeatFrequency {
+  doNotRepeat,
+  daily,
+  weekly,
+  monthly,
+  yearly,
+}
+
+/// Defines reoccurrence event ends on:
+/// `never` to repeat without any end date specified,
+/// `on` to repeat till date specified
+/// `after` repeat till defined number of occurrence.
+enum RecurrenceEnd {
+  never,
+  on,
+  after,
+}

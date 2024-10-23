@@ -44,6 +44,9 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
+  /// Define reoccurrence settings
+  final RecurrenceSettings? recurrenceSettings;
+
   /// {@macro calendar_event_data_doc}
   CalendarEventData({
     required this.title,
@@ -55,6 +58,7 @@ class CalendarEventData<T extends Object?> {
     this.endTime,
     this.titleStyle,
     this.descriptionStyle,
+    this.recurrenceSettings,
     DateTime? endDate,
   })  : _endDate = endDate?.withoutTime,
         date = date.withoutTime;
@@ -119,6 +123,7 @@ class CalendarEventData<T extends Object?> {
         "title": title,
         "description": description,
         "endDate": endDate,
+        "recurrenceSettings": recurrenceSettings,
       };
 
   /// Returns new object of [CalendarEventData] with the updated values defined

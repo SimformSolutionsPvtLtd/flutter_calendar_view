@@ -5,6 +5,8 @@ import 'app_colors.dart';
 class AppConstants {
   AppConstants._();
 
+  static final List<String> weekTitles = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
   static OutlineInputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(7),
     borderSide: BorderSide(
