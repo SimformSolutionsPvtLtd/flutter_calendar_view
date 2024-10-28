@@ -8,6 +8,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will arrange
   /// all the events side by side.
   const SideEventArranger({
+    this.maxWidth,
     this.includeEdges = false,
   });
 
@@ -18,6 +19,12 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// If includeEdges is true, it will offset the events else it will not.
   ///
   final bool includeEdges;
+
+  /// If enough space is available, the event slot will
+  /// use the specified max width.
+  /// Otherwise, it will reduce to fit all events in the cell.
+  /// If max width is not specified, slots will expand to fill the cell.
+  final double? maxWidth;
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
@@ -100,7 +107,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
       final arranged = <OrganizedCalendarEventData<T>>[];
 
       for (final event in events) {
-        final slotWidth = width / event.columns;
+        final slotWidth =
+            math.min(width / event.columns, maxWidth ?? double.maxFinite);
 
         if (event.event.isNotEmpty) {
           // TODO(parth): Arrange events and add it in arranged.
