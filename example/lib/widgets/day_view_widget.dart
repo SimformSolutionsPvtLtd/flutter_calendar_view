@@ -22,6 +22,7 @@ class DayViewWidget extends StatelessWidget {
       showHalfHours: true,
       heightPerMinute: 3,
       timeLineBuilder: _timeLineBuilder,
+      scrollPhysics: const BouncingScrollPhysics(),
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),

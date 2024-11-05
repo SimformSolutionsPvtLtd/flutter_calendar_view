@@ -160,6 +160,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Use this field to disable the calendar scrolling
+  final ScrollPhysics? scrollPhysics;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -204,6 +207,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.endHour,
     this.fullDayHeaderTitle = '',
     required this.fullDayHeaderTextConfig,
+    required this.scrollPhysics,
     required this.scrollListener,
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
@@ -339,6 +343,7 @@ class _InternalWeekViewPageState<T extends Object?>
               controller: widget.keepScrollOffset
                   ? scrollController
                   : widget.weekViewScrollController,
+              physics: widget.scrollPhysics,
               child: SizedBox(
                 height: widget.height,
                 width: widget.width,

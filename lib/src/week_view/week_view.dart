@@ -230,6 +230,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// If true this will show week day at bottom position.
   final bool showWeekDayAtBottom;
 
+  /// Use this field to disable the calendar scrolling
+  final ScrollPhysics? scrollPhysics;
+
   /// Defines scroll physics for a page of a week view.
   ///
   /// This can be used to disable the horizontal scroll of a page.
@@ -273,6 +276,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekDayBuilder,
     this.weekNumberBuilder,
     this.backgroundColor = Colors.white,
+    this.scrollPhysics,
     this.scrollOffset = 0.0,
     this.onEventTap,
     this.onEventLongTap,
@@ -561,6 +565,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             fullDayHeaderTitle: _fullDayHeaderTitle,
                             fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
                             lastScrollOffset: _lastScrollOffset,
+                            scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
                           ),

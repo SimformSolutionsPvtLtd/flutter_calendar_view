@@ -133,6 +133,9 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Use this field to disable the calendar scrolling
+  final ScrollPhysics? scrollPhysics;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -161,6 +164,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.scrollNotifier,
     required this.fullDayEventBuilder,
     required this.dayViewScrollController,
+    required this.scrollPhysics,
     required this.scrollListener,
     this.lastScrollOffset = 0.0,
     required this.dayDetectorBuilder,
@@ -223,6 +227,7 @@ class _InternalDayViewPageState<T extends Object?>
               controller: widget.keepScrollOffset
                   ? scrollController
                   : widget.dayViewScrollController,
+              physics: widget.scrollPhysics,
               child: SizedBox(
                 height: widget.height,
                 width: widget.width,
