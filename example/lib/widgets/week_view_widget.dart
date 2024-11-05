@@ -21,6 +21,12 @@ class WeekViewWidget extends StatelessWidget {
         color: Colors.redAccent,
         showTime: true,
       ),
+      onTimestampTap: (date) {
+        SnackBar snackBar = SnackBar(
+          content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(

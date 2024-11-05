@@ -136,6 +136,8 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Use this field to disable the calendar scrolling
   final ScrollPhysics? scrollPhysics;
 
+  final TimestampCallback? onTimestampTap;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -176,6 +178,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.quarterHourIndicatorSettings,
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
+    required this.onTimestampTap,
     this.keepScrollOffset = false,
   }) : super(key: key);
 
@@ -330,6 +333,7 @@ class _InternalDayViewPageState<T extends Object?>
                       key: ValueKey(widget.heightPerMinute),
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
+                      onTimestampTap: widget.onTimestampTap,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

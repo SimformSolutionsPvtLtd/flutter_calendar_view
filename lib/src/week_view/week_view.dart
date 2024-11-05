@@ -149,6 +149,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Scroll offset of week view page.
   final double scrollOffset;
 
+  /// This method will be called when user taps on timestamp in timeline.
+  final TimestampCallback? onTimestampTap;
+
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
@@ -306,6 +309,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    this.onTimestampTap,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -527,6 +531,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             liveTimeIndicatorSettings:
                                 _liveTimeIndicatorSettings,
                             timeLineBuilder: _timeLineBuilder,
+                            onTimestampTap: widget.onTimestampTap,
                             onTileTap: widget.onEventTap,
                             onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,
