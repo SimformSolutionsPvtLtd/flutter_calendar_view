@@ -497,6 +497,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                 widget.emulateVerticalOffsetBy,
                             lastScrollOffset: _lastScrollOffset,
                             dayViewScrollController: _scrollController,
+                            scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
                           ),

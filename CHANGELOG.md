@@ -8,6 +8,7 @@
     - Added `mainAxisSize`, `mainAxisAlignment`, `rightIconConfig` and `leftIconConfig`.
 - Adds additional configurations for `CalendarPageHeader`, `MonthPageHeader`, `DayPageHeader` and `WeekPageHeader`.
     - Added `titleBuilder` to build custom title for header.
+- Fixes issue calendar scroll physics for day & week view. [#417](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/417)
 - `Deprecations`:
     - deprecated `backgroundColor` and `iconColor` from `CalendarPageHeader`, `DayPageHeader`, `MonthPageHeader` and `WeekPageHeader`.
         - **Solution:** use `headerStyle` instead.
