@@ -15,6 +15,7 @@ class WeekViewWidget extends StatelessWidget {
       key: state,
       width: width,
       showLiveTimeLineInAllDays: true,
+      eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
