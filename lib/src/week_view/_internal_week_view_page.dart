@@ -163,6 +163,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Use this field to disable the calendar scrolling
   final ScrollPhysics? scrollPhysics;
 
+  /// This method will be called when user taps on timestamp in timeline.
+  final TimestampCallback? onTimestampTap;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -205,6 +208,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.endHour,
+    required this.onTimestampTap,
     this.fullDayHeaderTitle = '',
     required this.fullDayHeaderTextConfig,
     required this.scrollPhysics,
@@ -475,6 +479,7 @@ class _InternalWeekViewPageState<T extends Object?>
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
                       endHour: widget.endHour,
+                      onTimestampTap: widget.onTimestampTap,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

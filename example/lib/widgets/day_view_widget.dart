@@ -26,6 +26,12 @@ class DayViewWidget extends StatelessWidget {
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
+      onTimestampTap: (date) {
+        SnackBar snackBar = SnackBar(
+          content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(

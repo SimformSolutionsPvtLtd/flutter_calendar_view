@@ -158,6 +158,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// initial offset.
   final double? scrollOffset;
 
+  /// This method will be called when user taps on timestamp in timeline.
+  final TimestampCallback? onTimestampTap;
+
   /// This method will be called when user taps on event tile.
   final CellTapCallback<T>? onEventTap;
 
@@ -273,6 +276,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
+    this.onTimestampTap,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -467,6 +471,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             hourIndicatorSettings: _hourIndicatorSettings,
                             hourLinePainter: _hourLinePainter,
                             date: date,
+                            onTimestampTap: widget.onTimestampTap,
                             onTileTap: widget.onEventTap,
                             onTileLongTap: widget.onEventLongTap,
                             onDateLongPress: widget.onDateLongPress,

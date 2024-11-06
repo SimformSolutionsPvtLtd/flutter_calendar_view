@@ -147,6 +147,9 @@ class TimeLine extends StatefulWidget {
   /// This will display time string in timeline.
   final DateWidgetBuilder timeLineBuilder;
 
+  /// This method will be called when user taps on timestamp in timeline.
+  final TimestampCallback? onTimestampTap;
+
   /// Flag to display half hours.
   final bool showHalfHours;
 
@@ -175,6 +178,7 @@ class TimeLine extends StatefulWidget {
     required this.height,
     required this.timeLineOffset,
     required this.timeLineBuilder,
+    required this.onTimestampTap,
     this.startHour = 0,
     this.showHalfHours = false,
     this.showQuarterHours = false,
@@ -287,6 +291,14 @@ class _TimeLineState extends State<TimeLine> {
     required int hour,
     int minutes = 0,
   }) {
+    final dateTime = DateTime(
+      TimeLine._date.year,
+      TimeLine._date.month,
+      TimeLine._date.day,
+      hour,
+      minutes,
+    );
+
     return Visibility(
       visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
               (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
@@ -300,14 +312,13 @@ class _TimeLineState extends State<TimeLine> {
         child: Container(
           height: widget.hourHeight,
           width: widget.timeLineWidth,
-          child: widget.timeLineBuilder.call(
-            DateTime(
-              TimeLine._date.year,
-              TimeLine._date.month,
-              TimeLine._date.day,
-              hour,
-              minutes,
-            ),
+          child: InkWell(
+            onTap: () {
+              if (widget.onTimestampTap != null) {
+                widget.onTimestampTap!(dateTime);
+              }
+            },
+            child: widget.timeLineBuilder.call(dateTime),
           ),
         ),
       ),
