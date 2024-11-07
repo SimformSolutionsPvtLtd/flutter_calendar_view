@@ -6,8 +6,14 @@ import 'create_event_page.dart';
 
 class DetailsPage extends StatelessWidget {
   final CalendarEventData event;
+  final DateTime date;
 
-  const DetailsPage({super.key, required this.event});
+  const DetailsPage({
+    super.key,
+    required this.event,
+    required this.date,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,9 +97,14 @@ class DetailsPage extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
+                    final updatedRecurrenceSettings =
+                        event.recurrenceSettings?.copyWith(endDate: date);
+                    final updatedEvent = event.copyWith(
+                        recurrenceSettings: updatedRecurrenceSettings);
                     CalendarControllerProvider.of(context)
                         .controller
-                        .remove(event);
+                        .update(event, updatedEvent);
+                    // .remove(event);
                     Navigator.of(context).pop();
                   },
                   child: Text('Delete Event'),

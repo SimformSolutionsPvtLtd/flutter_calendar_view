@@ -543,7 +543,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       recurrenceSettings: RecurrenceSettings(
-        _startDate,
+        startDate: _startDate,
         endDate: _recurrenceEndDate,
         frequency: _selectedFrequency ?? RepeatFrequency.daily,
         weekdays: _selectedIndexes,

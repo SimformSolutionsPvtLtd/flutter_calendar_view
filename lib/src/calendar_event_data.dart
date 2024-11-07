@@ -129,6 +129,7 @@ class CalendarEventData<T extends Object?> {
   /// Returns new object of [CalendarEventData] with the updated values defined
   /// as the arguments.
   ///
+  // TODO(Shubham): Add all other remaining fields
   CalendarEventData<T> copyWith({
     String? title,
     String? description,
@@ -140,6 +141,7 @@ class CalendarEventData<T extends Object?> {
     TextStyle? descriptionStyle,
     DateTime? endDate,
     DateTime? date,
+    RecurrenceSettings? recurrenceSettings,
   }) {
     return CalendarEventData(
       title: title ?? this.title,
@@ -152,6 +154,7 @@ class CalendarEventData<T extends Object?> {
       endDate: endDate ?? this.endDate,
       event: event ?? this.event,
       titleStyle: titleStyle ?? this.titleStyle,
+      recurrenceSettings: recurrenceSettings ?? this.recurrenceSettings,
     );
   }
 
