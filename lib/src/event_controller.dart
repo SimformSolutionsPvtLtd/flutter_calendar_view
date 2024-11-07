@@ -138,21 +138,20 @@ class EventController<T extends Object?> extends ChangeNotifier {
         return currentDate.day == startDate.day;
       case RecurrenceEnd.on:
         return recurrenceEndDate != null &&
-            (currentDate.day >= startDate.day &&
-                currentDate.isBefore(recurrenceEndDate)) &&
-            currentDate.isBefore(recurrenceEndDate.add(
-              Duration(days: 1),
-            ));
-
-      /// Calculate the last valid occurrence based on the interval count
-      /// `interval - 1` is used here because:
-      /// - The `interval` represents the total number of occurrences, including the starting month.
-      /// - Subtracting 1 allows us to calculate the number of additional months to add
-      ///   after the start month to get to the final occurrence.
-      /// For example, if `interval = 3`, occurrences should happen in:
-      /// - Start month (1st occurrence), plus two additional months to reach the 3rd occurrence.
+            currentDate.day > startDate.day &&
+            (currentDate.isBefore(recurrenceEndDate) ||
+                currentDate.isAtSameMomentAs(recurrenceEndDate));
+      // Calculate the last valid occurrence based on the interval count
+      // `interval - 1` is used here because:
+      // - The `interval` represents the total number of occurrences, including the starting month.
+      // - Subtracting 1 allows us to calculate the number of additional months to add
+      //   after the start month to get to the final occurrence.
+      // For example, if `interval = 3`, occurrences should happen in:
+      // - Start month (1st occurrence), plus two additional months to reach the 3rd occurrence.
       case RecurrenceEnd.after:
-        if (interval == null || interval <= 1) {
+        if (currentDate.day != startDate.day ||
+            interval == null ||
+            interval <= 1) {
           return false;
         }
         final lastOccurrenceDate = DateTime(
@@ -160,10 +159,8 @@ class EventController<T extends Object?> extends ChangeNotifier {
           startDate.month + (interval - 1),
           startDate.day,
         );
-        return (currentDate.day == startDate.day) &&
-            currentDate.isBefore(lastOccurrenceDate.add(
-              Duration(days: 1),
-            ));
+        return currentDate.isBefore(lastOccurrenceDate) ||
+            currentDate.isAtSameMomentAs(lastOccurrenceDate);
     }
   }
 
@@ -175,26 +172,23 @@ class EventController<T extends Object?> extends ChangeNotifier {
   }) {
     switch (recurrenceSettings.frequency) {
       case RepeatFrequency.daily:
-        final isDailyRecurrence = _isDailyRecurrence(
+        return _isDailyRecurrence(
           currentDate: currentDate,
           eventEnd: eventEndDate,
           recurrenceSettings: recurrenceSettings,
         );
-        return isDailyRecurrence;
       case RepeatFrequency.weekly:
-        final isWeeklyRecurrence = _isWeeklyRecurrence(
+        return _isWeeklyRecurrence(
           currentDate: currentDate,
           eventStartDate: eventStartDate,
           recurrenceSettings: recurrenceSettings,
         );
-        return isWeeklyRecurrence;
       case RepeatFrequency.monthly:
-        final isMonthlyRecurrence = _isMonthlyRecurrence(
+        return _isMonthlyRecurrence(
           currentDate: currentDate,
           startDate: eventStartDate,
           recurrenceSettings: recurrenceSettings,
         );
-        return isMonthlyRecurrence;
       case RepeatFrequency.yearly:
         // TODO(Shubham): Handle this case.
         break;
