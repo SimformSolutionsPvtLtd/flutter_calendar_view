@@ -99,6 +99,7 @@ class RecurrenceSettings {
   final RepeatFrequency frequency;
   final RecurrenceEnd recurrenceEndOn;
   final List<int> weekdays;
+  final List<DateTime>? excludeDates;
 
   RecurrenceSettings({
     required this.startDate,
@@ -106,6 +107,7 @@ class RecurrenceSettings {
     this.interval,
     this.frequency = RepeatFrequency.weekly,
     this.recurrenceEndOn = RecurrenceEnd.never,
+    this.excludeDates,
     List<int>? weekdays,
   }) : weekdays = weekdays ?? [startDate.weekday];
 
@@ -116,7 +118,8 @@ class RecurrenceSettings {
         "interval: ${interval}, "
         "frequency: ${frequency} "
         "weekdays: ${weekdays.toString()}"
-        "recurrence Ends on: ${recurrenceEndOn}";
+        "recurrence Ends on: ${recurrenceEndOn}"
+        "exclude dates: ${excludeDates}";
   }
 
   RecurrenceSettings copyWith({
@@ -126,6 +129,7 @@ class RecurrenceSettings {
     RepeatFrequency? frequency,
     RecurrenceEnd? recurrenceEndOn,
     List<int>? weekdays,
+    List<DateTime>? excludeDates,
   }) {
     return RecurrenceSettings(
       startDate: startDate ?? this.startDate,
@@ -134,6 +138,7 @@ class RecurrenceSettings {
       frequency: frequency ?? this.frequency,
       recurrenceEndOn: recurrenceEndOn ?? this.recurrenceEndOn,
       weekdays: weekdays ?? this.weekdays,
+      excludeDates: excludeDates ?? this.excludeDates,
     );
   }
 }

@@ -97,8 +97,19 @@ class DetailsPage extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    final updatedRecurrenceSettings =
-                        event.recurrenceSettings?.copyWith(endDate: date);
+                    // Delete following events
+                    // final updatedRecurrenceSettings =
+                    //     event.recurrenceSettings?.copyWith(endDate: date);
+                    // final updatedEvent = event.copyWith(
+                    //     recurrenceSettings: updatedRecurrenceSettings);
+                    // CalendarControllerProvider.of(context)
+                    //     .controller
+                    //     .update(event, updatedEvent);
+                    List<DateTime> excludeDates =
+                        event.recurrenceSettings?.excludeDates ?? [];
+                    excludeDates.add(date);
+                    final updatedRecurrenceSettings = event.recurrenceSettings
+                        ?.copyWith(excludeDates: excludeDates);
                     final updatedEvent = event.copyWith(
                         recurrenceSettings: updatedRecurrenceSettings);
                     CalendarControllerProvider.of(context)

@@ -299,16 +299,21 @@ class EventController<T extends Object?> extends ChangeNotifier {
         continue;
       }
       final recurrenceSettings = event.recurrenceSettings;
-      if (recurrenceSettings == null) {
+      debugPrint('Date: ${date} | Recurrence settings: ${recurrenceSettings}');
+      //  if event is not repeating or date is in excluded
+      if (recurrenceSettings == null ||
+          (recurrenceSettings.excludeDates?.contains(date) ?? false)) {
         continue;
       }
+
+      debugPrint(
+          'Date: ${date} | Is excluded dates: ${recurrenceSettings.excludeDates}');
       final isRecurrence = _handleRecurrence(
         currentDate: date,
         eventStartDate: event.date,
         eventEndDate: event.endDate,
         recurrenceSettings: recurrenceSettings,
       );
-      debugPrint('Is recurrence: ${isRecurrence}');
       if (isRecurrence) {
         events.add(event);
       }
