@@ -37,6 +37,8 @@ class DayViewWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => DetailsPage(
               event: events.first,
+              date:
+                  date, // TODO(Shubham): Update if not required for delete following event
             ),
           ),
         );

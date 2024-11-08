@@ -24,6 +24,7 @@ class MonthViewWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => DetailsPage(
               event: event,
+              date: date,
             ),
           ),
         );

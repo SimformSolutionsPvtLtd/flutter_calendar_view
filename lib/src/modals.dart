@@ -83,3 +83,78 @@ class LiveTimeIndicatorSettings {
         showBullet: false,
       );
 }
+
+/// Set `frequency = RepeatFrequency.daily` to repeat every day after current date & event day.
+/// Set `frequency = RepeatFrequency.weekly` & provide list of weekdays to repeat on.
+/// [startDate]: Defines start date of repeating events.
+/// [endDate]: Defines end date of repeating events.
+/// [interval]: Defines repetition of event after given [interval] in days.
+/// [frequency]: Defines repeat daily, weekly, monthly or yearly.
+/// [weekdays]: Contains list of weekdays to repeat on.
+/// By default weekday of event is considered if not provided.
+class RecurrenceSettings {
+  final DateTime startDate;
+  late DateTime? endDate; // TODO(Shubham): Review
+  final int? interval;
+  final RepeatFrequency frequency;
+  final RecurrenceEnd recurrenceEndOn;
+  final List<int> weekdays;
+  final List<DateTime>? excludeDates;
+
+  RecurrenceSettings({
+    required this.startDate,
+    this.endDate,
+    this.interval,
+    this.frequency = RepeatFrequency.weekly,
+    this.recurrenceEndOn = RecurrenceEnd.never,
+    this.excludeDates,
+    List<int>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekday];
+
+  // TODO(Shubham): Add asserts
+  RecurrenceSettings.withCalculatedEndDate({
+    required this.startDate,
+    required DateTime endDate,
+    this.interval,
+    this.frequency = RepeatFrequency.weekly,
+    this.recurrenceEndOn = RecurrenceEnd.never,
+    this.excludeDates,
+    List<int>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekday] {
+    if (recurrenceEndOn == RecurrenceEnd.after && interval != null) {
+      final updatedEndDate = endDate.add(Duration(days: interval!));
+      this.endDate = updatedEndDate;
+    }
+  }
+
+  @override
+  String toString() {
+    return "start date: ${startDate}, "
+        "end date: ${endDate}, "
+        "interval: ${interval}, "
+        "frequency: ${frequency} "
+        "weekdays: ${weekdays.toString()}"
+        "recurrence Ends on: ${recurrenceEndOn}"
+        "exclude dates: ${excludeDates}";
+  }
+
+  RecurrenceSettings copyWith({
+    DateTime? startDate,
+    DateTime? endDate,
+    int? interval,
+    RepeatFrequency? frequency,
+    RecurrenceEnd? recurrenceEndOn,
+    List<int>? weekdays,
+    List<DateTime>? excludeDates,
+  }) {
+    return RecurrenceSettings(
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      interval: interval ?? this.interval,
+      frequency: frequency ?? this.frequency,
+      recurrenceEndOn: recurrenceEndOn ?? this.recurrenceEndOn,
+      weekdays: weekdays ?? this.weekdays,
+      excludeDates: excludeDates ?? this.excludeDates,
+    );
+  }
+}

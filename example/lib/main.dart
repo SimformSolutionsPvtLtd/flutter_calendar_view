@@ -46,6 +46,13 @@ List<CalendarEventData> _events = [
     date: _now.add(Duration(days: 1)),
     startTime: DateTime(_now.year, _now.month, _now.day, 18),
     endTime: DateTime(_now.year, _now.month, _now.day, 19),
+    recurrenceSettings: RecurrenceSettings(
+      startDate: _now,
+      endDate: _now.add(Duration(days: 5)),
+      frequency: RepeatFrequency.daily,
+      interval: 5,
+      recurrenceEndOn: RecurrenceEnd.after,
+    ),
     title: "Wedding anniversary",
     description: "Attend uncle's wedding anniversary.",
   ),

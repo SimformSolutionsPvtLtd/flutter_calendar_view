@@ -44,6 +44,9 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
+  /// Define reoccurrence settings
+  final RecurrenceSettings? recurrenceSettings;
+
   /// {@macro calendar_event_data_doc}
   CalendarEventData({
     required this.title,
@@ -55,6 +58,7 @@ class CalendarEventData<T extends Object?> {
     this.endTime,
     this.titleStyle,
     this.descriptionStyle,
+    this.recurrenceSettings,
     DateTime? endDate,
   })  : _endDate = endDate?.withoutTime,
         date = date.withoutTime;
@@ -99,6 +103,12 @@ class CalendarEventData<T extends Object?> {
     }
   }
 
+  /// Checks if the given date is in the list of excluded dates.
+  /// Returns true if the date is excluded, otherwise false.
+  bool isExcluded(DateTime date) {
+    return recurrenceSettings?.excludeDates?.contains(date) ?? false;
+  }
+
   /// Returns a boolean that defines whether current event is occurring on
   /// [currentDate] or not.
   ///
@@ -119,11 +129,13 @@ class CalendarEventData<T extends Object?> {
         "title": title,
         "description": description,
         "endDate": endDate,
+        "recurrenceSettings": recurrenceSettings,
       };
 
   /// Returns new object of [CalendarEventData] with the updated values defined
   /// as the arguments.
   ///
+  // TODO(Shubham): Add all other remaining fields
   CalendarEventData<T> copyWith({
     String? title,
     String? description,
@@ -135,6 +147,7 @@ class CalendarEventData<T extends Object?> {
     TextStyle? descriptionStyle,
     DateTime? endDate,
     DateTime? date,
+    RecurrenceSettings? recurrenceSettings,
   }) {
     return CalendarEventData(
       title: title ?? this.title,
@@ -147,6 +160,7 @@ class CalendarEventData<T extends Object?> {
       endDate: endDate ?? this.endDate,
       event: event ?? this.event,
       titleStyle: titleStyle ?? this.titleStyle,
+      recurrenceSettings: recurrenceSettings ?? this.recurrenceSettings,
     );
   }
 
