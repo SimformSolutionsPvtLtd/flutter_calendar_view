@@ -91,8 +91,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
         if (interval == null) {
           return false;
         }
-        final endDate = eventEnd.add(Duration(days: interval));
-        return currentDate.isBefore(endDate);
+        return recurrenceEndDate != null &&
+            (currentDate.isBefore(recurrenceEndDate) ||
+                currentDate.isAtSameMomentAs(recurrenceEndDate));
     }
   }
 
@@ -214,18 +215,21 @@ class EventController<T extends Object?> extends ChangeNotifier {
   /// If the selected date to delete the event is the same as the event's start date, delete all recurrences.
   /// Otherwise, delete the event on the selected date and all subsequent recurrences.
   void _deleteFollowingEvents(DateTime date, CalendarEventData<T> event) {
+    final newEndDate = date.subtract(
+      Duration(days: 1),
+    );
     final updatedRecurrenceSettings = event.recurrenceSettings?.copyWith(
-      endDate: date.subtract(
-        Duration(days: 1),
-      ),
+      endDate: newEndDate,
     );
     if (date == event.date) {
       remove(event);
     } else {
-      debugPrint('Event: delete event ${event}');
       final updatedEvent =
           event.copyWith(recurrenceSettings: updatedRecurrenceSettings);
       update(event, updatedEvent);
+      debugPrint('Event: delete event current date: ${date}');
+      debugPrint(
+          'Event: delete event ${updatedEvent.recurrenceSettings?.endDate}');
     }
   }
   //#endregion

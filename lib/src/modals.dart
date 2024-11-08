@@ -94,7 +94,7 @@ class LiveTimeIndicatorSettings {
 /// By default weekday of event is considered if not provided.
 class RecurrenceSettings {
   final DateTime startDate;
-  final DateTime? endDate;
+  late DateTime? endDate; // TODO(Shubham): Review
   final int? interval;
   final RepeatFrequency frequency;
   final RecurrenceEnd recurrenceEndOn;
@@ -110,6 +110,22 @@ class RecurrenceSettings {
     this.excludeDates,
     List<int>? weekdays,
   }) : weekdays = weekdays ?? [startDate.weekday];
+
+  // TODO(Shubham): Add asserts
+  RecurrenceSettings.withCalculatedEndDate({
+    required this.startDate,
+    required DateTime endDate,
+    this.interval,
+    this.frequency = RepeatFrequency.weekly,
+    this.recurrenceEndOn = RecurrenceEnd.never,
+    this.excludeDates,
+    List<int>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekday] {
+    if (recurrenceEndOn == RecurrenceEnd.after && interval != null) {
+      final updatedEndDate = endDate.add(Duration(days: interval!));
+      this.endDate = updatedEndDate;
+    }
+  }
 
   @override
   String toString() {

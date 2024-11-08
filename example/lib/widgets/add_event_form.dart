@@ -534,6 +534,15 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
     _form.currentState?.save();
 
+    final recurrenceSettings = RecurrenceSettings.withCalculatedEndDate(
+      startDate: _startDate,
+      endDate: _recurrenceEndDate,
+      frequency: _selectedFrequency ?? RepeatFrequency.daily,
+      weekdays: _selectedIndexes,
+      interval: int.tryParse(_occurrenceController.text),
+      recurrenceEndOn: _selectedRecurrenceEnd ?? RecurrenceEnd.never,
+    );
+
     final event = CalendarEventData(
       date: _startDate,
       endTime: _endTime,
@@ -542,14 +551,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       color: _color,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
-      recurrenceSettings: RecurrenceSettings(
-        startDate: _startDate,
-        endDate: _recurrenceEndDate,
-        frequency: _selectedFrequency ?? RepeatFrequency.daily,
-        weekdays: _selectedIndexes,
-        interval: int.tryParse(_occurrenceController.text),
-        recurrenceEndOn: _selectedRecurrenceEnd ?? RecurrenceEnd.never,
-      ),
+      recurrenceSettings: recurrenceSettings,
     );
 
     widget.onEventAdd?.call(event);
