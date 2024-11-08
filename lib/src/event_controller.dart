@@ -170,6 +170,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
     required DateTime eventEndDate,
     required RecurrenceSettings recurrenceSettings,
   }) {
+    if (recurrenceSettings.excludeDates?.contains(currentDate) ?? false) {
+      return false;
+    }
     switch (recurrenceSettings.frequency) {
       case RepeatFrequency.daily:
         return _isDailyRecurrence(
@@ -197,9 +200,69 @@ class EventController<T extends Object?> extends ChangeNotifier {
     }
     return false;
   }
+
+  void _deleteCurrentEvent(DateTime date, CalendarEventData<T> event) {
+    List<DateTime> excludeDates = event.recurrenceSettings?.excludeDates ?? [];
+    excludeDates.add(date);
+    final updatedRecurrenceSettings =
+        event.recurrenceSettings?.copyWith(excludeDates: excludeDates);
+    final updatedEvent =
+        event.copyWith(recurrenceSettings: updatedRecurrenceSettings);
+    update(event, updatedEvent);
+  }
+
+  /// If the selected date to delete the event is the same as the event's start date, delete all recurrences.
+  /// Otherwise, delete the event on the selected date and all subsequent recurrences.
+  void _deleteFollowingEvents(DateTime date, CalendarEventData<T> event) {
+    final updatedRecurrenceSettings = event.recurrenceSettings?.copyWith(
+      endDate: date.subtract(
+        Duration(days: 1),
+      ),
+    );
+    if (date == event.date) {
+      remove(event);
+    } else {
+      debugPrint('Event: delete event ${event}');
+      final updatedEvent =
+          event.copyWith(recurrenceSettings: updatedRecurrenceSettings);
+      update(event, updatedEvent);
+    }
+  }
   //#endregion
 
   //#region Public Methods
+  /// Deletes a recurring event based on the specified deletion type.
+  ///
+  /// This method handles the deletion of recurring events by determining the type of deletion
+  /// requested (all events, the current event, or following events) and performing the appropriate action.
+  ///
+  /// Takes the following parameters:
+  /// - [date]: The date of the event to be deleted.
+  /// - [event]: The event data to be deleted.
+  /// - [deleteEventType]: The `DeleteEventType` of deletion to perform (all events, the current event, or following events).
+  ///
+  /// The method performs the following actions based on the [deleteEventType]:
+  /// - [DeleteEvent.all]: Removes the entire series of events.
+  /// - [DeleteEvent.current]: Deletes only the current event.
+  /// - [DeleteEvent.following]: Deletes the current event and all subsequent events.
+  void deleteRecurrenceEvent({
+    required DateTime date,
+    required CalendarEventData<T> event,
+    required DeleteEvent deleteEventType,
+  }) {
+    switch (deleteEventType) {
+      case DeleteEvent.all:
+        remove(event);
+        break;
+      case DeleteEvent.current:
+        _deleteCurrentEvent(date, event);
+        break;
+      case DeleteEvent.following:
+        _deleteFollowingEvents(date, event);
+        break;
+    }
+  }
+
   /// Add all the events in the list
   /// If there is an event with same date then
   void addAll(List<CalendarEventData<T>> events) {
@@ -267,19 +330,20 @@ class EventController<T extends Object?> extends ChangeNotifier {
         includeFullDayEvents: includeFullDayEvents);
   }
 
-  /// Get all events including repeated events on that day
+  /// Retrieves all events for a given date, including repeated events that are not excluded on that day.
+  ///
+  /// This method combines events that occur on the specified date with repeated events that are not excluded.
+  /// It filters out any events that are marked as excluded for the given date.
+  ///
+  /// Takes a [date] parameter representing the date for which to retrieve events.
+  /// Returns a list of [CalendarEventData] objects representing all events on the specified date.
   List<CalendarEventData<T>> getAllEventsOnDay(DateTime date) {
-    final events = getEventsOnDay(date);
+    final events =
+        getEventsOnDay(date).where((event) => !event.isExcluded(date)).toList();
+    final repeatedEvents =
+        getRepeatedEvents(date).where((event) => !event.isExcluded(date));
+    events.addAll(repeatedEvents);
 
-    debugPrint('Day: ${date.day} Events: ${events}');
-    final repeatedEvents = getRepeatedEvents(date);
-
-    // For range of events having occurrence add only single time
-    for (final event in repeatedEvents) {
-      if (!events.contains(event)) {
-        events.add(event);
-      }
-    }
     return events;
   }
 
@@ -299,15 +363,12 @@ class EventController<T extends Object?> extends ChangeNotifier {
         continue;
       }
       final recurrenceSettings = event.recurrenceSettings;
-      debugPrint('Date: ${date} | Recurrence settings: ${recurrenceSettings}');
+      // debugPrint('Date: ${date} | Recurrence settings: ${recurrenceSettings}');
       //  if event is not repeating or date is in excluded
-      if (recurrenceSettings == null ||
-          (recurrenceSettings.excludeDates?.contains(date) ?? false)) {
+      if (recurrenceSettings == null) {
         continue;
       }
 
-      debugPrint(
-          'Date: ${date} | Is excluded dates: ${recurrenceSettings.excludeDates}');
       final isRecurrence = _handleRecurrence(
         currentDate: date,
         eventStartDate: event.date,

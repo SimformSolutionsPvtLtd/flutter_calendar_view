@@ -103,6 +103,12 @@ class CalendarEventData<T extends Object?> {
     }
   }
 
+  /// Checks if the given date is in the list of excluded dates.
+  /// Returns true if the date is excluded, otherwise false.
+  bool isExcluded(DateTime date) {
+    return recurrenceSettings?.excludeDates?.contains(date) ?? false;
+  }
+
   /// Returns a boolean that defines whether current event is occurring on
   /// [currentDate] or not.
   ///

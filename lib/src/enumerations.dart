@@ -67,3 +67,10 @@ enum RecurrenceEnd {
   on,
   after,
 }
+
+// TODO(Shubham): Add docs
+enum DeleteEvent {
+  all,
+  current,
+  following,
+}

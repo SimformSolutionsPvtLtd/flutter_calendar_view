@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/pages/web/delete_event_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../extension.dart';
@@ -16,6 +17,8 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('date details page: ${date}');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: event.color,
@@ -96,26 +99,8 @@ class DetailsPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Delete following events
-                    // final updatedRecurrenceSettings =
-                    //     event.recurrenceSettings?.copyWith(endDate: date);
-                    // final updatedEvent = event.copyWith(
-                    //     recurrenceSettings: updatedRecurrenceSettings);
-                    // CalendarControllerProvider.of(context)
-                    //     .controller
-                    //     .update(event, updatedEvent);
-                    List<DateTime> excludeDates =
-                        event.recurrenceSettings?.excludeDates ?? [];
-                    excludeDates.add(date);
-                    final updatedRecurrenceSettings = event.recurrenceSettings
-                        ?.copyWith(excludeDates: excludeDates);
-                    final updatedEvent = event.copyWith(
-                        recurrenceSettings: updatedRecurrenceSettings);
-                    CalendarControllerProvider.of(context)
-                        .controller
-                        .update(event, updatedEvent);
-                    // .remove(event);
+                  onPressed: () async {
+                    await _handleDeleteEvent(context);
                     Navigator.of(context).pop();
                   },
                   child: Text('Delete Event'),
@@ -133,7 +118,7 @@ class DetailsPage extends StatelessWidget {
                       ),
                     );
 
-                    if (result) {
+                    if (result != null) {
                       Navigator.of(context).pop();
                     }
                   },
@@ -145,5 +130,34 @@ class DetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Handles the deletion of an event, showing a dialog for repeating events.
+  ///
+  /// This method checks if the event is a repeating event. If it is, it shows
+  /// a dialog to the user to choose the deletion type (e.g., delete this
+  /// event, delete following events, delete all events).
+  /// If the event is not repeating, it defaults to deleting all occurrences
+  /// of the event.
+  Future<void> _handleDeleteEvent(BuildContext context) async {
+    DeleteEvent? result;
+    final isRepeatingEvent = event.recurrenceSettings != null &&
+        (event.recurrenceSettings?.frequency != RepeatFrequency.doNotRepeat);
+
+    if (isRepeatingEvent) {
+      result = await showDialog(
+        context: context,
+        builder: (_) => DeleteEventDialog(),
+      );
+    } else {
+      result = DeleteEvent.all;
+    }
+    if (result != null) {
+      CalendarControllerProvider.of(context).controller.deleteRecurrenceEvent(
+            date: date,
+            event: event,
+            deleteEventType: result,
+          );
+    }
   }
 }
