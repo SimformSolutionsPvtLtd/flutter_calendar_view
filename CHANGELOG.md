@@ -11,6 +11,7 @@
 - Fixes issue calendar scroll physics for day & week view. [#417](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/417)
 - Adds `onTimestampTap` callback in `WeekView`
   and `DayView`.  [#383](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/383)
+- Use `maxWidth` to set max width of event slot in day & week view. [#413](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/413)
 - `Deprecations`:
     - deprecated `backgroundColor` and `iconColor` from `CalendarPageHeader`, `DayPageHeader`, `MonthPageHeader` and `WeekPageHeader`.
         - **Solution:** use `headerStyle` instead.
