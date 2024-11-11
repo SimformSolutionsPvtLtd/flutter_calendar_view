@@ -1,5 +1,8 @@
-# [1.2.1 - Unreleased]
+# [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 
+- Fixes full day event position when fullHeaderTitle is empty.
+- Fixes generics of _InternalDayViewPageState is always
+  Object?. [#371](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/371)
 - Fixes issue in showing quarter hours when startHour is provided. [#387](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/387)
 - Use `hourLinePainter` in `DayView` [#386](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/386)
 - Refactor `SideEventArranger` to arrange events properly. [#290](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/290)
