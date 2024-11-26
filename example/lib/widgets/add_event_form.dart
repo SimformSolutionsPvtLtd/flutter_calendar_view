@@ -25,15 +25,20 @@ class AddOrEditEventForm extends StatefulWidget {
 class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   late DateTime _startDate = DateTime.now().withoutTime;
   late DateTime _endDate = DateTime.now().withoutTime;
+  DateTime? _recurrenceEndDate;
 
   DateTime? _startTime;
   DateTime? _endTime;
+  List<bool> _selectedDays = List.filled(7, false);
+  RepeatFrequency? _selectedFrequency = RepeatFrequency.doNotRepeat;
+  RecurrenceEnd? _selectedRecurrenceEnd = RecurrenceEnd.never;
 
   Color _color = Colors.blue;
 
   final _form = GlobalKey<FormState>();
 
   late final _descriptionController = TextEditingController();
+  late final _occurrenceController = TextEditingController();
   late final _titleController = TextEditingController();
   late final _titleNode = FocusNode();
   late final _descriptionNode = FocusNode();
@@ -41,7 +46,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   @override
   void initState() {
     super.initState();
-
     _setDefaults();
   }
 
@@ -52,6 +56,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
     _descriptionController.dispose();
     _titleController.dispose();
+    _occurrenceController.dispose();
 
     super.dispose();
   }
@@ -102,6 +107,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
 
                     _startDate = date.withoutTime;
+                    updateWeekdaysSelection();
 
                     if (mounted) {
                       setState(() {});
@@ -137,6 +143,8 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       ));
                     } else {
                       _endDate = date.withoutTime;
+                      _recurrenceEndDate = _endDate;
+                      updateWeekdaysSelection();
                     }
 
                     if (mounted) {
@@ -247,6 +255,264 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               hintText: "Event Description",
             ),
           ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Repeat',
+              style: TextStyle(
+                color: AppColors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 17,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Radio(
+                value: RepeatFrequency.doNotRepeat,
+                groupValue: _selectedFrequency,
+                onChanged: (value) {
+                  setState(
+                    () => _selectedFrequency = value,
+                  );
+                },
+              ),
+              Text(
+                'Do not repeat',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 17,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Radio(
+                value: RepeatFrequency.daily,
+                groupValue: _selectedFrequency,
+                onChanged: (value) {
+                  setState(
+                    () => _selectedFrequency = value,
+                  );
+                },
+              ),
+              Text(
+                'Daily',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 17,
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
+              Radio(
+                value: RepeatFrequency.weekly,
+                groupValue: _selectedFrequency,
+                onChanged: (value) {
+                  setState(
+                    () => _selectedFrequency = value,
+                  );
+                },
+              ),
+              Text(
+                'Weekly',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 17,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Radio(
+                value: RepeatFrequency.monthly,
+                groupValue: _selectedFrequency,
+                onChanged: (value) {
+                  setState(
+                    () => _selectedFrequency = value,
+                  );
+                },
+              ),
+              Text(
+                'Monthly',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 17,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Radio(
+                value: RepeatFrequency.yearly,
+                groupValue: _selectedFrequency,
+                onChanged: (value) {
+                  setState(
+                    () => _selectedFrequency = value,
+                  );
+                },
+              ),
+              Text(
+                'Yearly',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 17,
+                ),
+              ),
+            ],
+          ),
+          if (_selectedFrequency == RepeatFrequency.weekly) ...[
+            Wrap(
+              children: List.generate(AppConstants.weekTitles.length, (index) {
+                return ChoiceChip(
+                  label: Text(AppConstants.weekTitles[index]),
+                  showCheckmark: false,
+                  selected: _selectedDays[index],
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedDays[index] = selected;
+                      if (!_selectedDays.contains(true)) {
+                        _selectedDays[_startDate.weekday - 1] = true;
+                      }
+                    });
+                  },
+                  shape: CircleBorder(),
+                );
+              }).toList(),
+            ),
+          ],
+          SizedBox(height: 15),
+          if (_selectedFrequency != RepeatFrequency.doNotRepeat)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Reoccurrence ends on: ',
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Radio(
+                      value: RecurrenceEnd.never,
+                      groupValue: _selectedRecurrenceEnd,
+                      onChanged: (value) => setState(
+                        () => _selectedRecurrenceEnd = value,
+                      ),
+                    ),
+                    Text(
+                      'Never',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 17,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio(
+                      value: RecurrenceEnd.onDate,
+                      groupValue: _selectedRecurrenceEnd,
+                      onChanged: (value) => setState(
+                        () => _selectedRecurrenceEnd = value,
+                      ),
+                    ),
+                    Text(
+                      'On',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 17,
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio(
+                      value: RecurrenceEnd.after,
+                      groupValue: _selectedRecurrenceEnd,
+                      onChanged: (value) => setState(
+                        () => _selectedRecurrenceEnd = value,
+                      ),
+                    ),
+                    Text(
+                      'After',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 17,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          SizedBox(height: 15),
+          if (_selectedRecurrenceEnd == RecurrenceEnd.onDate)
+            DateTimeSelectorFormField(
+              initialDateTime: _recurrenceEndDate,
+              decoration: AppConstants.inputDecoration.copyWith(
+                labelText: 'Ends on',
+              ),
+              onSelect: (date) {
+                if (date.withoutTime.isBefore(_endDate.withoutTime)) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Recurrence ends after end date'),
+                  ));
+                } else {
+                  _recurrenceEndDate = date.withoutTime;
+                }
+
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              validator: (value) {
+                if (value == null || value == "") {
+                  return 'Please select end date.';
+                }
+
+                // TODO(Shubham): Add validation of end occurrence >= end date
+                return null;
+              },
+              textStyle: TextStyle(
+                color: AppColors.black,
+                fontSize: 17.0,
+              ),
+              onSave: (date) => _recurrenceEndDate = date ?? _recurrenceEndDate,
+              type: DateTimeSelectionType.date,
+            ),
+          if (_selectedRecurrenceEnd == RecurrenceEnd.after)
+            TextFormField(
+              controller: _occurrenceController,
+              style: TextStyle(
+                color: AppColors.black,
+                fontSize: 17.0,
+              ),
+              keyboardType: TextInputType.number,
+              minLines: 1,
+              maxLength: 3,
+              validator: (value) {
+                if (value == null || value.trim() == '') {
+                  return 'Please specify occurrences';
+                }
+
+                return null;
+              },
+              decoration: AppConstants.inputDecoration.copyWith(
+                hintText: '30',
+                suffixText: 'Occurrences',
+                counterText: '',
+              ),
+            ),
           SizedBox(
             height: 15.0,
           ),
@@ -284,6 +550,28 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     if (!(_form.currentState?.validate() ?? true)) return;
 
     _form.currentState?.save();
+    var occurrences = int.tryParse(_occurrenceController.text);
+    DateTime? endDate;
+
+    // On event edit recurrence end is selected "Never"
+    // Remove any previous end date & occurrences stored.
+    if (_selectedRecurrenceEnd == RecurrenceEnd.never) {
+      endDate = null;
+      occurrences = null;
+    }
+
+    if (_selectedRecurrenceEnd == RecurrenceEnd.onDate) {
+      endDate = _recurrenceEndDate;
+    }
+
+    final recurrenceSettings = RecurrenceSettings.withCalculatedEndDate(
+      startDate: _startDate,
+      endDate: endDate,
+      frequency: _selectedFrequency ?? RepeatFrequency.daily,
+      weekdays: _toWeekdayInIndices,
+      occurrences: occurrences,
+      recurrenceEndOn: _selectedRecurrenceEnd ?? RecurrenceEnd.never,
+    );
 
     final event = CalendarEventData(
       date: _startDate,
@@ -293,14 +581,47 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       color: _color,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
+      recurrenceSettings: recurrenceSettings,
     );
 
     widget.onEventAdd?.call(event);
     _resetForm();
   }
 
+  /// Get list of weekdays in indices from the selected days
+  List<int> get _toWeekdayInIndices {
+    List<int> selectedIndexes = [];
+    for (int i = 0; i < _selectedDays.length; i++) {
+      if (_selectedDays[i] == true) {
+        selectedIndexes.add(i);
+      }
+    }
+    return selectedIndexes;
+  }
+
+  void updateWeekdaysSelection() {
+    _selectedDays.fillRange(0, _selectedDays.length, false);
+    if (_endDate.difference(_startDate).inDays >= 7) {
+      _selectedDays.fillRange(0, _selectedDays.length, true);
+    }
+    DateTime current = _startDate;
+    while (current.isBefore(_endDate) || current.isAtSameMomentAs(_endDate)) {
+      _selectedDays[current.weekday - 1] = true;
+      current = current.add(Duration(days: 1));
+    }
+  }
+
+  /// Set initial selected week to start date
+  void _setInitialWeekday() {
+    final currentWeekday = DateTime.now().weekday - 1;
+    _selectedDays[currentWeekday] = true;
+  }
+
   void _setDefaults() {
-    if (widget.event == null) return;
+    if (widget.event == null) {
+      _setInitialWeekday();
+      return;
+    }
 
     final event = widget.event!;
 
@@ -310,6 +631,14 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     _endTime = event.endTime ?? _endTime;
     _titleController.text = event.title;
     _descriptionController.text = event.description ?? '';
+    _selectedFrequency = event.recurrenceSettings?.frequency;
+    _selectedRecurrenceEnd =
+        event.recurrenceSettings?.recurrenceEndOn ?? RecurrenceEnd.never;
+    _recurrenceEndDate = event.recurrenceSettings?.endDate ?? _startDate;
+    _occurrenceController.text =
+        (event.recurrenceSettings?.occurrences ?? 0).toString();
+    event.recurrenceSettings?.weekdays
+        .forEach((index) => _selectedDays[index] = true);
   }
 
   void _resetForm() {
@@ -319,6 +648,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     _startTime = null;
     _endTime = null;
     _color = Colors.blue;
+    _recurrenceEndDate = null;
+    _selectedDays.fillRange(0, _selectedDays.length, true);
+    _selectedFrequency = RepeatFrequency.doNotRepeat;
+    _selectedRecurrenceEnd = RecurrenceEnd.never;
 
     if (mounted) {
       setState(() {});

@@ -48,3 +48,38 @@ enum LineStyle {
   /// Dashed line
   dashed,
 }
+
+/// Defines reoccurrence of event: Daily, weekly, monthly or yearly
+enum RepeatFrequency {
+  doNotRepeat,
+  daily,
+  weekly,
+  monthly,
+  yearly,
+}
+
+/// Defines reoccurrence event ends on:
+/// `never` to repeat without any end date specified,
+/// `onDate` to repeat till date specified
+/// `after` repeat till defined number of occurrence.
+enum RecurrenceEnd {
+  never,
+  onDate,
+  after,
+}
+
+/// Specifies the scope of deletion for recurring events in a calendar.
+///
+/// This enum is used to determine which instances of a recurring event
+/// should be deleted when a deletion action is performed.
+///
+/// - [DeleteEvent.all] - Deletes all instances of the recurring event.
+/// - [DeleteEvent.current] - Deletes only the currently selected instance
+/// of the event.
+/// - [DeleteEvent.following] - Deletes the current and all future instances
+///   of the recurring event.
+enum DeleteEvent {
+  all,
+  current,
+  following,
+}
