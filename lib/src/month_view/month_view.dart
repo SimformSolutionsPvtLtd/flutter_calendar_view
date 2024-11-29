@@ -64,6 +64,11 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// This method will be called when user double taps on event tile.
   final TileTapCallback<T>? onEventDoubleTap;
 
+  /// Show weekends or not
+  ///
+  /// Default value is true.
+  final bool showWeekends;
+
   /// Builds the name of the weeks.
   ///
   /// Used default week builder if null.
@@ -184,6 +189,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.maxMonth,
     this.controller,
     this.initialMonth,
+    this.showWeekends = true,
     this.borderSize = 1,
     this.useAvailableVerticalSpace = false,
     this.cellAspectRatio = 0.55,
@@ -352,7 +358,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                         width: _width,
                         child: Row(
                           children: List.generate(
-                            7,
+                            widget.showWeekends ? 7 : 5,
                             (index) => Expanded(
                               child: SizedBox(
                                 width: _cellWidth,
@@ -391,6 +397,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               startDay: widget.startDay,
                               physics: widget.pagePhysics,
                               hideDaysNotInMonth: widget.hideDaysNotInMonth,
+                              dayCount: widget.showWeekends ? 7 : 5,
                             ),
                           );
                         }),
@@ -663,6 +670,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final WeekDays startDay;
   final ScrollPhysics physics;
   final bool hideDaysNotInMonth;
+  final int dayCount;
 
   const _MonthPageBuilder({
     Key? key,
@@ -680,30 +688,30 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.startDay,
     required this.physics,
     required this.hideDaysNotInMonth,
+    required this.dayCount,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final cellsNumber = dayCount == 5 ? 30 : 42;
     final monthDays = date.datesOfMonths(startDay: startDay);
-    return Container(
-      width: width,
-      height: height,
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
-        physics: physics,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          childAspectRatio: cellRatio,
-        ),
-        itemCount: 42,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final events = controller.getEventsOnDay(monthDays[index]);
-          return GestureDetector(
+    final gridViewItems = <Widget>[];
+    for (var index = 0; index < 42; index++) {
+      final events = controller.getEventsOnDay(monthDays[index]);
+      bool isWeekend =
+          monthDays[index].weekday == 6 || monthDays[index].weekday == 7;
+      if (isWeekend && dayCount == 5) {
+        continue;
+      }
+      if (!isWeekend || isWeekend && dayCount == 7) {
+        debugPrint('${monthDays[index]} | Cell no: ${cellsNumber}');
+        gridViewItems.add(
+          GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
             onLongPress: () => onDateLongPress?.call(monthDays[index]),
             child: Container(
               decoration: BoxDecoration(
+                color: Colors.transparent,
                 border: showBorder
                     ? Border.all(
                         color: borderColor,
@@ -719,7 +727,39 @@ class _MonthPageBuilder<T> extends StatelessWidget {
                 hideDaysNotInMonth,
               ),
             ),
-          );
+          ),
+        );
+      }
+    }
+
+    // Highlight tiles which is not in current month
+    return Container(
+      width: width,
+      height: height,
+      child: GridView.builder(
+        padding: EdgeInsets.zero,
+        physics: physics,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: dayCount,
+          childAspectRatio: cellRatio,
+        ),
+        itemCount: cellsNumber,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          if (index > gridViewItems.length - 1) {
+            return Container(
+                decoration: BoxDecoration(
+              color: Colors.grey[200],
+              border: showBorder
+                  ? Border.all(
+                      color: borderColor,
+                      width: borderSize,
+                    )
+                  : null,
+            ));
+          }
+          debugPrint('Grid: ${gridViewItems[index]}');
+          return gridViewItems[index];
         },
       ),
     );

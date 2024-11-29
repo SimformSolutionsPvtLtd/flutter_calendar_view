@@ -18,6 +18,7 @@ class MonthViewWidget extends StatelessWidget {
     return MonthView(
       key: state,
       width: width,
+      showWeekends: false,
       hideDaysNotInMonth: false,
       onEventTap: (event, date) {
         Navigator.of(context).push(
