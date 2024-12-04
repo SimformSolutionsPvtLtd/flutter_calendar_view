@@ -154,6 +154,7 @@ MonthView(
     headerBuilder: MonthHeader.hidden, // To hide month header
     showWeekTileBorder: false, // To show or hide header border
     hideDaysNotInMonth: true, // To hide days or cell that are not in current month
+    showWeekends: false, // To hide weekends default value is true
 );
 ```
 
