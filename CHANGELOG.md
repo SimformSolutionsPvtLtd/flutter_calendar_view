@@ -5,6 +5,7 @@
 - Fixes right icon always shows default icon in `CalendarPageHeader` when providing custom icon. [#432](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/432)
 - Adds `hideDaysNotInMonth` argument in `cellBuilder` in readme. [#433](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/433)
 - Fixes `titleColor` of date for `hideDaysNotInMonth: false`.
+- Fixes `startHour` and `endHour` not updating when rebuilding in week view. [#410](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/410)
 
 # [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 
