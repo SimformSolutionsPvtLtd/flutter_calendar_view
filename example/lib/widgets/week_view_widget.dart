@@ -15,8 +15,12 @@ class WeekViewWidget extends StatelessWidget {
       key: state,
       width: width,
       showLiveTimeLineInAllDays: true,
-      eventArranger: SideEventArranger(maxWidth: 30),
+      showThreeDayView: true,
+      // TODO(Shubham): May required additional asserts
+      // If weekdays provided, shown/hidden weekends
+      eventArranger: SideEventArranger(),
       timeLineWidth: 65,
+      // weekDays: [WeekDays.monday, WeekDays.tuesday, WeekDays.wednesday],
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,

@@ -172,6 +172,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// saturday and sunday, only monday and tuesday will be visible in week view.
   final bool showWeekends;
 
+  final bool showThreeDayView;
+
   /// Defines which days should be displayed in one week.
   ///
   /// By default all the days will be visible.
@@ -287,6 +289,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onDateTap,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
+    this.showThreeDayView = false,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.weekDetectorBuilder,
@@ -565,6 +568,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
+                            showThreeDaysView: widget.showThreeDayView,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
@@ -623,7 +627,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         "Make sure you are providing weekdays in initialization of "
         "WeekView. or showWeekends is true if you are providing only "
         "saturday or sunday in weekDays.");
-    _totalDaysInWeek = _weekDays.length;
+    // TODO(Shubham): Update weekdays to 3
+    _totalDaysInWeek = widget.showThreeDayView ? 3 : _weekDays.length;
   }
 
   void _updateViewDimensions() {
@@ -648,6 +653,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
 
+    // TODO(Shubham): Update total days in week
     _weekTitleWidth =
         (_width - _timeLineWidth - _hourIndicatorSettings.offset) /
             _totalDaysInWeek;
@@ -781,6 +787,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   /// Default builder for week number.
+  // TODO(Shubham): Update for 3 day view
   Widget _defaultWeekNumberBuilder(DateTime date) {
     final daysToAdd = DateTime.thursday - date.weekday;
     final thursday = daysToAdd > 0

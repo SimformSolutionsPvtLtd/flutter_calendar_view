@@ -139,6 +139,8 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to display quarter hours
   final bool showQuarterHours;
 
+  final bool showThreeDaysView;
+
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
@@ -205,6 +207,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.showWeekDayAtBottom,
     required this.showHalfHours,
     required this.showQuarterHours,
+    required this.showThreeDaysView,
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.endHour,
@@ -507,8 +510,9 @@ class _InternalWeekViewPageState<T extends Object?>
     final output = <DateTime>[];
 
     final weekDays = widget.weekDays.toList();
+    final totalWeekDays = widget.showThreeDaysView ? 3 : 7;
 
-    for (final date in widget.dates) {
+    for (final date in widget.dates.take(totalWeekDays)) {
       if (weekDays.any((weekDay) => weekDay.index + 1 == date.weekday)) {
         output.add(date);
       }
