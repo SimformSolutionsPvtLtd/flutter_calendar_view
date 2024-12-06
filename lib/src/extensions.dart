@@ -63,6 +63,7 @@ extension DateTimeExtensions on DateTime {
     //
     final startDay =
         DateTime(year, month, day - (weekday - start.index - 1) % 7);
+    debugPrint('StartDate: datesOfWeek $startDay');
 
     return [
       startDay,

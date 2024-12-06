@@ -521,6 +521,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                                 _minDate.day + (index * DateTime.daysPerWeek))
                             .datesOfWeek(start: widget.startDay);
 
+                        debugPrint('MinDate: $_minDate');
+                        debugPrint('Dates: $dates');
+                        debugPrint('Index: $index');
+
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
                           builder: (_, __, ___) => InternalWeekViewPage<T>(
