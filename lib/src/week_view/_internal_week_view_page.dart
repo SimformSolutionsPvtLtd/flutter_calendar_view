@@ -508,22 +508,23 @@ class _InternalWeekViewPageState<T extends Object?>
 
   List<DateTime> _filteredDate() {
     final output = <DateTime>[];
-
     final weekDays = widget.weekDays.toList();
     final totalWeekDays = widget.showThreeDaysView ? 3 : 7;
-    final startDate = widget.dates.first;
-    int i = 0; // Add 2 days to show 3 days
-    while (i < 3) {
-      output.add(startDate.add(Duration(days: i)));
-      i++;
-    }
-    // for (final date in widget.dates.take(totalWeekDays)) {
-    //   if (weekDays.any((weekDay) => weekDay.index + 1 == date.weekday)) {
-    //     output.add(date);
-    //   }
-    // }
 
-    debugPrint('op: ${output}');
+    if (widget.showThreeDaysView) {
+      final startDate = widget.dates.first;
+      int i = 0; // Add 2 days to show 3 days
+      while (i < 3) {
+        output.add(startDate.add(Duration(days: i)));
+        i++;
+      }
+    } else {
+      for (final date in widget.dates.take(totalWeekDays)) {
+        if (weekDays.any((weekDay) => weekDay.index + 1 == date.weekday)) {
+          output.add(date);
+        }
+      }
+    }
     return output;
   }
 }

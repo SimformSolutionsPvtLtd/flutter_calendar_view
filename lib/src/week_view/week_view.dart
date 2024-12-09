@@ -517,9 +517,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * 3))
-                            .datesOfWeek(start: widget.startDay);
+                        final dates = DateTime(
+                                _minDate.year,
+                                _minDate.month,
+                                _minDate.day +
+                                    (index * (widget.showThreeDayView ? 3 : 7)))
+                            .datesOfWeek(
+                          start: widget.startDay,
+                          showThreeDays: widget.showThreeDayView,
+                        );
 
                         final threeDays = getThreeConsecutiveDays();
 
