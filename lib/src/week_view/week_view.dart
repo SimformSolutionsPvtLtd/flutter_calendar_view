@@ -518,12 +518,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
                         final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
+                                _minDate.day + (index * 3))
                             .datesOfWeek(start: widget.startDay);
 
-                        debugPrint('MinDate: $_minDate');
-                        debugPrint('Dates: $dates');
-                        debugPrint('Index: $index');
+                        final threeDays = getThreeConsecutiveDays();
+
+                        // debugPrint('MinDate: $_minDate');
+                        // debugPrint('Dates: $currentDate');
+                        // debugPrint('Index: $index');
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
@@ -728,7 +730,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
-    _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
+    _currentEndDate = _currentWeek.add(Duration(days: 2));
     _currentIndex =
         _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
   }
@@ -738,6 +740,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _minDate = (widget.minDay ?? CalendarConstants.epochDate)
         .firstDayOfWeek(start: widget.startDay)
         .withoutTime;
+    debugPrint('MinDate set range: $_minDate');
 
     _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
         .lastDayOfWeek(start: widget.startDay)
@@ -897,9 +900,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         _currentStartDate = DateTime(
           _currentStartDate.year,
           _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
+          _currentStartDate.day + (index - _currentIndex) * 3,
         );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
+        debugPrint('CurrentStartDate onPageChange: ${_currentStartDate}');
+        _currentEndDate = _currentStartDate.add(Duration(days: 2));
         _currentIndex = index;
       });
     }
@@ -1038,6 +1042,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Listener for every week page ScrollController
   void _scrollPageListener(ScrollController controller) {
     _lastScrollOffset = controller.offset;
+  }
+
+  void getThreeConsecutiveDays() {
+    // var startDate = endDate;
+    // final endDate = currentDate.add(Duration(days: 2));
+    // debugPrint('sDate: $startDate');
+    // debugPrint('eDate: $endDate');
+    debugPrint('Start date: ${_currentStartDate}');
   }
 }
 
