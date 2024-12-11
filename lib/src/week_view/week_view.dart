@@ -389,6 +389,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late int _startHour;
   late int _endHour;
+  late HeaderStyle headerStyle;
 
   final _scrollConfiguration = EventScrollConfiguration();
 
@@ -421,6 +422,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
     _fullDayHeaderTextConfig =
         widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+    headerStyle = widget.headerStyle;
   }
 
   @override
@@ -853,7 +855,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         }
       },
       headerStringBuilder: widget.headerStringBuilder,
-      headerStyle: widget.headerStyle,
+      headerStyle: headerStyle,
     );
   }
 
@@ -898,9 +900,24 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         );
         _currentEndDate = _currentStartDate.add(Duration(days: 6));
         _currentIndex = index;
+        _updateHeaderIcons();
       });
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
+  }
+
+  // Hide header icons if end dates are reached
+  void _updateHeaderIcons() {
+    final setLeftIconToNull = _currentStartDate == _minDate;
+    final setRightIconToNull = _currentStartDate.add(
+          const Duration(days: 6),
+        ) ==
+        _maxDate;
+
+    headerStyle = widget.headerStyle.copyWith(
+      setLeftIconConfigToNull: setLeftIconToNull,
+      setRightIconConfigToNull: setRightIconToNull,
+    );
   }
 
   /// Animate to next page

@@ -8,6 +8,8 @@
 - Fixes tap `onTileDoubleTap` & `onTileLongTap` issue for `hideDaysNotInMonth` in month view. [#435](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/435)
 - Fixes `startHour` and `endHour` not updating when rebuilding in week view. [#410](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/410)
 - Fixes issue of header icon `color` property in `IconDataConfig`.
+- Fixes `HeaderStyle` icons visibility on min & max dates reached. [#429](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/429)
+- Fixes inconsistent padding issue of right icon in the `HeaderStyle`.
 
 # [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 
