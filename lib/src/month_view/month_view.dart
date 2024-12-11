@@ -4,16 +4,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../calendar_constants.dart';
-import '../calendar_controller_provider.dart';
-import '../calendar_event_data.dart';
-import '../components/components.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
-import '../enumerations.dart';
-import '../event_controller.dart';
-import '../extensions.dart';
-import '../style/header_style.dart';
-import '../typedefs.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of
@@ -63,6 +55,14 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// This method will be called when user double taps on event tile.
   final TileTapCallback<T>? onEventDoubleTap;
+
+  /// Show weekends or not.
+  /// Default value is true.
+  ///
+  /// Similar to [WeekView],
+  /// If it is false week view will remove weekends from week days
+  /// and events on weekends will not be shown.
+  final bool showWeekends;
 
   /// Builds the name of the weeks.
   ///
@@ -184,6 +184,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.maxMonth,
     this.controller,
     this.initialMonth,
+    this.showWeekends = true,
     this.borderSize = 1,
     this.useAvailableVerticalSpace = false,
     this.cellAspectRatio = 0.55,
@@ -246,6 +247,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late VoidCallback _reloadCallback;
 
+  late HeaderStyle headerStyle;
+
   @override
   void initState() {
     super.initState();
@@ -261,7 +264,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     // Initialize page controller to control page actions.
     _pageController = PageController(initialPage: _currentIndex);
-
+    headerStyle = widget.headerStyle;
     _assignBuilders();
   }
 
@@ -352,7 +355,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                         width: _width,
                         child: Row(
                           children: List.generate(
-                            7,
+                            widget.showWeekends ? 7 : 5,
                             (index) => Expanded(
                               child: SizedBox(
                                 width: _cellWidth,
@@ -365,10 +368,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                       ),
                       Expanded(
                         child: LayoutBuilder(builder: (context, constraints) {
+                          final dates = date.datesOfMonths(
+                            startDay: widget.startDay,
+                            hideDaysNotInMonth: widget.hideDaysNotInMonth,
+                            showWeekends: widget.showWeekends,
+                          );
                           final _cellAspectRatio =
                               widget.useAvailableVerticalSpace
                                   ? calculateCellAspectRatio(
-                                      constraints.maxHeight,
+                                      height: constraints.maxHeight,
+                                      daysInMonth: dates.length,
                                     )
                                   : widget.cellAspectRatio;
 
@@ -391,6 +400,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               startDay: widget.startDay,
                               physics: widget.pagePhysics,
                               hideDaysNotInMonth: widget.hideDaysNotInMonth,
+                              weekDays: widget.showWeekends ? 7 : 5,
                             ),
                           );
                         }),
@@ -432,8 +442,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _height = _cellHeight * 6;
   }
 
-  double calculateCellAspectRatio(double height) {
-    final _cellHeight = height / 6;
+  double calculateCellAspectRatio({
+    required double height,
+    required int daysInMonth,
+  }) {
+    final rows = daysInMonth / 7;
+    final _cellHeight = height / rows;
     return _cellWidth / _cellHeight;
   }
 
@@ -501,9 +515,21 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           _currentDate.month + (value - _currentIndex),
         );
         _currentIndex = value;
+        _updateHeaderIcons();
       });
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
+  }
+
+  // Hide header icons if end dates are reached
+  void _updateHeaderIcons() {
+    bool setLeftIconToNull = _currentDate == _minDate;
+    bool setRightIconToNull = _currentDate == _maxDate;
+
+    headerStyle = widget.headerStyle.copyWith(
+      setLeftIconConfigToNull: setLeftIconToNull,
+      setRightIconConfigToNull: setRightIconToNull,
+    );
   }
 
   /// Default month view header builder
@@ -528,7 +554,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       date: date,
       dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
-      headerStyle: widget.headerStyle,
+      headerStyle: headerStyle,
     );
   }
 
@@ -663,6 +689,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final WeekDays startDay;
   final ScrollPhysics physics;
   final bool hideDaysNotInMonth;
+  final int weekDays;
 
   const _MonthPageBuilder({
     Key? key,
@@ -680,25 +707,32 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.startDay,
     required this.physics,
     required this.hideDaysNotInMonth,
+    required this.weekDays,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final monthDays = date.datesOfMonths(startDay: startDay);
-    return Container(
+    final monthDays = _filteredDays;
+
+    // Highlight tiles which is not in current month
+    return SizedBox(
       width: width,
       height: height,
       child: GridView.builder(
         padding: EdgeInsets.zero,
         physics: physics,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
+          crossAxisCount: weekDays,
           childAspectRatio: cellRatio,
         ),
-        itemCount: 42,
+        itemCount: monthDays.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          final events = controller.getEventsOnDay(monthDays[index]);
+          // Hide events if `hideDaysNotInMonth` true
+          final events =
+              hideDaysNotInMonth & (monthDays[index].month != date.month)
+                  ? <CalendarEventData<T>>[]
+                  : controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
             onLongPress: () => onDateLongPress?.call(monthDays[index]),
@@ -723,6 +757,32 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         },
       ),
     );
+  }
+
+  /// Returns a list of dates for the month, excluding weekends
+  /// if the weekDays parameter is set or showWeekends = false.
+  ///
+  /// This getter first retrieves all the dates of the month using the
+  /// `datesOfMonths` method, considering the `startDay` and
+  /// `hideDaysNotInMonth` parameters.
+  /// It then filters out the weekend dates (Saturday and Sunday)
+  /// if the `weekDays` parameter is set to 5, ensuring only
+  /// weekdays are included in the returned list.
+  List<DateTime> get _filteredDays {
+    final monthDays = date.datesOfMonths(
+      startDay: startDay,
+      hideDaysNotInMonth: hideDaysNotInMonth,
+      showWeekends: weekDays == 7,
+    );
+
+    return monthDays.where((day) {
+      final isWeekend =
+          day.weekday == DateTime.saturday || day.weekday == DateTime.sunday;
+      if (weekDays == 5 && isWeekend) {
+        return false;
+      }
+      return true;
+    }).toList();
   }
 }
 

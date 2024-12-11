@@ -105,23 +105,31 @@ class CalendarPageHeader extends StatelessWidget {
         mainAxisAlignment: headerStyle.mainAxisAlignment,
         children: [
           if (headerStyle.leftIconVisible && headerStyle.leftIconConfig != null)
-            headerStyle.leftIconConfig!.icon?.call(context) ??
-                IconButton(
-                  onPressed: onPreviousDay,
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  padding: headerStyle.leftIconPadding ??
-                      headerStyle.leftIconConfig!.padding,
-                  icon: headerStyle.leftIcon ??
-                      Icon(
-                        Icons.chevron_left,
-                        size: headerStyle.leftIconConfig!.size,
-                        color: iconColor ?? headerStyle.leftIconConfig!.color,
-                      ),
-                ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: headerStyle.leftIconConfig!.icon?.call(context) ??
+                    IconButton(
+                      onPressed: onPreviousDay,
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      padding: headerStyle.leftIconPadding ??
+                          headerStyle.leftIconConfig!.padding,
+                      icon: headerStyle.leftIcon ??
+                          Icon(
+                            Icons.chevron_left,
+                            size: headerStyle.leftIconConfig!.size,
+                            color:
+                                iconColor ?? headerStyle.leftIconConfig!.color,
+                          ),
+                    ),
+              ),
+            ),
+          if (headerStyle.leftIconConfig == null) Spacer(flex: 1),
           Expanded(
+            flex: 3,
             child: titleBuilder != null
                 ? DefaultTextStyle.merge(
                     style: headerStyle.headerTextStyle,
@@ -143,20 +151,26 @@ class CalendarPageHeader extends StatelessWidget {
           ),
           if (headerStyle.rightIconVisible &&
               headerStyle.rightIconConfig != null)
-            IconButton(
-              onPressed: onNextDay,
-              splashColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              padding: headerStyle.rightIconPadding,
-              icon: headerStyle.rightIcon ??
-                  Icon(
-                    Icons.chevron_right,
-                    size: headerStyle.rightIconConfig?.size,
-                    color: iconColor ?? headerStyle.rightIconConfig?.color,
-                  ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: onNextDay,
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  padding: headerStyle.rightIconPadding,
+                  icon: headerStyle.rightIcon ??
+                      Icon(
+                        Icons.chevron_right,
+                        size: headerStyle.rightIconConfig?.size,
+                        color: iconColor ?? headerStyle.rightIconConfig?.color,
+                      ),
+                ),
+              ),
             ),
+          if (headerStyle.rightIconConfig == null) Spacer(flex: 1),
         ],
       ),
     );

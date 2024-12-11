@@ -172,6 +172,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// saturday and sunday, only monday and tuesday will be visible in week view.
   final bool showWeekends;
 
+  /// Enable this flag to show 3-days view default is false.
+  /// i.e 7 days view
+  final bool showThreeDaysView;
+
   /// Defines which days should be displayed in one week.
   ///
   /// By default all the days will be visible.
@@ -287,6 +291,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onDateTap,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
+    this.showThreeDaysView = false,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.weekDetectorBuilder,
@@ -333,6 +338,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
           endHour <= Constants.hoursADay || endHour < startHour,
           "End hour must be less than 24 or startHour must be less than endHour",
         ),
+        assert(!(showThreeDaysView && !showWeekends),
+            "For three days view, showWeekends should be true"),
+        assert(!(showThreeDaysView && weekDays.length != 7),
+            "For three days view, weekDays should not be set"),
         super(key: key);
 
   @override
@@ -389,6 +398,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late int _startHour;
   late int _endHour;
+  late HeaderStyle headerStyle;
 
   final _scrollConfiguration = EventScrollConfiguration();
 
@@ -421,6 +431,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
     _fullDayHeaderTextConfig =
         widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+    headerStyle = widget.headerStyle;
   }
 
   @override
@@ -468,6 +479,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
 
     // Update heights.
     _calculateHeights();
@@ -512,9 +525,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(start: widget.startDay);
+                        final dates = _getDatesOnWeek(index);
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
@@ -563,6 +574,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
+                            showThreeDaysView: widget.showThreeDaysView,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
@@ -621,7 +633,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         "Make sure you are providing weekdays in initialization of "
         "WeekView. or showWeekends is true if you are providing only "
         "saturday or sunday in weekDays.");
-    _totalDaysInWeek = _weekDays.length;
+    _totalDaysInWeek = widget.showThreeDaysView ? 3 : _weekDays.length;
   }
 
   void _updateViewDimensions() {
@@ -714,7 +726,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     } else if (_currentWeek.isAfter(_maxDate)) {
       _currentWeek = _maxDate;
     }
-
     _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
     _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
     _currentIndex =
@@ -780,6 +791,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Default builder for week number.
   Widget _defaultWeekNumberBuilder(DateTime date) {
+    if (widget.showThreeDaysView) {
+      return const SizedBox.shrink();
+    }
     final daysToAdd = DateTime.thursday - date.weekday;
     final thursday = daysToAdd > 0
         ? date.add(Duration(days: daysToAdd))
@@ -884,13 +898,27 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         _currentStartDate = DateTime(
           _currentStartDate.year,
           _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
+          _currentStartDate.day +
+              (index - _currentIndex) * (widget.showThreeDaysView ? 3 : 7),
         );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
+        _currentEndDate = _currentStartDate
+            .add(Duration(days: widget.showThreeDaysView ? 2 : 6));
         _currentIndex = index;
+        _updateHeaderIcons();
       });
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
+  }
+
+  // Hide header icons if end dates are reached
+  void _updateHeaderIcons() {
+    bool setLeftIconToNull = _currentStartDate == _minDate;
+    bool setRightIconToNull = _currentStartDate == _maxDate;
+
+    headerStyle = widget.headerStyle.copyWith(
+      setLeftIconConfigToNull: setLeftIconToNull,
+      setRightIconConfigToNull: setRightIconToNull,
+    );
   }
 
   /// Animate to next page
@@ -1025,6 +1053,21 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Listener for every week page ScrollController
   void _scrollPageListener(ScrollController controller) {
     _lastScrollOffset = controller.offset;
+  }
+
+  List<DateTime> _getDatesOnWeek(int index) {
+    if (widget.showThreeDaysView) {
+      return _currentStartDate.datesOfWeek(
+        start: widget.startDay,
+        showThreeDays: widget.showThreeDaysView,
+      );
+    } else {
+      return DateTime(
+        _minDate.year,
+        _minDate.month,
+        _minDate.day + (index * DateTime.daysPerWeek),
+      ).datesOfWeek(start: widget.startDay);
+    }
   }
 }
 
