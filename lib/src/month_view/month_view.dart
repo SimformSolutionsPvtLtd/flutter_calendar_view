@@ -522,6 +522,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Default month view header builder
   Widget _defaultHeaderBuilder(DateTime date) {
     return MonthPageHeader(
+      showPreviousIcon: date != _minDate,
+      showNextIcon: date != _maxDate,
       onTitleTapped: () async {
         if (widget.onHeaderTitleTap != null) {
           widget.onHeaderTitleTap!(date);

@@ -15,8 +15,10 @@ class WeekPageHeader extends CalendarPageHeader {
   const WeekPageHeader({
     Key? key,
     VoidCallback? onNextDay,
+    bool showNextIcon = true,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousDay,
+    bool showPreviousIcon = true,
     required DateTime startDate,
     required DateTime endDate,
     @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
@@ -29,7 +31,9 @@ class WeekPageHeader extends CalendarPageHeader {
           date: startDate,
           secondaryDate: endDate,
           onNextDay: onNextDay,
+          showNextIcon: showNextIcon,
           onPreviousDay: onPreviousDay,
+          showPreviousIcon: showPreviousIcon,
           onTitleTapped: onTitleTapped,
           // ignore_for_file: deprecated_member_use_from_same_package
           iconColor: iconColor,
