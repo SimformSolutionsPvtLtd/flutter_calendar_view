@@ -15,9 +15,11 @@ class MonthViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(Shubham): Add isDarkMode
     return MonthView(
       key: state,
       width: width,
+      isDarkMode: true,
       showWeekends: false,
       useAvailableVerticalSpace: true,
       hideDaysNotInMonth: true,

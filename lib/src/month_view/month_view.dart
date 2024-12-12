@@ -174,6 +174,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// defines that show and hide cell not is in current month
   final bool hideDaysNotInMonth;
 
+  final bool isDarkMode;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -210,6 +212,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onEventDoubleTap,
     this.showWeekTileBorder = true,
     this.hideDaysNotInMonth = false,
+    this.isDarkMode = false,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
         super(key: key);
@@ -323,6 +326,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
     super.dispose();
+  }
+
+  Color getDefaultBackgroundColor(BuildContext context) {
+    debugPrint('IsDark: ${widget.isDarkMode}');
+    return widget.isDarkMode
+        ? Theme.of(context).colorScheme.surfaceDim
+        : Theme.of(context).colorScheme.primaryContainer;
   }
 
   @override
@@ -579,7 +589,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       return FilledCell<T>(
         date: date,
         shouldHighlight: isToday,
-        backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+        // TODO(Shubham): Update background color
+        backgroundColor:
+            isInMonth ? getDefaultBackgroundColor(context) : Constants.offWhite,
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,

@@ -11,7 +11,14 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkMode = false;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,29 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Calendar Page Demo',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.light(),
+        // TODO(Shubham): Extract theme data and extension
+        theme: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.light,
+          primaryColor: Colors.blue,
+          appBarTheme: AppBarTheme(backgroundColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(
+            brightness: Brightness.light,
+            seedColor: Colors.blue,
+            primary: Colors.blue,
+          ),
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.dark,
+          appBarTheme: AppBarTheme(backgroundColor: Color(0xff2F2F2F)),
+          colorScheme: ColorScheme.fromSeed(
+            brightness: Brightness.dark,
+            seedColor: Colors.blueAccent,
+          ),
+        ),
+        // themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        themeMode: ThemeMode.system,
         scrollBehavior: ScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.trackpad,

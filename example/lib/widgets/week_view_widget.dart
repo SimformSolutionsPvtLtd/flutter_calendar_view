@@ -11,10 +11,13 @@ class WeekViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return WeekView(
       key: state,
       width: width,
       showLiveTimeLineInAllDays: true,
+      backgroundColor: colorScheme.primaryContainer,
       showThreeDaysView: true,
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,

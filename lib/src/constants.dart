@@ -16,6 +16,7 @@ class Constants {
 
   static final List<String> weekTitles = ["M", "T", "W", "T", "F", "S", "S"];
 
+  // TODO(Shubham): Update colors
   static const Color defaultLiveTimeIndicatorColor = Color(0xff444444);
   static const Color defaultBorderColor = Color(0xffdddddd);
   static const Color black = Color(0xff000000);

@@ -515,6 +515,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
               ),
               Expanded(
                 child: DecoratedBox(
+                  // TODO(Shubham): Give page color here
                   decoration: BoxDecoration(color: widget.backgroundColor),
                   child: SizedBox(
                     height: _height,
