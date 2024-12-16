@@ -19,6 +19,8 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousMonth,
     @Deprecated("Use HeaderStyle to provide icon color")
     Color iconColor = Constants.black,
+
+    /// TODO(Shubham): Remove default color
     // @Deprecated("Use HeaderStyle to provide background color")
     // Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,

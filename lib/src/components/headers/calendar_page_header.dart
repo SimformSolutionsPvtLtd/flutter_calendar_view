@@ -98,12 +98,14 @@ class CalendarPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return Container(
       margin: headerStyle.headerMargin,
       padding: headerStyle.headerPadding,
       decoration: headerStyle.decoration ??
           BoxDecoration(
-            color: Theme.of(context).secondaryHeaderColor,
+            color: color.primaryContainer,
           ),
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -127,8 +129,7 @@ class CalendarPageHeader extends StatelessWidget {
                           Icon(
                             Icons.chevron_left,
                             size: headerStyle.leftIconConfig!.size,
-                            color:
-                                iconColor ?? headerStyle.leftIconConfig!.color,
+                            color: color.onPrimaryContainer,
                           ),
                     ),
               ),
@@ -171,7 +172,8 @@ class CalendarPageHeader extends StatelessWidget {
                       Icon(
                         Icons.chevron_right,
                         size: headerStyle.rightIconConfig?.size,
-                        color: iconColor ?? headerStyle.rightIconConfig?.color,
+                        // color: iconColor ?? headerStyle.rightIconConfig?.color,
+                        color: color.onPrimaryContainer,
                       ),
                 ),
               ),

@@ -194,7 +194,7 @@ class IconDataConfig {
 
   /// Defines the data for icons used in calendar_view.
   const IconDataConfig({
-    this.color = Colors.black,
+    this.color = Colors.black, // TODO(Shubham): May not required
     this.size = 30,
     this.padding = const EdgeInsets.all(10),
     this.icon,

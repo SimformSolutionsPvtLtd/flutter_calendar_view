@@ -46,9 +46,10 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(
             brightness: Brightness.dark,
             seedColor: Colors.blueAccent,
+            // surfaceContainerLow: Colors.red,
           ),
         ),
-        // themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        // themeMode: isDarkMode ? ThemeMode.dark : thememode.light,
         themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         scrollBehavior: ScrollBehavior().copyWith(
           dragDevices: {

@@ -579,7 +579,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [Colors.blue]
   ///
   /// It will take affect only if [showBorder] is set.
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Page transition duration used when user try to change page using
   /// [MonthView.nextPage] or [MonthView.previousPage]
@@ -654,7 +654,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   const MonthView({
     Key? key,
     this.showBorder = true,
-    this.borderColor = Constants.defaultBorderColor,
+    this.borderColor,
     this.cellBuilder,
     this.minMonth,
     this.maxMonth,
@@ -700,7 +700,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double cellRatio;
   final bool showBorder;
   final double borderSize;
-  final Color borderColor;
+  final Color? borderColor;
   final CellBuilder<T> cellBuilder;
   final DateTime date;
   final EventController<T> controller;
@@ -718,7 +718,6 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
-    required this.borderColor,
     required this.cellBuilder,
     required this.date,
     required this.controller,
@@ -730,11 +729,13 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.physics,
     required this.hideDaysNotInMonth,
     required this.weekDays,
+    this.borderColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final monthDays = _filteredDays;
+    final color = Theme.of(context).colorScheme;
 
     // Highlight tiles which is not in current month
     return SizedBox(
@@ -762,7 +763,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
               decoration: BoxDecoration(
                 border: showBorder
                     ? Border.all(
-                        color: borderColor,
+                        color: borderColor ?? color.surfaceContainerHigh,
                         width: borderSize,
                       )
                     : null,
