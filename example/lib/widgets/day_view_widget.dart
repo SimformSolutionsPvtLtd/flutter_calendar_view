@@ -73,6 +73,7 @@ class DayViewWidget extends StatelessWidget {
             child: Text(
               "${date.hour}:${date.minute}",
               textAlign: TextAlign.right,
+              // TODO(Shubham): Update color for dark mode
               style: TextStyle(
                 color: Colors.black.withAlpha(50),
                 fontStyle: FontStyle.italic,

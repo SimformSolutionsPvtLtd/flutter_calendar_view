@@ -252,7 +252,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.dayTitleBuilder,
     this.eventArranger,
     this.verticalLineOffset = 10,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.scrollOffset,
     this.onEventTap,
     this.onEventLongTap,
@@ -433,6 +433,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return SafeAreaWrapper(
       option: widget.safeAreaOption,
       child: LayoutBuilder(builder: (context, constraint) {
@@ -447,7 +449,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
               _dayTitleBuilder(_currentDate),
               Expanded(
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: widget.backgroundColor),
+                  // TODO(Shubham): Check if its already getting color
+                  decoration: BoxDecoration(
+                    color: widget.backgroundColor ?? color.surfaceContainerLow,
+                  ),
                   child: SizedBox(
                     height: _height,
                     child: PageView.builder(
