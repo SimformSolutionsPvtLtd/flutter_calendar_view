@@ -104,6 +104,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// defines that show and hide cell not is in current month
   final bool hideDaysNotInMonth;
 
+  // TODO(Shubham): Add comment
+  // final bool isDarkMode;
+
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({

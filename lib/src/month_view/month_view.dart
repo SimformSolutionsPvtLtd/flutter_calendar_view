@@ -7,222 +7,8 @@ import 'package:flutter/material.dart';
 import '../../calendar_view.dart';
 import '../constants.dart';
 
-class MonthView<T extends Object?> extends StatefulWidget {
-  /// A function that returns a [Widget] that determines appearance of
-  /// each cell in month calendar.
-  final CellBuilder<T>? cellBuilder;
-
-  /// Builds month page title.
-  ///
-  /// If there are some configurations that is not directly available
-  /// in [MonthView], override this to create your custom header or reuse,
-  /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
-  /// [WeekPageHeader] widgets provided by this package with your custom
-  /// configurations.
-  ///
-  final DateWidgetBuilder? headerBuilder;
-
-  /// This function will generate DateString in the calendar header.
-  /// Useful for I18n
-  final StringProvider? headerStringBuilder;
-
-  /// This function will generate DayString in month view cell.
-  /// Useful for I18n
-  final StringProvider? dateStringBuilder;
-
-  /// This function will generate WeeDayString in weekday view.
-  /// Useful for I18n
-  /// Ex : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
-  final String Function(int)? weekDayStringBuilder;
-
-  /// Called when user changes month.
-  final CalendarPageChangeCallBack? onPageChange;
-
-  /// This function will be called when user taps on month view cell.
-  final CellTapCallback<T>? onCellTap;
-
-  /// This function will be called when user will tap on a single event
-  /// tile inside a cell.
-  ///
-  /// This function will only work if [cellBuilder] is null.
-  final TileTapCallback<T>? onEventTap;
-
-  /// This function will be called when user will long press on a single event
-  /// tile inside a cell.
-  ///
-  /// This function will only work if [cellBuilder] is null.
-  final TileTapCallback<T>? onEventLongTap;
-
-  /// This method will be called when user double taps on event tile.
-  final TileTapCallback<T>? onEventDoubleTap;
-
-  /// Show weekends or not.
-  /// Default value is true.
-  ///
-  /// Similar to [WeekView],
-  /// If it is false week view will remove weekends from week days
-  /// and events on weekends will not be shown.
-  final bool showWeekends;
-
-  /// Builds the name of the weeks.
-  ///
-  /// Used default week builder if null.
-  ///
-  /// Here day will range from 0 to 6 starting from Monday to Sunday.
-  final WeekDayBuilder? weekDayBuilder;
-
-  /// Determines the lower boundary user can scroll.
-  ///
-  /// If not provided [CalendarConstants.epochDate] is default.
-  final DateTime? minMonth;
-
-  /// Determines upper boundary user can scroll.
-  ///
-  /// If not provided [CalendarConstants.maxDate] is default.
-  final DateTime? maxMonth;
-
-  /// Defines initial display month.
-  ///
-  /// If not provided [DateTime.now] is default date.
-  final DateTime? initialMonth;
-
-  /// Defines whether to show default borders or not.
-  ///
-  /// Default value is true
-  ///
-  /// Use [borderSize] to define width of the border and
-  /// [borderColor] to define color of the border.
-  final bool showBorder;
-
-  /// Defines whether to show default borders or not for weekTile.
-  ///
-  /// Default value is true
-  ///
-  final bool showWeekTileBorder;
-
-  /// Defines width of default border
-  ///
-  /// Default value is [Colors.blue]
-  ///
-  /// It will take affect only if [showBorder] is set.
-  final Color borderColor;
-
-  /// Page transition duration used when user try to change page using
-  /// [MonthView.nextPage] or [MonthView.previousPage]
-  final Duration pageTransitionDuration;
-
-  /// Page transition curve used when user try to change page using
-  /// [MonthView.nextPage] or [MonthView.previousPage]
-  final Curve pageTransitionCurve;
-
-  /// A required parameters that controls events for month view.
-  ///
-  /// This will auto update month view when user adds events in controller.
-  /// This controller will store all the events. And returns events
-  /// for particular day.
-  ///
-  /// If [controller] is null it will take controller from
-  /// [CalendarControllerProvider.controller].
-  final EventController<T>? controller;
-
-  /// Defines width of default border
-  ///
-  /// Default value is 1
-  ///
-  /// It will take affect only if [showBorder] is set.
-  final double borderSize;
-
-  /// Automated Calculate cellAspectRatio using available vertical space.
-  final bool useAvailableVerticalSpace;
-
-  /// Defines aspect ratio of day cells in month calendar page.
-  final double cellAspectRatio;
-
-  /// Width of month view.
-  ///
-  /// If null is provided then It will take width of closest [MediaQuery].
-  final double? width;
-
-  /// This method will be called when user long press on calendar.
-  final DatePressCallback? onDateLongPress;
-
-  ///   /// Defines the day from which the week starts.
-  ///
-  /// Default value is [WeekDays.monday].
-  final WeekDays startDay;
-
-  /// Style for MontView header.
-  final HeaderStyle headerStyle;
-
-  /// Option for SafeArea.
-  final SafeAreaOption safeAreaOption;
-
-  /// Callback for the Header title
-  final HeaderTitleCallback? onHeaderTitleTap;
-
-  /// Defines scroll physics for a page of a month view.
-  ///
-  /// This can be used to disable the vertical scroll of a page.
-  /// Default value is [ClampingScrollPhysics].
-  final ScrollPhysics pagePhysics;
-
-  /// Defines scroll physics for a page of a month view.
-  ///
-  /// This can be used to disable the horizontal scroll of a page.
-  final ScrollPhysics? pageViewPhysics;
-
-  /// defines that show and hide cell not is in current month
-  final bool hideDaysNotInMonth;
-
-  final bool isDarkMode;
-
-  /// Main [Widget] to display month view.
-  const MonthView({
-    Key? key,
-    this.showBorder = true,
-    this.borderColor = Constants.defaultBorderColor,
-    this.cellBuilder,
-    this.minMonth,
-    this.maxMonth,
-    this.controller,
-    this.initialMonth,
-    this.showWeekends = true,
-    this.borderSize = 1,
-    this.useAvailableVerticalSpace = false,
-    this.cellAspectRatio = 0.55,
-    this.headerBuilder,
-    this.weekDayBuilder,
-    this.pageTransitionDuration = const Duration(milliseconds: 300),
-    this.pageTransitionCurve = Curves.ease,
-    this.width,
-    this.onPageChange,
-    this.onCellTap,
-    this.onEventTap,
-    this.onEventLongTap,
-    this.onDateLongPress,
-    this.startDay = WeekDays.monday,
-    this.headerStringBuilder,
-    this.dateStringBuilder,
-    this.weekDayStringBuilder,
-    this.headerStyle = const HeaderStyle(),
-    this.safeAreaOption = const SafeAreaOption(),
-    this.onHeaderTitleTap,
-    this.pagePhysics = const ClampingScrollPhysics(),
-    this.pageViewPhysics,
-    this.onEventDoubleTap,
-    this.showWeekTileBorder = true,
-    this.hideDaysNotInMonth = false,
-    this.isDarkMode = false,
-  })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
-            "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
-        super(key: key);
-
-  @override
-  MonthViewState<T> createState() => MonthViewState<T>();
-}
-
-/// State of month view.
 class MonthViewState<T extends Object?> extends State<MonthView<T>> {
+  /// State of month view.
   late DateTime _minDate;
   late DateTime _maxDate;
 
@@ -585,6 +371,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     isInMonth,
     hideDaysNotInMonth,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
         date: date,
@@ -597,6 +385,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         onTileTap: widget.onEventTap,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
+        titleColor: colorScheme.onPrimaryContainer,
       );
     }
     return FilledCell<T>(
@@ -683,6 +472,220 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   /// Returns the current visible date in month view.
   DateTime get currentDate => DateTime(_currentDate.year, _currentDate.month);
+}
+
+class MonthView<T extends Object?> extends StatefulWidget {
+  /// A function that returns a [Widget] that determines appearance of
+  /// each cell in month calendar.
+  final CellBuilder<T>? cellBuilder;
+
+  /// Builds month page title.
+  ///
+  /// If there are some configurations that is not directly available
+  /// in [MonthView], override this to create your custom header or reuse,
+  /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
+  /// [WeekPageHeader] widgets provided by this package with your custom
+  /// configurations.
+  ///
+  final DateWidgetBuilder? headerBuilder;
+
+  /// This function will generate DateString in the calendar header.
+  /// Useful for I18n
+  final StringProvider? headerStringBuilder;
+
+  /// This function will generate DayString in month view cell.
+  /// Useful for I18n
+  final StringProvider? dateStringBuilder;
+
+  /// This function will generate WeeDayString in weekday view.
+  /// Useful for I18n
+  /// Ex : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+  final String Function(int)? weekDayStringBuilder;
+
+  /// Called when user changes month.
+  final CalendarPageChangeCallBack? onPageChange;
+
+  /// This function will be called when user taps on month view cell.
+  final CellTapCallback<T>? onCellTap;
+
+  /// This function will be called when user will tap on a single event
+  /// tile inside a cell.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileTapCallback<T>? onEventTap;
+
+  /// This function will be called when user will long press on a single event
+  /// tile inside a cell.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileTapCallback<T>? onEventLongTap;
+
+  /// This method will be called when user double taps on event tile.
+  final TileTapCallback<T>? onEventDoubleTap;
+
+  /// Show weekends or not.
+  /// Default value is true.
+  ///
+  /// Similar to [WeekView],
+  /// If it is false week view will remove weekends from week days
+  /// and events on weekends will not be shown.
+  final bool showWeekends;
+
+  /// Builds the name of the weeks.
+  ///
+  /// Used default week builder if null.
+  ///
+  /// Here day will range from 0 to 6 starting from Monday to Sunday.
+  final WeekDayBuilder? weekDayBuilder;
+
+  /// Determines the lower boundary user can scroll.
+  ///
+  /// If not provided [CalendarConstants.epochDate] is default.
+  final DateTime? minMonth;
+
+  /// Determines upper boundary user can scroll.
+  ///
+  /// If not provided [CalendarConstants.maxDate] is default.
+  final DateTime? maxMonth;
+
+  /// Defines initial display month.
+  ///
+  /// If not provided [DateTime.now] is default date.
+  final DateTime? initialMonth;
+
+  /// Defines whether to show default borders or not.
+  ///
+  /// Default value is true
+  ///
+  /// Use [borderSize] to define width of the border and
+  /// [borderColor] to define color of the border.
+  final bool showBorder;
+
+  /// Defines whether to show default borders or not for weekTile.
+  ///
+  /// Default value is true
+  ///
+  final bool showWeekTileBorder;
+
+  /// Defines width of default border
+  ///
+  /// Default value is [Colors.blue]
+  ///
+  /// It will take affect only if [showBorder] is set.
+  final Color borderColor;
+
+  /// Page transition duration used when user try to change page using
+  /// [MonthView.nextPage] or [MonthView.previousPage]
+  final Duration pageTransitionDuration;
+
+  /// Page transition curve used when user try to change page using
+  /// [MonthView.nextPage] or [MonthView.previousPage]
+  final Curve pageTransitionCurve;
+
+  /// A required parameters that controls events for month view.
+  ///
+  /// This will auto update month view when user adds events in controller.
+  /// This controller will store all the events. And returns events
+  /// for particular day.
+  ///
+  /// If [controller] is null it will take controller from
+  /// [CalendarControllerProvider.controller].
+  final EventController<T>? controller;
+
+  /// Defines width of default border
+  ///
+  /// Default value is 1
+  ///
+  /// It will take affect only if [showBorder] is set.
+  final double borderSize;
+
+  /// Automated Calculate cellAspectRatio using available vertical space.
+  final bool useAvailableVerticalSpace;
+
+  /// Defines aspect ratio of day cells in month calendar page.
+  final double cellAspectRatio;
+
+  /// Width of month view.
+  ///
+  /// If null is provided then It will take width of closest [MediaQuery].
+  final double? width;
+
+  /// This method will be called when user long press on calendar.
+  final DatePressCallback? onDateLongPress;
+
+  ///   /// Defines the day from which the week starts.
+  ///
+  /// Default value is [WeekDays.monday].
+  final WeekDays startDay;
+
+  /// Style for MontView header.
+  final HeaderStyle headerStyle;
+
+  /// Option for SafeArea.
+  final SafeAreaOption safeAreaOption;
+
+  /// Callback for the Header title
+  final HeaderTitleCallback? onHeaderTitleTap;
+
+  /// Defines scroll physics for a page of a month view.
+  ///
+  /// This can be used to disable the vertical scroll of a page.
+  /// Default value is [ClampingScrollPhysics].
+  final ScrollPhysics pagePhysics;
+
+  /// Defines scroll physics for a page of a month view.
+  ///
+  /// This can be used to disable the horizontal scroll of a page.
+  final ScrollPhysics? pageViewPhysics;
+
+  /// defines that show and hide cell not is in current month
+  final bool hideDaysNotInMonth;
+
+  final bool isDarkMode;
+
+  /// Main [Widget] to display month view.
+  const MonthView({
+    Key? key,
+    this.showBorder = true,
+    this.borderColor = Constants.defaultBorderColor,
+    this.cellBuilder,
+    this.minMonth,
+    this.maxMonth,
+    this.controller,
+    this.initialMonth,
+    this.showWeekends = true,
+    this.borderSize = 1,
+    this.useAvailableVerticalSpace = false,
+    this.cellAspectRatio = 0.55,
+    this.headerBuilder,
+    this.weekDayBuilder,
+    this.pageTransitionDuration = const Duration(milliseconds: 300),
+    this.pageTransitionCurve = Curves.ease,
+    this.width,
+    this.onPageChange,
+    this.onCellTap,
+    this.onEventTap,
+    this.onEventLongTap,
+    this.onDateLongPress,
+    this.startDay = WeekDays.monday,
+    this.headerStringBuilder,
+    this.dateStringBuilder,
+    this.weekDayStringBuilder,
+    this.headerStyle = const HeaderStyle(),
+    this.safeAreaOption = const SafeAreaOption(),
+    this.onHeaderTitleTap,
+    this.pagePhysics = const ClampingScrollPhysics(),
+    this.pageViewPhysics,
+    this.onEventDoubleTap,
+    this.showWeekTileBorder = true,
+    this.hideDaysNotInMonth = false,
+    this.isDarkMode = false,
+  })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
+            "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
+        super(key: key);
+
+  @override
+  MonthViewState<T> createState() => MonthViewState<T>();
 }
 
 /// A single month page.

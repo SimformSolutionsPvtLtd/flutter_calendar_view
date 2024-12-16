@@ -19,7 +19,7 @@ class MonthViewWidget extends StatelessWidget {
     return MonthView(
       key: state,
       width: width,
-      isDarkMode: true,
+      isDarkMode: false,
       showWeekends: false,
       useAvailableVerticalSpace: true,
       hideDaysNotInMonth: true,
