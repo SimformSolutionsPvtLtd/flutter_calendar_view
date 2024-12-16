@@ -117,13 +117,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Color filledCellBackgroundColor(BuildContext context) {
     return widget.isDarkMode
         ? Theme.of(context).colorScheme.surfaceContainerLow
-        : Theme.of(context).colorScheme.primaryContainer;
+        : Theme.of(context).colorScheme.surfaceContainerLowest;
   }
 
   Color emptyCellBackgroundColor(BuildContext context) {
     return widget.isDarkMode
         ? Theme.of(context).colorScheme.surfaceContainerHighest
-        : Theme.of(context).colorScheme.surfaceContainerLow;
+        : Theme.of(context).colorScheme.surfaceContainer;
   }
 
   @override
@@ -356,6 +356,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
       headerStyle: headerStyle,
+      isDarkMode: widget.isDarkMode,
     );
   }
 

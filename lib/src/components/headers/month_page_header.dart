@@ -19,10 +19,11 @@ class MonthPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousMonth,
     @Deprecated("Use HeaderStyle to provide icon color")
     Color iconColor = Constants.black,
-    @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
+    // @Deprecated("Use HeaderStyle to provide background color")
+    // Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
+    bool isDarkMode = false,
     HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
           key: key,
@@ -31,11 +32,12 @@ class MonthPageHeader extends CalendarPageHeader {
           onPreviousDay: onPreviousMonth,
           onTitleTapped: onTitleTapped,
           // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
+          // backgroundColor: backgroundColor,
           iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
           headerStyle: headerStyle,
+          isDarkMode: isDarkMode,
         );
 
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>

@@ -70,6 +70,9 @@ class CalendarPageHeader extends StatelessWidget {
   /// Style for Calendar's header
   final HeaderStyle headerStyle;
 
+  /// TODO(Shubham): Add doc comments
+  final bool isDarkMode;
+
   /// Common header for month and day view In this header user can define format
   /// in which date will be displayed by providing [dateStringBuilder] function.
   const CalendarPageHeader({
@@ -86,6 +89,7 @@ class CalendarPageHeader extends StatelessWidget {
     @Deprecated("Use HeaderStyle to provide icon color")
     this.iconColor = Constants.black,
     this.headerStyle = const HeaderStyle(),
+    this.isDarkMode = false,
   })  : assert(
             titleBuilder != null || dateStringBuilder != null,
             'titleBuilder and dateStringBuilder '
@@ -97,8 +101,10 @@ class CalendarPageHeader extends StatelessWidget {
     return Container(
       margin: headerStyle.headerMargin,
       padding: headerStyle.headerPadding,
-      decoration:
-          headerStyle.decoration ?? BoxDecoration(color: backgroundColor),
+      decoration: headerStyle.decoration ??
+          BoxDecoration(
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
       clipBehavior: Clip.antiAlias,
       child: Row(
         mainAxisSize: headerStyle.mainAxisSize,

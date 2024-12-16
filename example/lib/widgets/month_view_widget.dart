@@ -26,6 +26,7 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: false,
       useAvailableVerticalSpace: true,
       hideDaysNotInMonth: true,
+      // headerStyle: HeaderStyle(),
       onEventTap: (event, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
