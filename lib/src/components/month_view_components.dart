@@ -117,6 +117,8 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.hideDaysNotInMonth = true,
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
+
+    ///TODO(Shubham): Remove default
     this.highlightColor = Colors.blue,
     this.onTileTap,
     this.onTileLongTap,

@@ -114,11 +114,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     super.dispose();
   }
 
-  Color getDefaultBackgroundColor(BuildContext context) {
-    debugPrint('IsDark: ${widget.isDarkMode}');
+  Color filledCellBackgroundColor(BuildContext context) {
     return widget.isDarkMode
-        ? Theme.of(context).colorScheme.surfaceDim
+        ? Theme.of(context).colorScheme.surfaceContainerLow
         : Theme.of(context).colorScheme.primaryContainer;
+  }
+
+  Color emptyCellBackgroundColor(BuildContext context) {
+    return widget.isDarkMode
+        ? Theme.of(context).colorScheme.surfaceContainerHighest
+        : Theme.of(context).colorScheme.surfaceContainerLow;
   }
 
   @override
@@ -378,8 +383,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         date: date,
         shouldHighlight: isToday,
         // TODO(Shubham): Update background color
-        backgroundColor:
-            isInMonth ? getDefaultBackgroundColor(context) : Constants.offWhite,
+        backgroundColor: isInMonth
+            ? filledCellBackgroundColor(context)
+            : emptyCellBackgroundColor(context),
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,

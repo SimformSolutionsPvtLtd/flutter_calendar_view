@@ -5,12 +5,20 @@ import 'mobile/mobile_home_page.dart';
 import 'web/web_home_page.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({
+    this.onChangeTheme,
+    super.key,
+  });
+
+  /// Return true for dark mode
+  /// false for light mode
+  final void Function(bool)? onChangeTheme;
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
-      mobileWidget: MobileHomePage(),
+      mobileWidget: MobileHomePage(onChangeTheme: onChangeTheme),
+      // TODO(Shubham): Update dark theme for web
       webWidget: WebHomePage(),
     );
   }

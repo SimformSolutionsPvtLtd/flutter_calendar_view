@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         // themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        themeMode: ThemeMode.system,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         scrollBehavior: ScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.trackpad,
@@ -57,7 +57,12 @@ class _MyAppState extends State<MyApp> {
             PointerDeviceKind.touch,
           },
         ),
-        home: HomePage(),
+        home: HomePage(
+          onChangeTheme: (isDark) {
+            isDarkMode = isDark;
+            setState(() {});
+          },
+        ),
       ),
     );
   }

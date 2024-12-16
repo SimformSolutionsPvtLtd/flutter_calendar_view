@@ -10,7 +10,10 @@ import 'web/web_home_page.dart';
 class MonthViewPageDemo extends StatefulWidget {
   const MonthViewPageDemo({
     super.key,
+    this.isDarkMode = false,
   });
+
+  final bool isDarkMode;
 
   @override
   _MonthViewPageDemoState createState() => _MonthViewPageDemoState();
@@ -29,7 +32,7 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),
-        body: MonthViewWidget(),
+        body: MonthViewWidget(isDarkMode: widget.isDarkMode),
       ),
     );
   }
