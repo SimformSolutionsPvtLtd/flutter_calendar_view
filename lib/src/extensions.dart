@@ -87,11 +87,37 @@ extension DateTimeExtensions on DateTime {
   /// All the dates are week based that means it will return array of size 42
   /// which will contain 6 weeks that is the maximum number of weeks a month
   /// can have.
-  List<DateTime> datesOfMonths({WeekDays startDay = WeekDays.monday}) {
+  ///
+  /// It excludes week if `hideDaysNotInMonth` is set true and
+  /// if all dates in week comes in next month then it will excludes that week.
+  List<DateTime> datesOfMonths({
+    WeekDays startDay = WeekDays.monday,
+    bool hideDaysNotInMonth = false,
+    bool showWeekends = false,
+  }) {
     final monthDays = <DateTime>[];
+    // Start is the first weekday for each week in a month
     for (var i = 1, start = 1; i < 7; i++, start += 7) {
-      monthDays
-          .addAll(DateTime(year, month, start).datesOfWeek(start: startDay));
+      final datesInWeek =
+          DateTime(year, month, start).datesOfWeek(start: startDay);
+      // Check does every date of week belongs to different month
+      final allDatesNotInCurrentMonth = datesInWeek.every((date) {
+        if (showWeekends) {
+          // Include all days
+          return date.month != month;
+        } else {
+          // Exclude weekends (Saturday and Sunday)
+          return date.weekday == DateTime.saturday ||
+              date.weekday == DateTime.sunday ||
+              date.month != month;
+        }
+      });
+
+      // if entire row contains dates of other month then skip it
+      if (hideDaysNotInMonth && allDatesNotInCurrentMonth) {
+        continue;
+      }
+      monthDays.addAll(datesInWeek);
     }
     return monthDays;
   }

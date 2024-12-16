@@ -468,6 +468,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
 
     // Update heights.
     _calculateHeights();
