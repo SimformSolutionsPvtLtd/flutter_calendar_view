@@ -1,3 +1,8 @@
+# [1.4.0](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
+- Adds `showWeekends` flag in month view to hide & show weekends view. 
+  Default is `showWeekends = true` shows all weekdays. [#385](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/385)
+- Events are now hidden for days not in the current month when hideDaysNotInMonth = true
+
 # [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 
 - Fixes full day event position when fullHeaderTitle is empty.

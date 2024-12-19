@@ -514,7 +514,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       itemBuilder: (_, index) {
                         final dates = DateTime(_minDate.year, _minDate.month,
                                 _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(start: widget.startDay);
+                            .datesOfWeek(
+                          start: widget.startDay,
+                          showWeekEnds: widget.showWeekends,
+                        );
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
