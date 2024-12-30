@@ -132,7 +132,13 @@ For month view
 MonthView(
     controller: EventController(),
     // to provide custom UI for month cells.
-    cellBuilder: (date, events, isToday, isInMonth) {
+    cellBuilder: (
+      date, 
+      events, 
+      isToday, 
+      isInMonth, 
+      hideDaysNotInMonth,
+      ) {
         // Return your widget to display as month cell.
         return Container();
     },
