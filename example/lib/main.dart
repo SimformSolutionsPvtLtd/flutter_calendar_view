@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
@@ -11,7 +12,14 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkMode = false;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -20,7 +28,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Calendar Page Demo',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.light(),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         scrollBehavior: ScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.trackpad,
@@ -28,7 +38,9 @@ class MyApp extends StatelessWidget {
             PointerDeviceKind.touch,
           },
         ),
-        home: HomePage(),
+        home: HomePage(
+          onChangeTheme: (isDark) => setState(() => isDarkMode = isDark),
+        ),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
 import '../extension.dart';
 import '../widgets/add_event_form.dart';
 
@@ -12,22 +11,24 @@ class CreateEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: color.surfaceContainerHigh,
         centerTitle: false,
         leading: IconButton(
           onPressed: context.pop,
           icon: Icon(
             Icons.arrow_back,
-            color: AppColors.black,
+            color: color.onSurface,
           ),
         ),
         title: Text(
           event == null ? "Create New Event" : "Update Event",
           style: TextStyle(
-            color: AppColors.black,
+            color: color.onSurface,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
