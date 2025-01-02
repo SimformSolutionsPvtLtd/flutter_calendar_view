@@ -19,8 +19,7 @@ class WeekPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousDay,
     required DateTime startDate,
     required DateTime endDate,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    Color iconColor = Constants.black,
+    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
     Color backgroundColor = Constants.headerBackground,
     StringProvider? headerStringBuilder,
