@@ -166,6 +166,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
+  /// Settings for the divider between the days and the WeekView grid
+  final WeekDaysDividerSettings? weekDaysDividerSettings;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -216,6 +219,8 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
+    this.weekDaysDividerSettings =
+        const WeekDaysDividerSettings(height: 1, thickness: 1),
   }) : super(key: key);
 
   @override
@@ -285,8 +290,13 @@ class _InternalWeekViewPageState<T extends Object?>
             ),
           ),
           Divider(
-            thickness: 1,
-            height: 1,
+            thickness: widget.weekDaysDividerSettings?.thickness,
+            height: widget.weekDaysDividerSettings?.height,
+            color: widget.weekDaysDividerSettings?.color,
+            indent: widget.weekDaysDividerSettings?.autoIndent == true
+                ? widget.timeLineWidth + widget.hourIndicatorSettings.offset
+                : widget.weekDaysDividerSettings?.indent,
+            endIndent: widget.weekDaysDividerSettings?.endIndent,
           ),
           SizedBox(
             width: widget.width,

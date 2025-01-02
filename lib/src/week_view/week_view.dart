@@ -250,6 +250,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Settings for the divider between the days and the WeekView grid
+  final WeekDaysDividerSettings? weekDaysDividerSettings;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -310,6 +313,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
     this.onTimestampTap,
+    this.weekDaysDividerSettings,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -322,7 +326,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
             heightPerMinute > 0, "Height per minute must be greater than 0."),
         assert(
           weekDetectorBuilder == null || onDateLongPress == null,
-          """If you use [weekPressDetectorBuilder] 
+          """If you use [weekPressDetectorBuilder]
           do not provide [onDateLongPress]""",
         ),
         assert(
@@ -576,6 +580,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            weekDaysDividerSettings:
+                                widget.weekDaysDividerSettings,
                           ),
                         );
                       },
