@@ -83,3 +83,26 @@ class LiveTimeIndicatorSettings {
         showBullet: false,
       );
 }
+
+/// Settings for the divider between the days and the WeekView grid
+class WeekDaysDividerSettings {
+  final double thickness;
+  final double height;
+  final Color color;
+  final double indent;
+  final double endIndent;
+  final bool?
+      autoIndent; // If true, the indent will be calculated automatically to match the grid instead of taking the whole width.
+
+  const WeekDaysDividerSettings({
+    this.thickness = 1,
+    this.height = 1,
+    this.color = Colors.black,
+    this.indent = 0,
+    this.endIndent = 0,
+    this.autoIndent = false,
+  })  : assert(thickness >= 0, "Thickness must be greater than or equal to 0."),
+        assert(height >= 0, "Height must be greater than or equal to 0."),
+        assert(indent >= 0, "Indent must be greater than or equal to 0."),
+        assert(endIndent >= 0, "EndIndent must be greater than or equal to 0.");
+}
