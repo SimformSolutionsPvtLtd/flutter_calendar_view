@@ -145,6 +145,7 @@ class DefaultTimeLineMark extends StatelessWidget {
           textAlign: TextAlign.right,
           style: markingStyle ??
               TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 15.0,
               ),
         ),

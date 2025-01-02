@@ -89,6 +89,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Width of week title.
   final double weekTitleWidth;
 
+  /// Background color of week title
+  final Color? weekTitleBackgroundColor;
+
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -166,6 +169,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
+  /// Use this to change background color of week view page
+  final Color? backgroundColor;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -192,6 +198,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.weekTitleWidth,
+    required this.weekTitleBackgroundColor,
     required this.onTileTap,
     required this.onTileLongTap,
     required this.onDateLongPress,
@@ -216,6 +223,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -252,6 +260,8 @@ class _InternalWeekViewPageState<T extends Object?>
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
     return Container(
+      color: widget.backgroundColor ??
+          Theme.of(context).colorScheme.surfaceContainerLowest,
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
       child: Column(
@@ -262,26 +272,30 @@ class _InternalWeekViewPageState<T extends Object?>
         children: [
           SizedBox(
             width: widget.width,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: widget.weekTitleHeight,
-                  width: widget.timeLineWidth +
-                      widget.hourIndicatorSettings.offset,
-                  child: widget.weekNumberBuilder.call(filteredDates[0]),
-                ),
-                ...List.generate(
-                  filteredDates.length,
-                  (index) => SizedBox(
+            child: ColoredBox(
+              color: widget.weekTitleBackgroundColor ??
+                  Theme.of(context).colorScheme.surfaceContainerHigh,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
                     height: widget.weekTitleHeight,
-                    width: widget.weekTitleWidth,
-                    child: widget.weekDayBuilder(
-                      filteredDates[index],
-                    ),
+                    width: widget.timeLineWidth +
+                        widget.hourIndicatorSettings.offset,
+                    child: widget.weekNumberBuilder.call(filteredDates[0]),
                   ),
-                )
-              ],
+                  ...List.generate(
+                    filteredDates.length,
+                    (index) => SizedBox(
+                      height: widget.weekTitleHeight,
+                      width: widget.weekTitleWidth,
+                      child: widget.weekDayBuilder(
+                        filteredDates[index],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Divider(
@@ -419,6 +433,10 @@ class _InternalWeekViewPageState<T extends Object?>
                               (index) => Container(
                                 decoration: widget.showVerticalLine
                                     ? BoxDecoration(
+                                        // To apply different colors to the timeline
+                                        // and cells, use the background color for the timeline.
+                                        // Additionally, set the `color` property here with an alpha value
+                                        // to see horizontal & vertical lines
                                         border: Border(
                                           right: BorderSide(
                                             color: widget
