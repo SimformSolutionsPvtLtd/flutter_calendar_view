@@ -255,17 +255,18 @@ assigned.
 
 Methods provided by `EventController`
 
-| Name            | Parameters                                                   | Description                                               |
-|-----------------|--------------------------------------------------------------|-----------------------------------------------------------|
-| add             | CalendarEventData\<T\> event                                 | Adds one event in controller and rebuilds view.           |
-| addAll          | List\<CalendarEventData\<T\>\> events                        | Adds list of events in controller and rebuilds view.      |
-| remove          | CalendarEventData\<T\> event                                 | Removes an event from controller and rebuilds view.       |
-| removeAll       | List\<CalendarEventData\<T\>\> events                        | Removes all event defined in the list                     |
-| removeWhere     | TestPredicate\<CalendarEventData\<T\>\> test                 | Removes all events for which test returns true.           |
-| update          | CalendarEventData\<T\> event, CalendarEventData\<T\> updated | Updates event with updated event.                         |
-| getFullDayEvent | DateTime date                                                | Returns the list of full day events stored in controller  |
-| updateFilter    | EventFilter\<T\> newFilter                                   | Updates the event filter of the controller.               |
-| getEventsOnDay  | DateTime date                                                | Returns list of events on `date`                          |
+| Name            | Parameters                                                   | Description                                                 |
+|-----------------|--------------------------------------------------------------|-------------------------------------------------------------|
+| add             | CalendarEventData\<T\> event                                 | Adds one event in controller and rebuilds view.             |
+| addAll          | List\<CalendarEventData\<T\>\> events                        | Adds list of events in controller and rebuilds view.        |
+| remove          | CalendarEventData\<T\> event                                 | Removes an event from controller and rebuilds view.         |
+| removeAll       | List\<CalendarEventData\<T\>\> events                        | Removes all event defined in the list and rebuilds the view |
+| clear           |                                                              | Removes events from the controller and rebuilds the view    |
+| removeWhere     | TestPredicate\<CalendarEventData\<T\>\> test                 | Removes all events for which test returns true.             |
+| update          | CalendarEventData\<T\> event, CalendarEventData\<T\> updated | Updates event with updated event.                           |
+| getFullDayEvent | DateTime date                                                | Returns the list of full day events stored in controller    |
+| updateFilter    | EventFilter\<T\> newFilter                                   | Updates the event filter of the controller.                 |
+| getEventsOnDay  | DateTime date                                                | Returns list of events on `date`                            |
 
 Check [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/EventController-class.html) for more info.
 

@@ -113,6 +113,12 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _calendarData.clear();
+
+    notifyListeners();
+  }
+
   /// Removes multiple [event] from this controller.
   void removeWhere(TestPredicate<CalendarEventData<T>> test) {
     _calendarData.removeWhere(test);
@@ -343,6 +349,14 @@ class CalendarData<T extends Object?> {
       }
     }
     return events;
+  }
+
+  /// Remove all events from the controller.
+  void clear() {
+    _fullDayEventList.clear();
+    _rangingEventList.clear();
+    _singleDayEvents.clear();
+    _eventList.clear();
   }
   //#endregion
 }
