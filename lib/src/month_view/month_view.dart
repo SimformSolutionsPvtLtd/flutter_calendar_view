@@ -584,6 +584,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       dateStringBuilder: widget.dateStringBuilder,
       onTileDoubleTap: widget.onEventDoubleTap,
       hideDaysNotInMonth: hideDaysNotInMonth,
+      titleColor: isInMonth
+          ? Theme.of(context).colorScheme.onPrimaryContainer
+          : Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(150),
     );
   }
 
