@@ -163,10 +163,14 @@ extension DateTimeExtensions on DateTime {
 }
 
 extension ColorExtension on Color {
-  Color get accent =>
-      (blue / 2 >= 255 / 2 || red / 2 >= 255 / 2 || green / 2 >= 255 / 2)
-          ? Colors.black
-          : Colors.white;
+  /// TODO(Shubham): Update this getter as it uses `computeLuminance()`
+  /// which is computationally expensive
+  Color get accent {
+    final brightness = ThemeData.estimateBrightnessForColor(this);
+    return brightness == Brightness.light
+        ? Color(0xff626262)
+        : Color(0xfff0f0f0);
+  }
 }
 
 extension MaterialColorExtension on MaterialColor {
