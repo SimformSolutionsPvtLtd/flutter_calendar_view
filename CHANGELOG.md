@@ -6,6 +6,8 @@
 - Adds `hideDaysNotInMonth` argument in `cellBuilder` in readme. [#433](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/433)
 - Fixes `titleColor` of date for `hideDaysNotInMonth: false`.
 - Fixes tap `onTileDoubleTap` & `onTileLongTap` issue for `hideDaysNotInMonth` in month view. [#435](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/435)
+- Fixes `startHour` and `endHour` not updating when rebuilding in week view. [#410](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/410)
+- Fixes issue of header icon `color` property in `IconDataConfig`.
 
 # [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 

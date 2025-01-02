@@ -20,8 +20,7 @@ class DayPageHeader extends CalendarPageHeader {
     VoidCallback? onPreviousDay,
     StringProvider? dateStringBuilder,
     required DateTime date,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    Color iconColor = Constants.black,
+    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background")
     Color backgroundColor = Constants.headerBackground,
     HeaderStyle headerStyle = const HeaderStyle(),

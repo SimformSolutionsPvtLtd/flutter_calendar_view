@@ -83,8 +83,7 @@ class CalendarPageHeader extends StatelessWidget {
     this.secondaryDate,
     @Deprecated("Use HeaderStyle.decoration to provide background")
     this.backgroundColor = Constants.headerBackground,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    this.iconColor = Constants.black,
+    @Deprecated("Use HeaderStyle to provide icon color") this.iconColor,
     this.headerStyle = const HeaderStyle(),
   })  : assert(
             titleBuilder != null || dateStringBuilder != null,
