@@ -570,6 +570,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,
+        onTileDoubleTap: widget.onEventDoubleTap,
+        onTileLongTap: widget.onEventLongTap,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
       );
