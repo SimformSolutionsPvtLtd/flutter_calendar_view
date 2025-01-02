@@ -301,14 +301,6 @@ class _InternalWeekViewPageState<T extends Object?>
           SizedBox(
             width: widget.width,
             child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: widget.hourIndicatorSettings.color,
-                    width: 2,
-                  ),
-                ),
-              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
