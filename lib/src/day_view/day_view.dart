@@ -346,6 +346,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ScrollController get scrollController => _scrollController;
 
   late VoidCallback _reloadCallback;
+  late HeaderStyle headerStyle;
 
   final _scrollConfiguration = EventScrollConfiguration<T>();
 
@@ -368,6 +369,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     );
     _pageController = PageController(initialPage: _currentIndex);
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    headerStyle = widget.headerStyle;
     _assignBuilders();
   }
 
@@ -701,7 +703,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
           jumpToDate(selectedDate);
         }
       },
-      headerStyle: widget.headerStyle,
+      headerStyle: headerStyle,
     );
   }
 
@@ -756,12 +758,24 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
           _currentDate.day + (index - _currentIndex),
         );
         _currentIndex = index;
+        _updateHeaderIcons();
       });
     }
     if (!widget.keepScrollOffset) {
       animateToDuration(widget.startDuration);
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
+  }
+
+  // Hide header icons if end dates are reached
+  void _updateHeaderIcons() {
+    bool setLeftIconToNull = _currentDate == _minDate;
+    bool setRightIconToNull = _currentDate == _maxDate;
+
+    headerStyle = widget.headerStyle.copyWith(
+      setLeftIconConfigToNull: setLeftIconToNull,
+      setRightIconConfigToNull: setRightIconToNull,
+    );
   }
 
   /// Animate to next page

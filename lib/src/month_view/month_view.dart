@@ -243,6 +243,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late VoidCallback _reloadCallback;
 
+  late HeaderStyle headerStyle;
+
   @override
   void initState() {
     super.initState();
@@ -258,7 +260,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     // Initialize page controller to control page actions.
     _pageController = PageController(initialPage: _currentIndex);
-
+    headerStyle = widget.headerStyle;
     _assignBuilders();
   }
 
@@ -514,9 +516,21 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           _currentDate.month + (value - _currentIndex),
         );
         _currentIndex = value;
+        _updateHeaderIcons();
       });
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
+  }
+
+  // Hide header icons if end dates are reached
+  void _updateHeaderIcons() {
+    bool setLeftIconToNull = _currentDate == _minDate;
+    bool setRightIconToNull = _currentDate == _maxDate;
+
+    headerStyle = widget.headerStyle.copyWith(
+      setLeftIconConfigToNull: setLeftIconToNull,
+      setRightIconConfigToNull: setRightIconToNull,
+    );
   }
 
   /// Default month view header builder
@@ -541,7 +555,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       date: date,
       dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
-      headerStyle: widget.headerStyle,
+      headerStyle: headerStyle,
     );
   }
 

@@ -101,6 +101,36 @@ class HeaderStyle {
     this.rightIconPadding,
   });
 
+  HeaderStyle copyWith({
+    TextStyle? headerTextStyle,
+    EdgeInsets? headerMargin,
+    EdgeInsets? headerPadding,
+    TextAlign? titleAlign,
+    BoxDecoration? decoration,
+    MainAxisAlignment? mainAxisAlignment,
+    IconDataConfig? leftIconConfig,
+    bool setLeftIconConfigToNull = false,
+    IconDataConfig? rightIconConfig,
+    bool setRightIconConfigToNull = false,
+    MainAxisSize? mainAxisSize,
+  }) {
+    return HeaderStyle(
+      headerTextStyle: headerTextStyle ?? this.headerTextStyle,
+      headerMargin: headerMargin ?? this.headerMargin,
+      headerPadding: headerPadding ?? this.headerPadding,
+      titleAlign: titleAlign ?? this.titleAlign,
+      decoration: decoration ?? this.decoration,
+      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
+      leftIconConfig: setLeftIconConfigToNull
+          ? null
+          : (leftIconConfig ?? this.leftIconConfig),
+      rightIconConfig: setRightIconConfigToNull
+          ? null
+          : (rightIconConfig ?? this.rightIconConfig),
+      mainAxisSize: mainAxisSize ?? this.mainAxisSize,
+    );
+  }
+
   /// Create a `HeaderStyle` of calendar view
   ///
   /// Used when you need to use same configs for left and right icons.
