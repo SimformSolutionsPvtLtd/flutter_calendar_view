@@ -38,6 +38,7 @@ class DayViewWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => DetailsPage(
               event: events.first,
+              date: date,
             ),
           ),
         );
