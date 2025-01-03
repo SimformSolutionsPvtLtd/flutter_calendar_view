@@ -65,29 +65,25 @@ extension DateTimeExtensions on DateTime {
     // adding 1 in index. So, new formula with WeekDays is,
     //    difference = (weekdays - (start.index + 1))%7
 
-    // final startDay =
-    //     DateTime(year, month, day - (weekday - start.index - 1) % 7);
-    // // Generate weekdays with weekends or without weekends
-    // final days = List.generate(
-    //   7,
-    //   (index) => DateTime(startDay.year, startDay.month, startDay.day + index),
-    // )
-    //     .where(
-    //       (date) =>
-    //           showWeekEnds ||
-    //           (date.weekday != DateTime.saturday &&
-    //               date.weekday != DateTime.sunday),
-    //     )
-    //     .toList();
+    // Generate weekdays with weekends or without weekends
+    final newDays = <DateTime>[];
+    var daysToGenerate = showThreeDays ? 3 : 7;
+    var i = 0;
+    final startDate = DateTime(year, month, day);
 
-    // Three days view
-    // final days = showThreeDays ? day : day - (weekday - start.index - 1) % 7;
-    // final startDay = DateTime(year, month, days);
-    //
-    // return List.generate(showThreeDays ? 3 : 7, (index) {
-    //   return startDay.add(Duration(days: index));
-    // });
-    return days;
+    while (i < daysToGenerate) {
+      final nextDay = startDate.add(Duration(days: i));
+      if (showWeekEnds) {
+        newDays.add(nextDay);
+        i++;
+      } else if (nextDay.weekday != DateTime.saturday &&
+          nextDay.weekday != DateTime.sunday) {
+        newDays.add(nextDay);
+        i++;
+      }
+    }
+
+    return newDays;
   }
 
   /// Returns the first date of week containing the current date

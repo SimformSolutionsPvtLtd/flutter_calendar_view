@@ -528,15 +528,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(
-                          start: widget.startDay,
-                          showWeekEnds: widget.showWeekends,
-                        );
+                        // final dates = DateTime(_minDate.year, _minDate.month,
+                        //         _minDate.day + (index * DateTime.daysPerWeek))
+                        //     .datesOfWeek(
+                        //   start: widget.startDay,
+                        //   showWeekEnds: widget.showWeekends,
+                        // );
 
                         // TODO(Shubham): Three days view
-                        // final dates = _getDatesOnWeek(index);
+                        final dates = _getDatesOnWeek(index);
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
