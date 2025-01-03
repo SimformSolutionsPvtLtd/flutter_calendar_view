@@ -36,13 +36,26 @@ extension DateTimeExtensions on DateTime {
       .abs();
 
   /// Gets difference of weeks between [date] and calling object.
-  int getWeekDifference(DateTime date, {WeekDays start = WeekDays.monday}) =>
-      (firstDayOfWeek(start: start)
-                  .difference(date.firstDayOfWeek(start: start))
-                  .inDays
-                  .abs() /
-              7)
-          .ceil();
+  int getWeekDifference(
+    DateTime date, {
+    WeekDays start = WeekDays.monday,
+    bool isThreeDaysView = false,
+  }) {
+    final thisFirstDay = firstDayOfWeek(
+      start: start,
+      isThreeDaysView: isThreeDaysView,
+    );
+    final otherFirstDay = date.firstDayOfWeek(
+      start: start,
+      isThreeDaysView: isThreeDaysView,
+    );
+
+    final daysDifference = thisFirstDay.difference(otherFirstDay).inDays.abs();
+
+    // Calculate the difference in weeks or 3-day blocks
+    final divisor = isThreeDaysView ? 3 : 7;
+    return (daysDifference / divisor).ceil();
+  }
 
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.
@@ -55,6 +68,7 @@ extension DateTimeExtensions on DateTime {
   List<DateTime> datesOfWeek({
     WeekDays start = WeekDays.monday,
     bool showWeekEnds = true,
+    bool showThreeDays = false,
   }) {
     // Here %7 ensure that we do not subtract >6 and <0 days.
     // Initial formula is,
@@ -63,31 +77,49 @@ extension DateTimeExtensions on DateTime {
     // But in WeekDays enum index ranges from 0 to 6 so we are
     // adding 1 in index. So, new formula with WeekDays is,
     //    difference = (weekdays - (start.index + 1))%7
-    //
-    final startDay =
-        DateTime(year, month, day - (weekday - start.index - 1) % 7);
+
     // Generate weekdays with weekends or without weekends
-    final days = List.generate(
-      7,
-      (index) => DateTime(startDay.year, startDay.month, startDay.day + index),
-    )
-        .where(
-          (date) =>
-              showWeekEnds ||
-              (date.weekday != DateTime.saturday &&
-                  date.weekday != DateTime.sunday),
-        )
-        .toList();
-    return days;
+
+    final days = showThreeDays ? day : day - (weekday - start.index - 1) % 7;
+    final startDay = DateTime(year, month, days);
+    // TODO(Shubham): Update for hide/show weekends
+    return List.generate(
+      showThreeDays ? 3 : 7,
+      (index) => startDay.add(Duration(days: index)),
+    );
   }
 
   /// Returns the first date of week containing the current date
-  DateTime firstDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      DateTime(year, month, day - ((weekday - start.index - 1) % 7));
+  DateTime firstDayOfWeek({
+    WeekDays start = WeekDays.monday,
+    bool isThreeDaysView = false,
+  }) =>
+      DateTime(
+        year,
+        month,
+        day - ((weekday - start.index - 1) % (isThreeDaysView ? 3 : 7)),
+      );
 
   /// Returns the last date of week containing the current date
-  DateTime lastDayOfWeek({WeekDays start = WeekDays.monday}) =>
-      DateTime(year, month, day + (6 - (weekday - start.index - 1) % 7));
+  DateTime lastDayOfWeek({
+    WeekDays start = WeekDays.monday,
+    bool isThreeDaysView = false,
+  }) {
+    if (isThreeDaysView) {
+      // Calculate the current weekday offset (based on the start day)
+      final offset = (weekday - start.index) % 7;
+
+      // For a 3-day view, calculate the remaining days to the end of the 3-day block
+      final daysToAdd =
+          (3 - offset % 3) % 3; // Ensures wrap-around within 3-day blocks
+      final lastDay = DateTime(year, month, day + daysToAdd);
+      debugPrint('Last Day for 3-Day View: $lastDay');
+      debugPrint('Last Day: ${lastDay}');
+      return lastDay;
+    } else {
+      return DateTime(year, month, day + (6 - (weekday - start.index - 1) % 7));
+    }
+  }
 
   /// Returns list of all dates of [month].
   /// All the dates are week based that means it will return array of size 42

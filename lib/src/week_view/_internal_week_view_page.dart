@@ -139,6 +139,10 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to display quarter hours
   final bool showQuarterHours;
 
+  /// Enable this flag to show 3-days view default is false.
+  /// i.e 7 days view
+  final bool showThreeDaysView;
+
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
@@ -205,6 +209,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.showWeekDayAtBottom,
     required this.showHalfHours,
     required this.showQuarterHours,
+    required this.showThreeDaysView,
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.endHour,
