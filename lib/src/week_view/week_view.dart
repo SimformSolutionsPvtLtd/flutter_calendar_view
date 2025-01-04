@@ -468,6 +468,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -477,6 +479,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     // Update builders and callbacks
     _assignBuilders();
+
+    if (widget.scrollOffset != oldWidget.scrollOffset) {
+      _lastScrollOffset = widget.scrollOffset;
+      _scrollController.jumpTo(widget.scrollOffset);
+    }
   }
 
   @override

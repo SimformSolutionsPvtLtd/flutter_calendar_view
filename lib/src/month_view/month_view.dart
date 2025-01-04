@@ -570,6 +570,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,
+        onTileDoubleTap: widget.onEventDoubleTap,
+        onTileLongTap: widget.onEventLongTap,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
       );
@@ -584,6 +586,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       dateStringBuilder: widget.dateStringBuilder,
       onTileDoubleTap: widget.onEventDoubleTap,
       hideDaysNotInMonth: hideDaysNotInMonth,
+      titleColor: isInMonth
+          ? Theme.of(context).colorScheme.onPrimaryContainer
+          : Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(150),
     );
   }
 
@@ -721,7 +726,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         itemBuilder: (context, index) {
           // Hide events if `hideDaysNotInMonth` true
           final events =
-              hideDaysNotInMonth & (monthDays[index].month != date.month)
+              hideDaysNotInMonth && (monthDays[index].month != date.month)
                   ? <CalendarEventData<T>>[]
                   : controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(

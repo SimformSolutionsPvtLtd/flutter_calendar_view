@@ -43,9 +43,35 @@ List<CalendarEventData> _events = [
     endTime: DateTime(_now.year, _now.month, _now.day, 22),
   ),
   CalendarEventData(
+    date: _now.subtract(Duration(days: 3)),
+    recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
+      startDate: _now.subtract(Duration(days: 3)),
+    ),
+    title: 'Leetcode Contest',
+    description: 'Give leetcode contest',
+  ),
+  CalendarEventData(
+    date: _now.subtract(Duration(days: 3)),
+    recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
+      startDate: _now.subtract(Duration(days: 3)),
+      frequency: RepeatFrequency.daily,
+      recurrenceEndOn: RecurrenceEnd.after,
+      occurrences: 5,
+    ),
+    title: 'Physics test prep',
+    description: 'Prepare for physics test',
+  ),
+  CalendarEventData(
     date: _now.add(Duration(days: 1)),
     startTime: DateTime(_now.year, _now.month, _now.day, 18),
     endTime: DateTime(_now.year, _now.month, _now.day, 19),
+    recurrenceSettings: RecurrenceSettings(
+      startDate: _now,
+      endDate: _now.add(Duration(days: 5)),
+      frequency: RepeatFrequency.daily,
+      recurrenceEndOn: RecurrenceEnd.after,
+      occurrences: 5,
+    ),
     title: "Wedding anniversary",
     description: "Attend uncle's wedding anniversary.",
   ),

@@ -14,7 +14,7 @@ class WeekViewWidget extends StatelessWidget {
     return WeekView(
       key: state,
       width: width,
-      showWeekends: false,
+      showWeekends: true,
       showLiveTimeLineInAllDays: true,
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,
@@ -34,6 +34,7 @@ class WeekViewWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => DetailsPage(
               event: events.first,
+              date: date,
             ),
           ),
         );
