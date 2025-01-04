@@ -227,6 +227,9 @@ class _InternalWeekViewPageState<T extends Object?>
     extends State<InternalWeekViewPage<T>> {
   late ScrollController scrollController;
 
+  late int startHour;
+  late int endHour;
+
   @override
   void initState() {
     super.initState();
@@ -234,6 +237,9 @@ class _InternalWeekViewPageState<T extends Object?>
       initialScrollOffset: widget.lastScrollOffset,
     );
     scrollController.addListener(_scrollControllerListener);
+
+    startHour = widget.startHour;
+    endHour = widget.endHour;
   }
 
   @override
@@ -246,6 +252,13 @@ class _InternalWeekViewPageState<T extends Object?>
 
   void _scrollControllerListener() {
     widget.scrollListener(scrollController);
+  }
+
+  @override
+  void didUpdateWidget(InternalWeekViewPage<T> oldWidget) {
+    startHour = widget.startHour;
+    endHour = widget.endHour;
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -368,8 +381,8 @@ class _InternalWeekViewPageState<T extends Object?>
                         dashSpaceWidth:
                             widget.hourIndicatorSettings.dashSpaceWidth,
                         emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
-                        startHour: widget.startHour,
-                        endHour: widget.endHour,
+                        startHour: startHour,
+                        endHour: endHour,
                       ),
                     ),
                     if (widget.showHalfHours)
@@ -451,13 +464,13 @@ class _InternalWeekViewPageState<T extends Object?>
                                       eventTileBuilder: widget.eventTileBuilder,
                                       scrollNotifier:
                                           widget.scrollConfiguration,
-                                      startHour: widget.startHour,
+                                      startHour: startHour,
                                       events: widget.controller.getEventsOnDay(
                                         filteredDates[index],
                                         includeFullDayEvents: false,
                                       ),
                                       heightPerMinute: widget.heightPerMinute,
-                                      endHour: widget.endHour,
+                                      endHour: endHour,
                                     ),
                                   ],
                                 ),
@@ -473,7 +486,7 @@ class _InternalWeekViewPageState<T extends Object?>
                       height: widget.height,
                       timeLineOffset: widget.timeLineOffset,
                       timeLineBuilder: widget.timeLineBuilder,
-                      startHour: widget.startHour,
+                      startHour: startHour,
                       showHalfHours: widget.showHalfHours,
                       showQuarterHours: widget.showQuarterHours,
                       liveTimeIndicatorSettings:
@@ -490,7 +503,7 @@ class _InternalWeekViewPageState<T extends Object?>
                         height: widget.height,
                         heightPerMinute: widget.heightPerMinute,
                         timeLineWidth: widget.timeLineWidth,
-                        startHour: widget.startHour,
+                        startHour: startHour,
                         endHour: widget.endHour,
                       ),
                   ],

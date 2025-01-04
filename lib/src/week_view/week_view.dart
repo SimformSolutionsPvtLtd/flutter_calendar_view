@@ -471,6 +471,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _startHour = widget.startHour;
     _endHour = widget.endHour;
 
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
+
     // Update heights.
     _calculateHeights();
 
