@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
-import '../constants.dart';
 import '../enumerations.dart';
 import '../extensions.dart';
 import '../typedefs.dart';
@@ -23,6 +22,8 @@ class DefaultPressDetector extends StatelessWidget {
     this.onDateTap,
     this.onDateLongPress,
     this.startHour = 0,
+    required this.padding,
+    required this.endHour,
   });
 
   final DateTime date;
@@ -33,11 +34,13 @@ class DefaultPressDetector extends StatelessWidget {
   final DateTapCallback? onDateTap;
   final DatePressCallback? onDateLongPress;
   final int startHour;
+  final int endHour;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
-    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+    final slots = ((endHour - startHour) * 60) ~/ minuteSlotSize.minutes;
 
     return SizedBox(
       height: height,
@@ -46,10 +49,10 @@ class DefaultPressDetector extends StatelessWidget {
         children: [
           for (int i = 0; i < slots; i++)
             Positioned(
-              top: heightPerSlot * i,
+              top: padding.top + heightPerSlot * i,
               left: 0,
               right: 0,
-              bottom: height - (heightPerSlot * (i + 1)),
+              bottom: height - (heightPerSlot * (i + 1)) - padding.bottom,
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onLongPress: () => onDateLongPress?.call(
