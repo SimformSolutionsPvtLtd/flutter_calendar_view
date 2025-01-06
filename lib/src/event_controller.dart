@@ -628,6 +628,7 @@ class CalendarData<T extends Object?> {
     _rangingEventList.clear();
     _singleDayEvents.clear();
     _eventList.clear();
+    _recurringEventsList.clear();
   }
   //#endregion
 }
