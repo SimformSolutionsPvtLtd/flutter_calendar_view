@@ -1,3 +1,11 @@
+# [2.0.0 - Unreleased]
+
+- Adds flag `showEndHours` to show start and end time. [#267](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/267)
+  - Introduced 2 new typedefs `TimeLineTimeBuilder` and `TimeStringBuilder`.
+###  Breaking Changes
+- Use `TimeLineTimeBuilder` instead of `DateWidgetBuilder` to show time widget in timer line for `WeekView` and `DayView`.
+- User `TimeStringBuilder` instead of `StringProvider` to get the time string in time line for `WeekView` and `DayView`.
+
 # [1.4.0](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 - Adds `showWeekends` flag in month view to hide & show weekends view. 
   Default is `showWeekends = true` shows all weekdays. [#385](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/385)

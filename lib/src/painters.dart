@@ -47,6 +47,10 @@ class HourLinePainter extends CustomPainter {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  final bool showStartHour;
+  final bool showEndHour;
+  final EdgeInsets padding;
+
   /// Paints 24 hour lines.
   HourLinePainter({
     required this.lineColor,
@@ -61,17 +65,25 @@ class HourLinePainter extends CustomPainter {
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    required this.padding,
+    required this.showEndHour,
+    required this.showStartHour,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final startOffset = padding.top;
     final dx = offset + emulateVerticalOffsetBy;
     final paint = Paint()
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
-    for (var i = startHour + 1; i < endHour; i++) {
-      final dy = (i - startHour) * minuteHeight * 60;
+    final start = startHour + (showStartHour ? 0 : 1);
+    final end = endHour + (showEndHour ? 1 : 0);
+
+    for (var i = start; i < end; i++) {
+      final dy = startOffset + ((i - startHour) * minuteHeight * 60);
+
       if (lineStyle == LineStyle.dashed) {
         var startX = dx;
         while (startX < size.width) {
@@ -84,6 +96,7 @@ class HourLinePainter extends CustomPainter {
       }
     }
 
+    // Make separate painter for this.
     if (showVerticalLine) {
       if (lineStyle == LineStyle.dashed) {
         var startY = 0.0;
@@ -138,6 +151,10 @@ class HalfHourLinePainter extends CustomPainter {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  final bool showStartHour;
+  final bool showEndHour;
+  final EdgeInsets padding;
+
   /// Paint half hour lines
   HalfHourLinePainter({
     required this.lineColor,
@@ -149,16 +166,23 @@ class HalfHourLinePainter extends CustomPainter {
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
     this.endHour = Constants.hoursADay,
+    required this.showStartHour,
+    required this.showEndHour,
+    required this.padding,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final startOffset = padding.top;
+
     final paint = Paint()
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
     for (var i = startHour; i < endHour; i++) {
-      final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
+      final dy = (i - startHour) * minuteHeight * 60 +
+          (minuteHeight * 30) +
+          startOffset;
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
         while (startX < size.width) {
@@ -205,6 +229,10 @@ class QuarterHourLinePainter extends CustomPainter {
   /// Line dash space width when using the [LineStyle.dashed] style
   final double dashSpaceWidth;
 
+  final bool showStartHour;
+  final bool showEndHour;
+  final EdgeInsets padding;
+
   /// Paint quarter hour lines
   QuarterHourLinePainter({
     required this.lineColor,
@@ -214,17 +242,22 @@ class QuarterHourLinePainter extends CustomPainter {
     required this.lineStyle,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
+    required this.padding,
+    required this.showEndHour,
+    required this.showStartHour,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final startOffset = padding.top;
+
     final paint = Paint()
       ..color = lineColor
       ..strokeWidth = lineHeight;
 
     for (var i = 0; i < Constants.hoursADay; i++) {
-      final dy1 = i * minuteHeight * 60 + (minuteHeight * 15);
-      final dy2 = i * minuteHeight * 60 + (minuteHeight * 45);
+      final dy1 = i * minuteHeight * 60 + (minuteHeight * 15) + startOffset;
+      final dy2 = i * minuteHeight * 60 + (minuteHeight * 45) + startOffset;
 
       if (lineStyle == LineStyle.dashed) {
         var startX = offset;
@@ -283,6 +316,8 @@ class CurrentTimeLinePainter extends CustomPainter {
   /// Width of time backgroud view.
   final double timeBackgroundViewWidth;
 
+  final EdgeInsets padding;
+
   /// Paints a single horizontal line at [offset].
   CurrentTimeLinePainter({
     required this.showBullet,
@@ -294,13 +329,16 @@ class CurrentTimeLinePainter extends CustomPainter {
     required this.showTime,
     required this.showTimeBackgroundView,
     required this.timeBackgroundViewWidth,
+    required this.padding,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final top = offset.dy + padding.top;
+
     canvas.drawLine(
-      Offset(offset.dx - (showBullet ? 0 : 8), offset.dy),
-      Offset(size.width, offset.dy),
+      Offset(offset.dx - (showBullet ? 0 : 8), top),
+      Offset(size.width, top),
       Paint()
         ..color = color
         ..strokeWidth = height,
@@ -308,7 +346,7 @@ class CurrentTimeLinePainter extends CustomPainter {
 
     if (showBullet) {
       canvas.drawCircle(
-          Offset(offset.dx, offset.dy), bulletRadius, Paint()..color = color);
+          Offset(offset.dx, top), bulletRadius, Paint()..color = color);
     }
 
     if (showTimeBackgroundView) {
@@ -316,7 +354,7 @@ class CurrentTimeLinePainter extends CustomPainter {
         RRect.fromRectAndRadius(
           Rect.fromLTWH(
             max(3, offset.dx - 68),
-            offset.dy - 11,
+            top - 11,
             timeBackgroundViewWidth,
             24,
           ),
@@ -341,7 +379,7 @@ class CurrentTimeLinePainter extends CustomPainter {
         ),
       )
         ..layout()
-        ..paint(canvas, Offset(offset.dx - 62, offset.dy - 6));
+        ..paint(canvas, Offset(offset.dx - 62, top - 6));
     }
   }
 
