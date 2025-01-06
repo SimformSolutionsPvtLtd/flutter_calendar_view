@@ -142,11 +142,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
               child: Text(
                 dateStringBuilder?.call(date) ?? "${date.day}",
                 style: TextStyle(
-                  color: shouldHighlight
-                      ? highlightedTitleColor
-                      : isInMonth
-                          ? titleColor
-                          : titleColor.withOpacity(0.4),
+                  color: shouldHighlight ? highlightedTitleColor : titleColor,
                   fontSize: 12,
                 ),
               ),

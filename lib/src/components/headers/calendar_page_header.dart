@@ -17,10 +17,16 @@ class CalendarPageHeader extends StatelessWidget {
   /// This will be ignored if right icon is provided in [headerStyle].
   final VoidCallback? onNextDay;
 
+  /// Hide & show right icon
+  final bool showNextIcon;
+
   /// When user taps on left arrow.
   ///
   /// This will be ignored if left icon is provided in [headerStyle].
   final VoidCallback? onPreviousDay;
+
+  /// Hide & show left icon
+  final bool showPreviousIcon;
 
   /// When user taps on title.
   ///
@@ -78,13 +84,14 @@ class CalendarPageHeader extends StatelessWidget {
     this.dateStringBuilder,
     this.titleBuilder,
     this.onNextDay,
+    this.showNextIcon = true,
     this.onTitleTapped,
     this.onPreviousDay,
+    this.showPreviousIcon = true,
     this.secondaryDate,
     @Deprecated("Use HeaderStyle.decoration to provide background")
     this.backgroundColor = Constants.headerBackground,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    this.iconColor = Constants.black,
+    @Deprecated("Use HeaderStyle to provide icon color") this.iconColor,
     this.headerStyle = const HeaderStyle(),
   })  : assert(
             titleBuilder != null || dateStringBuilder != null,
@@ -105,22 +112,29 @@ class CalendarPageHeader extends StatelessWidget {
         mainAxisAlignment: headerStyle.mainAxisAlignment,
         children: [
           if (headerStyle.leftIconVisible && headerStyle.leftIconConfig != null)
-            headerStyle.leftIconConfig!.icon?.call(context) ??
-                IconButton(
-                  onPressed: onPreviousDay,
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  padding: headerStyle.leftIconPadding ??
-                      headerStyle.leftIconConfig!.padding,
-                  icon: headerStyle.leftIcon ??
-                      Icon(
-                        Icons.chevron_left,
-                        size: headerStyle.leftIconConfig!.size,
-                        color: iconColor ?? headerStyle.leftIconConfig!.color,
-                      ),
-                ),
+            AbsorbPointer(
+              absorbing: !showPreviousIcon,
+              child: Opacity(
+                opacity: showPreviousIcon ? 1 : 0,
+                child: headerStyle.leftIconConfig!.icon?.call(context) ??
+                    IconButton(
+                      onPressed: onPreviousDay,
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      padding: headerStyle.leftIconPadding ??
+                          headerStyle.leftIconConfig!.padding,
+                      icon: headerStyle.leftIcon ??
+                          Icon(
+                            Icons.chevron_left,
+                            size: headerStyle.leftIconConfig!.size,
+                            color:
+                                iconColor ?? headerStyle.leftIconConfig!.color,
+                          ),
+                    ),
+              ),
+            ),
           Expanded(
             child: titleBuilder != null
                 ? DefaultTextStyle.merge(
@@ -143,21 +157,29 @@ class CalendarPageHeader extends StatelessWidget {
           ),
           if (headerStyle.rightIconVisible &&
               headerStyle.rightIconConfig != null)
-            headerStyle.rightIconConfig!.icon?.call(context) ??
-                IconButton(
-                  onPressed: onNextDay,
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  padding: headerStyle.rightIconPadding,
-                  icon: headerStyle.rightIcon ??
-                      Icon(
-                        Icons.chevron_right,
-                        size: headerStyle.rightIconConfig?.size,
-                        color: iconColor ?? headerStyle.rightIconConfig?.color,
-                      ),
-                ),
+            AbsorbPointer(
+              absorbing: !showNextIcon,
+              child: Opacity(
+                opacity: showNextIcon ? 1 : 0,
+                child: headerStyle.rightIconConfig!.icon?.call(context) ??
+                    IconButton(
+                      onPressed: onNextDay,
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      padding: headerStyle.rightIconPadding ??
+                          headerStyle.rightIconConfig!.padding,
+                      icon: headerStyle.rightIcon ??
+                          Icon(
+                            Icons.chevron_right,
+                            size: headerStyle.rightIconConfig?.size,
+                            color:
+                                iconColor ?? headerStyle.rightIconConfig?.color,
+                          ),
+                    ),
+              ),
+            ),
         ],
       ),
     );

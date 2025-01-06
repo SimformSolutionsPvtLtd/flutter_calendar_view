@@ -15,10 +15,11 @@ class MonthPageHeader extends CalendarPageHeader {
   const MonthPageHeader({
     Key? key,
     VoidCallback? onNextMonth,
+    bool showNextIcon = true,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousMonth,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    Color iconColor = Constants.black,
+    bool showPreviousIcon = true,
+    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
     Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
@@ -28,7 +29,9 @@ class MonthPageHeader extends CalendarPageHeader {
           key: key,
           date: date,
           onNextDay: onNextMonth,
+          showNextIcon: showNextIcon,
           onPreviousDay: onPreviousMonth,
+          showPreviousIcon: showPreviousIcon,
           onTitleTapped: onTitleTapped,
           // ignore_for_file: deprecated_member_use_from_same_package
           backgroundColor: backgroundColor,
