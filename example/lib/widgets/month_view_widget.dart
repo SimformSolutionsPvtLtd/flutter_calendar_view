@@ -21,7 +21,13 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: true,
       startDay: WeekDays.friday,
       useAvailableVerticalSpace: true,
-      onEventTap: (event, date) {
+      onEventTap: (
+        event,
+        date, {
+        tapDetails,
+        longPressDetails,
+        doubleTapDetails,
+      }) {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => DetailsPage(
@@ -31,7 +37,13 @@ class MonthViewWidget extends StatelessWidget {
           ),
         );
       },
-      onEventLongTap: (event, date) {
+      onEventLongTap: (
+        event,
+        date, {
+        tapDetails,
+        longPressDetails,
+        doubleTapDetails,
+      }) {
         SnackBar snackBar = SnackBar(content: Text("on LongTap"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
