@@ -53,8 +53,29 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// This function will only work if [cellBuilder] is null.
   final TileTapCallback<T>? onEventLongTap;
 
-  /// This method will be called when user double taps on event tile.
+  /// This function will be called when user will double tap on a single event
+  /// tile inside a cell.
+  ///
+  /// This function will only work if [cellBuilder] is null.
   final TileTapCallback<T>? onEventDoubleTap;
+
+  /// This function will be called when user will tap on a single event
+  /// tile inside a cell and gives additional details offset.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileTapDetailsCallback<T>? onEventTapDetails;
+
+  /// This function will be called when user will long press on a single event
+  /// tile inside a cell and gives additional details offset.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileLongTapDetailsCallback<T>? onEventLongTapDetails;
+
+  /// This function will be called when user will double tap on a single event
+  /// tile inside a cell and gives additional details offset.
+  ///
+  /// This function will only work if [cellBuilder] is null.
+  final TileDoubleTapDetailsCallback<T>? onEventDoubleTapDetails;
 
   /// Show weekends or not.
   /// Default value is true.
@@ -192,7 +213,10 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.onPageChange,
     this.onCellTap,
     this.onEventTap,
+    this.onEventTapDetails,
     this.onEventLongTap,
+    this.onEventLongTapDetails,
+    this.onEventDoubleTapDetails,
     this.onDateLongPress,
     this.startDay = WeekDays.monday,
     this.headerStringBuilder,
@@ -574,6 +598,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         onTileTap: widget.onEventTap,
         onTileDoubleTap: widget.onEventDoubleTap,
         onTileLongTap: widget.onEventLongTap,
+        onTileTapDetails: widget.onEventTapDetails,
+        onTileDoubleTapDetails: widget.onEventDoubleTapDetails,
+        onTileLongTapDetails: widget.onEventLongTapDetails,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
       );
@@ -585,6 +612,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       events: events,
       onTileTap: widget.onEventTap,
       onTileLongTap: widget.onEventLongTap,
+      onTileTapDetails: widget.onEventTapDetails,
+      onTileDoubleTapDetails: widget.onEventDoubleTapDetails,
+      onTileLongTapDetails: widget.onEventLongTapDetails,
       dateStringBuilder: widget.dateStringBuilder,
       onTileDoubleTap: widget.onEventDoubleTap,
       hideDaysNotInMonth: hideDaysNotInMonth,

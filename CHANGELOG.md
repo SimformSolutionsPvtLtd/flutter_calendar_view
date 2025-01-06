@@ -1,6 +1,7 @@
 # [1.4.1 - Unreleased]
 
 - Adds clear method to `EventController`.
+- Adds `onEventTapDetails`, `onEventDoubleTapDetails` & `onEventLongTapDetails` gesture recognizers to get tap details. [#390](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/390)
 
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 
