@@ -685,7 +685,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       date: _currentDate,
       dateStringBuilder: widget.dateStringBuilder,
       onNextDay: nextPage,
+      showNextIcon: date != _maxDate,
       onPreviousDay: previousPage,
+      showPreviousIcon: date != _minDate,
       onTitleTapped: () async {
         if (widget.onHeaderTitleTap != null) {
           widget.onHeaderTitleTap!(date);

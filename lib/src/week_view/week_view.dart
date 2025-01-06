@@ -836,7 +836,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       startDate: _currentStartDate,
       endDate: _currentEndDate,
       onNextDay: nextPage,
+      showNextIcon: endDate != _maxDate,
       onPreviousDay: previousPage,
+      showPreviousIcon: startDate != _minDate,
       onTitleTapped: () async {
         if (widget.onHeaderTitleTap != null) {
           widget.onHeaderTitleTap!(startDate);
