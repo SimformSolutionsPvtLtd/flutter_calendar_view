@@ -137,8 +137,8 @@ class HeaderStyle {
 
 /// Defines the data for icons used in calendar_view.
 class IconDataConfig {
-  /// Color of the default Icon.
-  final Color color;
+  /// Color of the Icon.
+  final Color? color;
 
   /// Size of the default Icon.
   final double size;
@@ -164,7 +164,7 @@ class IconDataConfig {
 
   /// Defines the data for icons used in calendar_view.
   const IconDataConfig({
-    this.color = Colors.black,
+    this.color,
     this.size = 30,
     this.padding = const EdgeInsets.all(10),
     this.icon,

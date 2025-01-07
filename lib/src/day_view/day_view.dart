@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
 import '../constants.dart';
+import '../extensions.dart';
 import '../painters.dart';
 import '_internal_day_view_page.dart';
 
@@ -193,7 +194,7 @@ class DayView<T extends Object?> extends StatefulWidget {
   final ScrollPhysics? pageViewPhysics;
 
   /// Style for DayView header.
-  final HeaderStyle headerStyle;
+  final HeaderStyle? headerStyle;
 
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
@@ -252,14 +253,14 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.dayTitleBuilder,
     this.eventArranger,
     this.verticalLineOffset = 10,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.scrollOffset,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
     this.onDateTap,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
-    this.headerStyle = const HeaderStyle(),
+    this.headerStyle,
     this.fullDayEventBuilder,
     this.safeAreaOption = const SafeAreaOption(),
     this.scrollPhysics,
@@ -431,6 +432,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = context.dayViewColors;
+
     return SafeAreaWrapper(
       option: widget.safeAreaOption,
       child: LayoutBuilder(builder: (context, constraint) {
@@ -445,7 +448,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
               _dayTitleBuilder(_currentDate),
               Expanded(
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: widget.backgroundColor),
+                  decoration: BoxDecoration(
+                    color: widget.backgroundColor ??
+                        themeColor.pageBackgroundColor,
+                  ),
                   child: SizedBox(
                     height: _height,
                     child: PageView.builder(
@@ -545,7 +551,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         LiveTimeIndicatorSettings(
-          color: Constants.defaultLiveTimeIndicatorColor,
+          color: context.dayViewColors.liveIndicatorColor,
           height: widget.heightPerMinute,
           offset: 5 + widget.verticalLineOffset,
         );
@@ -556,7 +562,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: context.dayViewColors.hourLineColor,
           offset: 5,
         );
 
@@ -566,7 +572,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: context.dayViewColors.halfHourLineColor,
           offset: 5,
         );
 
@@ -576,7 +582,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: context.dayViewColors.quarterHourLineColor,
           offset: 5,
         );
 
@@ -657,7 +663,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// [widget.eventTileBuilder] is null
   ///
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
-      date: date, timeStringBuilder: widget.timeStringBuilder);
+        date: date,
+        timeStringBuilder: widget.timeStringBuilder,
+        markingStyle: TextStyle(
+          color: context.dayViewColors.timelineTextColor,
+          fontSize: 15.0,
+        ),
+      );
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -703,7 +715,22 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
           jumpToDate(selectedDate);
         }
       },
-      headerStyle: widget.headerStyle,
+      headerStyle: widget.headerStyle ??
+          HeaderStyle(
+            decoration: BoxDecoration(
+              color: context.dayViewColors.headerBackgroundColor,
+            ),
+            leftIconConfig: IconDataConfig(
+              color: context.dayViewColors.headerIconColor,
+            ),
+            rightIconConfig: IconDataConfig(
+              color: context.dayViewColors.headerIconColor,
+            ),
+            headerTextStyle: TextStyle(
+              color: context.dayViewColors.headerTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
     );
   }
 
