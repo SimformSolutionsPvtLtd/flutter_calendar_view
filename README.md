@@ -355,6 +355,12 @@ WeekView(
 
 Above code will create `WeekView` with only five days, from monday to friday.
 
+## **Customise theme**
+* The default theme includes support for dark mode. 
+* For detailed instructions on how to override the default colors please refer to [this](doc/theme_guide.md) guide.
+
+[//]: # (TODO&#40;Shubham&#41;: Add docs)
+
 ## Main Contributors
 
 <table>

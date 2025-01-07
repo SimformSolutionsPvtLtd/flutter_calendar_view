@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/theme/app_colors.dart';
 import 'package:example/widgets/delete_event_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -97,16 +98,30 @@ class DetailsPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
+                  child: Text(
+                    'Delete Event',
+                    style: TextStyle(
+                      color: AppColors.black,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white70,
+                  ),
                   onPressed: () async {
                     await _handleDeleteEvent(context);
                     Navigator.of(context).pop();
                   },
-                  child: Text('Delete Event'),
                 ),
               ),
               SizedBox(width: 30),
               Expanded(
                 child: ElevatedButton(
+                  child: Text(
+                    'Edit Event',
+                    style: TextStyle(
+                      color: AppColors.black,
+                    ),
+                  ),
                   onPressed: () async {
                     final result = await Navigator.of(context).push(
                       MaterialPageRoute(
@@ -120,7 +135,9 @@ class DetailsPage extends StatelessWidget {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: Text('Edit Event'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white70,
+                  ),
                 ),
               ),
             ],

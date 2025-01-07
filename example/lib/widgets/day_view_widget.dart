@@ -21,9 +21,10 @@ class DayViewWidget extends StatelessWidget {
       startDuration: Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 3,
-      timeLineBuilder: _timeLineBuilder,
+      // timeLineBuilder: _timeLineBuilder,
       scrollPhysics: const BouncingScrollPhysics(),
       eventArranger: SideEventArranger(maxWidth: 30),
+      showQuarterHours: false,
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
@@ -48,18 +49,18 @@ class DayViewWidget extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
       halfHourIndicatorSettings: HourIndicatorSettings(
-        color: Theme.of(context).dividerColor,
+        color: context.dayViewColors.halfHourLine,
         lineStyle: LineStyle.dashed,
       ),
       verticalLineOffset: 0,
       timeLineWidth: 65,
       showLiveTimeLineInAllDays: true,
-      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
-        color: Colors.redAccent,
-        showBullet: false,
-        showTime: true,
-        showTimeBackgroundView: true,
-      ),
+      // liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      //   color: Colors.redAccent,
+      //   showBullet: false,
+      //   showTime: true,
+      //   showTimeBackgroundView: true,
+      // ),
     );
   }
 
@@ -75,7 +76,7 @@ class DayViewWidget extends StatelessWidget {
               "${date.hour}:${date.minute}",
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Colors.black.withAlpha(50),
+                color: Colors.grey,
                 fontStyle: FontStyle.italic,
                 fontSize: 12,
               ),

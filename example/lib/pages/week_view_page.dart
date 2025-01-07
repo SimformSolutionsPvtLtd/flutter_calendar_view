@@ -17,13 +17,22 @@ class WeekViewDemo extends StatefulWidget {
 class _WeekViewDemoState extends State<WeekViewDemo> {
   @override
   Widget build(BuildContext context) {
+    final themeColors = context.appColors;
+
     return ResponsiveWidget(
       webWidget: WebHomePage(
         selectedView: CalendarView.week,
       ),
       mobileWidget: Scaffold(
+        primary: false,
+        appBar: AppBar(
+          leading: const SizedBox.shrink(),
+        ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+          child: Icon(
+            Icons.add,
+            color: themeColors.onPrimary,
+          ),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),

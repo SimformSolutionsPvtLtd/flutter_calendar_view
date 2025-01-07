@@ -19,10 +19,10 @@ class WeekViewWidget extends StatelessWidget {
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
-      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
-        color: Colors.redAccent,
-        showTime: true,
-      ),
+      // liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      //   color: Colors.redAccent,
+      //   showTime: true,
+      // ),
       onTimestampTap: (date) {
         SnackBar snackBar = SnackBar(
           content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),

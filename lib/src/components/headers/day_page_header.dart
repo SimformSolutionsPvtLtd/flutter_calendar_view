@@ -33,7 +33,6 @@ class DayPageHeader extends CalendarPageHeader {
           backgroundColor: backgroundColor,
           iconColor: iconColor,
           onNextDay: onNextDay,
-
           showNextIcon: showNextIcon,
           onPreviousDay: onPreviousDay,
           showPreviousIcon: showPreviousIcon,

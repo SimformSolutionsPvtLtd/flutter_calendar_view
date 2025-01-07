@@ -252,3 +252,18 @@ void debugLog(String message) {
     return false;
   }(), '');
 }
+
+extension BuildContextExtension on BuildContext {
+  CalendarThemeExtension get themeColors =>
+      Theme.of(this).extension<CalendarThemeExtension>() ??
+      CalendarThemeExtension.light();
+
+  MonthViewTheme get monthViewColors =>
+      Theme.of(this).extension<MonthViewTheme>() ?? MonthViewTheme.light();
+
+  DayViewTheme get dayViewColors =>
+      Theme.of(this).extension<DayViewTheme>() ?? DayViewTheme.light();
+
+  WeekViewTheme get weekViewColors =>
+      Theme.of(this).extension<WeekViewTheme>() ?? WeekViewTheme.light();
+}
