@@ -153,9 +153,30 @@ MonthView(
     },
     startDay: WeekDays.sunday, // To change the first day of the week.
     // This callback will only work if cellBuilder is null.
-    onEventTap: (event, date) => print(event),
-    onEventDoubleTap: (events, date) => print(events),
-    onEventLongTap: (event, date) => print(event),
+   onEventTap: (
+        event,
+        date, {
+        tapDetails,
+        longPressDetails,
+        doubleTapDetails,
+      }) =>
+          print(event),
+      onEventDoubleTap: (
+        event,
+        date, {
+        tapDetails,
+        longPressDetails,
+        doubleTapDetails,
+      }) =>
+          print(event),
+      onEventLongTap: (
+        event,
+        date, {
+        tapDetails,
+        longPressDetails,
+        doubleTapDetails,
+      }) =>
+          print(event),
     onDateLongPress: (date) => print(date),
     headerBuilder: MonthHeader.hidden, // To hide month header
     showWeekTileBorder: false, // To show or hide header border

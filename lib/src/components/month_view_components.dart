@@ -160,11 +160,21 @@ class FilledCell<T extends Object?> extends StatelessWidget {
                     children: List.generate(
                       events.length,
                       (index) => GestureDetector(
-                        onTap: () => onTileTap?.call(events[index], date),
-                        onLongPress: () =>
-                            onTileLongTap?.call(events[index], date),
-                        onDoubleTap: () =>
-                            onTileDoubleTap?.call(events[index], date),
+                        onTapUp: (details) => onTileTap?.call(
+                          events[index],
+                          date,
+                          tapDetails: details,
+                        ),
+                        onLongPressStart: (details) => onTileLongTap?.call(
+                          events[index],
+                          date,
+                          longPressDetails: details,
+                        ),
+                        onDoubleTapDown: (details) => onTileDoubleTap?.call(
+                          events[index],
+                          date,
+                          doubleTapDetails: details,
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
                             color: events[index].color,
