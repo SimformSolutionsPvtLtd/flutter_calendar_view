@@ -269,3 +269,14 @@ extension NullableCallback3<A, B, C> on void Function(A, B, C)? {
   VoidCallback? safeVoidCall(A a, B b, C c) =>
       this == null ? null : () => this!(a, b, c);
 }
+
+extension BuildContextExtension on BuildContext {
+  MonthViewTheme get monthViewColors =>
+      Theme.of(this).extension<MonthViewTheme>() ?? MonthViewTheme.light();
+
+  DayViewTheme get dayViewColors =>
+      Theme.of(this).extension<DayViewTheme>() ?? DayViewTheme.light();
+
+  WeekViewTheme get weekViewColors =>
+      Theme.of(this).extension<WeekViewTheme>() ?? WeekViewTheme.light();
+}

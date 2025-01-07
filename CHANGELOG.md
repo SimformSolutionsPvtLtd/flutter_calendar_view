@@ -22,6 +22,7 @@
   website. [#469](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/469)
 - Fixed resizing the window automatically scrolls the page to the top in 
   example app. [#480](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/480)
+- Adds support for dark theme. [#263](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/263)
 
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 

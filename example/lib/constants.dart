@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import 'theme/app_colors.dart';
 
 class AppConstants {
   AppConstants._();
@@ -11,7 +11,7 @@ class AppConstants {
     borderRadius: BorderRadius.circular(7),
     borderSide: BorderSide(
       width: 2,
-      color: AppColors.lightNavyBlue,
+      color: AppColors.outlineVariant,
     ),
   );
 
