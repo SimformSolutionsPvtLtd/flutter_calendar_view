@@ -1,3 +1,7 @@
+# [1.4.1 - Unreleased]
+
+- Adds clear method to `EventController`.
+
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 
 - Adds `showWeekends` flag in month view to hide & show weekends view. 
