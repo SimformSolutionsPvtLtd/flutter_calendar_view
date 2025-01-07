@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
+import 'theme/app_colors.dart';
 
 DateTime get _now => DateTime.now();
 
@@ -11,24 +13,47 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isDarkMode = false;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return CalendarControllerProvider(
-      controller: EventController()..addAll(_events),
-      child: MaterialApp(
-        title: 'Flutter Calendar Page Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.light(),
-        scrollBehavior: ScrollBehavior().copyWith(
-          dragDevices: {
-            PointerDeviceKind.trackpad,
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.touch,
-          },
+    return CalendarThemeProvider(
+      calendarTheme: CalendarTheme(
+        monthViewTheme:
+            isDarkMode ? MonthViewTheme.dark() : MonthViewTheme.light(),
+        dayViewTheme: isDarkMode
+            ? DayViewTheme.dark()
+            : DayViewTheme.light().copyWith(hourLineColor: AppColors.primary)
+                as DayViewTheme,
+        weekViewTheme:
+            isDarkMode ? WeekViewTheme.dark() : WeekViewTheme.light(),
+      ),
+      child: CalendarControllerProvider(
+        controller: EventController()..addAll(_events),
+        child: MaterialApp(
+          title: 'Flutter Calendar Page Demo',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          scrollBehavior: ScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+            },
+          ),
+          home: HomePage(
+            onChangeTheme: (isDark) => setState(() => isDarkMode = isDark),
+          ),
         ),
-        home: HomePage(),
       ),
     );
   }

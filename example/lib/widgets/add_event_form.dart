@@ -2,9 +2,9 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import '../app_colors.dart';
 import '../constants.dart';
 import '../extension.dart';
+import '../theme/app_colors.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
@@ -64,6 +64,8 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return Form(
       key: _form,
       child: Column(
@@ -71,11 +73,14 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
         children: [
           TextFormField(
             controller: _titleController,
-            decoration: AppConstants.inputDecoration.copyWith(
+            decoration: InputDecoration(
               labelText: "Event Title",
-            ),
+              labelStyle: TextStyle(
+                color: color.onSurfaceVariant,
+              ),
+            ).applyDefaults(Theme.of(context).inputDecorationTheme),
             style: TextStyle(
-              color: AppColors.black,
+              color: color.onSurface,
               fontSize: 17.0,
             ),
             validator: (value) {
@@ -134,9 +139,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
-                  decoration: AppConstants.inputDecoration.copyWith(
+                  decoration: InputDecoration(
                     labelText: "Start Date",
-                  ),
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
+                  ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startDate,
                   onSelect: (date) {
                     if (date.withoutTime.withoutTime
@@ -168,7 +176,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     return null;
                   },
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   onSave: (date) => _startDate = date ?? _startDate,
@@ -179,26 +187,23 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   initialDateTime: _endDate,
-                  decoration: AppConstants.inputDecoration.copyWith(
+                  decoration: InputDecoration(
                     labelText: "End Date",
-                    // Add a disabled style when recurring is true
-                    filled: _isRecurring,
-                    fillColor: _isRecurring ? Colors.grey[200] : null,
-                  ),
-                  onSelect: _isRecurring
-                      ? null
-                      : (date) {
-                          if (date.withoutTime.withoutTime
-                              .isBefore(_startDate.withoutTime)) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text('End date occurs before start date.'),
-                            ));
-                          } else {
-                            _endDate = date.withoutTime;
-                            _recurrenceEndDate = _endDate;
-                            updateWeekdaysSelection();
-                          }
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
+                  ).applyDefaults(Theme.of(context).inputDecorationTheme),
+                  onSelect: (date) {
+                    if (date.withoutTime.withoutTime
+                        .isBefore(_startDate.withoutTime)) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('End date occurs before start date.'),
+                      ));
+                    } else {
+                      _endDate = date.withoutTime;
+                      _recurrenceEndDate = _endDate;
+                      updateWeekdaysSelection();
+                    }
 
                           if (mounted) {
                             setState(() {});
@@ -227,9 +232,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             children: [
               Expanded(
                 child: DateTimeSelectorFormField(
-                  decoration: AppConstants.inputDecoration.copyWith(
+                  decoration: InputDecoration(
                     labelText: "Start Time",
-                  ),
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
+                  ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startTime,
                   minimumDateTime: CalendarConstants.epochDate,
                   onSelect: (date) {
@@ -245,7 +253,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   onSave: (date) => _startTime = date,
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   type: DateTimeSelectionType.time,
@@ -254,9 +262,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               SizedBox(width: 20.0),
               Expanded(
                 child: DateTimeSelectorFormField(
-                  decoration: AppConstants.inputDecoration.copyWith(
+                  decoration: InputDecoration(
                     labelText: "End Time",
-                  ),
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
+                  ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _endTime,
                   onSelect: (date) {
                     // If start and end dates are different, any end time is valid
@@ -279,7 +290,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   onSave: (date) => _endTime = date,
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   type: DateTimeSelectionType.time,
@@ -292,7 +303,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             controller: _descriptionController,
             focusNode: _descriptionNode,
             style: TextStyle(
-              color: AppColors.black,
+              color: color.onSurface,
               fontSize: 17.0,
             ),
             keyboardType: TextInputType.multiline,
@@ -308,9 +319,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
               return null;
             },
-            decoration: AppConstants.inputDecoration.copyWith(
+            decoration: InputDecoration(
               hintText: "Event Description",
-            ),
+              counterStyle: TextStyle(color: color.onSurfaceVariant),
+            ).applyDefaults(Theme.of(context).inputDecorationTheme),
           ),
           // Only show repeat settings if the event is recurring
           if (_isRecurring) ...[
@@ -564,7 +576,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Text(
                 "Event Color: ",
                 style: TextStyle(
-                  color: AppColors.black,
+                  color: color.onSurface,
                   fontSize: 17,
                 ),
               ),
