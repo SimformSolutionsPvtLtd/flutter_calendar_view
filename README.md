@@ -360,6 +360,47 @@ WeekView(
 
 Above code will create `WeekView` with only five days, from monday to friday.
 
+## **Customise theme**
+* The default theme includes support for dark mode. 
+_
+_### Use default light & dark theme
+* CalendarTheme.light() & CalendarTheme.dark() provides the default colors for light & dark mode.
+* If no any theme is provided then default light theme is taken.
+```dart
+     child: MaterialApp(
+        theme: CalendarTheme.light,
+        darkTheme: CalendarTheme.dark,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        )
+```
+* Month-view, day-view & week-view each have separate theme to customise its component.
+* Refer [app_theme](example/lib/theme/app_theme.dart) of example to understand how to change colors of components.
+```dart
+// app_theme.dart
+  static final _monthViewTheme = MonthViewTheme.light().copyWith(
+    cellInMonth: Colors.redAccent,
+    cellNotInMonth: Colors.red,
+    cellText: Colors.amber,
+  );
+
+// Light theme: Use this in MaterialApp theme & dark theme.
+static final light = CalendarTheme.light.copyWith(
+   extensions: [
+      _monthViewTheme,
+   ],
+);
+
+// main.dart
+   MaterialApp(
+     theme: AppTheme.light,
+   )
+
+## Inherited widget
+* Use Inherited widget CalendarThemeProvider() to access Calendar theme month-view, day-view & week-view.
+
+```
+[//]: # (TODO&#40;Shubham&#41;: Add docs)
+
 ## Main Contributors
 
 <table>
