@@ -16,12 +16,13 @@ class DayPageHeader extends CalendarPageHeader {
   const DayPageHeader({
     Key? key,
     VoidCallback? onNextDay,
+    bool showNextIcon = true,
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousDay,
+    bool showPreviousIcon = true,
     StringProvider? dateStringBuilder,
     required DateTime date,
-    @Deprecated("Use HeaderStyle to provide icon color")
-    Color iconColor = Constants.black,
+    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background")
     Color backgroundColor = Constants.headerBackground,
     HeaderStyle headerStyle = const HeaderStyle(),
@@ -32,7 +33,10 @@ class DayPageHeader extends CalendarPageHeader {
           backgroundColor: backgroundColor,
           iconColor: iconColor,
           onNextDay: onNextDay,
+
+          showNextIcon: showNextIcon,
           onPreviousDay: onPreviousDay,
+          showPreviousIcon: showPreviousIcon,
           onTitleTapped: onTitleTapped,
           dateStringBuilder:
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,

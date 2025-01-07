@@ -113,10 +113,12 @@ extension DateUtils on DateTime {
 }
 
 extension ColorExtension on Color {
-  Color get accentColor =>
-      (blue / 2 >= 255 / 2 || red / 2 >= 255 / 2 || green / 2 >= 255 / 2)
-          ? AppColors.black
-          : AppColors.white;
+  /// TODO(Shubham): Update this getter as it uses `computeLuminance()`
+  /// which is computationally expensive
+  Color get accentColor {
+    final brightness = ThemeData.estimateBrightnessForColor(this);
+    return brightness == Brightness.light ? AppColors.black : AppColors.white;
+  }
 }
 
 extension StringExt on String {

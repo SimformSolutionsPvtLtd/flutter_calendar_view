@@ -472,12 +472,19 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _startHour = widget.startHour;
+    _endHour = widget.endHour;
 
     // Update heights.
     _calculateHeights();
 
     // Update builders and callbacks
     _assignBuilders();
+
+    if (widget.scrollOffset != oldWidget.scrollOffset) {
+      _lastScrollOffset = widget.scrollOffset;
+      _scrollController.jumpTo(widget.scrollOffset);
+    }
   }
 
   @override
@@ -835,7 +842,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       startDate: _currentStartDate,
       endDate: _currentEndDate,
       onNextDay: nextPage,
+      showNextIcon: endDate != _maxDate,
       onPreviousDay: previousPage,
+      showPreviousIcon: startDate != _minDate,
       onTitleTapped: () async {
         if (widget.onHeaderTitleTap != null) {
           widget.onHeaderTitleTap!(startDate);
