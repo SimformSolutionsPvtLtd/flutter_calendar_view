@@ -22,6 +22,11 @@ class _DayViewPageDemoState extends State<DayViewPageDemo> {
         selectedView: CalendarView.day,
       ),
       mobileWidget: Scaffold(
+        primary: false,
+        appBar: AppBar(
+          leading: const SizedBox.shrink(),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           elevation: 8,

@@ -5,10 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-import '../../style/header_style.dart';
-import '../../typedefs.dart';
-import 'calendar_page_header.dart';
+import '../../../calendar_view.dart';
 
 class MonthPageHeader extends CalendarPageHeader {
   /// A header widget to display on month view.
@@ -21,7 +18,7 @@ class MonthPageHeader extends CalendarPageHeader {
     bool showPreviousIcon = true,
     @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
+    Color? backgroundColor,
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle = const HeaderStyle(),

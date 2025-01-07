@@ -24,6 +24,7 @@ class DayViewWidget extends StatelessWidget {
       timeLineBuilder: _timeLineBuilder,
       scrollPhysics: const BouncingScrollPhysics(),
       eventArranger: SideEventArranger(maxWidth: 30),
+      showQuarterHours: true,
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
@@ -75,7 +76,7 @@ class DayViewWidget extends StatelessWidget {
               "${date.hour}:${date.minute}",
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Colors.black.withAlpha(50),
+                color: Colors.grey,
                 fontStyle: FontStyle.italic,
                 fontSize: 12,
               ),

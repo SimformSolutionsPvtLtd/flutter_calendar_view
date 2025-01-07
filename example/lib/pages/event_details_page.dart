@@ -97,16 +97,21 @@ class DetailsPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
+                  child: Text('Delete Event'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainer,
+                  ),
                   onPressed: () async {
                     await _handleDeleteEvent(context);
                     Navigator.of(context).pop();
                   },
-                  child: Text('Delete Event'),
                 ),
               ),
               SizedBox(width: 30),
               Expanded(
                 child: ElevatedButton(
+                  child: Text('Edit Event'),
                   onPressed: () async {
                     final result = await Navigator.of(context).push(
                       MaterialPageRoute(
@@ -120,7 +125,10 @@ class DetailsPage extends StatelessWidget {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: Text('Edit Event'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainer,
+                  ),
                 ),
               ),
             ],

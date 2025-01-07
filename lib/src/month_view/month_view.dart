@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
-import '../constants.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of
@@ -101,7 +100,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [Colors.blue]
   ///
   /// It will take affect only if [showBorder] is set.
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Page transition duration used when user try to change page using
   /// [MonthView.nextPage] or [MonthView.previousPage]
@@ -174,7 +173,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   const MonthView({
     Key? key,
     this.showBorder = true,
-    this.borderColor = Constants.defaultBorderColor,
+    this.borderColor,
     this.cellBuilder,
     this.minMonth,
     this.maxMonth,
@@ -564,11 +563,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     isInMonth,
     hideDaysNotInMonth,
   ) {
+    final color = Theme.of(context).colorScheme;
+
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
         date: date,
         shouldHighlight: isToday,
-        backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+        backgroundColor: isInMonth
+            ? color.surfaceContainerLowest
+            : color.surfaceContainerLow,
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,
@@ -576,12 +579,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         onTileLongTap: widget.onEventLongTap,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
+        titleColor: color.onPrimaryContainer,
       );
     }
     return FilledCell<T>(
       date: date,
       shouldHighlight: isToday,
-      backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+      backgroundColor:
+          isInMonth ? color.surfaceContainerLowest : color.surfaceContainerLow,
       events: events,
       onTileTap: widget.onEventTap,
       onTileLongTap: widget.onEventLongTap,
@@ -589,8 +594,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       onTileDoubleTap: widget.onEventDoubleTap,
       hideDaysNotInMonth: hideDaysNotInMonth,
       titleColor: isInMonth
-          ? Theme.of(context).colorScheme.onPrimaryContainer
-          : Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(150),
+          ? color.onPrimaryContainer
+          : color.onSurfaceVariant.withAlpha(150),
     );
   }
 
@@ -672,7 +677,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double cellRatio;
   final bool showBorder;
   final double borderSize;
-  final Color borderColor;
+  final Color? borderColor;
   final CellBuilder<T> cellBuilder;
   final DateTime date;
   final EventController<T> controller;
@@ -690,7 +695,6 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
-    required this.borderColor,
     required this.cellBuilder,
     required this.date,
     required this.controller,
@@ -702,6 +706,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.physics,
     required this.hideDaysNotInMonth,
     required this.weekDays,
+    this.borderColor,
   }) : super(key: key);
 
   @override
@@ -711,6 +716,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
       hideDaysNotInMonth: hideDaysNotInMonth,
       showWeekends: weekDays == 7,
     );
+    final color = Theme.of(context).colorScheme;
 
     // Highlight tiles which is not in current month
     return SizedBox(
@@ -738,7 +744,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
               decoration: BoxDecoration(
                 border: showBorder
                     ? Border.all(
-                        color: borderColor,
+                        color: borderColor ?? color.surfaceContainerHigh,
                         width: borderSize,
                       )
                     : null,

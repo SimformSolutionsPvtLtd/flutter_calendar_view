@@ -5,7 +5,21 @@ import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../week_view_page.dart';
 
-class MobileHomePage extends StatelessWidget {
+class MobileHomePage extends StatefulWidget {
+  MobileHomePage({
+    this.onChangeTheme,
+    super.key,
+  });
+
+  final void Function(bool)? onChangeTheme;
+
+  @override
+  State<MobileHomePage> createState() => _MobileHomePageState();
+}
+
+class _MobileHomePageState extends State<MobileHomePage> {
+  bool isDarkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +52,15 @@ class MobileHomePage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.dark_mode),
+          onPressed: () {
+            isDarkMode = !isDarkMode;
+            if (widget.onChangeTheme != null) {
+              widget.onChangeTheme!(isDarkMode);
+            }
+            setState(() {});
+          }),
     );
   }
 }

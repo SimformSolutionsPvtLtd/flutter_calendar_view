@@ -355,6 +355,46 @@ WeekView(
 
 Above code will create `WeekView` with only five days, from monday to friday.
 
+## **Customise theme**
+* The default theme includes support for dark mode. 
+* For detailed instructions on how to override the default colors please refer to [this](doc/theme_guide.md) guide.
+
+### Day view
+* Default timeline text color is `colorScheme.onSurface`.
+* Default hour, half hour & quarter color is `colorScheme.surfaceContainerHighest`.
+* Default timeline color `colorScheme.primaryColorLight`.
+
+Default hour indicator settings.
+```dart
+ HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          // Color of horizontal and vertical lines
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          offset: 5,
+        );
+```
+
+### Week view
+* Week-number text color - Default color `onSecondaryContainer`.
+* To customise week number & weekdays use `weekNumberBuilder` & `weekDayBuilder`.
+* Default week tile color is `colorScheme.surfaceContainerHigh`.
+* To give background color use `backgroundColor` Default background color is `colorScheme.surfaceContainerLowest`.
+* To customise timeline use `timeLineBuilder`. Default text color is `colorScheme.onSurface`.
+* To change Hour lines color use `HourIndicatorSettings`.
+* To style hours, half hours & quarter hours use `HourIndicatorSettings`. Default color used is `surfaceContainerHighest`
+
+```dart
+  hourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.greenAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+      showHalfHours: true,
+  halfHourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.redAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+```
+
 ## Main Contributors
 
 <table>

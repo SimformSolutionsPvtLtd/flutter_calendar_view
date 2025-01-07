@@ -63,6 +63,8 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return Form(
       key: _form,
       child: Column(
@@ -72,9 +74,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             controller: _titleController,
             decoration: AppConstants.inputDecoration.copyWith(
               labelText: "Event Title",
+              labelStyle: TextStyle(
+                color: color.onSurfaceVariant,
+              ),
             ),
             style: TextStyle(
-              color: AppColors.black,
+              color: color.onSurface,
               fontSize: 17.0,
             ),
             validator: (value) {
@@ -98,6 +103,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "Start Date",
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ),
                   initialDateTime: _startDate,
                   onSelect: (date) {
@@ -121,7 +129,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     return null;
                   },
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   onSave: (date) => _startDate = date ?? _startDate,
@@ -134,6 +142,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   initialDateTime: _endDate,
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "End Date",
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ),
                   onSelect: (date) {
                     if (date.withoutTime.withoutTime
@@ -159,7 +170,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     return null;
                   },
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   onSave: (date) => _endDate = date ?? _endDate,
@@ -175,6 +186,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "Start Time",
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ),
                   initialDateTime: _startTime,
                   minimumDateTime: CalendarConstants.epochDate,
@@ -191,7 +205,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   onSave: (date) => _startTime = date,
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   type: DateTimeSelectionType.time,
@@ -202,6 +216,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: AppConstants.inputDecoration.copyWith(
                     labelText: "End Time",
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ),
                   initialDateTime: _endTime,
                   onSelect: (date) {
@@ -220,7 +237,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   onSave: (date) => _endTime = date,
                   textStyle: TextStyle(
-                    color: AppColors.black,
+                    color: color.onSurface,
                     fontSize: 17.0,
                   ),
                   type: DateTimeSelectionType.time,
@@ -235,7 +252,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             controller: _descriptionController,
             focusNode: _descriptionNode,
             style: TextStyle(
-              color: AppColors.black,
+              color: color.onSurface,
               fontSize: 17.0,
             ),
             keyboardType: TextInputType.multiline,
@@ -253,6 +270,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             },
             decoration: AppConstants.inputDecoration.copyWith(
               hintText: "Event Description",
+              counterStyle: TextStyle(color: color.onSurfaceVariant),
             ),
           ),
           Align(
@@ -521,7 +539,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Text(
                 "Event Color: ",
                 style: TextStyle(
-                  color: AppColors.black,
+                  color: color.onSurface,
                   fontSize: 17,
                 ),
               ),
