@@ -1,6 +1,7 @@
 # [1.4.1 - Unreleased]
 
 - Adds clear method to `EventController`.
+- Adds support for dark theme. [#263](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/263)
 
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 

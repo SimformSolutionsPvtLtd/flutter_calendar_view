@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
-import '../constants.dart';
+import '../extensions.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of
@@ -101,7 +101,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [Colors.blue]
   ///
   /// It will take affect only if [showBorder] is set.
-  final Color borderColor;
+  // TODO(Shubham): Update comment
+  final Color? borderColor;
 
   /// Page transition duration used when user try to change page using
   /// [MonthView.nextPage] or [MonthView.previousPage]
@@ -148,7 +149,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   final WeekDays startDay;
 
   /// Style for MontView header.
-  final HeaderStyle headerStyle;
+  final HeaderStyle? headerStyle;
 
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
@@ -174,7 +175,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   const MonthView({
     Key? key,
     this.showBorder = true,
-    this.borderColor = Constants.defaultBorderColor,
+    this.borderColor,
     this.cellBuilder,
     this.minMonth,
     this.maxMonth,
@@ -198,7 +199,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.headerStringBuilder,
     this.dateStringBuilder,
     this.weekDayStringBuilder,
-    this.headerStyle = const HeaderStyle(),
+    this.headerStyle,
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
@@ -543,7 +544,22 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       date: date,
       dateStringBuilder: widget.headerStringBuilder,
       onNextMonth: nextPage,
-      headerStyle: widget.headerStyle,
+      headerStyle: widget.headerStyle ??
+          HeaderStyle(
+            decoration: BoxDecoration(
+              color: context.monthViewColors.headerBackgroundColor,
+            ),
+            leftIconConfig: IconDataConfig(
+              color: context.monthViewColors.headerIconColor,
+            ),
+            rightIconConfig: IconDataConfig(
+              color: context.monthViewColors.headerIconColor,
+            ),
+            headerTextStyle: TextStyle(
+              color: context.monthViewColors.headerTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
     );
   }
 
@@ -564,11 +580,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     isInMonth,
     hideDaysNotInMonth,
   ) {
+    final themeColor = context.monthViewColors;
+
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
         date: date,
         shouldHighlight: isToday,
-        backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+        backgroundColor: isInMonth
+            ? themeColor.cellInMonthColor
+            : themeColor.cellNotInMonthColor,
         events: events,
         isInMonth: isInMonth,
         onTileTap: widget.onEventTap,
@@ -576,12 +596,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         onTileLongTap: widget.onEventLongTap,
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
+        titleColor: themeColor.cellTextColor,
       );
     }
     return FilledCell<T>(
       date: date,
       shouldHighlight: isToday,
-      backgroundColor: isInMonth ? Constants.white : Constants.offWhite,
+      backgroundColor: isInMonth
+          ? themeColor.cellInMonthColor
+          : themeColor.cellNotInMonthColor,
       events: events,
       onTileTap: widget.onEventTap,
       onTileLongTap: widget.onEventLongTap,
@@ -589,8 +612,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       onTileDoubleTap: widget.onEventDoubleTap,
       hideDaysNotInMonth: hideDaysNotInMonth,
       titleColor: isInMonth
-          ? Theme.of(context).colorScheme.onPrimaryContainer
-          : Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(150),
+          ? themeColor.cellTextColor
+          : themeColor.cellTextColor.withAlpha(150),
     );
   }
 
@@ -672,7 +695,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double cellRatio;
   final bool showBorder;
   final double borderSize;
-  final Color borderColor;
+  final Color? borderColor;
   final CellBuilder<T> cellBuilder;
   final DateTime date;
   final EventController<T> controller;
@@ -690,7 +713,6 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
-    required this.borderColor,
     required this.cellBuilder,
     required this.date,
     required this.controller,
@@ -702,6 +724,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.physics,
     required this.hideDaysNotInMonth,
     required this.weekDays,
+    this.borderColor,
   }) : super(key: key);
 
   @override
@@ -738,7 +761,8 @@ class _MonthPageBuilder<T> extends StatelessWidget {
               decoration: BoxDecoration(
                 border: showBorder
                     ? Border.all(
-                        color: borderColor,
+                        color: borderColor ??
+                            context.monthViewColors.cellBorderColor,
                         width: borderSize,
                       )
                     : null,
