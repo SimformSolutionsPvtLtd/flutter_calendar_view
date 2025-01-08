@@ -69,5 +69,7 @@
   "allEvents": "Todos los eventos",
   "cancel": "Cancelar",
   "done": "Hecho",
-  "selectLanguage": "Seleccionar idioma"
+  "selectLanguage": "Seleccionar idioma",
+  "reachedTheEndPage": "Has llegado al final de la página.",
+  "reachedTheStartPage": "Has llegado al inicio de la página."
 }
