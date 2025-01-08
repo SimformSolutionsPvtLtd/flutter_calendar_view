@@ -69,5 +69,7 @@
   "allEvents": "جميع الأحداث",
   "cancel": "إلغاء",
   "done": "تم",
-  "selectLanguage": "اختر اللغة"
+  "selectLanguage": "اختر اللغة",
+  "reachedTheEndPage": "لقد وصلت إلى نهاية الصفحة",
+  "reachedTheStartPage": "لقد وصلت إلى بداية الصفحة"
 }

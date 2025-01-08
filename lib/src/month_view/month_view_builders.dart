@@ -39,6 +39,8 @@ class MonthViewBuilders<T extends Object?> {
     this.onEventTapDetails,
     this.onEventLongTapDetails,
     this.onEventDoubleTapDetails,
+    this.onHasReachedEnd,
+    this.onHasReachedStart,
   }) : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously");
 
@@ -120,4 +122,16 @@ class MonthViewBuilders<T extends Object?> {
   ///
   /// This function will only work if [cellBuilder] is null.
   final TileDoubleTapDetailsCallback<T>? onEventDoubleTapDetails;
+
+  /// This function will be called when the user drags
+  /// the last page to the left, requesting a new page.
+  ///
+  /// Use this callback to implement pagination with requests to the database.
+  final CalendarPageChangeCallBack? onHasReachedEnd;
+
+  /// This function will be called when the user drags
+  /// the first page to the right, requesting a new previous page.
+  ///
+  /// Use this callback to implement reverse pagination with requests to the database.
+  final CalendarPageChangeCallBack? onHasReachedStart;
 }

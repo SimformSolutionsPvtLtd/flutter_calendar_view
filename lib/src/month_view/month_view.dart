@@ -88,11 +88,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _setDateRange();
 
     // Initialize current date.
+
     _currentDate = (_monthViewStyle.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
+
     _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
@@ -155,12 +157,61 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   @override
   void dispose() {
     _controller?.removeListener(_reloadCallback);
+
     _pageController.dispose();
     super.dispose();
   }
 
+  void onHorizontalDragEnd(
+    DragEndDetails dragEndDetails, {
+    required bool isFirstPage,
+    required bool isLastPage,
+    TextDirection textDirection = TextDirection.ltr,
+  }) {
+    final velocity = dragEndDetails.primaryVelocity ?? 0;
+    if (velocity == 0) return;
+
+    final isRtl = textDirection == TextDirection.rtl;
+
+    // In LTR: swipe right (velocity > 0) = previous, swipe left (velocity < 0) = next
+    // In RTL: swipe right (velocity > 0) = next, swipe left (velocity < 0) = previous
+    final isSwipingToPrevious = isRtl ? velocity < 0 : velocity > 0;
+    final isSwipingToNext = isRtl ? velocity > 0 : velocity < 0;
+
+    if (isFirstPage && isLastPage) {
+      // Only one page - trigger both callbacks based on swipe direction
+      if (isSwipingToPrevious) {
+        widget.monthViewBuilders.onHasReachedStart
+            ?.call(_currentDate, _currentIndex);
+      } else if (isSwipingToNext) {
+        widget.monthViewBuilders.onHasReachedEnd
+            ?.call(_currentDate, _currentIndex);
+      }
+    } else if (isFirstPage) {
+      // First page - can go next, but swiping to previous triggers callback
+      if (isSwipingToNext) {
+        nextPage();
+      } else if (isSwipingToPrevious) {
+        widget.monthViewBuilders.onHasReachedStart
+            ?.call(_currentDate, _currentIndex);
+      }
+    } else if (isLastPage) {
+      // Last page - can go previous, but swiping to next triggers callback
+      if (isSwipingToPrevious) {
+        previousPage();
+      } else if (isSwipingToNext) {
+        widget.monthViewBuilders.onHasReachedEnd
+            ?.call(_currentDate, _currentIndex);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final textDirection = PackageStrings.currentLocale.isRTL
+        ? TextDirection.rtl
+        : TextDirection.ltr;
+
     return SafeAreaWrapper(
       option: _monthViewStyle.safeAreaOption,
       child: SizedBox(
@@ -183,8 +234,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                     start: _monthViewStyle.startDay,
                     showWeekEnds: _monthViewStyle.showWeekends,
                   );
-
-                  return Column(
+                  Widget monthPageContent = Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -249,6 +299,25 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                       ),
                     ],
                   );
+
+                  if (widget.monthViewBuilders.onHasReachedEnd != null ||
+                      widget.monthViewBuilders.onHasReachedStart != null) {
+                    final bool isFirstPage = index == 0;
+                    final bool isLastPage = index == _totalMonths - 1;
+                    if (isFirstPage || isLastPage) {
+                      return GestureDetector(
+                        onHorizontalDragEnd: (details) => onHorizontalDragEnd(
+                          details,
+                          isFirstPage: isFirstPage,
+                          isLastPage: isLastPage,
+                          textDirection: textDirection,
+                        ),
+                        child: monthPageContent,
+                      );
+                    }
+                  }
+
+                  return monthPageContent;
                 },
                 itemCount: _totalMonths,
               ),
