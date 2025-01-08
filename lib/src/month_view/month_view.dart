@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
@@ -257,17 +259,23 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
-    _pageController = PageController(initialPage: _currentIndex);
+    _pageController = PageController(initialPage: _currentIndex)..addListener(listenedChangePage);
 
     _assignBuilders();
+  }
+
+  void listenedChangePage() {
+    if (_pageController.page!.toInt() == _pageController.page) {
+      debugPrint('🚀 month_view.dart - _pageController.page - ${_pageController.page.toString()}');
+      //widget.onPageChange?.call();
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final newController = widget.controller ??
-        CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
       _controller = newController;
@@ -288,8 +296,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   void didUpdateWidget(MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update controller.
-    final newController = widget.controller ??
-        CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
       _controller?.removeListener(_reloadCallback);
@@ -298,8 +305,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     }
 
     // Update date range.
-    if (widget.minMonth != oldWidget.minMonth ||
-        widget.maxMonth != oldWidget.maxMonth) {
+    if (widget.minMonth != oldWidget.minMonth || widget.maxMonth != oldWidget.maxMonth) {
       _setDateRange();
       _regulateCurrentDate();
 
@@ -315,6 +321,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   @override
   void dispose() {
     _controller?.removeListener(_reloadCallback);
+    _pageController.removeListener(listenedChangePage);
     _pageController.dispose();
     super.dispose();
   }
@@ -356,8 +363,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                             (index) => Expanded(
                               child: SizedBox(
                                 width: _cellWidth,
-                                child:
-                                    _weekBuilder(weekDays[index].weekday - 1),
+                                child: _weekBuilder(weekDays[index].weekday - 1),
                               ),
                             ),
                           ),
@@ -371,13 +377,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               hideDaysNotInMonth: widget.hideDaysNotInMonth,
                               showWeekends: widget.showWeekends,
                             );
-                            final _cellAspectRatio =
-                                widget.useAvailableVerticalSpace
-                                    ? calculateCellAspectRatio(
-                                        height: constraints.maxHeight,
-                                        daysInMonth: dates.length,
-                                      )
-                                    : widget.cellAspectRatio;
+                            final _cellAspectRatio = widget.useAvailableVerticalSpace
+                                ? calculateCellAspectRatio(
+                                    height: constraints.maxHeight,
+                                    daysInMonth: dates.length,
+                                  )
+                                : widget.cellAspectRatio;
 
                             return SizedBox(
                               height: _height,
@@ -628,8 +633,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToPage(int page,
-      {Duration? duration, Curve? curve}) async {
+  Future<void> animateToPage(int page, {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
         duration: duration ?? widget.pageTransitionDuration,
         curve: curve ?? widget.pageTransitionCurve);
@@ -651,8 +655,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToMonth(DateTime month,
-      {Duration? duration, Curve? curve}) async {
+  Future<void> animateToMonth(DateTime month, {Duration? duration, Curve? curve}) async {
     if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
@@ -727,10 +730,9 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           // Hide events if `hideDaysNotInMonth` true
-          final events =
-              hideDaysNotInMonth && (monthDays[index].month != date.month)
-                  ? <CalendarEventData<T>>[]
-                  : controller.getEventsOnDay(monthDays[index]);
+          final events = hideDaysNotInMonth && (monthDays[index].month != date.month)
+              ? <CalendarEventData<T>>[]
+              : controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
             onLongPress: () => onDateLongPress?.call(monthDays[index]),
