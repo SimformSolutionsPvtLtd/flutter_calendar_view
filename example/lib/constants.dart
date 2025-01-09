@@ -6,6 +6,7 @@ class AppConstants {
   AppConstants._();
 
   static final List<String> weekTitles = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  static final ltr = '\u202A'; // Use this to force text direction to LTR
 
   static OutlineInputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(7),

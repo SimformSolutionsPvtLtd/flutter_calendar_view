@@ -251,6 +251,8 @@ class _InternalWeekViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
+
     return Container(
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
@@ -353,23 +355,31 @@ class _InternalWeekViewPageState<T extends Object?>
                 width: widget.width,
                 child: Stack(
                   children: [
-                    CustomPaint(
-                      size: Size(widget.width, widget.height),
-                      painter: HourLinePainter(
-                        lineColor: widget.hourIndicatorSettings.color,
-                        lineHeight: widget.hourIndicatorSettings.height,
-                        offset: widget.timeLineWidth +
-                            widget.hourIndicatorSettings.offset,
-                        minuteHeight: widget.heightPerMinute,
-                        verticalLineOffset: widget.verticalLineOffset,
-                        showVerticalLine: widget.showVerticalLine,
-                        lineStyle: widget.hourIndicatorSettings.lineStyle,
-                        dashWidth: widget.hourIndicatorSettings.dashWidth,
-                        dashSpaceWidth:
-                            widget.hourIndicatorSettings.dashSpaceWidth,
-                        emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
-                        startHour: widget.startHour,
-                        endHour: widget.endHour,
+                    Positioned(
+                      left: isLtr ? widget.timeLineWidth : 0,
+                      right: isLtr ? 0 : widget.timeLineWidth + 6,
+                      child: CustomPaint(
+                        size: Size(
+                          widget.width,
+                          widget.height,
+                        ),
+                        painter: HourLinePainter(
+                          lineColor: widget.hourIndicatorSettings.color,
+                          lineHeight: widget.hourIndicatorSettings.height,
+                          offset:
+                              isLtr ? widget.hourIndicatorSettings.offset : 0,
+                          minuteHeight: widget.heightPerMinute,
+                          verticalLineOffset: widget.verticalLineOffset,
+                          showVerticalLine: widget.showVerticalLine,
+                          lineStyle: widget.hourIndicatorSettings.lineStyle,
+                          dashWidth: widget.hourIndicatorSettings.dashWidth,
+                          dashSpaceWidth:
+                              widget.hourIndicatorSettings.dashSpaceWidth,
+                          emulateVerticalOffsetBy:
+                              widget.emulateVerticalOffsetBy,
+                          startHour: widget.startHour,
+                          endHour: widget.endHour,
+                        ),
                       ),
                     ),
                     if (widget.showHalfHours)
@@ -405,10 +415,12 @@ class _InternalWeekViewPageState<T extends Object?>
                               widget.quarterHourIndicatorSettings.dashWidth,
                           dashSpaceWidth: widget
                               .quarterHourIndicatorSettings.dashSpaceWidth,
+                          textDirection: Directionality.of(context),
                         ),
                       ),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment:
+                          isLtr ? Alignment.centerRight : Alignment.centerLeft,
                       child: SizedBox(
                         width: widget.weekTitleWidth * filteredDates.length,
                         height: widget.height,
@@ -486,7 +498,7 @@ class _InternalWeekViewPageState<T extends Object?>
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings:
                             widget.liveTimeIndicatorSettings,
-                        width: widget.width,
+                        width: widget.width - 8,
                         height: widget.height,
                         heightPerMinute: widget.heightPerMinute,
                         timeLineWidth: widget.timeLineWidth,

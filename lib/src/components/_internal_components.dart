@@ -98,6 +98,12 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     /// to set dy offset of live time indicator
     final startMinutes = widget.startHour * 60;
 
+    /// To support LTR & RTL we need to manage X position of point-1 to draw line
+    /// according to position of timeline add and subtract its width
+    final offsetX = Directionality.of(context) == TextDirection.ltr
+        ? widget.liveTimeIndicatorSettings.offset + widget.timeLineWidth
+        : widget.liveTimeIndicatorSettings.offset - widget.timeLineWidth;
+
     /// Check if live time is not between startHour and endHour if it is then
     /// don't show live time indicator
     ///
@@ -111,9 +117,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
       size: Size(widget.width, widget.liveTimeIndicatorSettings.height),
       painter: CurrentTimeLinePainter(
         color: widget.liveTimeIndicatorSettings.color,
+        textDirection: Directionality.of(context),
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
-          widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
+          offsetX,
           (_currentTime.getTotalMinutes - startMinutes) *
               widget.heightPerMinute,
         ),
