@@ -280,6 +280,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
+    if (_currentIndex == 0) {
+      hasReachedStart = true;
+    }
     _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
