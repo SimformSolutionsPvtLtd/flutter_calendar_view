@@ -10,7 +10,10 @@ import 'web/web_home_page.dart';
 class MonthViewPageDemo extends StatefulWidget {
   const MonthViewPageDemo({
     super.key,
+    this.directionality = TextDirection.ltr,
   });
+
+  final TextDirection directionality;
 
   @override
   _MonthViewPageDemoState createState() => _MonthViewPageDemoState();
@@ -19,17 +22,24 @@ class MonthViewPageDemo extends StatefulWidget {
 class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWidget(
-      webWidget: WebHomePage(
-        selectedView: CalendarView.month,
-      ),
-      mobileWidget: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          elevation: 8,
-          onPressed: () => context.pushRoute(CreateEventPage()),
+    return Directionality(
+      textDirection: widget.directionality,
+      child: ResponsiveWidget(
+        webWidget: WebHomePage(
+          selectedView: CalendarView.month,
         ),
-        body: MonthViewWidget(),
+        mobileWidget: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            elevation: 8,
+            onPressed: () => context.pushRoute(
+              CreateEventPage(
+                directionality: widget.directionality,
+              ),
+            ),
+          ),
+          body: MonthViewWidget(),
+        ),
       ),
     );
   }

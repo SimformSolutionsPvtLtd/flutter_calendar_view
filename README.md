@@ -357,8 +357,29 @@ WeekView(
   ],
 );
 ```
-
 Above code will create `WeekView` with only five days, from monday to friday.
+
+### Support for RTL
+Wrap your widget with `Directionality` widget and use `textDirection` to give RTL or LTR direction.
+
+```dart
+Directionality(
+  textDirection: TextDirection.rtl,
+  child: ResponsiveWidget(
+    webWidget: WebHomePage(
+      selectedView: CalendarView.week,
+    ),
+    mobileWidget: Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        elevation: 8,
+        onPressed: () => context.pushRoute(CreateEventPage()),
+      ),
+      body: WeekViewWidget(),
+    ),
+  ),
+);
+```
 
 ## Main Contributors
 

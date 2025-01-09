@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
+import '../constants.dart';
 import '../extensions.dart';
 import '../typedefs.dart';
 
@@ -134,17 +135,19 @@ class DefaultTimeLineMark extends StatelessWidget {
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
         : date.minute != 0
-            ? "$hour:${date.minute}"
-            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+            ? "${Constants.ltr}$hour:${date.minute}"
+            : "${Constants.ltr}$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
-        padding: const EdgeInsets.only(right: 7.0),
+        padding: const EdgeInsets.only(right: 7.0, left: 7.0),
         child: Text(
           timeString,
-          textAlign: TextAlign.right,
+          textAlign: Directionality.of(context) == TextDirection.ltr
+              ? TextAlign.right
+              : TextAlign.left,
           style: markingStyle ??
-              TextStyle(
+              const TextStyle(
                 fontSize: 15.0,
               ),
         ),
@@ -212,14 +215,19 @@ class FullDayEventView<T> extends StatelessWidget {
                 margin: const EdgeInsets.all(5.0),
                 padding: const EdgeInsets.all(1.0),
                 height: 24,
-                child: Text(
-                  events[index].title,
-                  style: titleStyle ??
-                      TextStyle(
-                        fontSize: 16,
-                        color: events[index].color.accent,
-                      ),
-                  maxLines: 1,
+                child: Align(
+                  alignment: Directionality.of(context) == TextDirection.ltr
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  child: Text(
+                    events[index].title,
+                    style: titleStyle ??
+                        TextStyle(
+                          fontSize: 16,
+                          color: events[index].color.accent,
+                        ),
+                    maxLines: 1,
+                  ),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),

@@ -27,6 +27,7 @@ class MonthViewWidget extends StatelessWidget {
             builder: (_) => DetailsPage(
               event: event,
               date: date,
+              directionality: Directionality.of(context),
             ),
           ),
         );

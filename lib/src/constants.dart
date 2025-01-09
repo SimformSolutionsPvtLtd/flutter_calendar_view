@@ -10,6 +10,7 @@ class Constants {
 
   static final Random _random = Random();
   static final int _maxColor = 256;
+  static final ltr = '\u202A'; // Use this to force text direction LTR
 
   static const int hoursADay = 24;
   static const int minutesADay = 1440;

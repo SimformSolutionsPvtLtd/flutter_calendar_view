@@ -17,12 +17,19 @@ class WebHomePage extends StatefulWidget {
 
 class _WebHomePageState extends State<WebHomePage> {
   late var _selectedView = widget.selectedView;
+  var _directionality = TextDirection.ltr;
 
   void _setView(CalendarView view) {
     if (view != _selectedView && mounted) {
       setState(() {
         _selectedView = view;
       });
+    }
+  }
+
+  void _setDirectionality(TextDirection directionality) {
+    if (mounted) {
+      setState(() => _directionality = directionality);
     }
   }
 
@@ -35,6 +42,7 @@ class _WebHomePageState extends State<WebHomePage> {
             child: CalendarConfig(
               onViewChange: _setView,
               currentView: _selectedView,
+              onDirectionalityChange: _setDirectionality,
             ),
           ),
           Expanded(
@@ -46,6 +54,7 @@ class _WebHomePageState extends State<WebHomePage> {
               child: CalendarViews(
                 key: ValueKey(MediaQuery.of(context).size.width),
                 view: _selectedView,
+                directionality: _directionality,
               ),
             ),
           ),

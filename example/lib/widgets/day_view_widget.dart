@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/event_details_page.dart';
@@ -23,7 +24,9 @@ class DayViewWidget extends StatelessWidget {
       heightPerMinute: 3,
       timeLineBuilder: _timeLineBuilder,
       scrollPhysics: const BouncingScrollPhysics(),
-      eventArranger: SideEventArranger(maxWidth: 30),
+      eventArranger: SideEventArranger(
+        directionality: Directionality.of(context),
+      ),
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
@@ -39,6 +42,7 @@ class DayViewWidget extends StatelessWidget {
             builder: (_) => DetailsPage(
               event: events.first,
               date: date,
+              directionality: Directionality.of(context),
             ),
           ),
         );
@@ -71,9 +75,10 @@ class DayViewWidget extends StatelessWidget {
           Positioned.fill(
             top: -8,
             right: 8,
+            left: 8,
             child: Text(
               "${date.hour}:${date.minute}",
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black.withAlpha(50),
                 fontStyle: FontStyle.italic,
@@ -92,9 +97,10 @@ class DayViewWidget extends StatelessWidget {
         Positioned.fill(
           top: -8,
           right: 8,
+          left: 8,
           child: Text(
-            "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
-            textAlign: TextAlign.right,
+            "${AppConstants.ltr} $hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+            textAlign: TextAlign.center,
           ),
         ),
       ],

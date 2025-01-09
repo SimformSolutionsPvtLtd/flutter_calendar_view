@@ -269,6 +269,7 @@ class _InternalDayViewPageState<T extends Object?>
                               widget.halfHourIndicatorSettings.dashSpaceWidth,
                           startHour: widget.startHour,
                           endHour: widget.endHour,
+                          textDirection: Directionality.of(context),
                         ),
                       ),
                     if (widget.showQuarterHours)
@@ -287,6 +288,8 @@ class _InternalDayViewPageState<T extends Object?>
                               widget.quarterHourIndicatorSettings.dashWidth,
                           dashSpaceWidth: widget
                               .quarterHourIndicatorSettings.dashSpaceWidth,
+                          textDirection: Directionality.of(context),
+                          timelineWidth: widget.timeLineWidth,
                         ),
                       ),
                     widget.dayDetectorBuilder(
@@ -297,7 +300,9 @@ class _InternalDayViewPageState<T extends Object?>
                       minuteSlotSize: widget.minuteSlotSize,
                     ),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: Directionality.of(context) == TextDirection.ltr
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       child: EventGenerator<T>(
                         height: widget.height,
                         date: widget.date,

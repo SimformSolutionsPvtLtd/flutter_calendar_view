@@ -10,6 +10,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   const SideEventArranger({
     this.maxWidth,
     this.includeEdges = false,
+    this.directionality = TextDirection.ltr,
   });
 
   /// Decides whether events that are overlapping on edge
@@ -25,6 +26,9 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// Otherwise, it will reduce to fit all events in the cell.
   /// If max width is not specified, slots will expand to fill the cell.
   final double? maxWidth;
+
+  /// Defines the directionality LRT/RTL
+  final TextDirection directionality;
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
@@ -130,9 +134,11 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
             final top = (startTime.getTotalMinutes - (startHour * 60)) *
                 heightPerMinute;
 
+            final isLtr = directionality == TextDirection.ltr;
+
             return OrganizedCalendarEventData<T>(
-              left: offset,
-              right: totalWidth - (offset + slotWidth),
+              left: isLtr ? offset : totalWidth - (offset + slotWidth),
+              right: isLtr ? totalWidth - (offset + slotWidth) : offset,
               top: top,
               bottom: bottom,
               startDuration: startTime,
