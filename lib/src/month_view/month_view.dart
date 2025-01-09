@@ -550,14 +550,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     // Initialize minimum date.
-    //_minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
-
-    final datePast = DateTime.parse('2024-12-03T12:00:00.000');
-    _minDate = datePast;
+    _minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
+    //teste_4
+    //final datePast = DateTime.parse('2024-12-03T12:00:00.000');
+    //_minDate = datePast;
 
     // Initialize maximum date.
-    //_maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
-    _maxDate = DateTime.parse('2025-04-03T12:00:00.000');
+    _maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
+    // _maxDate = DateTime.parse('2025-04-03T12:00:00.000');
 
     assert(
       _minDate.isBefore(_maxDate),
