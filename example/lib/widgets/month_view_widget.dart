@@ -21,6 +21,13 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: true,
       startDay: WeekDays.friday,
       useAvailableVerticalSpace: true,
+      //pageViewPhysics: RangeMaintainingScrollPhysics(), // ok
+      //pageViewPhysics: NeverScrollableScrollPhysics(), // ok
+      //pageViewPhysics: AlwaysScrollableScrollPhysics(), // ok
+      //pageViewPhysics: FixedExtentScrollPhysics(), // ok
+      //pageViewPhysics: PageScrollPhysics(), // OK
+      onPageChange: (date, pageIndex) => debugPrint(
+          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${pageIndex.toString()}'),
       onEventTap: (event, date) {
         Navigator.of(context).push(
           MaterialPageRoute(

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
@@ -265,9 +263,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   void listenedChangePage() {
-    if (_pageController.page!.toInt() == _pageController.page) {
-      debugPrint('🚀 month_view.dart - _pageController.page - ${_pageController.page.toString()}');
-      //widget.onPageChange?.call();
+    //teste_1
+    if (_pageController.page!.toInt() == _pageController.page!) {
+      widget.onPageChange?.call(_currentDate, _currentIndex);
+      debugPrint('🚀 ------------------');
+      debugPrint('🚀 ###   listenedChangePage   #####');
+      debugPrint('🚀 ------------------');
+      debugPrint(
+          '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+      debugPrint('🚀 ###   -------  #####');
     }
   }
 
@@ -521,7 +525,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         _currentIndex = value;
       });
     }
-    widget.onPageChange?.call(_currentDate, _currentIndex);
+
+    debugPrint('🚀 ------------------');
+    debugPrint('🚀 ###   _onPageChange   #####');
+    debugPrint('🚀 ------------------');
+    debugPrint(
+        '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+    debugPrint('🚀 ------------------');
+    //widget.onPageChange?.call(_currentDate, _currentIndex);
+    // debugPrint('🚀 month_view.dart - _currentIndex BOTÃO - ${_currentIndex.toString()}');
+    //teste_2
   }
 
   /// Default month view header builder
