@@ -41,21 +41,25 @@ extension DateTimeExtensions on DateTime {
     WeekDays start = WeekDays.monday,
     bool isThreeDaysView = false,
   }) {
-    final thisFirstDay = firstDayOfWeek(
+    final startDate = firstDayOfWeek(
       start: start,
       isThreeDaysView: isThreeDaysView,
     );
-    final otherFirstDay = date.firstDayOfWeek(
+    final endDate = date.firstDayOfWeek(
       start: start,
       isThreeDaysView: isThreeDaysView,
     );
 
-    final daysDifference = thisFirstDay.difference(otherFirstDay).inDays.abs();
+    final daysDifference = startDate.difference(endDate).inDays.abs();
 
     // Calculate the difference in weeks or 3-day blocks
     final divisor = isThreeDaysView ? 3 : 7;
+    // TODO(Shubham): Test ceil() to round()
     return (daysDifference / divisor).ceil();
   }
+
+  // For 3-days view
+  getDaysDifference() {}
 
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.
@@ -106,15 +110,15 @@ extension DateTimeExtensions on DateTime {
     bool isThreeDaysView = false,
   }) {
     if (isThreeDaysView) {
-      // Calculate the current weekday offset (based on the start day)
+      // Calculate the offset between the current weekday and the start day
       final offset = (weekday - start.index) % 7;
 
-      // For a 3-day view, calculate the remaining days to the end of the 3-day block
-      final daysToAdd =
-          (3 - offset % 3) % 3; // Ensures wrap-around within 3-day blocks
-      final lastDay = DateTime(year, month, day + daysToAdd);
-      debugPrint('Last Day for 3-Day View: $lastDay');
-      debugPrint('Last Day: ${lastDay}');
+      // Determine the starting day of the 3-day block
+      final startDay = DateTime(year, month, day - (offset % 3));
+
+      // The last day of the block is 2 days after the start day
+      final lastDay = DateTime(startDay.year, startDay.month, startDay.day + 2);
+      // debugPrint('Last day = ${lastday}');
       return lastDay;
     } else {
       return DateTime(year, month, day + (6 - (weekday - start.index - 1) % 7));
