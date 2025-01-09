@@ -532,8 +532,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     debugPrint(
         '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
     debugPrint('🚀 ------------------');
-    //widget.onPageChange?.call(_currentDate, _currentIndex);
-    // debugPrint('🚀 month_view.dart - _currentIndex BOTÃO - ${_currentIndex.toString()}');
     //teste_2
   }
 
