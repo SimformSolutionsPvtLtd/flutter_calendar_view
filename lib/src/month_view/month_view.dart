@@ -38,10 +38,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;
 
-  ///
+  ///Called when the user drags the last page to the left. Requesting a new page.
+  ///Made for pagination with a request to the database.
   final CalendarPageChangeCallBack? onHasReachedEnd;
 
-  ///
+  ///Called when the user drags the first page to the right.
+  ///Requesting a new previous page. Made for paging with a request to the database.
   final CalendarPageChangeCallBack? onHasReachedStart;
 
   /// This function will be called when user taps on month view cell.
@@ -176,7 +178,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// defines that show and hide cell not is in current month
   final bool hideDaysNotInMonth;
 
-  //
+  //defines to receive new page request when there is no previous and next page.
+  //Suitable for database request.
   final bool callBackStartEndPage;
 
   /// Main [Widget] to display month view.
@@ -223,8 +226,6 @@ class MonthView<T extends Object?> extends StatefulWidget {
         assert(!(callBackStartEndPage && (onHasReachedEnd == null || onHasReachedStart == null)),
             "When [callBackStartEndPage] is true, [onHasReachedEnd] and [onHasReachedStart] must not be null"),
         super(key: key);
-
-  //TODO: criando novo método evitar de ser iguais.
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -343,8 +344,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Widget build(BuildContext context) {
     var pageView = PageView.builder(
       controller: _pageController,
-      //physics: widget.pageViewPhysics,
-      //TODO: adicionado
       physics:
           widget.callBackStartEndPage ? NeverScrollableScrollPhysics() : widget.pageViewPhysics,
       onPageChanged: _onPageChange,
@@ -435,36 +434,36 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                       //onTap: () => print('PageView onTap'),
                       //teste_3
                       onHorizontalDragEnd: (dragEndDetails) {
-                        debugPrint('PageView onHorizontalDragEnd');
+                        //debugPrint('PageView onHorizontalDragEnd');
                         if (dragEndDetails.primaryVelocity! < 0) {
-                          debugPrint('PageView onHorizontalDragEnd at RIGHT');
+                          //debugPrint('PageView onHorizontalDragEnd at RIGHT');
                           _pageController.nextPage(
                               duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                         }
                         if (dragEndDetails.primaryVelocity! > 0) {
-                          debugPrint('PageView onHorizontalDragEnd at LEFT');
+                          //debugPrint('PageView onHorizontalDragEnd at LEFT');
                           _pageController.previousPage(
                               duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
                         }
                         if (dragEndDetails.primaryVelocity! > 0 && hasReachedStart) {
                           widget.onHasReachedStart?.call(_currentDate, _currentIndex);
-                          debugPrint('PageView onHorizontalDragEnd at START');
-                          debugPrint('🚀 ------------------');
-                          debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
-                          debugPrint('🚀 ------------------');
-                          debugPrint(
-                              '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
-                          debugPrint('🚀 ------------------');
+                          // debugPrint('PageView onHorizontalDragEnd at START');
+                          // debugPrint('🚀 ------------------');
+                          // debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
+                          // debugPrint('🚀 ------------------');
+                          // debugPrint(
+                          // '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+                          // debugPrint('🚀 ------------------');
                         } else if (dragEndDetails.primaryVelocity! < 0 && hasReachedEnd) {
                           widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
-                          debugPrint('PageView onHorizontalDragEnd at END');
+                          //debugPrint('PageView onHorizontalDragEnd at END');
 
-                          debugPrint('🚀 ------------------');
-                          debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
-                          debugPrint('🚀 ------------------');
-                          debugPrint(
-                              '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
-                          debugPrint('🚀 ------------------');
+                          // debugPrint('🚀 ------------------');
+                          // debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
+                          // debugPrint('🚀 ------------------');
+                          // debugPrint(
+                          // '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+                          // debugPrint('🚀 ------------------');
                         }
                       },
                       child: pageView,
@@ -573,8 +572,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   /// Calls when user changes page using gesture or inbuilt methods.
   void _onPageChange(int value) {
-    //TODO: inserir _currentIndexOld aqui e  => _currentIndexNew
-    //final monthLast = _maxDate.getMonthDifference(_currentDate) - 1;
     if (mounted) {
       setState(() {
         _currentDate = DateTime(
@@ -595,12 +592,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       hasReachedEnd = false;
     }
 
-    debugPrint('🚀 ------------------');
-    debugPrint('🚀 ###   _onPageChange   #####');
-    debugPrint('🚀 ------------------');
-    debugPrint(
-        '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
-    debugPrint('🚀 ------------------');
+    // debugPrint('🚀 ------------------');
+    // debugPrint('🚀 ###   _onPageChange   #####');
+    // debugPrint('🚀 ------------------');
+    // debugPrint(
+    // '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+    // debugPrint('🚀 ------------------');
     //teste_2
   }
 
