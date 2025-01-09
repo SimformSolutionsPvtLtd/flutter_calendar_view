@@ -67,6 +67,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       key: _form,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
             controller: _titleController,
@@ -255,15 +256,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               hintText: "Event Description",
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Repeat',
-              style: TextStyle(
-                color: AppColors.black,
-                fontWeight: FontWeight.w500,
-                fontSize: 17,
-              ),
+          Text(
+            'Repeat',
+            style: TextStyle(
+              color: AppColors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: 17,
             ),
           ),
           Row(
@@ -392,7 +390,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Reoccurrence ends on: ',
+                  '${AppConstants.ltr}Reoccurrence ends on: ',
                   style: TextStyle(
                     color: AppColors.black,
                     fontWeight: FontWeight.w500,
@@ -519,7 +517,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           Row(
             children: [
               Text(
-                "Event Color: ",
+                "${AppConstants.ltr}Event Color: ",
                 style: TextStyle(
                   color: AppColors.black,
                   fontSize: 17,
@@ -537,9 +535,11 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           SizedBox(
             height: 15,
           ),
-          CustomButton(
-            onTap: _createEvent,
-            title: widget.event == null ? "Add Event" : "Update Event",
+          Center(
+            child: CustomButton(
+              onTap: _createEvent,
+              title: widget.event == null ? "Add Event" : "Update Event",
+            ),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
@@ -43,7 +44,7 @@ class CalendarConfig extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Active View:",
+                  "${AppConstants.ltr}Active View:",
                   style: TextStyle(
                     fontSize: 20.0,
                     color: AppColors.black,
@@ -89,7 +90,7 @@ class CalendarConfig extends StatelessWidget {
                   height: 40,
                 ),
                 Text(
-                  "Add Event: ",
+                  "${AppConstants.ltr}Add Event: ",
                   style: TextStyle(
                     fontSize: 20.0,
                     color: AppColors.black,
