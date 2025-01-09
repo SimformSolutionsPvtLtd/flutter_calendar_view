@@ -279,10 +279,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     _regulateCurrentDate();
 
+    // Initialize starts on the first or last page
+
+    _setIsFirstLastMonthInit();
+
     // Initialize page controller to control page actions.
-    if (_currentIndex == 0) {
-      hasReachedStart = true;
-    }
+
     _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
@@ -325,6 +327,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     if (widget.minMonth != oldWidget.minMonth || widget.maxMonth != oldWidget.maxMonth) {
       _setDateRange();
       _regulateCurrentDate();
+      _setIsFirstLastMonthInit();
 
       _pageController.jumpToPage(_currentIndex);
     }
@@ -548,6 +551,19 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     // Calculate the current index of page view.
     _currentIndex = _minDate.getMonthDifference(_currentDate) - 1;
     //index = _currentIndex;
+  }
+
+  /// Sets if starts on the first or last page
+  /// This method is used to do pagination. When the user requests
+  /// a new page by asking for an extra page, it arrives in the first or last month.
+  void _setIsFirstLastMonthInit() {
+    if (_currentIndex == 0) {
+      hasReachedStart = true;
+    }
+
+    if (_currentIndex == _totalMonths - 1) {
+      hasReachedEnd = true;
+    }
   }
 
   /// Sets the minimum and maximum dates for current view.
