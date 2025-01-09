@@ -265,6 +265,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   void listenedChangePage() {
     //teste_1
     if (_pageController.page!.toInt() == _pageController.page!) {
+      //TODO: dragRight ou dragLeft?
       widget.onPageChange?.call(_currentDate, _currentIndex);
       debugPrint('🚀 ------------------');
       debugPrint('🚀 ###   listenedChangePage   #####');
@@ -516,6 +517,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   /// Calls when user changes page using gesture or inbuilt methods.
   void _onPageChange(int value) {
+    //TODO: inserir _currentIndexOld aqui e  => _currentIndexNew
     if (mounted) {
       setState(() {
         _currentDate = DateTime(
@@ -525,6 +527,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         _currentIndex = value;
       });
     }
+    //widget.onPageChange?.call(_currentDate, _currentIndex);
 
     debugPrint('🚀 ------------------');
     debugPrint('🚀 ###   _onPageChange   #####');

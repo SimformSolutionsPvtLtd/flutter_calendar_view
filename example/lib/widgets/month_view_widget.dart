@@ -21,6 +21,7 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: true,
       startDay: WeekDays.friday,
       useAvailableVerticalSpace: true,
+
       //pageViewPhysics: RangeMaintainingScrollPhysics(), // ok
       //pageViewPhysics: NeverScrollableScrollPhysics(), // ok
       //pageViewPhysics: AlwaysScrollableScrollPhysics(), // ok
