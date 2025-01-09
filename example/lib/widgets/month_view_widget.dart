@@ -21,7 +21,13 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: true,
       startDay: WeekDays.friday,
       useAvailableVerticalSpace: true,
-
+      callBackStartEndPage: true,
+      onHasReachedStart: (date, page) => debugPrint(
+          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${page.toString()}'),
+      onHasReachedEnd: (date, page) => debugPrint(
+          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${page.toString()}'),
+      //minMonth: DateTime.now()..subtract(const Duration(days: 3)),
+      //maxMonth: DateTime.now()..add(const Duration(days: 3)),
       //pageViewPhysics: RangeMaintainingScrollPhysics(), // ok
       //pageViewPhysics: NeverScrollableScrollPhysics(), // ok
       //pageViewPhysics: AlwaysScrollableScrollPhysics(), // ok

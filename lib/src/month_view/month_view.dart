@@ -38,6 +38,12 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;
 
+  ///
+  final CalendarPageChangeCallBack? onHasReachedEnd;
+
+  ///
+  final CalendarPageChangeCallBack? onHasReachedStart;
+
   /// This function will be called when user taps on month view cell.
   final CellTapCallback<T>? onCellTap;
 
@@ -170,6 +176,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// defines that show and hide cell not is in current month
   final bool hideDaysNotInMonth;
 
+  //
+  final bool callBackStartEndPage;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -190,6 +199,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.pageTransitionCurve = Curves.ease,
     this.width,
     this.onPageChange,
+    this.onHasReachedEnd,
+    this.onHasReachedStart,
     this.onCellTap,
     this.onEventTap,
     this.onEventLongTap,
@@ -202,13 +213,18 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.safeAreaOption = const SafeAreaOption(),
     this.onHeaderTitleTap,
     this.pagePhysics = const ClampingScrollPhysics(),
-    this.pageViewPhysics,
+    this.pageViewPhysics, //
     this.onEventDoubleTap,
     this.showWeekTileBorder = true,
     this.hideDaysNotInMonth = false,
+    this.callBackStartEndPage = false,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
+        assert(!(callBackStartEndPage && (onHasReachedEnd == null || onHasReachedStart == null)),
+            "When [callBackStartEndPage] is true, [onHasReachedEnd] and [onHasReachedStart] must not be null"),
         super(key: key);
+
+  //TODO: criando novo método evitar de ser iguais.
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -243,6 +259,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late VoidCallback _reloadCallback;
 
+  bool hasReachedStart = false;
+  bool hasReachedEnd = false;
+
+  //int index = 0;
+
   @override
   void initState() {
     super.initState();
@@ -252,28 +273,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _setDateRange();
 
     // Initialize current date.
+
     _currentDate = (widget.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
-    _pageController = PageController(initialPage: _currentIndex)..addListener(listenedChangePage);
+    _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
-  }
-
-  void listenedChangePage() {
-    //teste_1
-    if (_pageController.page!.toInt() == _pageController.page!) {
-      //TODO: dragRight ou dragLeft?
-      widget.onPageChange?.call(_currentDate, _currentIndex);
-      debugPrint('🚀 ------------------');
-      debugPrint('🚀 ###   listenedChangePage   #####');
-      debugPrint('🚀 ------------------');
-      debugPrint(
-          '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
-      debugPrint('🚀 ###   -------  #####');
-    }
   }
 
   @override
@@ -326,13 +334,90 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   @override
   void dispose() {
     _controller?.removeListener(_reloadCallback);
-    _pageController.removeListener(listenedChangePage);
+
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var pageView = PageView.builder(
+      controller: _pageController,
+      //physics: widget.pageViewPhysics,
+      //TODO: adicionado
+      physics:
+          widget.callBackStartEndPage ? NeverScrollableScrollPhysics() : widget.pageViewPhysics,
+      onPageChanged: _onPageChange,
+      itemBuilder: (_, index) {
+        final date = DateTime(_minDate.year, _minDate.month + index);
+        final weekDays = date.datesOfWeek(
+          start: widget.startDay,
+          showWeekEnds: widget.showWeekends,
+        );
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: _width,
+              child: Row(
+                children: List.generate(
+                  widget.showWeekends ? 7 : 5,
+                  (index) => Expanded(
+                    child: SizedBox(
+                      width: _cellWidth,
+                      child: _weekBuilder(weekDays[index].weekday - 1),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final dates = date.datesOfMonths(
+                    startDay: widget.startDay,
+                    hideDaysNotInMonth: widget.hideDaysNotInMonth,
+                    showWeekends: widget.showWeekends,
+                  );
+                  final _cellAspectRatio = widget.useAvailableVerticalSpace
+                      ? calculateCellAspectRatio(
+                          height: constraints.maxHeight,
+                          daysInMonth: dates.length,
+                        )
+                      : widget.cellAspectRatio;
+
+                  return SizedBox(
+                    height: _height,
+                    width: _width,
+                    child: _MonthPageBuilder<T>(
+                      key: ValueKey(date.toIso8601String()),
+                      onCellTap: widget.onCellTap,
+                      onDateLongPress: widget.onDateLongPress,
+                      width: _width,
+                      height: _height,
+                      controller: controller,
+                      borderColor: widget.borderColor,
+                      borderSize: widget.borderSize,
+                      cellBuilder: _cellBuilder,
+                      cellRatio: _cellAspectRatio,
+                      date: date,
+                      showBorder: widget.showBorder,
+                      startDay: widget.startDay,
+                      physics: widget.pagePhysics,
+                      hideDaysNotInMonth: widget.hideDaysNotInMonth,
+                      weekDays: widget.showWeekends ? 7 : 5,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      itemCount: _totalMonths,
+    );
     return SafeAreaWrapper(
       option: widget.safeAreaOption,
       child: SizedBox(
@@ -345,80 +430,46 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
               child: _headerBuilder(_currentDate),
             ),
             Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                physics: widget.pageViewPhysics,
-                onPageChanged: _onPageChange,
-                itemBuilder: (_, index) {
-                  final date = DateTime(_minDate.year, _minDate.month + index);
-                  final weekDays = date.datesOfWeek(
-                    start: widget.startDay,
-                    showWeekEnds: widget.showWeekends,
-                  );
+              child: widget.callBackStartEndPage
+                  ? GestureDetector(
+                      //onTap: () => print('PageView onTap'),
+                      //teste_3
+                      onHorizontalDragEnd: (dragEndDetails) {
+                        debugPrint('PageView onHorizontalDragEnd');
+                        if (dragEndDetails.primaryVelocity! < 0) {
+                          debugPrint('PageView onHorizontalDragEnd at RIGHT');
+                          _pageController.nextPage(
+                              duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                        }
+                        if (dragEndDetails.primaryVelocity! > 0) {
+                          debugPrint('PageView onHorizontalDragEnd at LEFT');
+                          _pageController.previousPage(
+                              duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+                        }
+                        if (dragEndDetails.primaryVelocity! > 0 && hasReachedStart) {
+                          widget.onHasReachedStart?.call(_currentDate, _currentIndex);
+                          debugPrint('PageView onHorizontalDragEnd at START');
+                          debugPrint('🚀 ------------------');
+                          debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
+                          debugPrint('🚀 ------------------');
+                          debugPrint(
+                              '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+                          debugPrint('🚀 ------------------');
+                        } else if (dragEndDetails.primaryVelocity! < 0 && hasReachedEnd) {
+                          widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
+                          debugPrint('PageView onHorizontalDragEnd at END');
 
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: _width,
-                        child: Row(
-                          children: List.generate(
-                            widget.showWeekends ? 7 : 5,
-                            (index) => Expanded(
-                              child: SizedBox(
-                                width: _cellWidth,
-                                child: _weekBuilder(weekDays[index].weekday - 1),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final dates = date.datesOfMonths(
-                              startDay: widget.startDay,
-                              hideDaysNotInMonth: widget.hideDaysNotInMonth,
-                              showWeekends: widget.showWeekends,
-                            );
-                            final _cellAspectRatio = widget.useAvailableVerticalSpace
-                                ? calculateCellAspectRatio(
-                                    height: constraints.maxHeight,
-                                    daysInMonth: dates.length,
-                                  )
-                                : widget.cellAspectRatio;
-
-                            return SizedBox(
-                              height: _height,
-                              width: _width,
-                              child: _MonthPageBuilder<T>(
-                                key: ValueKey(date.toIso8601String()),
-                                onCellTap: widget.onCellTap,
-                                onDateLongPress: widget.onDateLongPress,
-                                width: _width,
-                                height: _height,
-                                controller: controller,
-                                borderColor: widget.borderColor,
-                                borderSize: widget.borderSize,
-                                cellBuilder: _cellBuilder,
-                                cellRatio: _cellAspectRatio,
-                                date: date,
-                                showBorder: widget.showBorder,
-                                startDay: widget.startDay,
-                                physics: widget.pagePhysics,
-                                hideDaysNotInMonth: widget.hideDaysNotInMonth,
-                                weekDays: widget.showWeekends ? 7 : 5,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                itemCount: _totalMonths,
-              ),
+                          debugPrint('🚀 ------------------');
+                          debugPrint('🚀 ###   onHorizontalDragEnd END   #####');
+                          debugPrint('🚀 ------------------');
+                          debugPrint(
+                              '🚀 month_view.dart - date - ${_currentDate.toString()} - date - ${_currentIndex.toString()}');
+                          debugPrint('🚀 ------------------');
+                        }
+                      },
+                      child: pageView,
+                    )
+                  : pageView,
             ),
           ],
         ),
@@ -494,15 +545,20 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     // Calculate the current index of page view.
     _currentIndex = _minDate.getMonthDifference(_currentDate) - 1;
+    //index = _currentIndex;
   }
 
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     // Initialize minimum date.
-    _minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
+    //_minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
+
+    final datePast = DateTime.parse('2024-12-03T12:00:00.000');
+    _minDate = datePast;
 
     // Initialize maximum date.
-    _maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
+    //_maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
+    _maxDate = DateTime.parse('2025-04-03T12:00:00.000');
 
     assert(
       _minDate.isBefore(_maxDate),
@@ -518,6 +574,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Calls when user changes page using gesture or inbuilt methods.
   void _onPageChange(int value) {
     //TODO: inserir _currentIndexOld aqui e  => _currentIndexNew
+    //final monthLast = _maxDate.getMonthDifference(_currentDate) - 1;
     if (mounted) {
       setState(() {
         _currentDate = DateTime(
@@ -527,7 +584,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         _currentIndex = value;
       });
     }
-    //widget.onPageChange?.call(_currentDate, _currentIndex);
+    widget.onPageChange?.call(_currentDate, _currentIndex);
+
+    if (value == _totalMonths - 1) {
+      hasReachedEnd = true;
+    } else if (value == 0) {
+      hasReachedStart = true;
+    } else {
+      hasReachedStart = false;
+      hasReachedEnd = false;
+    }
 
     debugPrint('🚀 ------------------');
     debugPrint('🚀 ###   _onPageChange   #####');
