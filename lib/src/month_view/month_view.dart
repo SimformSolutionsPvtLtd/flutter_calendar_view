@@ -223,7 +223,9 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.callBackStartEndPage = false,
   })  : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously"),
-        assert(!(callBackStartEndPage && (onHasReachedEnd == null || onHasReachedStart == null)),
+        assert(
+            !(callBackStartEndPage &&
+                (onHasReachedEnd == null || onHasReachedStart == null)),
             "When [callBackStartEndPage] is true, [onHasReachedEnd] and [onHasReachedStart] must not be null"),
         super(key: key);
 
@@ -292,7 +294,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
       _controller = newController;
@@ -313,7 +316,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   void didUpdateWidget(MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update controller.
-    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ??
+        CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
       _controller?.removeListener(_reloadCallback);
@@ -322,7 +326,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     }
 
     // Update date range.
-    if (widget.minMonth != oldWidget.minMonth || widget.maxMonth != oldWidget.maxMonth) {
+    if (widget.minMonth != oldWidget.minMonth ||
+        widget.maxMonth != oldWidget.maxMonth) {
       _setDateRange();
       _regulateCurrentDate();
       _setIsFirstLastMonthInit();
@@ -348,8 +353,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Widget build(BuildContext context) {
     var pageView = PageView.builder(
       controller: _pageController,
-      physics:
-          widget.callBackStartEndPage ? NeverScrollableScrollPhysics() : widget.pageViewPhysics,
+      physics: widget.callBackStartEndPage
+          ? NeverScrollableScrollPhysics()
+          : widget.pageViewPhysics,
       onPageChanged: _onPageChange,
       itemBuilder: (_, index) {
         final date = DateTime(_minDate.year, _minDate.month + index);
@@ -442,10 +448,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                         if (dragEndDetails.primaryVelocity! > 0) {
                           previousPage();
                         }
-                        if (dragEndDetails.primaryVelocity! > 0 && hasReachedStart) {
-                          widget.onHasReachedStart?.call(_currentDate, _currentIndex);
-                        } else if (dragEndDetails.primaryVelocity! < 0 && hasReachedEnd) {
-                          widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
+                        if (dragEndDetails.primaryVelocity! > 0 &&
+                            hasReachedStart) {
+                          widget.onHasReachedStart
+                              ?.call(_currentDate, _currentIndex);
+                        } else if (dragEndDetails.primaryVelocity! < 0 &&
+                            hasReachedEnd) {
+                          widget.onHasReachedEnd
+                              ?.call(_currentDate, _currentIndex);
                         }
                       },
                       child: pageView,
@@ -692,7 +702,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToPage(int page, {Duration? duration, Curve? curve}) async {
+  Future<void> animateToPage(int page,
+      {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
         duration: duration ?? widget.pageTransitionDuration,
         curve: curve ?? widget.pageTransitionCurve);
@@ -714,7 +725,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToMonth(DateTime month, {Duration? duration, Curve? curve}) async {
+  Future<void> animateToMonth(DateTime month,
+      {Duration? duration, Curve? curve}) async {
     if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
@@ -789,9 +801,10 @@ class _MonthPageBuilder<T> extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           // Hide events if `hideDaysNotInMonth` true
-          final events = hideDaysNotInMonth && (monthDays[index].month != date.month)
-              ? <CalendarEventData<T>>[]
-              : controller.getEventsOnDay(monthDays[index]);
+          final events =
+              hideDaysNotInMonth && (monthDays[index].month != date.month)
+                  ? <CalendarEventData<T>>[]
+                  : controller.getEventsOnDay(monthDays[index]);
           return GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
             onLongPress: () => onDateLongPress?.call(monthDays[index]),
