@@ -344,15 +344,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     super.dispose();
   }
 
-  void onHorizontalDragStartEnd(DragEndDetails dragEndDetails) {
-    if (_currentIndex == _totalMonths - 1) {
+  void onHorizontalDragStartEnd(DragEndDetails dragEndDetails,
+      {required bool isFirstPage, required bool isLastPage}) {
+    if (isLastPage) {
       if (dragEndDetails.primaryVelocity! > 0) {
         previousPage();
       }
       if (dragEndDetails.primaryVelocity! < 0) {
         widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
       }
-    } else if (_currentIndex == 0) {
+    } else if (isFirstPage) {
       if (dragEndDetails.primaryVelocity! < 0) {
         nextPage();
       }
@@ -366,7 +367,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   Widget build(BuildContext context) {
     final pageView = PageView.builder(
       controller: _pageController,
-      //physics: widget.callBackStartEndPage ? NeverScrollableScrollPhysics() : widget.pageViewPhysics,
       physics: widget.pageViewPhysics,
       onPageChanged: _onPageChange,
       itemBuilder: (_, index) {
@@ -375,10 +375,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           start: widget.startDay,
           showWeekEnds: widget.showWeekends,
         );
-        if (index == 0 || index == _totalMonths - 1) {
+
+        final bool isFirstPage = index == 0;
+        final bool isLastPage = index == _totalMonths - 1;
+        if (isFirstPage || isLastPage) {
           return GestureDetector(
-            onHorizontalDragEnd: onHorizontalDragStartEnd,
-            //onHorizontalDragUpdate: onHorizontalDragStartEndNew,
+            onHorizontalDragEnd: (details) => onHorizontalDragStartEnd(details,
+                isFirstPage: isFirstPage, isLastPage: isLastPage),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -599,13 +602,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     // Initialize minimum date.
-    _minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
-    //final now = DateTime.now();
-    //_minDate = DateTime(now.year, now.month - 1);
+    //_minDate = (widget.minMonth ?? CalendarConstants.epochDate).withoutTime;
+    final now = DateTime.now();
+    _minDate = DateTime(now.year, now.month - 1);
 
     // Initialize maximum date.
-    _maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
-    //_maxDate = DateTime(now.year, now.month + 1);
+    //_maxDate = (widget.maxMonth ?? CalendarConstants.maxDate).withoutTime;
+    _maxDate = DateTime(now.year, now.month + 1);
 
     assert(
       _minDate.isBefore(_maxDate),
