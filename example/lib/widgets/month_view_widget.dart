@@ -21,13 +21,13 @@ class MonthViewWidget extends StatelessWidget {
       showWeekends: true,
       startDay: WeekDays.friday,
       useAvailableVerticalSpace: true,
-      /* callBackStartEndPage: true,
+      callBackStartEndPage: true,
       onHasReachedStart: (date, page) => debugPrint(
-          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${page.toString()}'),
+          '🚀 MonthViewWidget - date - ${date.toString()} - date - ${page.toString()}'),
       onHasReachedEnd: (date, page) => debugPrint(
-          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${page.toString()}'), */
-      onPageChange: (date, pageIndex) => debugPrint(
-          '🚀 month_calendar_view.dart - date - ${date.toString()} - date - ${pageIndex.toString()}'),
+          '🚀 MonthViewWidget - date - ${date.toString()} - date - ${page.toString()}'),
+      //onPageChange: (date, pageIndex) => debugPrint(
+      //    '🚀 MonthViewWidget - date - ${date.toString()} - date - ${pageIndex.toString()}'),
       onEventTap: (event, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
