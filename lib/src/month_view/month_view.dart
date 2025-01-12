@@ -262,9 +262,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late VoidCallback _reloadCallback;
 
-  bool isStartMonth = false;
-  bool isEndMonth = false;
-
   @override
   void initState() {
     super.initState();
