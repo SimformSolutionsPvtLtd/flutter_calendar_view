@@ -262,8 +262,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late VoidCallback _reloadCallback;
 
-  bool hasReachedStart = false;
-  bool hasReachedEnd = false;
+  bool isStartMonth = false;
+  bool isEndMonth = false;
 
   @override
   void initState() {
@@ -279,31 +279,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     _regulateCurrentDate();
 
-    // IInitialize starts on first or last page for pagination return
-
-    _setIsFirstLastMonthInit();
-
     // Initialize page controller to control page actions.
 
     _pageController = PageController(initialPage: _currentIndex);
 
-    //_pageController.addListener(listenedFirstEndPage);
-
     _assignBuilders();
   }
-
-  /* void listenedFirstEndPage() {
-    ScrollPosition position = _pageController.position;
-    debugPrint(
-        '🚀 month_view.dart - _pageController.offset - ${_pageController.offset.toString()}');
-    if (_pageController.offset == position.maxScrollExtent) {
-      //if (_pageController.offset == position.maxScrollExtent && hasReachedEnd) {
-      debugPrint('🚀 month_view.dart - hasReachedEnd - ${hasReachedEnd.toString()}');
-    } else if (_pageController.offset == position.minScrollExtent) {
-      //} else if (_pageController.offset == position.minScrollExtent && hasReachedStart) {
-      debugPrint('🚀 month_view.dart - hasReachedStart - ${hasReachedStart.toString()}');
-    }
-  } */
 
   @override
   void didChangeDependencies() {
@@ -345,7 +326,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         widget.maxMonth != oldWidget.maxMonth) {
       _setDateRange();
       _regulateCurrentDate();
-      _setIsFirstLastMonthInit();
 
       _pageController.jumpToPage(_currentIndex);
     }
@@ -365,14 +345,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   void onHorizontalDragStartEnd(DragEndDetails dragEndDetails) {
-    if (hasReachedEnd) {
+    if (_currentIndex == _totalMonths - 1) {
       if (dragEndDetails.primaryVelocity! > 0) {
         previousPage();
       }
       if (dragEndDetails.primaryVelocity! < 0) {
         widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
       }
-    } else if (hasReachedStart) {
+    } else if (_currentIndex == 0) {
       if (dragEndDetails.primaryVelocity! < 0) {
         nextPage();
       }
@@ -395,8 +375,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           start: widget.startDay,
           showWeekEnds: widget.showWeekends,
         );
-
-        if (hasReachedEnd || hasReachedStart) {
+        if (index == 0 || index == _totalMonths - 1) {
           return GestureDetector(
             onHorizontalDragEnd: onHorizontalDragStartEnd,
             //onHorizontalDragUpdate: onHorizontalDragStartEndNew,
@@ -617,19 +596,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     //index = _currentIndex;
   }
 
-  /// Sets if starts on the first or last page
-  /// This method is used to do pagination. When the user requests
-  /// a new page by asking for an extra page, it arrives in the first or last month.
-  void _setIsFirstLastMonthInit() {
-    if (_currentIndex == 0) {
-      hasReachedStart = true;
-    }
-
-    if (_currentIndex == _totalMonths - 1) {
-      hasReachedEnd = true;
-    }
-  }
-
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     // Initialize minimum date.
@@ -664,15 +630,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       });
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
-
-    if (value == _totalMonths - 1) {
-      hasReachedEnd = true;
-    } else if (value == 0) {
-      hasReachedStart = true;
-    } else {
-      hasReachedStart = false;
-      hasReachedEnd = false;
-    }
   }
 
   /// Default month view header builder
