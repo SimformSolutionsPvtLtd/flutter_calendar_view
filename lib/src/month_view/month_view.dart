@@ -343,7 +343,20 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   void onHorizontalDragStartEnd(DragEndDetails dragEndDetails,
       {required bool isFirstPage, required bool isLastPage}) {
-    if (isLastPage) {
+    if (isFirstPage && isLastPage) {
+      if (dragEndDetails.primaryVelocity! > 0) {
+        previousPage();
+      }
+      if (dragEndDetails.primaryVelocity! < 0) {
+        widget.onHasReachedEnd?.call(_currentDate, _currentIndex);
+      }
+      if (dragEndDetails.primaryVelocity! < 0) {
+        nextPage();
+      }
+      if (dragEndDetails.primaryVelocity! > 0) {
+        widget.onHasReachedStart?.call(_currentDate, _currentIndex);
+      }
+    } else if (isLastPage) {
       if (dragEndDetails.primaryVelocity! > 0) {
         previousPage();
       }
