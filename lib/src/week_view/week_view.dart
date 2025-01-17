@@ -886,6 +886,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      textDirection: Directionality.of(context),
     );
   }
 
