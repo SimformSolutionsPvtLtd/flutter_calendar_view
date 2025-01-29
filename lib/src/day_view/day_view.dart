@@ -566,6 +566,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
+          lineStyle: LineStyle.dashed,
           color: Constants.defaultBorderColor,
           offset: 5,
         );
@@ -731,10 +732,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     int startHour,
     int endHour,
   ) {
+    final directionality = Directionality.of(context);
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
-      offset: offset,
+      timelineWidth: widget.timeLineWidth,
+      textDirection: directionality,
+      offset: directionality == TextDirection.ltr ? offset : 0,
       minuteHeight: minuteHeight,
       verticalLineOffset: verticalLineOffset,
       showVerticalLine: showVerticalLine,

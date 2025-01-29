@@ -8,7 +8,12 @@ import 'create_event_page.dart';
 import 'web/web_home_page.dart';
 
 class DayViewPageDemo extends StatefulWidget {
-  const DayViewPageDemo({super.key});
+  const DayViewPageDemo({
+    super.key,
+    this.directionality = TextDirection.ltr,
+  });
+
+  final TextDirection directionality;
 
   @override
   _DayViewPageDemoState createState() => _DayViewPageDemoState();
@@ -17,17 +22,24 @@ class DayViewPageDemo extends StatefulWidget {
 class _DayViewPageDemoState extends State<DayViewPageDemo> {
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWidget(
-      webWidget: WebHomePage(
-        selectedView: CalendarView.day,
-      ),
-      mobileWidget: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          elevation: 8,
-          onPressed: () => context.pushRoute(CreateEventPage()),
+    return Directionality(
+      textDirection: widget.directionality,
+      child: ResponsiveWidget(
+        webWidget: WebHomePage(
+          selectedView: CalendarView.day,
         ),
-        body: DayViewWidget(),
+        mobileWidget: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            elevation: 8,
+            onPressed: () => context.pushRoute(
+              CreateEventPage(
+                directionality: widget.directionality,
+              ),
+            ),
+          ),
+          body: DayViewWidget(),
+        ),
       ),
     );
   }

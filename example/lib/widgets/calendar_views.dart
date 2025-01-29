@@ -11,31 +11,39 @@ import 'week_view_widget.dart';
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
 
-  const CalendarViews({super.key, this.view = CalendarView.month});
+  const CalendarViews({
+    super.key,
+    this.view = CalendarView.month,
+    this.directionality = TextDirection.ltr,
+  });
 
   final _breakPoint = 490.0;
+  final TextDirection directionality;
 
   @override
   Widget build(BuildContext context) {
     final availableWidth = MediaQuery.of(context).size.width;
     final width = min(_breakPoint, availableWidth);
 
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: AppColors.grey,
-      child: Center(
-        child: view == CalendarView.month
-            ? MonthViewWidget(
-                width: width,
-              )
-            : view == CalendarView.day
-                ? DayViewWidget(
-                    width: width,
-                  )
-                : WeekViewWidget(
-                    width: width,
-                  ),
+    return Directionality(
+      textDirection: directionality,
+      child: Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: AppColors.grey,
+        child: Center(
+          child: view == CalendarView.month
+              ? MonthViewWidget(
+                  width: width,
+                )
+              : view == CalendarView.day
+                  ? DayViewWidget(
+                      width: width,
+                    )
+                  : WeekViewWidget(
+                      width: width,
+                    ),
+        ),
       ),
     );
   }
