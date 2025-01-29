@@ -80,6 +80,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// Color for event tile.
   final Color tileColor;
 
+  // TODO(Shubham): Move all callbacks to separate class
   /// Called when user taps on any event tile.
   final TileTapCallback<T>? onTileTap;
 
@@ -88,6 +89,15 @@ class FilledCell<T extends Object?> extends StatelessWidget {
 
   /// Called when user double tap on any event tile.
   final TileTapCallback<T>? onTileDoubleTap;
+
+  /// Similar to [onTileTap] with additional tap details callback.
+  final TileTapDetailsCallback<T>? onTileTapDetails;
+
+  /// Similar to [onTileDoubleTap] with additional tap details callback.
+  final TileDoubleTapDetailsCallback<T>? onTileDoubleTapDetails;
+
+  /// Similar to [onTileLongTap] with additional tap details callback.
+  final TileLongTapDetailsCallback<T>? onTileLongTapDetails;
 
   /// defines that [date] is in current month or not.
   final bool isInMonth;
@@ -117,6 +127,9 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.highlightColor = Colors.blue,
     this.onTileTap,
     this.onTileLongTap,
+    this.onTileTapDetails,
+    this.onTileDoubleTapDetails,
+    this.onTileLongTapDetails,
     this.tileColor = Colors.blue,
     this.highlightRadius = 11,
     this.titleColor = Constants.black,
@@ -165,6 +178,23 @@ class FilledCell<T extends Object?> extends StatelessWidget {
                             onTileLongTap?.call(events[index], date),
                         onDoubleTap: () =>
                             onTileDoubleTap?.call(events[index], date),
+                        onTapUp: (details) => onTileTapDetails?.call(
+                          events[index],
+                          date,
+                          details,
+                        ),
+                        onLongPressStart: (details) =>
+                            onTileLongTapDetails?.call(
+                          events[index],
+                          date,
+                          details,
+                        ),
+                        onDoubleTapDown: (details) =>
+                            onTileDoubleTapDetails?.call(
+                          events[index],
+                          date,
+                          details,
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
                             color: events[index].color,
