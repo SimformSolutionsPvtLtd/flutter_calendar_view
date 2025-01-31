@@ -26,7 +26,7 @@ jobs:
         run: flutter pub get
         
       - name: Build Artifect
-        run: cd example && flutter build web
+        run: cd example && flutter build web --base-href /flutter_calendar_view
 
       - name: Deploy to GitHub Pages
         if: success()
