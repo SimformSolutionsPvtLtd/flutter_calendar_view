@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
-
-final DateTime fixedWeekStart = CalendarConstants.fixedWeekStart;
+import 'constants.dart';
 
 class WeeklyEvent<T> {
   final WeekDays weekday;
@@ -19,7 +20,9 @@ class WeeklyEvent<T> {
 
   CalendarEventData<T> toCalendarEvent() {
     int daysToAdd = weekday.index - WeekDays.monday.index;
-    final date = fixedWeekStart.add(Duration(days: daysToAdd));
+    final date =
+        CalendarConstants.fixedWeekStart.add(Duration(days: daysToAdd));
+
     return CalendarEventData(
       date: date,
       startTime: DateTime(
@@ -27,11 +30,11 @@ class WeeklyEvent<T> {
       endTime: DateTime(
           date.year, date.month, date.day, endTime.hour, endTime.minute),
       event: event,
-      recurrenceSettings: RecurrenceSettings(
-        frequency: RepeatFrequency.weekly,
-        startDate: date,
-      ),
       title: '',
+      // recurrenceSettings: RecurrenceSettings(
+      //   frequency: RepeatFrequency.weekly,
+      //   startDate: date,
+      // ),
     );
   }
 }

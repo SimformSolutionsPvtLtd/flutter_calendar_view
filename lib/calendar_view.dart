@@ -7,6 +7,7 @@ library calendar_view;
 export './src/calendar_constants.dart';
 export './src/calendar_controller_provider.dart';
 export './src/calendar_event_data.dart';
+export './src/weekly_event.dart';
 export './src/components/components.dart';
 export './src/day_view/day_view.dart';
 export './src/enumerations.dart';

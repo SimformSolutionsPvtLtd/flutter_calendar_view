@@ -771,6 +771,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (widget.scheduleMode) {
       _minDate = CalendarConstants.fixedWeekStart;
       _maxDate = CalendarConstants.fixedWeekStart.add(Duration(days: 6));
+      _totalWeeks = 1;
     } else {
       _minDate = (widget.minDay ?? CalendarConstants.epochDate)
           .firstDayOfWeek(start: widget.startDay)

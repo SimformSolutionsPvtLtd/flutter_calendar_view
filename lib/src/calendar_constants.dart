@@ -12,5 +12,5 @@ class CalendarConstants {
   static final DateTime minDate = DateTime(-271819);
 
   // fixed week start date
-  static final DateTime fixedWeekStart = DateTime(2024, 7, 1); // Monday
+  static final DateTime fixedWeekStart = DateTime(2024, 6, 30); // Monday
 }
