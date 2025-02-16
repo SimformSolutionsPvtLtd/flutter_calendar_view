@@ -7,6 +7,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
+import 'weekly_event.dart';
 
 class EventController<T extends Object?> extends ChangeNotifier {
   /// Calendar controller to control all the events related operations like,
@@ -121,6 +122,10 @@ class EventController<T extends Object?> extends ChangeNotifier {
   void add(CalendarEventData<T> event) {
     _calendarData.addEvent(event);
     notifyListeners();
+  }
+
+  void addWeeklyEvent(WeeklyEvent<T> weeklyEvent) {
+    add(weeklyEvent.toCalendarEvent());
   }
 
   /// Removes [event] from this controller.
