@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+// week_view.dart
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
@@ -172,6 +173,15 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// saturday and sunday, only monday and tuesday will be visible in week view.
   final bool showWeekends;
 
+  /// Defines which days should be considered as weekends.
+  ///
+  /// By default Saturday and Sunday are considered as weekends.
+  /// Provide list of [WeekDays] that should be treated as weekends.
+  ///
+  /// This parameter is used in conjunction with [showWeekends] to determine
+  /// which days to display when [showWeekends] is false.
+  final List<WeekDays> weekendDays;
+
   /// Defines which days should be displayed in one week.
   ///
   /// By default all the days will be visible.
@@ -289,6 +299,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onDateLongPress,
     this.onDateTap,
     this.weekDays = WeekDays.values,
+    this.weekendDays = const [WeekDays.saturday, WeekDays.sunday],
     this.showWeekends = true,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
@@ -336,6 +347,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
         assert(
           endHour <= Constants.hoursADay || endHour < startHour,
           "End hour must be less than 24 or startHour must be less than endHour",
+        ),
+        assert(
+          weekendDays.length >= 1,
+          "weekendDays must contain at least one day",
         ),
         super(key: key);
 
@@ -626,9 +641,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _weekDays = widget.weekDays.toSet().toList();
 
     if (!widget.showWeekends) {
-      _weekDays
-        ..remove(WeekDays.saturday)
-        ..remove(WeekDays.sunday);
+      // Remove all weekend days from weekDays
+      _weekDays.removeWhere(
+        (day) => widget.weekendDays.contains(day),
+      );
     }
 
     assert(
@@ -636,7 +652,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         "weekDays can not be empty.\n"
         "Make sure you are providing weekdays in initialization of "
         "WeekView. or showWeekends is true if you are providing only "
-        "saturday or sunday in weekDays.");
+        "weekend days in weekDays.");
     _totalDaysInWeek = _weekDays.length;
   }
 
