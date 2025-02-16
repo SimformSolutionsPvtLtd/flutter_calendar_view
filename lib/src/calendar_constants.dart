@@ -10,4 +10,7 @@ class CalendarConstants {
   static final DateTime epochDate = DateTime(1970);
   static final DateTime maxDate = DateTime(275759);
   static final DateTime minDate = DateTime(-271819);
+
+  // fixed week start date
+  static final DateTime fixedWeekStart = DateTime(2024, 7, 1); // Monday
 }

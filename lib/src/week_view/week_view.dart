@@ -263,6 +263,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for the divider between the days and the WeekView grid
   final WeekDaysDividerSettings? weekDaysDividerSettings;
 
+  /// Flag to enable schedule mode, which will set minDay, maxDay and initialDay to the fixed week start
+  /// and disable the ability to change these values
+  /// The purpose of this mode is to display a fixed week view, which is useful for scheduling
+  final bool scheduleMode;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -325,6 +330,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.keepScrollOffset = false,
     this.onTimestampTap,
     this.weekDaysDividerSettings,
+    this.scheduleMode = false, // New parameter with default value false
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -352,6 +358,13 @@ class WeekView<T extends Object?> extends StatefulWidget {
           weekendDays.length >= 1,
           "weekendDays must contain at least one day",
         ),
+        // Add new assertions for scheduleMode
+        assert(!scheduleMode || (minDay == null),
+            "When scheduleMode is true, minDay must not be set"),
+        assert(!scheduleMode || (maxDay == null),
+            "When scheduleMode is true, maxDay must not be set"),
+        assert(!scheduleMode || (initialDay == null),
+            "When scheduleMode is true, initialDay must not be set"),
         super(key: key);
 
   @override
@@ -755,22 +768,27 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
-    _minDate = (widget.minDay ?? CalendarConstants.epochDate)
-        .firstDayOfWeek(start: widget.startDay)
-        .withoutTime;
+    if (widget.scheduleMode) {
+      _minDate = CalendarConstants.fixedWeekStart;
+      _maxDate = CalendarConstants.fixedWeekStart.add(Duration(days: 6));
+    } else {
+      _minDate = (widget.minDay ?? CalendarConstants.epochDate)
+          .firstDayOfWeek(start: widget.startDay)
+          .withoutTime;
 
-    _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
-        .lastDayOfWeek(start: widget.startDay)
-        .withoutTime;
+      _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
+          .lastDayOfWeek(start: widget.startDay)
+          .withoutTime;
 
-    assert(
-      _minDate.isBefore(_maxDate),
-      "Minimum date must be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
-    );
+      assert(
+        _minDate.isBefore(_maxDate),
+        "Minimum date must be less than maximum date.\n"
+        "Provided minimum date: $_minDate, maximum date: $_maxDate",
+      );
 
-    _totalWeeks =
-        _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+      _totalWeeks =
+          _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+    }
   }
 
   /// Default press detector builder. This builder will be used if

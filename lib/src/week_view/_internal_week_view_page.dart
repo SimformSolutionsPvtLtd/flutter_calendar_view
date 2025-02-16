@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+// _internal_week_view_page.dart
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
