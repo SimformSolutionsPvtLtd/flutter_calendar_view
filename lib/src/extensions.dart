@@ -38,8 +38,6 @@ extension DateTimeExtensions on DateTime {
   /// Gets difference of weeks between [date] and calling object.
   int getWeekDifference(DateTime date,
       {WeekDays start = WeekDays.monday, int daysInView = 7}) {
-    print("daysInView $daysInView");
-
     return (firstDayOfWeek(start: start)
                 .difference(date.firstDayOfWeek(start: start))
                 .inDays
