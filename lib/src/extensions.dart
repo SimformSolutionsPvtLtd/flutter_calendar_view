@@ -36,13 +36,17 @@ extension DateTimeExtensions on DateTime {
       .abs();
 
   /// Gets difference of weeks between [date] and calling object.
-  int getWeekDifference(DateTime date, {WeekDays start = WeekDays.monday}) =>
-      (firstDayOfWeek(start: start)
-                  .difference(date.firstDayOfWeek(start: start))
-                  .inDays
-                  .abs() /
-              7)
-          .ceil();
+  int getWeekDifference(DateTime date,
+      {WeekDays start = WeekDays.monday, int daysInView = 7}) {
+    print("daysInView $daysInView");
+
+    return (firstDayOfWeek(start: start)
+                .difference(date.firstDayOfWeek(start: start))
+                .inDays
+                .abs() /
+            daysInView)
+        .ceil();
+  }
 
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.
