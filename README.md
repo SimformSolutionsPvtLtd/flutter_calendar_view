@@ -241,6 +241,7 @@ WeekView(
       maxLines: 2,
     ), // To set full day events header text config
     keepScrollOffset: true, // To maintain scroll offset when the page changes
+    daysInView:7, // Number of days to display in the view.
 );
 ```
 

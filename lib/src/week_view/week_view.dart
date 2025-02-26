@@ -81,7 +81,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// maximum date.
   ///
   /// ex, If maxDay is 16th March, 2022 then week containing this date will have
-  /// dates from 14th to 20th (Monday to Sunday). adn 20th date will
+  /// dates from 14th to 0th (Monday to Sunday). adn 20th date will
   /// be the actual maximum date.
   final DateTime? maxDay;
 
@@ -250,7 +250,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Number of days to display in the view.
+  final int daysInView;
+
   /// Main widget for week view.
+  ///
   const WeekView({
     Key? key,
     this.controller,
@@ -310,6 +314,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
     this.onTimestampTap,
+    this.daysInView = 7, // Default to 7 days
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -519,12 +524,22 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(
-                          start: widget.startDay,
-                          showWeekEnds: widget.showWeekends,
-                        );
+                        var dates = <DateTime>[];
+                        if (widget.daysInView == 7) {
+                          dates = DateTime(_minDate.year, _minDate.month,
+                                  _minDate.day + (index * DateTime.daysPerWeek))
+                              .datesOfWeek(
+                            start: widget.startDay,
+                            showWeekEnds: widget.showWeekends,
+                          );
+                        } else {
+                          final startDate = _minDate
+                              .add(Duration(days: index * widget.daysInView));
+                          dates = List<DateTime>.generate(
+                            widget.daysInView,
+                            (i) => startDate.add(Duration(days: i)),
+                          );
+                        }
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
@@ -631,7 +646,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         "Make sure you are providing weekdays in initialization of "
         "WeekView. or showWeekends is true if you are providing only "
         "saturday or sunday in weekDays.");
-    _totalDaysInWeek = _weekDays.length;
+    if (widget.daysInView == 7) {
+      _totalDaysInWeek = _weekDays.length;
+    } else {
+      _totalDaysInWeek = widget.daysInView;
+    }
   }
 
   void _updateViewDimensions() {
@@ -726,9 +745,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     }
 
     _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
-    _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
-    _currentIndex =
-        _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
+    if (widget.daysInView == 7) {
+      _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
+    } else {
+      _currentEndDate =
+          _currentStartDate.add(Duration(days: widget.daysInView - 1));
+    }
+
+    _currentIndex = _minDate.getWeekDifference(_currentEndDate,
+        start: widget.startDay, daysInView: widget.daysInView);
   }
 
   /// Sets the minimum and maximum dates for current view.
@@ -747,8 +772,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
 
-    _totalWeeks =
-        _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+    _totalWeeks = _minDate.getWeekDifference(_maxDate,
+            start: widget.startDay, daysInView: widget.daysInView) +
+        1;
   }
 
   /// Default press detector builder. This builder will be used if
@@ -893,12 +919,19 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void _onPageChange(int index) {
     if (mounted) {
       setState(() {
-        _currentStartDate = DateTime(
-          _currentStartDate.year,
-          _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
-        );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
+        if (widget.daysInView == 7) {
+          _currentStartDate = DateTime(
+            _currentStartDate.year,
+            _currentStartDate.month,
+            _currentStartDate.day + (index - _currentIndex) * 7,
+          );
+          _currentEndDate = _currentStartDate.add(Duration(days: 6));
+        } else {
+          _currentStartDate =
+              _minDate.add(Duration(days: index * widget.daysInView));
+          _currentEndDate =
+              _currentStartDate.add(Duration(days: widget.daysInView - 1));
+        }
         _currentIndex = index;
       });
     }
@@ -954,8 +987,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController
-        .jumpToPage(_minDate.getWeekDifference(week, start: widget.startDay));
+    _pageController.jumpToPage(_minDate.getWeekDifference(week,
+        start: widget.startDay, daysInView: widget.daysInView));
   }
 
   /// Animate to page which gives day calendar for [week].
@@ -969,7 +1002,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getWeekDifference(week, start: widget.startDay),
+      _minDate.getWeekDifference(week,
+          start: widget.startDay, daysInView: widget.daysInView),
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );

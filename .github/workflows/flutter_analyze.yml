@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Fetch all branches
+        run: git fetch --all  # find origin/master
+
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
 
