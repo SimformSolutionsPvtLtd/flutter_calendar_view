@@ -139,6 +139,9 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// Flag to display quarter hours
   final bool showQuarterHours;
 
+  /// Display workday bottom line
+  final bool showWeekDayBottomLine;
+
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
 
@@ -167,56 +170,57 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   final TimestampCallback? onTimestampTap;
 
   /// A single page for week view.
-  const InternalMultiDayViewPage({
-    Key? key,
-    required this.showVerticalLine,
-    required this.weekTitleHeight,
-    required this.weekDayBuilder,
-    required this.weekNumberBuilder,
-    required this.width,
-    required this.dates,
-    required this.eventTileBuilder,
-    required this.controller,
-    required this.timeLineBuilder,
-    required this.hourIndicatorSettings,
-    required this.hourLinePainter,
-    required this.halfHourIndicatorSettings,
-    required this.quarterHourIndicatorSettings,
-    required this.showLiveLine,
-    required this.liveTimeIndicatorSettings,
-    required this.heightPerMinute,
-    required this.timeLineWidth,
-    required this.timeLineOffset,
-    required this.height,
-    required this.hourHeight,
-    required this.eventArranger,
-    required this.verticalLineOffset,
-    required this.weekTitleWidth,
-    required this.onTileTap,
-    required this.onTileLongTap,
-    required this.onDateLongPress,
-    required this.onDateTap,
-    required this.weekDays,
-    required this.minuteSlotSize,
-    required this.scrollConfiguration,
-    required this.startHour,
-    required this.fullDayEventBuilder,
-    required this.weekDetectorBuilder,
-    required this.showWeekDayAtBottom,
-    required this.showHalfHours,
-    required this.showQuarterHours,
-    required this.emulateVerticalOffsetBy,
-    required this.onTileDoubleTap,
-    required this.endHour,
-    required this.onTimestampTap,
-    this.fullDayHeaderTitle = '',
-    required this.fullDayHeaderTextConfig,
-    required this.scrollPhysics,
-    required this.scrollListener,
-    required this.multiDayViewScrollController,
-    this.lastScrollOffset = 0.0,
-    this.keepScrollOffset = false,
-  }) : super(key: key);
+  const InternalMultiDayViewPage(
+      {Key? key,
+      required this.showVerticalLine,
+      required this.weekTitleHeight,
+      required this.weekDayBuilder,
+      required this.weekNumberBuilder,
+      required this.width,
+      required this.dates,
+      required this.eventTileBuilder,
+      required this.controller,
+      required this.timeLineBuilder,
+      required this.hourIndicatorSettings,
+      required this.hourLinePainter,
+      required this.halfHourIndicatorSettings,
+      required this.quarterHourIndicatorSettings,
+      required this.showLiveLine,
+      required this.liveTimeIndicatorSettings,
+      required this.heightPerMinute,
+      required this.timeLineWidth,
+      required this.timeLineOffset,
+      required this.height,
+      required this.hourHeight,
+      required this.eventArranger,
+      required this.verticalLineOffset,
+      required this.weekTitleWidth,
+      required this.onTileTap,
+      required this.onTileLongTap,
+      required this.onDateLongPress,
+      required this.onDateTap,
+      required this.weekDays,
+      required this.minuteSlotSize,
+      required this.scrollConfiguration,
+      required this.startHour,
+      required this.fullDayEventBuilder,
+      required this.weekDetectorBuilder,
+      required this.showWeekDayAtBottom,
+      required this.showHalfHours,
+      required this.showQuarterHours,
+      required this.emulateVerticalOffsetBy,
+      required this.onTileDoubleTap,
+      required this.endHour,
+      required this.onTimestampTap,
+      this.fullDayHeaderTitle = '',
+      required this.fullDayHeaderTextConfig,
+      required this.scrollPhysics,
+      required this.scrollListener,
+      required this.multiDayViewScrollController,
+      this.lastScrollOffset = 0.0,
+      this.keepScrollOffset = false,
+      this.showWeekDayBottomLine = true})
+      : super(key: key);
 
   @override
   _InternalMultiDayViewPageState<T> createState() =>
@@ -284,10 +288,11 @@ class _InternalMultiDayViewPageState<T extends Object?>
               ],
             ),
           ),
-          Divider(
-            thickness: 1,
-            height: 1,
-          ),
+          if (widget.showWeekDayBottomLine)
+            Divider(
+              thickness: 1,
+              height: 1,
+            ),
           SizedBox(
             width: widget.width,
             child: Container(
@@ -355,21 +360,20 @@ class _InternalMultiDayViewPageState<T extends Object?>
                   children: [
                     CustomPaint(
                       size: Size(widget.width, widget.height),
-                      painter: HourLinePainter(
-                        lineColor: widget.hourIndicatorSettings.color,
-                        lineHeight: widget.hourIndicatorSettings.height,
-                        offset: widget.timeLineWidth +
+                      painter: widget.hourLinePainter(
+                        widget.hourIndicatorSettings.color,
+                        widget.hourIndicatorSettings.height,
+                        widget.timeLineWidth +
                             widget.hourIndicatorSettings.offset,
-                        minuteHeight: widget.heightPerMinute,
-                        verticalLineOffset: widget.verticalLineOffset,
-                        showVerticalLine: widget.showVerticalLine,
-                        lineStyle: widget.hourIndicatorSettings.lineStyle,
-                        dashWidth: widget.hourIndicatorSettings.dashWidth,
-                        dashSpaceWidth:
-                            widget.hourIndicatorSettings.dashSpaceWidth,
-                        emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
-                        startHour: widget.startHour,
-                        endHour: widget.endHour,
+                        widget.heightPerMinute,
+                        widget.showVerticalLine,
+                        widget.verticalLineOffset,
+                        widget.hourIndicatorSettings.lineStyle,
+                        widget.hourIndicatorSettings.dashWidth,
+                        widget.hourIndicatorSettings.dashSpaceWidth,
+                        widget.emulateVerticalOffsetBy,
+                        widget.startHour,
+                        widget.endHour,
                       ),
                     ),
                     if (widget.showHalfHours)
@@ -459,6 +463,28 @@ class _InternalMultiDayViewPageState<T extends Object?>
                                       heightPerMinute: widget.heightPerMinute,
                                       endHour: widget.endHour,
                                     ),
+                                    if (widget.showLiveLine &&
+                                        widget.liveTimeIndicatorSettings
+                                                .height >
+                                            0 &&
+                                        widget.liveTimeIndicatorSettings
+                                            .onlyShowToday)
+                                      if (DateUtils.isSameDay(
+                                          widget.dates[index], DateTime.now()))
+                                        LiveTimeIndicator(
+                                          liveTimeIndicatorSettings:
+                                              widget.liveTimeIndicatorSettings,
+                                          width: widget.width,
+                                          height: widget.height,
+                                          heightPerMinute:
+                                              widget.heightPerMinute,
+                                          timeLineWidth: widget.timeLineWidth,
+                                          startHour: widget.startHour,
+                                          endHour: widget.endHour,
+                                          onlyShowToday: widget
+                                              .liveTimeIndicatorSettings
+                                              .onlyShowToday,
+                                        ),
                                   ],
                                 ),
                               ),
@@ -482,7 +508,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
                       onTimestampTap: widget.onTimestampTap,
                     ),
                     if (widget.showLiveLine &&
-                        widget.liveTimeIndicatorSettings.height > 0)
+                        widget.liveTimeIndicatorSettings.height > 0 &&
+                        !widget.liveTimeIndicatorSettings.onlyShowToday)
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings:
                             widget.liveTimeIndicatorSettings,

@@ -76,6 +76,9 @@ class LiveTimeIndicatorSettings {
   /// ```
   final DateTime Function()? currentTimeProvider;
 
+  /// Flag to show only today's events.
+  final bool onlyShowToday;
+
   /// Settings for live time line
   const LiveTimeIndicatorSettings({
     this.height = 1.0,
@@ -88,6 +91,7 @@ class LiveTimeIndicatorSettings {
     this.bulletRadius = 5.0,
     this.timeBackgroundViewWidth = 60.0,
     this.currentTimeProvider,
+    this.onlyShowToday = false,
   }) : assert(height >= 0, "Height must be greater than or equal to 0.");
 
   factory LiveTimeIndicatorSettings.none() => LiveTimeIndicatorSettings(
