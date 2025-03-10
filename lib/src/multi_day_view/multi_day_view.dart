@@ -253,6 +253,9 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Number of days to display in the view, Default to 3 days.
   final int daysInView;
 
+  /// Display workday bottom line
+  final bool showWeekDayBottomLine;
+
   /// Main widget for week view.
   const MultiDayView({
     Key? key,
@@ -314,6 +317,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.keepScrollOffset = false,
     this.onTimestampTap,
     this.daysInView = 3,
+    this.showWeekDayBottomLine = true,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -587,6 +591,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
                             hourHeight: _hourHeight,
                             multiDayViewScrollController: _scrollController,
                             eventArranger: _eventArranger,
+                            showWeekDayBottomLine: widget.showWeekDayBottomLine,
                             weekDays: _weekDays,
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
