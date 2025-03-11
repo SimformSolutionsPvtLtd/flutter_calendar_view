@@ -170,7 +170,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   ///
   /// ex, if [showWeekends] is false and [weekDays] are monday, tuesday,
   /// saturday and sunday, only monday and tuesday will be visible in week view.
-  final bool showWeekends;
+  // final bool showWeekends;
 
   /// Defines which days should be displayed in one week.
   ///
@@ -180,7 +180,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Duplicate values will be removed from list.
   ///
   /// ex, if there are two mondays in list it will display only one.
-  final List<WeekDays> weekDays;
+  // final List<WeekDays> weekDays;
 
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
@@ -197,7 +197,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Defines the day from which the week starts.
   ///
   /// Default value is [WeekDays.monday].
-  final WeekDays startDay;
+  // final WeekDays startDay;
 
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
@@ -291,9 +291,9 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.onEventLongTap,
     this.onDateLongPress,
     this.onDateTap,
-    this.weekDays = WeekDays.values,
-    this.showWeekends = true,
-    this.startDay = WeekDays.monday,
+    // this.weekDays = WeekDays.values,
+    // this.showWeekends = true,
+    // this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.weekDetectorBuilder,
     this.headerStringBuilder,
@@ -643,13 +643,13 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   }
 
   void _setWeekDays() {
-    _weekDays = widget.weekDays.toSet().toList();
+    _weekDays = WeekDays.values.toSet().toList();
 
-    if (!widget.showWeekends) {
-      _weekDays
-        ..remove(WeekDays.saturday)
-        ..remove(WeekDays.sunday);
-    }
+    // if (!widget.showWeekends) {
+    //   _weekDays
+    //     ..remove(WeekDays.saturday)
+    //     ..remove(WeekDays.sunday);
+    // }
 
     assert(
         _weekDays.isNotEmpty,
@@ -1007,7 +1007,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getWeekDifference(week, start: widget.startDay),
+      _minDate.getWeekDifference(week, start: WeekDays.monday),
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );
