@@ -13,19 +13,17 @@ class MultiDayViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiDayView(
       key: state,
+      daysInView: 3,
       width: width,
-      showWeekends: true,
       showLiveTimeLineInAllDays: true,
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,
-        showTime: true,
+        // showTime: true,
+        onlyShowToday: true,
       ),
-      // minDay: DateTime.now().subtract(Duration(days: 3 * 2)),
-      // maxDay: DateTime.now().add(Duration(days: 3 * 2)),
-      daysInView: 3,
       onTimestampTap: (date) {
         SnackBar snackBar = SnackBar(
           content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),
