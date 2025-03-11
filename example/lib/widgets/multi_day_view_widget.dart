@@ -21,7 +21,6 @@ class MultiDayViewWidget extends StatelessWidget {
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,
-        // showTime: true,
         onlyShowToday: true,
       ),
       onTimestampTap: (date) {
