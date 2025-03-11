@@ -135,7 +135,6 @@ extension DateTimeExtensions on DateTime {
     return offset == 0
         ? endDate.withoutTime
         : endDate.add(Duration(days: daysInView - offset)).withoutTime;
-    ;
   }
 
   /// Returns list of all dates of [month].
