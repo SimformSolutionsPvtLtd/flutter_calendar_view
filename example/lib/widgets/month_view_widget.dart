@@ -19,7 +19,7 @@ class MonthViewWidget extends StatelessWidget {
       key: state,
       width: width,
       showWeekends: true,
-      startDay: WeekDays.friday,
+      startDay: WeekDays.sunday,
       useAvailableVerticalSpace: true,
       onEventTap: (event, date) {
         Navigator.of(context).push(

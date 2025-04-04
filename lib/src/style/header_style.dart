@@ -72,7 +72,8 @@ class HeaderStyle {
 
   /// Create a `HeaderStyle` of calendar view
   const HeaderStyle({
-    this.headerTextStyle,
+    this.headerTextStyle =
+        const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     this.headerMargin = EdgeInsets.zero,
     this.headerPadding = EdgeInsets.zero,
     this.titleAlign = TextAlign.center,

@@ -18,7 +18,10 @@ class MobileHomePage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-              onPressed: () => context.pushRoute(MonthViewPageDemo()),
+              onPressed: () {
+                context.pop();
+                context.pushRoute(MonthViewPageDemo());
+              },
               child: Text("Month View"),
             ),
             SizedBox(

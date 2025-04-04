@@ -353,6 +353,24 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              color: Colors.white,
+              height: 70,
+              width: _width,
+              child: Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${_currentDate.year}년',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  Divider(
+                    color: Color(0xffd9d9d9),
+                  )
+                ],
+              )),
+            ),
+            Container(
               width: _width,
               child: _headerBuilder(_currentDate),
             ),
