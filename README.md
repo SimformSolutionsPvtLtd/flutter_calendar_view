@@ -17,19 +17,15 @@ _Check out other amazing open-source [Flutter libraries](https://pub.dev/publish
 ## Features
 
 - Multiple calendar view options:
-   - Month View
-   - Day View
-   - Week View
-- Event management system
-- Customizable UI components
-- Support for event handling (add, remove, update)
-- Navigation controls with page turning
-- Date range selection
-- Support for all-day events
-- Show only working days option
-- Event synchronization between different views
-
-
+  - Month View
+  - Day View
+  - Week View
+- Highly customisable UI components
+- Manage events (add, remove, update)
+- Manage reminders (add, remove, update)
+- Manage full-day events (add, remove, update)
+- Show working days in week view and day views
+- Sync event data between multiple views
 
 ## Documentation
 

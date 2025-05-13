@@ -10,15 +10,15 @@ This package is a comprehensive Flutter solution that enables you to easily impl
 ## Key Features
 
 - Multiple calendar view options:
-    - Month View
-    - Day View
-    - Week View
-- Event management system
-- Customizable UI components
-- Support for event handling (add, remove, update)
-- Navigation controls with page turning
-- Date range selection
-- Support for all-day events
+  - Month View
+  - Day View
+  - Week View
+- Highly customisable UI components
+- Manage events (add, remove, update)
+- Manage reminders (add, remove, update)
+- Manage full-day events (add, remove, update)
+- Show working days in week view and day views
+- Sync event data between multiple views
 
 This package provides a complete set of tools for implementing calendar functionality in your Flutter application, with extensive customization options to match your app's design and user experience requirements.
 
@@ -271,101 +271,78 @@ There are two ways to synchronize events between calendar views:
 
 # Migration Guides
 
-This section provides guidance for migrating between different versions of the calendar_view package.
+## Migrate from `1.x.x` to latest
 
-Currently, there are no specific migration guides available, as the package maintains backward compatibility between versions.
-
-## Version Updates
-
-When updating to a new version of calendar_view, check the [changelog](https://pub.dev/packages/calendar_view/changelog) for any breaking changes or new features that might require changes in your implementation.
-
-## Best Practices for Updating
-
-1. Always review the changelog before updating to a new version
-2. Test your implementation thoroughly after updating
-3. If you encounter issues, check the GitHub issues page for similar reports or solutions
-4. If you're updating across multiple versions, consider updating incrementally to identify and address any breaking changes
-
-## Getting Help
-
-If you encounter difficulties during migration:
-
-1. Check the [GitHub issues](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues) for similar problems
-2. Ask for help in the Flutter community forums
-3. Open a new issue on GitHub if you believe you've found a bug
-
-# API References
-
-## EventController
-
-`EventController` is used to add or remove events from the calendar view. When we add or remove events from the controller, it will automatically update all the views to which this controller is assigned.
-
-### Methods
-
-| Name            | Parameters                                                   | Description                                                 |
-|-----------------|--------------------------------------------------------------|-------------------------------------------------------------|
-| add             | CalendarEventData\<T\> event                                 | Adds one event in controller and rebuilds view.             |
-| addAll          | List\<CalendarEventData\<T\>\> events                        | Adds list of events in controller and rebuilds view.        |
-| remove          | CalendarEventData\<T\> event                                 | Removes an event from controller and rebuilds view.         |
-| removeAll       | List\<CalendarEventData\<T\>\> events                        | Removes all event defined in the list and rebuilds the view |
-| clear           |                                                              | Removes events from the controller and rebuilds the view    |
-| removeWhere     | TestPredicate\<CalendarEventData\<T\>\> test                 | Removes all events for which test returns true.             |
-| update          | CalendarEventData\<T\> event, CalendarEventData\<T\> updated | Updates event with updated event.                           |
-| getFullDayEvent | DateTime date                                                | Returns the list of full day events stored in controller    |
-| updateFilter    | EventFilter\<T\> newFilter                                   | Updates the event filter of the controller.                 |
-| getEventsOnDay  | DateTime date                                                | Returns list of events on `date`                            |
-
-For more details, check the [EventController documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/EventController-class.html).
-
-## Global Key Functionality
-
-By assigning global keys to calendar views, you can access methods and fields defined by state classes of respected views.
-
-### MonthViewState Methods
-
-| Name           | Parameters     | Description                                                          |
-|----------------|----------------|----------------------------------------------------------------------|
-| nextPage       | none           | Jumps to next page.                                                  |
-| previousPage   | none           | Jumps to the previous page.                                          |
-| jumpToPage     | int page       | Jumps to page index defined by `page`.                               |
-| animateToPage  | int page       | Animate to page index defined by `page`.                             |
-| jumpToMonth    | DateTime month | Jumps to the page that has a calendar for month defined by `month`   |
-| animateToMonth | DateTime month | Animate to the page that has a calendar for month defined by `month` |
-
-For more details, check the [MonthViewState documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/MonthViewState-class.html).
-
-### DayViewState Methods
-
-| Name              | Parameters              | Description                                                                                                |
-|-------------------|-------------------------|------------------------------------------------------------------------------------------------------------|
-| nextPage          | none                    | Jumps to next page.                                                                                        |
-| previousPage      | none                    | Jumps to the previous page.                                                                                |
-| jumpToPage        | int page                | Jumps to page index defined by `page`.                                                                     |
-| animateToPage     | int page                | Animate to page index defined by `page`.                                                                   |
-| jumpToDate        | DateTime date           | Jumps to the page that has a calendar for month defined by `date`                                          |
-| animateToDate     | DateTime date           | Animate to the page that has a calendar for month defined by `date`                                        |
-| animateToDuration | Duration duration       | Animate to the `duration` from where we want start the day DayView                                    |
-| animateToEvent    | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
-| jumpToEvent       | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen.    |
-
-For more details, check the [DayViewState documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/DayViewState-class.html).
-
-### WeekViewState Methods
-
-| Name           | Parameters              | Description                                                                                                |
-|----------------|-------------------------|------------------------------------------------------------------------------------------------------------|
-| nextPage       | none                    | Jumps to next page.                                                                                        |
-| previousPage   | none                    | Jumps to the previous page.                                                                                |
-| jumpToPage     | int page                | Jumps to page index defined by `page`.                                                                     |
-| animateToPage  | int page                | Animate to page index defined by `page`.                                                                   |
-| jumpToWeek     | DateTime week           | Jumps to the page that has a calendar for month defined by `week`                                          |
-| animateToWeek  | DateTime week           | Animate to the page that has a calendar for month defined by `week`                                        |
-| animateToEvent | CalendarEventData event | Animates to the page where a given `event` is and then scrolls to make that `event` visible on the screen. |
-| jumpToEvent    | CalendarEventData event | Jumps to the page where a given `event` is and then scrolls to make that `event` visible on the screen.    |
-
-For more details, check the [WeekViewState documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/WeekViewState-class.html).
-
-For complete API documentation, visit the [calendar_view documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html).
+1. Migrate `HeaderStyle`.
+   ```dart
+    // Old
+    final style = HeaderStyle(
+      headerTextStyle : TextStyle(),
+      headerMargin : EdgeInsets.zero,
+      headerPadding : EdgeInsets.zero,
+      titleAlign : TextAlign.center,
+      decoration : BoxDecoration(),
+      mainAxisAlignment : MainAxisAlignment.spaceBetween,
+      leftIcon : Icon(Icons.left),
+      rightIcon : Icon(Icons.right),
+      leftIconVisible : true,
+      rightIconVisible : true,
+      leftIconPadding : EdgeInsets.zero,
+      rightIconPadding : EdgeInsets.zero,
+    );
+   ```
+   ```dart 
+   // After Migration
+   
+   // NOTE: leftIconVisible and rightIconVisible is removed in
+   // latest version. set leftIconConfig and rightIconConfig null to
+   // hide the respective icon.
+   final style = HeaderStyle(
+      headerTextStyle : TextStyle(),
+      headerMargin : EdgeInsets.zero,
+      headerPadding : EdgeInsets.zero,
+      titleAlign : TextAlign.center,
+      decoration : BoxDecoration(),
+      mainAxisAlignment : MainAxisAlignment.spaceBetween,
+      
+      // Set this null to hide the left icon.
+      leftIconConfig : IconDataConfig(
+        padding: EdgeInsets.zero,
+        icon: Icon(Icons.left),
+      ),
+   
+      // Set this null to hide the right icon.
+      rightIconConfig :  IconDataConfig(
+        padding: EdgeInsets.zero,
+        icon: Icon(Icons.right),
+      ),
+    );
+   ```
+2. Migrate `CalendarPageHeader` | `DayPageHeader` | `MonthPageHeader` | `WeekPageHeader`:
+   ```dart
+      // Old
+      final header = MonthPageBuilder({
+        date = DateTime.now(),
+        dateStringBuilder = (date, {secondaryDate}) => '$date',
+        backgroundColor = Constants.headerBackground,
+        iconColor = Constants.black,
+      });
+   ```
+   ```dart
+      // After Migration
+      final header = MonthPageBuilder({
+        date = DateTime.now(),
+        dateStringBuilder = (date, {secondaryDate}) => '$date',
+        headerStyle = HeaderStyle.withSameIcons(
+          decoration: BoxDecoration(
+            color: Constants.headerBackground,
+          ),       
+          iconConfig: IconDataConfig(
+            color: Constants.black,
+          ),
+        ),
+      });
+   ```
 
 # Contributors
 
