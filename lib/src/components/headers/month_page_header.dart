@@ -23,7 +23,7 @@ class MonthPageHeader extends CalendarPageHeader {
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle =
-        const HeaderStyle(), // TODO(Shubham): Update default header style
+        const HeaderStyle(),
   }) : super(
           key: key,
           date: date,
