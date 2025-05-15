@@ -84,7 +84,6 @@ class HourLinePainter extends CustomPainter {
       }
     }
 
-    // TODO(Shubham): Fix: This has same color as hour line
     if (showVerticalLine) {
       if (lineStyle == LineStyle.dashed) {
         var startY = 0.0;

@@ -24,6 +24,42 @@ To customise `MonthView`, `DayView` & `WeekView` page header use `HeaderStyle`.
       ),
 ```
 
+### Theme implementation approaches
+
+There are two main ways to customize the theme for calendar views:
+
+1. **Using ThemeData extensions**:
+   ```dart
+   // Create custom theme
+   final myMonthViewTheme = MonthViewTheme.light().copyWith(
+     cellInMonthColor: Colors.blue.shade50,
+     cellBorderColor: Colors.blue.shade300,
+   );
+   
+   // Apply to your app theme
+   final theme = ThemeData.light().copyWith(
+     extensions: [
+       myMonthViewTheme,
+       DayViewTheme.light(),
+       WeekViewTheme.light(),
+     ],
+   );
+   ```
+
+2. **Using CalendarThemeProvider**:
+   ```dart
+   CalendarThemeProvider(
+     calendarTheme: CalendarTheme(
+       monthViewTheme: MonthViewTheme.light().copyWith(
+         cellInMonthColor: Colors.blue.shade50,
+       ),
+       dayViewTheme: DayViewTheme.light(),
+       weekViewTheme: WeekViewTheme.light(),
+     ),
+     child: YourApp(),
+   )
+   ```
+
 ### Day view
 * Default timeline text color is `colorScheme.onSurface`. 
   * Use `markingStyle` in `DefaultTimeLineMark` to give text style.
@@ -64,3 +100,30 @@ Default hour indicator settings.
         lineStyle: LineStyle.dashed,
       ),
 ```
+
+### Month view
+
+* Default date cell color in month is `colorScheme.surfaceContainerLowest` and `colorScheme.surfaceContainerLow` for days not in month.
+* Use `cellBuilder` to completely customize the cell appearance:
+
+  ```dart
+  cellBuilder: (date, events, isToday, isInMonth, hideDaysNotInMonth) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isInMonth ? Colors.white : Colors.grey[200],
+        border: Border.all(color: Colors.blue),
+      ),
+      child: Center(
+        child: Text(
+          date.day.toString(),
+          style: TextStyle(
+            color: isToday ? Colors.red : Colors.black,
+            fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+  ```
+* Use `showWeekTileBorder` to control week day title border visibility
+* Use `headerBuilder` to customize or completely replace the month header
