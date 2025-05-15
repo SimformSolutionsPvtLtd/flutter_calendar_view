@@ -96,12 +96,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
   ///
   final bool showWeekTileBorder;
 
-  /// Defines width of default border
-  ///
-  /// Default value is [Colors.blue]
-  ///
-  /// It will take affect only if [showBorder] is set.
-  // TODO(Shubham): Update comment
+  /// Defines the color of the default border.
+  /// This will only take effect if [showBorder] is set to true.
   final Color? borderColor;
 
   /// Page transition duration used when user try to change page using

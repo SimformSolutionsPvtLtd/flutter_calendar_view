@@ -357,44 +357,55 @@ Above code will create `WeekView` with only five days, from monday to friday.
 
 ## **Customise theme**
 * The default theme includes support for dark mode. 
-_
-_### Use default light & dark theme
+
+### Use default light & dark theme
 * CalendarTheme.light() & CalendarTheme.dark() provides the default colors for light & dark mode.
-* If no any theme is provided then default light theme is taken.
+* If no theme is provided then default light theme is used.
 ```dart
-     child: MaterialApp(
-        theme: CalendarTheme.light,
-        darkTheme: CalendarTheme.dark,
-        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        )
+MaterialApp(
+  theme: CalendarTheme.light,
+  darkTheme: CalendarTheme.dark,
+  themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+)
 ```
 * Month-view, day-view & week-view each have separate theme to customise its component.
 * Refer [app_theme](example/lib/theme/app_theme.dart) of example to understand how to change colors of components.
 ```dart
 // app_theme.dart
-  static final _monthViewTheme = MonthViewTheme.light().copyWith(
-    cellInMonth: Colors.redAccent,
-    cellNotInMonth: Colors.red,
-    cellText: Colors.amber,
-  );
+static final _monthViewTheme = MonthViewTheme.light().copyWith(
+  cellInMonthColor: Colors.redAccent,
+  cellNotInMonthColor: Colors.red,
+  cellTextColor: Colors.amber,
+);
 
 // Light theme: Use this in MaterialApp theme & dark theme.
 static final light = CalendarTheme.light.copyWith(
-   extensions: [
-      _monthViewTheme,
-   ],
+  extensions: [
+    _monthViewTheme,
+  ],
 );
 
 // main.dart
-   MaterialApp(
-     theme: AppTheme.light,
-   )
-
-## Inherited widget
-* Use Inherited widget CalendarThemeProvider() to access Calendar theme month-view, day-view & week-view.
-
+MaterialApp(
+  theme: AppTheme.light,
+)
 ```
-[//]: # (TODO&#40;Shubham&#41;: Add docs)
+
+### Using Inherited widget for theme
+* Use Inherited widget `CalendarThemeProvider` to provide themes to all calendar views in the widget subtree:
+
+```dart
+CalendarThemeProvider(
+  calendarTheme: CalendarTheme(
+    monthViewTheme: MonthViewTheme.light(),
+    dayViewTheme: DayViewTheme.light(),
+    weekViewTheme: WeekViewTheme.light(),
+  ),
+  child: YourApp(),
+)
+```
+
+For more detailed theme customization options, please refer to the [theme guide](doc/theme_guide.md).
 
 ## Main Contributors
 

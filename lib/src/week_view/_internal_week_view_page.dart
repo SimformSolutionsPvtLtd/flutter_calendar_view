@@ -434,7 +434,7 @@ class _InternalWeekViewPageState<T extends Object?>
                                         // and cells, use the background color for the timeline.
                                         // Additionally, set the `color` property here with an alpha value
                                         // to see horizontal & vertical lines
-                                        // color: Colors.red,
+
                                         border: Border(
                                           right: BorderSide(
                                             color:

@@ -289,7 +289,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Radio(
                 value: RepeatFrequency.doNotRepeat,
                 groupValue: _selectedFrequency,
-                // activeColor: context.themeColor.primary,
                 onChanged: (value) {
                   setState(
                     () => _selectedFrequency = value,
