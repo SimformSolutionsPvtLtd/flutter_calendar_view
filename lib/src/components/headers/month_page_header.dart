@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
 import '../../style/header_style.dart';
 import '../../typedefs.dart';
 import 'calendar_page_header.dart';
@@ -21,7 +20,7 @@ class MonthPageHeader extends CalendarPageHeader {
     bool showPreviousIcon = true,
     @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
+    Color backgroundColor = Colors.white,
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle = const HeaderStyle(),
@@ -42,5 +41,5 @@ class MonthPageHeader extends CalendarPageHeader {
         );
 
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
-      "${date.month} - ${date.year}";
+      "${date.month}월";
 }

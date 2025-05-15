@@ -24,12 +24,23 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
         selectedView: CalendarView.month,
       ),
       mobileWidget: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 40,
+          backgroundColor: Color(0xffd9d9d9),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 30),
+              child: Icon(Icons.account_circle),
+            )
+          ],
+        ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),
         body: MonthViewWidget(),
+        drawer: Drawer(),
       ),
     );
   }
