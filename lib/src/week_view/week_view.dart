@@ -250,6 +250,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Flag to hide the header.
+  final bool hideHeader;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -310,6 +313,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
     this.onTimestampTap,
+    this.hideHeader = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -503,10 +507,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(
-                _currentStartDate,
-                _currentEndDate,
-              ),
+              if (!widget.hideHeader)
+                _weekHeaderBuilder(
+                  _currentStartDate,
+                  _currentEndDate,
+                ),
               Expanded(
                 child: DecoratedBox(
                   decoration: BoxDecoration(color: widget.backgroundColor),
