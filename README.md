@@ -241,6 +241,15 @@ WeekView(
       maxLines: 2,
     ), // To set full day events header text config
     keepScrollOffset: true, // To maintain scroll offset when the page changes
+    liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      color: Colors.red,
+      showTime: true,
+      // Support for different timezones - provide custom DateTime function
+      currentTimeProvider: () {
+        final utcNow = DateTime.now().toUtc();
+        return utcNow.subtract(Duration(hours: 4));
+      },
+    ),
 );
 ```
 
