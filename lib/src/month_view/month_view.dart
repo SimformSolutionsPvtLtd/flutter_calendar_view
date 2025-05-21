@@ -582,11 +582,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   /// Default cell builder. Used when [widget.cellBuilder] is null
   Widget _defaultCellBuilder(
-    date,
+    DateTime date,
     List<CalendarEventData<T>> events,
-    isToday,
-    isInMonth,
-    hideDaysNotInMonth,
+    bool isToday,
+    bool isInMonth,
+    bool hideDaysNotInMonth,
   ) {
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
