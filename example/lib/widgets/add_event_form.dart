@@ -228,9 +228,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               ),
             ],
           ),
-          SizedBox(
-            height: 15,
-          ),
+          SizedBox(height: 15),
           TextFormField(
             controller: _descriptionController,
             focusNode: _descriptionNode,
@@ -573,11 +571,17 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       recurrenceEndOn: _selectedRecurrenceEnd ?? RecurrenceEnd.never,
     );
 
+    // Determine the appropriate endDate based on whether this is a recurring event
+    final DateTime eventEndDate =
+        (_selectedFrequency != RepeatFrequency.doNotRepeat)
+            ? _startDate.withoutTime
+            : _endDate;
+
     final event = CalendarEventData(
       date: _startDate,
       endTime: _endTime,
       startTime: _startTime,
-      endDate: _endDate,
+      endDate: eventEndDate,
       color: _color,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
