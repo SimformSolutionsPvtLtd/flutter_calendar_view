@@ -385,12 +385,13 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
   /// of events and [eventTileBuilder] to display events.
   List<Widget> _generateEvents(BuildContext context) {
     final events = eventArranger.arrange(
-        events: this.events,
-        height: height,
-        width: width,
-        heightPerMinute: heightPerMinute,
-        startHour: startHour);
-
+      events: this.events,
+      height: height,
+      width: width,
+      heightPerMinute: heightPerMinute,
+      startHour: startHour,
+      calendarViewDate: date,
+    );
     return List.generate(events.length, (index) {
       return Positioned(
         top: events[index].top,
