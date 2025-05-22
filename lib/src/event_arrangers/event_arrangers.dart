@@ -37,6 +37,7 @@ abstract class EventArranger<T extends Object?> {
     required double width,
     required double heightPerMinute,
     required int startHour,
+    required DateTime calendarViewDate,
   });
 }
 
@@ -63,6 +64,9 @@ class OrganizedCalendarEventData<T extends Object?> {
   /// End duration of event/event list.
   final DateTime endDuration;
 
+  /// DateTime of the calendar view date.
+  final DateTime calendarViewDate;
+
   /// Provides event data with its [left], [right], [top], and [bottom]
   /// boundary.
   OrganizedCalendarEventData({
@@ -73,6 +77,7 @@ class OrganizedCalendarEventData<T extends Object?> {
     required this.left,
     required this.right,
     required this.events,
+    required this.calendarViewDate,
   });
 
   OrganizedCalendarEventData.empty()
@@ -82,7 +87,8 @@ class OrganizedCalendarEventData<T extends Object?> {
         left = 0,
         events = const [],
         top = 0,
-        bottom = 0;
+        bottom = 0,
+        calendarViewDate = DateTime.now();
 
   OrganizedCalendarEventData<T> getWithUpdatedRight(double right) =>
       OrganizedCalendarEventData<T>(
@@ -93,5 +99,6 @@ class OrganizedCalendarEventData<T extends Object?> {
         left: left,
         right: right,
         startDuration: startDuration,
+        calendarViewDate: calendarViewDate,
       );
 }

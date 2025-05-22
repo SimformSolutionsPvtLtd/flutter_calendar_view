@@ -104,7 +104,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _showSelector,
+      onTap: widget.onSelect == null ? null : _showSelector,
       child: TextFormField(
         focusNode: _focusNode,
         style: widget.textStyle,
