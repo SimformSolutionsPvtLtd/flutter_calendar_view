@@ -1,4 +1,10 @@
-# [1.4.0](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
+# [1.4.1 - Unreleased]
+
+- Adds clear method to `EventController`.
+- Adds `onEventTapDetails`, `onEventDoubleTapDetails` & `onEventLongTapDetails` gesture recognizers to get tap details. [#390](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/390)
+
+# [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
+
 - Adds `showWeekends` flag in month view to hide & show weekends view. 
   Default is `showWeekends = true` shows all weekdays. [#385](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/385)
 - Events are now hidden for days not in the current month when hideDaysNotInMonth = true
@@ -9,6 +15,9 @@
 - Fixes `startHour` and `endHour` not updating when rebuilding in week view. [#410](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/410)
 - Fixes issue of header icon `color` property in `IconDataConfig`.
 - Adds support for single day & full day recurring events. [#378](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/378)
+- Fixes `HeaderStyle` icons visibility on min & max dates reached. [#429](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/429)
+- Fixes inconsistent padding issue of right icon in the `HeaderStyle`.
+- Fixes issue of update scroll offset manually. [#391](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/391)
 
 # [1.3.0 - 12 Nov 2024](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.3.0)
 

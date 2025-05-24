@@ -63,6 +63,24 @@ typedef WeekPageHeaderBuilder = Widget Function(
 typedef TileTapCallback<T extends Object?> = void Function(
     CalendarEventData<T> event, DateTime date);
 
+typedef TileTapDetailsCallback<T extends Object?> = void Function(
+  CalendarEventData<T> event,
+  DateTime date,
+  TapUpDetails? tapDetails,
+);
+
+typedef TileLongTapDetailsCallback<T extends Object?> = void Function(
+  CalendarEventData<T> event,
+  DateTime date,
+  LongPressStartDetails? longPressDetails,
+);
+
+typedef TileDoubleTapDetailsCallback<T extends Object?> = void Function(
+  CalendarEventData<T> event,
+  DateTime date,
+  TapDownDetails? doubleTapDetails,
+);
+
 typedef CellTapCallback<T extends Object?> = void Function(
     List<CalendarEventData<T>> events, DateTime date);
 

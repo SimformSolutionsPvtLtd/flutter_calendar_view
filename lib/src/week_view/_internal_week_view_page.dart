@@ -368,21 +368,20 @@ class _InternalWeekViewPageState<T extends Object?>
                   children: [
                     CustomPaint(
                       size: Size(widget.width, widget.height),
-                      painter: HourLinePainter(
-                        lineColor: widget.hourIndicatorSettings.color,
-                        lineHeight: widget.hourIndicatorSettings.height,
-                        offset: widget.timeLineWidth +
+                      painter: widget.hourLinePainter(
+                        widget.hourIndicatorSettings.color,
+                        widget.hourIndicatorSettings.height,
+                        widget.timeLineWidth +
                             widget.hourIndicatorSettings.offset,
-                        minuteHeight: widget.heightPerMinute,
-                        verticalLineOffset: widget.verticalLineOffset,
-                        showVerticalLine: widget.showVerticalLine,
-                        lineStyle: widget.hourIndicatorSettings.lineStyle,
-                        dashWidth: widget.hourIndicatorSettings.dashWidth,
-                        dashSpaceWidth:
-                            widget.hourIndicatorSettings.dashSpaceWidth,
-                        emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
-                        startHour: startHour,
-                        endHour: endHour,
+                        widget.heightPerMinute,
+                        widget.showVerticalLine,
+                        widget.verticalLineOffset,
+                        widget.hourIndicatorSettings.lineStyle,
+                        widget.hourIndicatorSettings.dashWidth,
+                        widget.hourIndicatorSettings.dashSpaceWidth,
+                        widget.emulateVerticalOffsetBy,
+                        widget.startHour,
+                        widget.endHour,
                       ),
                     ),
                     if (widget.showHalfHours)
