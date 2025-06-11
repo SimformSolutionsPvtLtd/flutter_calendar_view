@@ -1,23 +1,34 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
+import '../theme/app_colors.dart';
 import 'add_event_form.dart';
 
-class CalendarConfig extends StatelessWidget {
+class CalendarConfig extends StatefulWidget {
   final void Function(CalendarView view) onViewChange;
+  final void Function(bool)? onThemeChange;
   final CalendarView currentView;
 
   const CalendarConfig({
     super.key,
     required this.onViewChange,
+    this.onThemeChange,
     this.currentView = CalendarView.month,
   });
 
   @override
+  State<CalendarConfig> createState() => _CalendarConfigState();
+}
+
+class _CalendarConfigState extends State<CalendarConfig> {
+  bool isDarkMode = false;
+
+  @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +38,7 @@ class CalendarConfig extends StatelessWidget {
           child: Text(
             "Flutter Calendar Page",
             style: TextStyle(
-              color: AppColors.black,
+              color: color.onSurface,
               fontSize: 30,
             ),
           ),
@@ -42,11 +53,32 @@ class CalendarConfig extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Dark mode: ',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: color.onSurface,
+                      ),
+                    ),
+                    Switch(
+                      value: isDarkMode,
+                      onChanged: (value) {
+                        setState(() => isDarkMode = value);
+                        if (widget.onThemeChange != null) {
+                          widget.onThemeChange!(isDarkMode);
+                        }
+                      },
+                    ),
+                  ],
+                ),
                 Text(
                   "Active View:",
                   style: TextStyle(
                     fontSize: 20.0,
-                    color: AppColors.black,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Wrap(
@@ -55,7 +87,7 @@ class CalendarConfig extends StatelessWidget {
                     (index) {
                       final view = CalendarView.values[index];
                       return GestureDetector(
-                        onTap: () => onViewChange(view),
+                        onTap: () => widget.onViewChange(view),
                         child: Container(
                           padding: EdgeInsets.symmetric(
                             vertical: 10,
@@ -67,14 +99,14 @@ class CalendarConfig extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7),
-                            color: view == currentView
+                            color: view == widget.currentView
                                 ? AppColors.navyBlue
                                 : AppColors.bluishGrey,
                           ),
                           child: Text(
                             view.name.capitalized,
                             style: TextStyle(
-                              color: view == currentView
+                              color: view == widget.currentView
                                   ? AppColors.white
                                   : AppColors.black,
                               fontSize: 17,
@@ -92,7 +124,7 @@ class CalendarConfig extends StatelessWidget {
                   "Add Event: ",
                   style: TextStyle(
                     fontSize: 20.0,
-                    color: AppColors.black,
+                    color: color.onSurface,
                   ),
                 ),
                 SizedBox(

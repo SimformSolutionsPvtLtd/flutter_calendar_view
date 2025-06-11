@@ -7,9 +7,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../../calendar_view.dart';
 import '../../constants.dart';
-import '../../style/header_style.dart';
-import '../../typedefs.dart';
 
 class CalendarPageHeader extends StatelessWidget {
   /// When user taps on right arrow.
@@ -104,8 +103,10 @@ class CalendarPageHeader extends StatelessWidget {
     return Container(
       margin: headerStyle.headerMargin,
       padding: headerStyle.headerPadding,
-      decoration:
-          headerStyle.decoration ?? BoxDecoration(color: backgroundColor),
+      decoration: headerStyle.decoration ??
+          BoxDecoration(
+            color: backgroundColor,
+          ),
       clipBehavior: Clip.antiAlias,
       child: Row(
         mainAxisSize: headerStyle.mainAxisSize,
@@ -130,7 +131,7 @@ class CalendarPageHeader extends StatelessWidget {
                             Icons.chevron_left,
                             size: headerStyle.leftIconConfig!.size,
                             color:
-                                iconColor ?? headerStyle.leftIconConfig!.color,
+                                iconColor ?? headerStyle.leftIconConfig?.color,
                           ),
                     ),
               ),

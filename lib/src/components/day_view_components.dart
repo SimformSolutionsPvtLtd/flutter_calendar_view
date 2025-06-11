@@ -143,10 +143,7 @@ class DefaultTimeLineMark extends StatelessWidget {
         child: Text(
           timeString,
           textAlign: TextAlign.right,
-          style: markingStyle ??
-              TextStyle(
-                fontSize: 15.0,
-              ),
+          style: markingStyle,
         ),
       ),
     );

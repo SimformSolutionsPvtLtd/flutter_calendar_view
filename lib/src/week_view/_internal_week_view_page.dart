@@ -4,15 +4,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../../calendar_view.dart';
 import '../components/_internal_components.dart';
-import '../components/event_scroll_notifier.dart';
-import '../components/week_view_components.dart';
-import '../enumerations.dart';
-import '../event_arrangers/event_arrangers.dart';
-import '../event_controller.dart';
-import '../modals.dart';
+import '../extensions.dart';
 import '../painters.dart';
-import '../typedefs.dart';
 
 /// A single page for week view.
 class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
@@ -88,6 +83,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
 
   /// Width of week title.
   final double weekTitleWidth;
+
+  /// Background color of week title
+  final Color? weekTitleBackgroundColor;
 
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
@@ -166,6 +164,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
+  /// Use this to change background color of week view page
+  final Color? backgroundColor;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -192,6 +193,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.weekTitleWidth,
+    required this.weekTitleBackgroundColor,
     required this.onTileTap,
     required this.onTileLongTap,
     required this.onDateLongPress,
@@ -216,6 +218,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.weekViewScrollController,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -251,7 +254,10 @@ class _InternalWeekViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
+    final themeColor = context.weekViewColors;
+
     return Container(
+      color: widget.backgroundColor ?? themeColor.pageBackgroundColor,
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
       child: Column(
@@ -262,31 +268,36 @@ class _InternalWeekViewPageState<T extends Object?>
         children: [
           SizedBox(
             width: widget.width,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: widget.weekTitleHeight,
-                  width: widget.timeLineWidth +
-                      widget.hourIndicatorSettings.offset,
-                  child: widget.weekNumberBuilder.call(filteredDates[0]),
-                ),
-                ...List.generate(
-                  filteredDates.length,
-                  (index) => SizedBox(
+            child: ColoredBox(
+              color: widget.weekTitleBackgroundColor ??
+                  themeColor.weekDayTileColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
                     height: widget.weekTitleHeight,
-                    width: widget.weekTitleWidth,
-                    child: widget.weekDayBuilder(
-                      filteredDates[index],
-                    ),
+                    width: widget.timeLineWidth +
+                        widget.hourIndicatorSettings.offset,
+                    child: widget.weekNumberBuilder.call(filteredDates[0]),
                   ),
-                )
-              ],
+                  ...List.generate(
+                    filteredDates.length,
+                    (index) => SizedBox(
+                      height: widget.weekTitleHeight,
+                      width: widget.weekTitleWidth,
+                      child: widget.weekDayBuilder(
+                        filteredDates[index],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Divider(
             thickness: 1,
             height: 1,
+            color: themeColor.borderColor,
           ),
           SizedBox(
             width: widget.width,
@@ -294,7 +305,7 @@ class _InternalWeekViewPageState<T extends Object?>
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: widget.hourIndicatorSettings.color,
+                    color: themeColor.borderColor,
                     width: 2,
                   ),
                 ),
@@ -418,10 +429,15 @@ class _InternalWeekViewPageState<T extends Object?>
                               (index) => Container(
                                 decoration: widget.showVerticalLine
                                     ? BoxDecoration(
+                                        // To apply different colors to the timeline
+                                        // and cells, use the background color for the timeline.
+                                        // Additionally, set the `color` property here with an alpha value
+                                        // to see horizontal & vertical lines
+                                        // color: Colors.red,
                                         border: Border(
                                           right: BorderSide(
-                                            color: widget
-                                                .hourIndicatorSettings.color,
+                                            color:
+                                                themeColor.verticalLinesColor,
                                             width: widget
                                                 .hourIndicatorSettings.height,
                                           ),

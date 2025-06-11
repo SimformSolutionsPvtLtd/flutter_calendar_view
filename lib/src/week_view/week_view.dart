@@ -137,6 +137,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Height of week day title,
   final double weekTitleHeight;
 
+  /// Background color of week title
+  final Color? weekTitleBackgroundColor;
+
   /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
@@ -144,7 +147,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final WeekNumberBuilder? weekNumberBuilder;
 
   /// Background color of week view page.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Scroll offset of week view page.
   final double scrollOffset;
@@ -204,7 +207,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   final MinuteSlotSize minuteSlotSize;
 
   /// Style for WeekView header.
-  final HeaderStyle headerStyle;
+  final HeaderStyle? headerStyle;
 
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
@@ -276,9 +279,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekPageHeaderBuilder,
     this.eventArranger,
     this.weekTitleHeight = 50,
+    this.weekTitleBackgroundColor,
     this.weekDayBuilder,
     this.weekNumberBuilder,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
     this.onEventTap,
@@ -294,7 +298,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
-    this.headerStyle = const HeaderStyle(),
+    this.headerStyle,
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
     this.startHour = 0,
@@ -508,85 +512,82 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                 _currentEndDate,
               ),
               Expanded(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(color: widget.backgroundColor),
-                  child: SizedBox(
-                    height: _height,
-                    width: _width,
-                    child: PageView.builder(
-                      itemCount: _totalWeeks,
-                      controller: _pageController,
-                      physics: widget.pageViewPhysics,
-                      onPageChanged: _onPageChange,
-                      itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(
-                          start: widget.startDay,
-                          showWeekEnds: widget.showWeekends,
-                        );
-
-                        return ValueListenableBuilder(
-                          valueListenable: _scrollConfiguration,
-                          builder: (_, __, ___) => InternalWeekViewPage<T>(
-                            key: ValueKey(
-                                _hourHeight.toString() + dates[0].toString()),
-                            height: _height,
-                            width: _width,
-                            weekTitleWidth: _weekTitleWidth,
-                            weekTitleHeight: widget.weekTitleHeight,
-                            weekDayBuilder: _weekDayBuilder,
-                            weekNumberBuilder: _weekNumberBuilder,
-                            weekDetectorBuilder: _weekDetectorBuilder,
-                            liveTimeIndicatorSettings:
-                                _liveTimeIndicatorSettings,
-                            timeLineBuilder: _timeLineBuilder,
-                            onTimestampTap: widget.onTimestampTap,
-                            onTileTap: widget.onEventTap,
-                            onTileLongTap: widget.onEventLongTap,
-                            onDateLongPress: widget.onDateLongPress,
-                            onDateTap: widget.onDateTap,
-                            onTileDoubleTap: widget.onEventDoubleTap,
-                            eventTileBuilder: _eventTileBuilder,
-                            heightPerMinute: widget.heightPerMinute,
-                            hourIndicatorSettings: _hourIndicatorSettings,
-                            hourLinePainter: _hourLinePainter,
-                            halfHourIndicatorSettings:
-                                _halfHourIndicatorSettings,
-                            quarterHourIndicatorSettings:
-                                _quarterHourIndicatorSettings,
-                            dates: dates,
-                            showLiveLine: widget.showLiveTimeLineInAllDays ||
-                                _showLiveTimeIndicator(dates),
-                            timeLineOffset: widget.timeLineOffset,
-                            timeLineWidth: _timeLineWidth,
-                            verticalLineOffset: 0,
-                            showVerticalLine: widget.showVerticalLines,
-                            controller: controller,
-                            hourHeight: _hourHeight,
-                            weekViewScrollController: _scrollController,
-                            eventArranger: _eventArranger,
-                            weekDays: _weekDays,
-                            minuteSlotSize: widget.minuteSlotSize,
-                            scrollConfiguration: _scrollConfiguration,
-                            fullDayEventBuilder: _fullDayEventBuilder,
-                            startHour: _startHour,
-                            showHalfHours: widget.showHalfHours,
-                            showQuarterHours: widget.showQuarterHours,
-                            emulateVerticalOffsetBy:
-                                widget.emulateVerticalOffsetBy,
-                            showWeekDayAtBottom: widget.showWeekDayAtBottom,
-                            endHour: _endHour,
-                            fullDayHeaderTitle: _fullDayHeaderTitle,
-                            fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
-                            lastScrollOffset: _lastScrollOffset,
-                            scrollPhysics: widget.scrollPhysics,
-                            scrollListener: _scrollPageListener,
-                            keepScrollOffset: widget.keepScrollOffset,
-                          ),
-                        );
-                      },
-                    ),
+                child: SizedBox(
+                  height: _height,
+                  width: _width,
+                  child: PageView.builder(
+                    itemCount: _totalWeeks,
+                    controller: _pageController,
+                    physics: widget.pageViewPhysics,
+                    onPageChanged: _onPageChange,
+                    itemBuilder: (_, index) {
+                      final dates = DateTime(_minDate.year, _minDate.month,
+                              _minDate.day + (index * DateTime.daysPerWeek))
+                          .datesOfWeek(
+                        start: widget.startDay,
+                        showWeekEnds: widget.showWeekends,
+                      );
+                      return ValueListenableBuilder(
+                        valueListenable: _scrollConfiguration,
+                        builder: (_, __, ___) => InternalWeekViewPage<T>(
+                          key: ValueKey(
+                              _hourHeight.toString() + dates[0].toString()),
+                          height: _height,
+                          width: _width,
+                          weekTitleWidth: _weekTitleWidth,
+                          weekTitleHeight: widget.weekTitleHeight,
+                          weekTitleBackgroundColor:
+                              widget.weekTitleBackgroundColor,
+                          weekDayBuilder: _weekDayBuilder,
+                          weekNumberBuilder: _weekNumberBuilder,
+                          weekDetectorBuilder: _weekDetectorBuilder,
+                          liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
+                          timeLineBuilder: _timeLineBuilder,
+                          onTimestampTap: widget.onTimestampTap,
+                          onTileTap: widget.onEventTap,
+                          onTileLongTap: widget.onEventLongTap,
+                          onDateLongPress: widget.onDateLongPress,
+                          onDateTap: widget.onDateTap,
+                          onTileDoubleTap: widget.onEventDoubleTap,
+                          eventTileBuilder: _eventTileBuilder,
+                          heightPerMinute: widget.heightPerMinute,
+                          backgroundColor: widget.backgroundColor,
+                          hourIndicatorSettings: _hourIndicatorSettings,
+                          hourLinePainter: _hourLinePainter,
+                          halfHourIndicatorSettings: _halfHourIndicatorSettings,
+                          quarterHourIndicatorSettings:
+                              _quarterHourIndicatorSettings,
+                          dates: dates,
+                          showLiveLine: widget.showLiveTimeLineInAllDays ||
+                              _showLiveTimeIndicator(dates),
+                          timeLineOffset: widget.timeLineOffset,
+                          timeLineWidth: _timeLineWidth,
+                          verticalLineOffset: 0,
+                          showVerticalLine: widget.showVerticalLines,
+                          controller: controller,
+                          hourHeight: _hourHeight,
+                          weekViewScrollController: _scrollController,
+                          eventArranger: _eventArranger,
+                          weekDays: _weekDays,
+                          minuteSlotSize: widget.minuteSlotSize,
+                          scrollConfiguration: _scrollConfiguration,
+                          fullDayEventBuilder: _fullDayEventBuilder,
+                          startHour: _startHour,
+                          showHalfHours: widget.showHalfHours,
+                          showQuarterHours: widget.showQuarterHours,
+                          emulateVerticalOffsetBy:
+                              widget.emulateVerticalOffsetBy,
+                          showWeekDayAtBottom: widget.showWeekDayAtBottom,
+                          endHour: _endHour,
+                          fullDayHeaderTitle: _fullDayHeaderTitle,
+                          fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
+                          lastScrollOffset: _lastScrollOffset,
+                          scrollPhysics: widget.scrollPhysics,
+                          scrollListener: _scrollPageListener,
+                          keepScrollOffset: widget.keepScrollOffset,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -639,7 +640,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         LiveTimeIndicatorSettings(
-          color: Constants.defaultLiveTimeIndicatorColor,
+          color: context.weekViewColors.liveIndicatorColor,
           height: widget.heightPerMinute,
         );
 
@@ -649,7 +650,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: context.weekViewColors.hourLineColor,
           offset: 5,
         );
 
@@ -663,7 +664,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: context.weekViewColors.halfHourLineColor,
           offset: 5,
         );
 
@@ -672,7 +673,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
         HourIndicatorSettings(
-          color: Constants.defaultBorderColor,
+          color: context.weekViewColors.quarterHourLineColor,
         );
 
     assert(_quarterHourIndicatorSettings.height < _hourHeight,
@@ -779,10 +780,20 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-              Constants.weekTitles[date.weekday - 1]),
-          Text(widget.weekDayDateStringBuilder?.call(date.day) ??
-              date.day.toString()),
+          Text(
+            widget.weekDayStringBuilder?.call(date.weekday - 1) ??
+                Constants.weekTitles[date.weekday - 1],
+            style: TextStyle(
+              color: context.weekViewColors.weekDayTextColor,
+            ),
+          ),
+          Text(
+            widget.weekDayDateStringBuilder?.call(date.day) ??
+                date.day.toString(),
+            style: TextStyle(
+              color: context.weekViewColors.weekDayTextColor,
+            ),
+          ),
         ],
       ),
     );
@@ -797,7 +808,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     final weekNumber =
         (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
-      child: Text("$weekNumber"),
+      child: Text(
+        "$weekNumber",
+        style: TextStyle(
+          color: context.weekViewColors.weekDayTextColor,
+        ),
+      ),
     );
   }
 
@@ -807,6 +823,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
         date: date,
         timeStringBuilder: widget.timeLineStringBuilder,
+        markingStyle: TextStyle(
+          color: context.weekViewColors.timelineTextColor,
+          fontSize: 15.0,
+        ),
       );
 
   /// Default timeline builder. This builder will be used if
@@ -855,7 +875,22 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         }
       },
       headerStringBuilder: widget.headerStringBuilder,
-      headerStyle: widget.headerStyle,
+      headerStyle: widget.headerStyle ??
+          HeaderStyle(
+            decoration: BoxDecoration(
+              color: context.weekViewColors.headerBackgroundColor,
+            ),
+            leftIconConfig: IconDataConfig(
+              color: context.weekViewColors.headerIconColor,
+            ),
+            rightIconConfig: IconDataConfig(
+              color: context.weekViewColors.headerIconColor,
+            ),
+            headerTextStyle: TextStyle(
+              color: context.weekViewColors.headerTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
     );
   }
 
