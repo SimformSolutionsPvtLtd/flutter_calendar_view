@@ -4,6 +4,8 @@
 - Adds `onEventTapDetails`, `onEventDoubleTapDetails` & `onEventLongTapDetails` gesture recognizers to get tap details. [#390](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/390)
 - Fixed `onEventTap` in `MonthView` to ignore when it is
   null. [#278](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/278)
+- Fixed Splash issue on timeline in `WeekView` and `DayView` when `onTimestampTap` is
+  null. [#459](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/459)
 
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 
