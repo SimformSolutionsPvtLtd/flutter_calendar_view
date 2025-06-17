@@ -313,11 +313,7 @@ class _TimeLineState extends State<TimeLine> {
           height: widget.hourHeight,
           width: widget.timeLineWidth,
           child: InkWell(
-            onTap: () {
-              if (widget.onTimestampTap != null) {
-                widget.onTimestampTap!(dateTime);
-              }
-            },
+            onTap: widget.onTimestampTap.safeVoidCall(dateTime),
             child: widget.timeLineBuilder.call(dateTime),
           ),
         ),
