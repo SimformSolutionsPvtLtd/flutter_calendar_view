@@ -173,28 +173,32 @@ class FilledCell<T extends Object?> extends StatelessWidget {
                     children: List.generate(
                       events.length,
                       (index) => GestureDetector(
-                        onTap: () => onTileTap?.call(events[index], date),
-                        onLongPress: () =>
-                            onTileLongTap?.call(events[index], date),
-                        onDoubleTap: () =>
-                            onTileDoubleTap?.call(events[index], date),
-                        onTapUp: (details) => onTileTapDetails?.call(
-                          events[index],
-                          date,
-                          details,
-                        ),
-                        onLongPressStart: (details) =>
-                            onTileLongTapDetails?.call(
-                          events[index],
-                          date,
-                          details,
-                        ),
-                        onDoubleTapDown: (details) =>
-                            onTileDoubleTapDetails?.call(
-                          events[index],
-                          date,
-                          details,
-                        ),
+                        onTap: onTileTap.safeVoidCall(events[index], date),
+                        onLongPress:
+                            onTileLongTap.safeVoidCall(events[index], date),
+                        onDoubleTap:
+                            onTileDoubleTap.safeVoidCall(events[index], date),
+                        onTapUp: onTileTapDetails == null
+                            ? null
+                            : (details) => onTileTapDetails?.call(
+                                  events[index],
+                                  date,
+                                  details,
+                                ),
+                        onLongPressStart: onTileLongTapDetails == null
+                            ? null
+                            : (details) => onTileLongTapDetails?.call(
+                                  events[index],
+                                  date,
+                                  details,
+                                ),
+                        onDoubleTapDown: onTileDoubleTapDetails == null
+                            ? null
+                            : (details) => onTileDoubleTapDetails?.call(
+                                  events[index],
+                                  date,
+                                  details,
+                                ),
                         child: Container(
                           decoration: BoxDecoration(
                             color: events[index].color,

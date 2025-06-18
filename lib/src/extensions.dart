@@ -252,3 +252,20 @@ void debugLog(String message) {
     return false;
   }(), '');
 }
+
+/// For callbacks with one argument
+extension NullableCallback1<A> on void Function(A)? {
+  VoidCallback? safeVoidCall(A a) => this == null ? null : () => this!(a);
+}
+
+/// For callbacks with two arguments
+extension NullableCallback2<A, B> on void Function(A, B)? {
+  VoidCallback? safeVoidCall(A a, B b) =>
+      this == null ? null : () => this!(a, b);
+}
+
+/// For callbacks with three arguments
+extension NullableCallback3<A, B, C> on void Function(A, B, C)? {
+  VoidCallback? safeVoidCall(A a, B b, C c) =>
+      this == null ? null : () => this!(a, b, c);
+}
