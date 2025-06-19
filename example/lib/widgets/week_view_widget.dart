@@ -12,10 +12,14 @@ class WeekViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WeekView(
+      // TODO(Shubham): Fix min date not working
+      minDay: DateTime(2025, 1, 1),
+      maxDay: DateTime(2025, 2, 9),
       key: state,
       width: width,
       showWeekends: true,
       showLiveTimeLineInAllDays: true,
+      showThreeDaysView: true,
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
