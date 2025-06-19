@@ -64,7 +64,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   @override
   void initState() {
     super.initState();
-
+    _currentTime = _updateCurrentTime();
     _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
@@ -74,15 +74,31 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     super.dispose();
   }
 
+  /// Returns the current time to display in the live time indicator.
+  ///
+  /// If [LiveTimeIndicatorSettings.currentTimeProvider] is provided,
+  /// uses that function to get the current time.
+  ///
+  /// Otherwise falls back to [DateTime.now] for the device's local time.
+  DateTime _getCurrentDateTime() {
+    final settings = widget.liveTimeIndicatorSettings;
+    return settings.currentTimeProvider?.call() ?? DateTime.now();
+  }
+
+  /// Update the current time based on timezone settings
+  TimeOfDay _updateCurrentTime() {
+    final dateTime = _getCurrentDateTime();
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
   /// Creates an recursive call that runs every 1 seconds.
   /// This will rebuild TimeLineIndicator every second. This will allow us
   /// to indicate live time in Week and Day view.
   void _onTick(Timer? timer) {
-    final time = TimeOfDay.now();
-    if (time != _currentTime && mounted) {
-      _currentTime = time;
-      setState(() {});
-    }
+    final time = _currentTime;
+    _currentTime = _updateCurrentTime();
+    if (time == _currentTime || !mounted) return;
+    setState(() {});
   }
 
   @override
@@ -90,8 +106,9 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final currentHour = _currentTime.hourOfPeriod.appendLeadingZero();
     final currentMinute = _currentTime.minute.appendLeadingZero();
     final currentPeriod = _currentTime.period.name;
+    final currentDateTime = _getCurrentDateTime();
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
-            ?.call(DateTime.now()) ??
+            ?.call(currentDateTime) ??
         '$currentHour:$currentMinute $currentPeriod';
 
     /// remove startHour minute from [_currentTime.getTotalMinutes]
@@ -163,8 +180,6 @@ class TimeLine extends StatefulWidget {
   /// height of indicator and also allow to show time with custom format.
   final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
-  static DateTime get _date => DateTime.now();
-
   double get _halfHourHeight => hourHeight / 2;
 
   /// This field will be used to set end hour for day and week view
@@ -197,6 +212,7 @@ class _TimeLineState extends State<TimeLine> {
   @override
   void initState() {
     super.initState();
+    _currentTime = _updateCurrentTime();
     _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
@@ -206,16 +222,32 @@ class _TimeLineState extends State<TimeLine> {
     super.dispose();
   }
 
+  /// Returns the current time for the timeline, respecting timezone settings.
+  DateTime _getCurrentDateTime() {
+    final settings = widget.liveTimeIndicatorSettings;
+
+    if (settings.currentTimeProvider != null) {
+      return settings.currentTimeProvider!();
+    } else {
+      return DateTime.now();
+    }
+  }
+
+  /// Update the current time based on timezone settings
+  TimeOfDay _updateCurrentTime() {
+    final dateTime = _getCurrentDateTime();
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
   /// Creates an recursive call that runs every 1 seconds.
   /// This will rebuild TimeLine every second. This will allow us
   /// to show/hide time line when there is overlap with
   /// live time line indicator in Week and Day view.
   void _onTick(Timer? timer) {
-    final time = TimeOfDay.now();
-    if (time != _currentTime && mounted) {
-      _currentTime = time;
-      setState(() {});
-    }
+    final time = _currentTime;
+    _currentTime = _updateCurrentTime();
+    if (time == _currentTime || !mounted) return;
+    setState(() {});
   }
 
   @override
@@ -291,10 +323,12 @@ class _TimeLineState extends State<TimeLine> {
     required int hour,
     int minutes = 0,
   }) {
+    final currentDateTime = _getCurrentDateTime();
+
     final dateTime = DateTime(
-      TimeLine._date.year,
-      TimeLine._date.month,
-      TimeLine._date.day,
+      currentDateTime.year,
+      currentDateTime.month,
+      currentDateTime.day,
       hour,
       minutes,
     );
