@@ -570,6 +570,13 @@ class CalendarData<T extends Object?> {
         .where((event) => (!event.isFullDayEvent && !event.isRangingEvent))
         .toList();
     events.addAll(recurringEvents);
+
+    // Inside event arranger we require all the events to be sorted
+    // based on start time.
+    //If not sorted it will create overlapping events in the arranger.
+    events.sort((a, b) =>
+        (a.startTime?.getTotalMinutes ?? 0) -
+        (b.startTime?.getTotalMinutes ?? 0));
     return events;
   }
 

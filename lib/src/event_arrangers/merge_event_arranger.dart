@@ -32,11 +32,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required double width,
     required double heightPerMinute,
     required int startHour,
+    required DateTime calendarViewDate,
   }) {
     // TODO: Right now all the events that are passed in this function must be
     // sorted in ascending order of the start time.
     //
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
+    final startHourInMinutes = startHour * 60;
 
     //Checking if startTime and endTime are correct
     for (final event in events) {
@@ -46,7 +48,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       }
 
       // Checks if an event has valid start and end time.
-      if (event.endTime!.getTotalMinutes <= event.startTime!.getTotalMinutes) {
+      if (event.endDate.millisecondsSinceEpoch <
+          event.date.millisecondsSinceEpoch) {
         if (!(event.endTime!.getTotalMinutes == 0 &&
             event.startTime!.getTotalMinutes > 0)) {
           assert(() {
@@ -67,13 +70,51 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       final startTime = event.startTime!;
       final endTime = event.endTime!;
 
-      // startTime.getTotalMinutes returns the number of minutes from 00h00 to the beginning of the event
-      // But the first hour to be displayed (startHour) could be 06h00, so we have to substract
-      // The number of minutes from 00h00 to startHour which is equal to startHour * 60
-      final eventStart = startTime.getTotalMinutes - (startHour * 60);
-      final eventEnd = endTime.getTotalMinutes - (startHour * 60) == 0
-          ? Constants.minutesADay - (startHour * 60)
-          : endTime.getTotalMinutes - (startHour * 60);
+      int eventStart;
+      int eventEnd;
+
+      if (event.isRangingEvent) {
+        // Handle multi-day events differently based on which day is currently being viewed
+        final isStartDate =
+            calendarViewDate.isAtSameMomentAs(event.date.withoutTime);
+        final isEndDate =
+            calendarViewDate.isAtSameMomentAs(event.endDate.withoutTime);
+
+        if (isStartDate && isEndDate) {
+          // Single day event with start and end time
+          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
+          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
+              ? Constants.minutesADay - (startHourInMinutes)
+              : endTime.getTotalMinutes - (startHourInMinutes);
+        } else if (isStartDate) {
+          // First day - show from start time to end of day
+          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
+          eventEnd = Constants.minutesADay;
+        } else if (isEndDate) {
+          // Last day - show from start of day to end time
+          eventStart = 0;
+          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
+              ? Constants.minutesADay - (startHourInMinutes)
+              : endTime.getTotalMinutes - (startHourInMinutes);
+        } else {
+          // Middle days - show full day
+          eventStart = 0;
+          eventEnd = Constants.minutesADay;
+        }
+      } else {
+        // Single day event - use normal start/end times
+        eventStart = startTime.getTotalMinutes - (startHourInMinutes);
+        eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
+            ? Constants.minutesADay - (startHourInMinutes)
+            : endTime.getTotalMinutes - (startHourInMinutes);
+      }
+
+      // Ensure values are within valid range
+      eventStart = math.max(0, eventStart);
+      eventEnd = math.min(
+        Constants.minutesADay - (startHourInMinutes),
+        eventEnd,
+      );
 
       final arrangeEventLen = arrangedEvents.length;
 
@@ -97,8 +138,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
       if (eventIndex == -1) {
         final top = eventStart * heightPerMinute;
-        final bottom = eventEnd * heightPerMinute == height
-            ? 0.0
+
+        // Calculate visibleMinutes (the total minutes displayed in the view)
+        final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
+
+        // Check if event ends at or beyond the visible area
+        final bottom = eventEnd >= visibleMinutes
+            ? 0.0 // Event extends to bottom of view
             : height - eventEnd * heightPerMinute;
 
         final newEvent = OrganizedCalendarEventData<T>(
@@ -109,6 +155,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           startDuration: startTime.copyFromMinutes(eventStart),
           endDuration: endTime.copyFromMinutes(eventEnd),
           events: [event],
+          calendarViewDate: calendarViewDate,
         );
 
         arrangedEvents.add(newEvent);
@@ -126,8 +173,13 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         final endDuration = math.max(eventEnd, arrangedEventEnd);
 
         final top = startDuration * heightPerMinute;
-        final bottom = endDuration * heightPerMinute == height
-            ? 0.0
+
+        // Calculate visibleMinutes (the total minutes displayed in the view)
+        final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
+
+        // Check if event ends at or beyond the visible area
+        final bottom = endDuration >= visibleMinutes
+            ? 0.0 // Event extends to bottom of view
             : height - endDuration * heightPerMinute;
 
         final newEvent = OrganizedCalendarEventData<T>(
@@ -140,6 +192,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           endDuration:
               arrangedEventData.endDuration.copyFromMinutes(endDuration),
           events: arrangedEventData.events..add(event),
+          calendarViewDate: calendarViewDate,
         );
 
         arrangedEvents[eventIndex] = newEvent;
