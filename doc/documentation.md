@@ -159,13 +159,18 @@ MonthView(
     startDay: WeekDays.sunday, // To change the first day of the week.
     // Event callbacks
     onEventTap: (event, data) => print('on tap'),
+    onEventTapDetails: (event, data, details) => print('on tap details'),
     onEventDoubleTap: (event, data) => print('on double tap'),
+    onEventDoubleTapDetails: (event, data, details) =>
+      print('on double details'),
     onEventLongTap: (event, data) => print('on long tap'),
+    onEventLongTapDetails: (event, data, details) =>
+      print('on long tap details'),
     onDateLongPress: (date) => print(date),
     headerBuilder: MonthHeader.hidden, // To hide month header
     showWeekTileBorder: false, // To show or hide header border
-    hideDaysNotInMonth: true, // To hide days not in current month
-    showWeekends: false, // To hide weekends (default is true)
+    hideDaysNotInMonth: true, // To hide days or cell that are not in current month
+    showWeekends: false, // To hide weekends default value is true
 );
 ```
 
@@ -241,6 +246,15 @@ WeekView(
       maxLines: 2,
     ), // To set full day events header text config
     keepScrollOffset: true, // To maintain scroll offset when the page changes
+    liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      color: Colors.red,
+      showTime: true,
+      // Support for different timezones - provide custom DateTime function
+      currentTimeProvider: () {
+        final utcNow = DateTime.now().toUtc();
+        return utcNow.subtract(Duration(hours: 4));
+        },
+    ),
 );
 ```
 
@@ -348,13 +362,13 @@ There are two ways to synchronize events between calendar views:
 
 ## Main Contributors
 
-| ![img](https://avatars.githubusercontent.com/u/25323183?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/65167856?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/36261739?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/56400956?v=4&s=200) |
-|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
-|           [Vatsal Tanna](https://github.com/vatsaltanna)           |        [Sanket Kachhela](https://github.com/sanket-simform)        |          [Parth Baraiya](https://github.com/ParthBaraiya)          |    [Ujas Majithiya](https://github.com/Ujas-Majithiya)    |
+| ![img](https://avatars.githubusercontent.com/u/25323183?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/65167856?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/36261739?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/56400956?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/69202025?v=4&s=200) |
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+|           [Vatsal Tanna](https://github.com/vatsaltanna)           |        [Sanket Kachhela](https://github.com/sanket-simform)        |          [Parth Baraiya](https://github.com/ParthBaraiya)          |        [Ujas Majithiya](https://github.com/Ujas-Majithiya)         |            [Rashi Shah](https://github.com/rashi-shah)             |
 
-| ![img](https://avatars.githubusercontent.com/u/89002539?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/44993081?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/65003381?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/72137369?v=4&s=200) |
-|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
-|         [Faiyaz Shaikh](https://github.com/faiyaz-shaikh)          |        [Dhaval Kansara](https://github.com/DhavalRKansara)         |         [Apurva Kanthraviya](https://github.com/apurva780)         |         [Shubham Jitiya](https://github.com/ShubhamJitiya)         |
+| ![img](https://avatars.githubusercontent.com/u/89002539?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/44993081?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/65003381?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/72137369?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/81063988?v=4&s=200) |
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+|         [Faiyaz Shaikh](https://github.com/faiyaz-shaikh)          |        [Dhaval Kansara](https://github.com/DhavalRKansara)         |         [Apurva Kanthraviya](https://github.com/apurva780)         |         [Shubham Jitiya](https://github.com/ShubhamJitiya)         |           [Sahil Totala](https://github.com/Flamingloon)           |
 
 ## Contributing
 
