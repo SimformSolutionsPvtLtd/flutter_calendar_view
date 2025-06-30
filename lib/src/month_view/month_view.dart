@@ -620,6 +620,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         dateStringBuilder: widget.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
         titleColor: themeColor.cellTextColor,
+        highlightColor: themeColor.cellHighlightColor,
       );
     }
     return FilledCell<T>(
