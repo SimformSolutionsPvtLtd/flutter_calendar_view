@@ -16,6 +16,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
     required this.headerIconColor,
     required this.headerTextColor,
     required this.headerBackgroundColor,
+    required this.cellHighlightColor,
   });
 
   // Cell properties
@@ -34,6 +35,9 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
   final Color headerTextColor;
   final Color headerBackgroundColor;
 
+  final Color cellHighlightColor;
+  // final Color
+
   /// Get pre-defined colors for light theme
   MonthViewTheme.light()
       : cellInMonthColor = LightAppColors.surfaceContainerLowest,
@@ -45,7 +49,8 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
         weekDayBorderColor = LightAppColors.outlineVariant,
         headerIconColor = LightAppColors.onPrimary,
         headerTextColor = LightAppColors.onPrimary,
-        headerBackgroundColor = LightAppColors.primary;
+        headerBackgroundColor = LightAppColors.primary,
+        cellHighlightColor = LightAppColors.primary;
 
   /// Get pre-defined colors for dark theme
   MonthViewTheme.dark()
@@ -58,7 +63,8 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
         weekDayBorderColor = DarkAppColors.outlineVariant,
         headerIconColor = DarkAppColors.onPrimary,
         headerTextColor = DarkAppColors.onPrimary,
-        headerBackgroundColor = DarkAppColors.primary;
+        headerBackgroundColor = DarkAppColors.primary,
+        cellHighlightColor = DarkAppColors.primary;
 
   @override
   ThemeExtension<MonthViewTheme> copyWith({
@@ -72,6 +78,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
     Color? headerIconColor,
     Color? headerTextColor,
     Color? headerBackgroundColor,
+    Color? highlightColor,
   }) {
     return MonthViewTheme(
       cellInMonthColor: cellInMonthColor ?? this.cellInMonthColor,
@@ -85,6 +92,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
       headerTextColor: headerTextColor ?? this.headerTextColor,
       headerBackgroundColor:
           headerBackgroundColor ?? this.headerBackgroundColor,
+      cellHighlightColor: highlightColor ?? this.cellHighlightColor,
     );
   }
 
@@ -123,6 +131,8 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
       headerBackgroundColor:
           Color.lerp(headerBackgroundColor, other.headerBackgroundColor, t) ??
               headerBackgroundColor,
+      cellHighlightColor:
+          Color.lerp(cellHighlightColor, other.cellHighlightColor, t) ?? cellHighlightColor,
     );
   }
 }
