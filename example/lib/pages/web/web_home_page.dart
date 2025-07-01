@@ -44,7 +44,6 @@ class _WebHomePageState extends State<WebHomePage> {
                     MediaQuery.of(context).size.height),
               ),
               child: CalendarViews(
-                key: ValueKey(MediaQuery.of(context).size.width),
                 view: _selectedView,
               ),
             ),
