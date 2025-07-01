@@ -132,7 +132,8 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
           Color.lerp(headerBackgroundColor, other.headerBackgroundColor, t) ??
               headerBackgroundColor,
       cellHighlightColor:
-          Color.lerp(cellHighlightColor, other.cellHighlightColor, t) ?? cellHighlightColor,
+          Color.lerp(cellHighlightColor, other.cellHighlightColor, t) ??
+              cellHighlightColor,
     );
   }
 }

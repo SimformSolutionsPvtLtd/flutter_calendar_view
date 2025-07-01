@@ -6,11 +6,13 @@ class CalendarTheme {
   final MonthViewTheme monthViewTheme;
   final DayViewTheme dayViewTheme;
   final WeekViewTheme weekViewTheme;
+  final MultiDayViewTheme multiDayViewTheme;
 
   CalendarTheme({
     required this.monthViewTheme,
     required this.dayViewTheme,
     required this.weekViewTheme,
+    required this.multiDayViewTheme,
   });
 
   // TODO(Shubham): Remove if not required
@@ -20,6 +22,7 @@ class CalendarTheme {
       MonthViewTheme.light(),
       DayViewTheme.light(),
       WeekViewTheme.light(),
+      MultiDayViewTheme.light(),
     ],
   );
 
@@ -29,6 +32,7 @@ class CalendarTheme {
       MonthViewTheme.dark(),
       DayViewTheme.dark(),
       WeekViewTheme.dark(),
+      MultiDayViewTheme.dark(),
     ],
   );
 }

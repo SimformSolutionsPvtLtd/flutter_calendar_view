@@ -10,6 +10,7 @@ import '../components/week_view_components.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
+import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../typedefs.dart';
@@ -140,7 +141,7 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   final bool showQuarterHours;
 
   /// Display workday bottom line
-  final bool showWeekDayBottomLine;
+  final bool showMutliDayBottomLine;
 
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
@@ -219,7 +220,7 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
       required this.multiDayViewScrollController,
       this.lastScrollOffset = 0.0,
       this.keepScrollOffset = false,
-      this.showWeekDayBottomLine = true})
+      this.showMutliDayBottomLine = true})
       : super(key: key);
 
   @override
@@ -255,6 +256,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
+    final themeColor = context.multiDayViewTheme;
+
     return Container(
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
@@ -264,18 +267,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
             : VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x0C000000),
-                  offset: Offset(0, 2),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
+          ColoredBox(
+            color: themeColor.headerBackgroundColor,
             child: SizedBox(
               width: widget.width,
               child: Row(
@@ -301,10 +294,11 @@ class _InternalMultiDayViewPageState<T extends Object?>
               ),
             ),
           ),
-          if (widget.showWeekDayBottomLine)
+          if (widget.showMutliDayBottomLine)
             Divider(
               thickness: 1,
               height: 1,
+              color: themeColor.borderColor,
             ),
           SizedBox(
             width: widget.width,
@@ -312,7 +306,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: widget.hourIndicatorSettings.color,
+                    color: themeColor.borderColor,
                     width: 2,
                   ),
                 ),
@@ -374,7 +368,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
                     CustomPaint(
                       size: Size(widget.width, widget.height),
                       painter: widget.hourLinePainter(
-                        widget.hourIndicatorSettings.color,
+                        themeColor.hourLineColor,
                         widget.hourIndicatorSettings.height,
                         widget.timeLineWidth +
                             widget.hourIndicatorSettings.offset,
@@ -393,7 +387,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
                       CustomPaint(
                         size: Size(widget.width, widget.height),
                         painter: HalfHourLinePainter(
-                          lineColor: widget.halfHourIndicatorSettings.color,
+                          lineColor: themeColor.halfHourLineColor,
                           lineHeight: widget.halfHourIndicatorSettings.height,
                           offset: widget.timeLineWidth +
                               widget.halfHourIndicatorSettings.offset,
@@ -410,7 +404,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
                       CustomPaint(
                         size: Size(widget.width, widget.height),
                         painter: QuarterHourLinePainter(
-                          lineColor: widget.quarterHourIndicatorSettings.color,
+                          lineColor: themeColor.quarterHourLineColor,
                           lineHeight:
                               widget.quarterHourIndicatorSettings.height,
                           offset: widget.timeLineWidth +
@@ -438,8 +432,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
                                     ? BoxDecoration(
                                         border: Border(
                                           right: BorderSide(
-                                            color: widget
-                                                .hourIndicatorSettings.color,
+                                            color:
+                                                themeColor.verticalLinesColor,
                                             width: widget
                                                 .hourIndicatorSettings.height,
                                           ),
@@ -524,8 +518,13 @@ class _InternalMultiDayViewPageState<T extends Object?>
                         widget.liveTimeIndicatorSettings.height > 0 &&
                         !widget.liveTimeIndicatorSettings.onlyShowToday)
                       LiveTimeIndicator(
-                        liveTimeIndicatorSettings:
-                            widget.liveTimeIndicatorSettings,
+                        liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+                          color: themeColor.liveIndicatorColor,
+                          height: widget.liveTimeIndicatorSettings.height,
+                          offset: widget.liveTimeIndicatorSettings.offset,
+                          onlyShowToday:
+                              widget.liveTimeIndicatorSettings.onlyShowToday,
+                        ),
                         width: widget.width,
                         height: widget.height,
                         heightPerMinute: widget.heightPerMinute,
