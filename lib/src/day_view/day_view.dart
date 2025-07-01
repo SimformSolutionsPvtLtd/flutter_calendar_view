@@ -662,7 +662,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
-  Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
+  Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
         date: date,
         timeStringBuilder: widget.timeStringBuilder,
         markingStyle: TextStyle(

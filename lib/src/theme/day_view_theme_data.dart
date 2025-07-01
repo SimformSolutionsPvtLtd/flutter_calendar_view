@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'dark_app_colors.dart';
 import 'light_app_colors.dart';
 
-class DayViewTheme extends ThemeExtension<DayViewTheme> {
+class DayViewThemeData extends ThemeExtension<DayViewThemeData> {
   /// Define custom colors
-  DayViewTheme({
+  DayViewThemeData({
     required this.hourLineColor,
     required this.halfHourLineColor,
     required this.quarterHourLineColor,
@@ -35,7 +35,7 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
   final Color timelineTextColor;
 
   /// Get pre-defined colors for light theme
-  DayViewTheme.light()
+  DayViewThemeData.light()
       : hourLineColor = LightAppColors.surfaceContainerHighest,
         halfHourLineColor = LightAppColors.surfaceContainerHighest,
         quarterHourLineColor = LightAppColors.surfaceContainerHighest,
@@ -47,7 +47,7 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
         timelineTextColor = LightAppColors.onSurface;
 
   /// Get pre-defined colors for dark theme
-  DayViewTheme.dark()
+  DayViewThemeData.dark()
       : hourLineColor = DarkAppColors.surfaceContainerHighest,
         halfHourLineColor = DarkAppColors.surfaceContainerHighest,
         quarterHourLineColor = DarkAppColors.surfaceContainerHighest,
@@ -59,7 +59,7 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
         timelineTextColor = DarkAppColors.onSurface;
 
   @override
-  ThemeExtension<DayViewTheme> copyWith({
+  ThemeExtension<DayViewThemeData> copyWith({
     Color? hourLineColor,
     Color? halfHourLineColor,
     Color? quarterHourLineColor,
@@ -70,7 +70,7 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
     Color? headerBackgroundColor,
     Color? timelineTextColor,
   }) {
-    return DayViewTheme(
+    return DayViewThemeData(
       hourLineColor: hourLineColor ?? this.hourLineColor,
       halfHourLineColor: halfHourLineColor ?? this.halfHourLineColor,
       quarterHourLineColor: quarterHourLineColor ?? this.quarterHourLineColor,
@@ -85,14 +85,14 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
   }
 
   @override
-  ThemeExtension<DayViewTheme> lerp(
-    covariant ThemeExtension<DayViewTheme>? other,
+  ThemeExtension<DayViewThemeData> lerp(
+    covariant ThemeExtension<DayViewThemeData>? other,
     double t,
   ) {
-    if (other is! DayViewTheme) {
+    if (other is! DayViewThemeData) {
       return this;
     }
-    return DayViewTheme(
+    return DayViewThemeData(
       hourLineColor:
           Color.lerp(hourLineColor, other.hourLineColor, t) ?? hourLineColor,
       halfHourLineColor:
@@ -117,6 +117,23 @@ class DayViewTheme extends ThemeExtension<DayViewTheme> {
       timelineTextColor:
           Color.lerp(timelineTextColor, other.timelineTextColor, t) ??
               timelineTextColor,
+    );
+  }
+
+  /// Merges another `DayViewThemeData` into this one.
+  ThemeExtension<DayViewThemeData> merge(DayViewThemeData? other) {
+    if (other == null) return this;
+
+    return copyWith(
+      hourLineColor: other.hourLineColor,
+      halfHourLineColor: other.halfHourLineColor,
+      quarterHourLineColor: other.quarterHourLineColor,
+      pageBackgroundColor: other.pageBackgroundColor,
+      liveIndicatorColor: other.liveIndicatorColor,
+      headerIconColor: other.headerIconColor,
+      headerTextColor: other.headerTextColor,
+      headerBackgroundColor: other.headerBackgroundColor,
+      timelineTextColor: other.timelineTextColor,
     );
   }
 }

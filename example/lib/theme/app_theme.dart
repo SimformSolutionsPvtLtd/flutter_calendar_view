@@ -48,14 +48,16 @@ class AppTheme {
   );
 
   // Light colors
-  static final _dayViewTheme = DayViewTheme.light();
-  static final _weekViewTheme = WeekViewTheme.light();
+  static final _dayViewTheme = DayViewThemeData.light();
+  static final _weekViewTheme = WeekViewThemeData.light();
+  static final _multiDayViewTheme = MultiDayViewThemeData.light();
 
   // Dark colors
   static final _appDarkTheme = AppThemeExtension.dark();
-  static final _monthViewDarkTheme = MonthViewTheme.dark();
-  static final _dayViewDarkTheme = DayViewTheme.dark();
-  static final _weekViewDarkTheme = WeekViewTheme.dark();
+  static final _monthViewDarkTheme = MonthViewThemeData.dark();
+  static final _dayViewDarkTheme = DayViewThemeData.dark();
+  static final _weekViewDarkTheme = WeekViewThemeData.dark();
+  static final _multiDayViewDarkTheme = MultiDayViewThemeData.dark();
 
   // Light theme
   static final light = ThemeData.light().copyWith(
@@ -81,6 +83,7 @@ class AppTheme {
     extensions: [
       _dayViewTheme,
       _weekViewTheme,
+      _multiDayViewTheme,
     ],
   );
 
@@ -130,6 +133,7 @@ class AppTheme {
       _monthViewDarkTheme,
       _dayViewDarkTheme,
       _weekViewDarkTheme,
+      _multiDayViewDarkTheme,
     ],
   );
 }
