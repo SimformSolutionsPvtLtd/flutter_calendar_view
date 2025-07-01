@@ -34,6 +34,8 @@ class _MyAppState extends State<MyApp> {
                 as DayViewTheme,
         weekViewTheme:
             isDarkMode ? WeekViewTheme.dark() : WeekViewTheme.light(),
+        multiDayViewTheme:
+            isDarkMode ? MultiDayViewTheme.dark() : MultiDayViewTheme.light(),
       ),
       child: CalendarControllerProvider(
         controller: EventController()..addAll(_events),

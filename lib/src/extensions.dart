@@ -310,4 +310,23 @@ extension BuildContextExtension on BuildContext {
 
   WeekViewTheme get weekViewColors =>
       Theme.of(this).extension<WeekViewTheme>() ?? WeekViewTheme.light();
+
+  MultiDayViewTheme get multiDayViewColors =>
+      Theme.of(this).extension<MultiDayViewTheme>() ??
+      MultiDayViewTheme.light();
+}
+
+extension BuildContextMultiDayViewThemeExtension on BuildContext {
+  /// Get MultiDayViewTheme from Theme
+  MultiDayViewTheme get multiDayViewTheme {
+    final theme = Theme.of(this).extension<MultiDayViewTheme>();
+    if (theme != null) {
+      return theme;
+    }
+
+    // If no theme extension is available, return based on brightness
+    return Theme.of(this).brightness == Brightness.dark
+        ? MultiDayViewTheme.dark()
+        : MultiDayViewTheme.light();
+  }
 }
