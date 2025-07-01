@@ -22,8 +22,7 @@ class MonthPageHeader extends CalendarPageHeader {
     Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
-    HeaderStyle headerStyle =
-        const HeaderStyle(),
+    HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
           key: key,
           date: date,

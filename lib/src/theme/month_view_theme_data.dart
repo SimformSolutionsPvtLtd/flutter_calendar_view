@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'dark_app_colors.dart';
 import 'light_app_colors.dart';
 
-class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
+class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
   /// Define custom colors
-  MonthViewTheme({
+  MonthViewThemeData({
     required this.cellInMonthColor,
     required this.cellNotInMonthColor,
     required this.cellTextColor,
@@ -36,10 +36,11 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
   final Color headerBackgroundColor;
 
   final Color cellHighlightColor;
+
   // final Color
 
   /// Get pre-defined colors for light theme
-  MonthViewTheme.light()
+  MonthViewThemeData.light()
       : cellInMonthColor = LightAppColors.surfaceContainerLowest,
         cellNotInMonthColor = LightAppColors.surfaceContainerLow,
         cellTextColor = LightAppColors.onSurface,
@@ -53,7 +54,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
         cellHighlightColor = LightAppColors.primary;
 
   /// Get pre-defined colors for dark theme
-  MonthViewTheme.dark()
+  MonthViewThemeData.dark()
       : cellInMonthColor = DarkAppColors.surfaceContainerLowest,
         cellNotInMonthColor = DarkAppColors.surfaceContainerLow,
         cellTextColor = DarkAppColors.onSurface,
@@ -67,7 +68,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
         cellHighlightColor = DarkAppColors.primary;
 
   @override
-  ThemeExtension<MonthViewTheme> copyWith({
+  ThemeExtension<MonthViewThemeData> copyWith({
     Color? cellInMonthColor,
     Color? cellNotInMonthColor,
     Color? cellTextColor,
@@ -80,7 +81,7 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
     Color? headerBackgroundColor,
     Color? highlightColor,
   }) {
-    return MonthViewTheme(
+    return MonthViewThemeData(
       cellInMonthColor: cellInMonthColor ?? this.cellInMonthColor,
       cellNotInMonthColor: cellNotInMonthColor ?? this.cellNotInMonthColor,
       cellTextColor: cellTextColor ?? this.cellTextColor,
@@ -97,14 +98,14 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
   }
 
   @override
-  ThemeExtension<MonthViewTheme> lerp(
-    covariant ThemeExtension<MonthViewTheme>? other,
+  ThemeExtension<MonthViewThemeData> lerp(
+    covariant ThemeExtension<MonthViewThemeData>? other,
     double t,
   ) {
-    if (other is! MonthViewTheme) {
+    if (other is! MonthViewThemeData) {
       return this;
     }
-    return MonthViewTheme(
+    return MonthViewThemeData(
       cellInMonthColor:
           Color.lerp(cellInMonthColor, other.cellInMonthColor, t) ??
               cellInMonthColor,
@@ -132,7 +133,27 @@ class MonthViewTheme extends ThemeExtension<MonthViewTheme> {
           Color.lerp(headerBackgroundColor, other.headerBackgroundColor, t) ??
               headerBackgroundColor,
       cellHighlightColor:
-          Color.lerp(cellHighlightColor, other.cellHighlightColor, t) ?? cellHighlightColor,
+          Color.lerp(cellHighlightColor, other.cellHighlightColor, t) ??
+              cellHighlightColor,
+    );
+  }
+
+  /// Merges another `MonthViewThemeData` into this one.
+  ThemeExtension<MonthViewThemeData> merge(MonthViewThemeData? other) {
+    if (other == null) return this;
+
+    return copyWith(
+      cellInMonthColor: other.cellInMonthColor,
+      cellNotInMonthColor: other.cellNotInMonthColor,
+      cellTextColor: other.cellTextColor,
+      cellBorderColor: other.cellBorderColor,
+      weekDayTileColor: other.weekDayTileColor,
+      weekDayTextColor: other.weekDayTextColor,
+      weekDayBorderColor: other.weekDayBorderColor,
+      headerIconColor: other.headerIconColor,
+      headerTextColor: other.headerTextColor,
+      headerBackgroundColor: other.headerBackgroundColor,
+      highlightColor: other.cellHighlightColor,
     );
   }
 }

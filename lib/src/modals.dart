@@ -53,7 +53,7 @@ class LiveTimeIndicatorSettings {
   /// Flag to show time on live time line.
   final bool showTime;
 
-  /// Flag to show time backgroud view.
+  /// Flag to show time background view.
   final bool showTimeBackgroundView;
 
   /// Radius of bullet.

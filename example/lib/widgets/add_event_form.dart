@@ -103,7 +103,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Text(
                 'Recurring Event',
                 style: TextStyle(
-                  color: AppColors.black,
+                  color: color.surface,
                   fontSize: 16,
                 ),
               ),
@@ -128,7 +128,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   });
                 },
-                activeColor: Colors.blue,
+                activeColor: color.surface,
               ),
             ],
           ),
@@ -205,10 +205,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       updateWeekdaysSelection();
                     }
 
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
                   validator: (value) {
                     if (value == null || value == "") {
                       return "Please select end date.";

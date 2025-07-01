@@ -204,7 +204,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   final MinuteSlotSize minuteSlotSize;
 
   /// Style for MultiDayView header.
-  final HeaderStyle headerStyle;
+  final HeaderStyle? headerStyle;
 
   /// Option for SafeArea.
   final SafeAreaOption safeAreaOption;
@@ -300,7 +300,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
-    this.headerStyle = const HeaderStyle(),
+    this.headerStyle,
     this.safeAreaOption = const SafeAreaOption(),
     this.fullDayEventBuilder,
     this.startHour = 0,
@@ -492,18 +492,6 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     }
   }
 
-  // void updateRange() {
-  //   // Initially current start date might not had been updated
-  //   _minDate = DateTime(
-  //     _currentStartDate.year,
-  //     _currentStartDate.month,
-  //     _currentStartDate.day - _currentIndex * widget.daysInView,
-  //   );
-
-  //   // TODO(Shubham): Update max date
-  //   debugPrint('Old max date: ${_maxDate}');
-  // }
-
   @override
   void dispose() {
     _controller?.removeListener(_reloadCallback);
@@ -591,7 +579,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
                             hourHeight: _hourHeight,
                             multiDayViewScrollController: _scrollController,
                             eventArranger: _eventArranger,
-                            showWeekDayBottomLine: widget.showWeekDayBottomLine,
+                            showMutliDayBottomLine:
+                                widget.showWeekDayBottomLine,
                             weekDays: _weekDays,
                             minuteSlotSize: widget.minuteSlotSize,
                             scrollConfiguration: _scrollConfiguration,
@@ -661,11 +650,12 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   }
 
   void _updateViewDimensions() {
+    final borderColor = context.multiDayViewColors.borderColor;
     _timeLineWidth = widget.timeLineWidth ?? _width * 0.13;
 
     _liveTimeIndicatorSettings = widget.liveTimeIndicatorSettings ??
         LiveTimeIndicatorSettings(
-          color: Constants.defaultLiveTimeIndicatorColor,
+          color: context.multiDayViewColors.liveIndicatorColor,
           height: widget.heightPerMinute,
         );
 
@@ -675,7 +665,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     _hourIndicatorSettings = widget.hourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: borderColor,
           offset: 5,
         );
 
@@ -689,7 +679,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
-          color: Constants.defaultBorderColor,
+          color: borderColor,
           offset: 5,
         );
 
@@ -697,9 +687,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         "halfHourIndicator height must be less than minuteHeight * 60");
 
     _quarterHourIndicatorSettings = widget.quarterHourIndicatorSettings ??
-        HourIndicatorSettings(
-          color: Constants.defaultBorderColor,
-        );
+        HourIndicatorSettings(color: borderColor);
 
     assert(_quarterHourIndicatorSettings.height < _hourHeight,
         "quarterHourIndicator height must be less than minuteHeight * 60");
@@ -807,15 +795,26 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
   /// Default builder for week line.
   Widget _defaultWeekDayBuilder(DateTime date) {
+    final textColor = context.multiDayViewColors.multiDayTextColor;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-              Constants.weekTitles[date.weekday - 1]),
-          Text(widget.weekDayDateStringBuilder?.call(date.day) ??
-              date.day.toString()),
+          Text(
+            widget.weekDayStringBuilder?.call(date.weekday - 1) ??
+                Constants.weekTitles[date.weekday - 1],
+            style: TextStyle(
+              color: textColor,
+            ),
+          ),
+          Text(
+            widget.weekDayDateStringBuilder?.call(date.day) ??
+                date.day.toString(),
+            style: TextStyle(
+              color: textColor,
+            ),
+          ),
         ],
       ),
     );
@@ -830,7 +829,12 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     final weekNumber =
         (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
-      child: Text("$weekNumber"),
+      child: Text(
+        "$weekNumber",
+        style: TextStyle(
+          color: context.multiDayViewColors.multiDayTextColor,
+        ),
+      ),
     );
   }
 
@@ -840,6 +844,10 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
         date: date,
         timeStringBuilder: widget.timeLineStringBuilder,
+        markingStyle: TextStyle(
+          color: context.multiDayViewColors.timelineTextColor,
+          fontSize: 15.0,
+        ),
       );
 
   /// Default timeline builder. This builder will be used if
@@ -865,6 +873,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     DateTime startDate,
     DateTime endDate,
   ) {
+    final themeColors = context.multiDayViewColors;
     return WeekPageHeader(
       startDate: _currentStartDate,
       endDate: _currentEndDate,
@@ -888,7 +897,22 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         }
       },
       headerStringBuilder: widget.headerStringBuilder,
-      headerStyle: widget.headerStyle,
+      headerStyle: widget.headerStyle ??
+          HeaderStyle(
+            decoration: BoxDecoration(
+              color: themeColors.headerBackgroundColor,
+            ),
+            leftIconConfig: IconDataConfig(
+              color: themeColors.headerIconColor,
+            ),
+            rightIconConfig: IconDataConfig(
+              color: themeColors.headerIconColor,
+            ),
+            headerTextStyle: TextStyle(
+              color: themeColors.headerTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
     );
   }
 
