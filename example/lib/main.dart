@@ -25,15 +25,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return CalendarThemeProvider(
-      calendarTheme: CalendarTheme(
+      calendarTheme: CalendarThemeData(
         monthViewTheme:
-            isDarkMode ? MonthViewTheme.dark() : MonthViewTheme.light(),
+            isDarkMode ? MonthViewThemeData.dark() : MonthViewThemeData.light(),
         dayViewTheme: isDarkMode
-            ? DayViewTheme.dark()
-            : DayViewTheme.light().copyWith(hourLineColor: AppColors.primary)
-                as DayViewTheme,
+            ? DayViewThemeData.dark()
+            : DayViewThemeData.light()
+                .copyWith(hourLineColor: AppColors.primary) as DayViewThemeData,
         weekViewTheme:
-            isDarkMode ? WeekViewTheme.dark() : WeekViewTheme.light(),
+            isDarkMode ? WeekViewThemeData.dark() : WeekViewThemeData.light(),
+        multiDayViewTheme: isDarkMode
+            ? MultiDayViewThemeData.dark()
+            : MultiDayViewThemeData.light(),
       ),
       child: CalendarControllerProvider(
         controller: EventController()..addAll(_events),

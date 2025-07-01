@@ -14,7 +14,7 @@ class CalendarThemeProvider extends InheritedWidget {
   }) : super(key: key, child: child);
 
   /// Theme for Calendar views.
-  final CalendarTheme calendarTheme;
+  final CalendarThemeData calendarTheme;
 
   static CalendarThemeProvider of(BuildContext context) {
     final result =

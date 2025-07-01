@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'dark_app_colors.dart';
 import 'light_app_colors.dart';
 
-class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
-  /// Define custom colors
-  WeekViewTheme({
-    required this.weekDayTileColor,
-    required this.weekDayTextColor,
+class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
+  MultiDayViewThemeData({
+    required this.multiDayTileColor,
+    required this.multiDayTextColor,
     required this.hourLineColor,
     required this.halfHourLineColor,
     required this.quarterHourLineColor,
@@ -21,9 +20,9 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
     required this.verticalLinesColor,
   });
 
-  // Weekday tile properties
-  final Color weekDayTileColor;
-  final Color weekDayTextColor;
+  // Multi day tile properties
+  final Color multiDayTileColor;
+  final Color multiDayTextColor;
 
   // Hour line properties
   final Color hourLineColor;
@@ -41,14 +40,13 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
   // Other
   final Color liveIndicatorColor;
   final Color pageBackgroundColor;
-  final Color
-      borderColor; // TODO(Shubham): Rename this its top border & bottom border
+  final Color borderColor;
   final Color verticalLinesColor;
 
   /// Get pre-defined colors for light theme
-  WeekViewTheme.light()
-      : weekDayTileColor = LightAppColors.surfaceContainerHigh,
-        weekDayTextColor = LightAppColors.onSurface,
+  MultiDayViewThemeData.light()
+      : multiDayTileColor = LightAppColors.surfaceContainerHigh,
+        multiDayTextColor = LightAppColors.onSurface,
         hourLineColor = LightAppColors.surfaceContainerHighest,
         halfHourLineColor = LightAppColors.surfaceContainerHighest,
         quarterHourLineColor = LightAppColors.surfaceContainerHighest,
@@ -62,9 +60,9 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
         verticalLinesColor = LightAppColors.surfaceContainerHighest;
 
   /// Get pre-defined colors for dark theme
-  WeekViewTheme.dark()
-      : weekDayTileColor = DarkAppColors.surfaceContainerHigh,
-        weekDayTextColor = DarkAppColors.onSurface,
+  MultiDayViewThemeData.dark()
+      : multiDayTileColor = DarkAppColors.surfaceContainerHigh,
+        multiDayTextColor = DarkAppColors.onSurface,
         hourLineColor = DarkAppColors.surfaceContainerHighest,
         halfHourLineColor = DarkAppColors.surfaceContainerHighest,
         quarterHourLineColor = DarkAppColors.surfaceContainerHighest,
@@ -78,9 +76,9 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
         verticalLinesColor = DarkAppColors.surfaceContainerHighest;
 
   @override
-  ThemeExtension<WeekViewTheme> copyWith({
-    Color? weekDayTileColor,
-    Color? weekDayTextColor,
+  ThemeExtension<MultiDayViewThemeData> copyWith({
+    Color? multiDayTileColor,
+    Color? multiDayTextColor,
     Color? hourLineColor,
     Color? halfHourLineColor,
     Color? quarterHourLineColor,
@@ -93,9 +91,9 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
     Color? borderColor,
     Color? verticalLinesColor,
   }) {
-    return WeekViewTheme(
-      weekDayTileColor: weekDayTileColor ?? this.weekDayTileColor,
-      weekDayTextColor: weekDayTextColor ?? this.weekDayTextColor,
+    return MultiDayViewThemeData(
+      multiDayTileColor: multiDayTileColor ?? this.multiDayTileColor,
+      multiDayTextColor: multiDayTextColor ?? this.multiDayTextColor,
       hourLineColor: hourLineColor ?? this.hourLineColor,
       halfHourLineColor: halfHourLineColor ?? this.halfHourLineColor,
       quarterHourLineColor: quarterHourLineColor ?? this.quarterHourLineColor,
@@ -112,20 +110,20 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
   }
 
   @override
-  ThemeExtension<WeekViewTheme> lerp(
-    covariant ThemeExtension<WeekViewTheme>? other,
+  ThemeExtension<MultiDayViewThemeData> lerp(
+    covariant ThemeExtension<MultiDayViewThemeData>? other,
     double t,
   ) {
-    if (other is! WeekViewTheme) {
+    if (other is! MultiDayViewThemeData) {
       return this;
     }
-    return WeekViewTheme(
-      weekDayTileColor:
-          Color.lerp(weekDayTileColor, other.weekDayTileColor, t) ??
-              weekDayTileColor,
-      weekDayTextColor:
-          Color.lerp(weekDayTextColor, other.weekDayTextColor, t) ??
-              weekDayTextColor,
+    return MultiDayViewThemeData(
+      multiDayTileColor:
+          Color.lerp(multiDayTileColor, other.multiDayTileColor, t) ??
+              multiDayTileColor,
+      multiDayTextColor:
+          Color.lerp(multiDayTextColor, other.multiDayTextColor, t) ??
+              multiDayTextColor,
       hourLineColor:
           Color.lerp(hourLineColor, other.hourLineColor, t) ?? hourLineColor,
       halfHourLineColor:
@@ -154,6 +152,27 @@ class WeekViewTheme extends ThemeExtension<WeekViewTheme> {
       verticalLinesColor:
           Color.lerp(verticalLinesColor, other.verticalLinesColor, t) ??
               verticalLinesColor,
+    );
+  }
+
+  /// Merges another `MultiDayViewThemeData` into this one.
+  ThemeExtension<MultiDayViewThemeData> merge(MultiDayViewThemeData? other) {
+    if (other == null) return this;
+
+    return copyWith(
+      multiDayTileColor: other.multiDayTileColor,
+      multiDayTextColor: other.multiDayTextColor,
+      hourLineColor: other.hourLineColor,
+      halfHourLineColor: other.halfHourLineColor,
+      quarterHourLineColor: other.quarterHourLineColor,
+      liveIndicatorColor: other.liveIndicatorColor,
+      pageBackgroundColor: other.pageBackgroundColor,
+      headerIconColor: other.headerIconColor,
+      headerTextColor: other.headerTextColor,
+      headerBackgroundColor: other.headerBackgroundColor,
+      timelineTextColor: other.timelineTextColor,
+      borderColor: other.borderColor,
+      verticalLinesColor: other.verticalLinesColor,
     );
   }
 }

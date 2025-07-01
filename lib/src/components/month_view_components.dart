@@ -236,7 +236,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   }
 }
 
-class WeekDayTile extends StatelessWidget {
+class WeekDayTile extends StatefulWidget {
   /// Index of week day.
   final int dayIndex;
 
@@ -266,6 +266,11 @@ class WeekDayTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<WeekDayTile> createState() => _WeekDayTileState();
+}
+
+class _WeekDayTileState extends State<WeekDayTile> {
+  @override
   Widget build(BuildContext context) {
     final themeColors = context.monthViewColors;
 
@@ -274,17 +279,18 @@ class WeekDayTile extends StatelessWidget {
       margin: EdgeInsets.zero,
       padding: EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
-        color: backgroundColor ?? themeColors.weekDayTileColor,
-        border: displayBorder
+        color: widget.backgroundColor ?? themeColors.weekDayTileColor,
+        border: widget.displayBorder
             ? Border.all(
-                color: borderColor ?? themeColors.weekDayBorderColor,
+                color: widget.borderColor ?? themeColors.weekDayBorderColor,
                 width: 0.5,
               )
             : null,
       ),
       child: Text(
-        weekDayStringBuilder?.call(dayIndex) ?? Constants.weekTitles[dayIndex],
-        style: textStyle ??
+        widget.weekDayStringBuilder?.call(widget.dayIndex) ??
+            Constants.weekTitles[widget.dayIndex],
+        style: widget.textStyle ??
             TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w500,
