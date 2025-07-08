@@ -119,7 +119,6 @@ class CalendarEventData<T extends Object?> {
   }
 
   /// Returns event data in [Map<String, dynamic>] format.
-  ///
   Map<String, dynamic> toJson() => {
         "date": date,
         "startTime": startTime,

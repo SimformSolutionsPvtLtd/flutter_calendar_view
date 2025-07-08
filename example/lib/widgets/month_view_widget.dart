@@ -14,21 +14,27 @@ class MonthViewWidget extends StatelessWidget {
     return MonthView(
       key: state,
       width: width,
-      showWeekends: true,
-      startDay: WeekDays.friday,
-      useAvailableVerticalSpace: true,
-      hideDaysNotInMonth: true,
-      onEventTap: (event, date) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => DetailsPage(event: event, date: date),
-          ),
-        );
-      },
-      onEventLongTap: (event, date) {
-        SnackBar snackBar = SnackBar(content: Text("on LongTap"));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
+      monthViewThemeSettings: MonthViewThemeSettings(
+        cellsInMonthHighlightColor: Colors.blue,
+      ),
+      monthViewStyle: MonthViewStyle(
+        startDay: WeekDays.friday,
+        useAvailableVerticalSpace: true,
+        hideDaysNotInMonth: true,
+      ),
+      monthViewBuilders: MonthViewBuilders(
+        onEventTap: (event, date) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => DetailsPage(event: event, date: date),
+            ),
+          );
+        },
+        onEventLongTap: (event, date) {
+          SnackBar snackBar = SnackBar(content: Text("on LongTap"));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+      ),
     );
   }
 }
