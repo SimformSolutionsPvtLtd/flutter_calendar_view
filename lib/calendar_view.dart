@@ -23,3 +23,5 @@ export './src/theme/month_view_theme.dart';
 export './src/theme/week_view_theme.dart';
 export './src/typedefs.dart';
 export './src/week_view/week_view.dart';
+export './src/month_view/month_view_style.dart';
+export './src/month_view/month_view_builders.dart';

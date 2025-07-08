@@ -118,7 +118,7 @@ class CalendarEventData<T extends Object?> {
             currentDate.isAfter(date.withoutTime));
   }
 
-  /// Returns event data in [Map<String, dynamic>] format.
+  /// Returns event data in [Map&lt;String, dynamic&gt;] format.
   ///
   Map<String, dynamic> toJson() => {
         "date": date,
