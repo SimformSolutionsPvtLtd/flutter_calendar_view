@@ -4,10 +4,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../calendar_event_data.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
-import '../typedefs.dart';
 
 class CircularCell extends StatelessWidget {
   /// Date of cell.
@@ -245,7 +244,9 @@ class WeekDayTile extends StatelessWidget {
   final String Function(int)? weekDayStringBuilder;
 
   /// Background color of single week day tile.
-  final Color backgroundColor;
+  final Color? backgroundColor;
+
+  final Color? borderColor;
 
   /// Should display border or not.
   final bool displayBorder;
@@ -257,7 +258,8 @@ class WeekDayTile extends StatelessWidget {
   const WeekDayTile({
     Key? key,
     required this.dayIndex,
-    this.backgroundColor = Constants.white,
+    this.backgroundColor,
+    this.borderColor,
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
@@ -265,15 +267,17 @@ class WeekDayTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeColors = context.monthViewColors;
+
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.zero,
       padding: EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: backgroundColor ?? themeColors.weekDayTileColor,
         border: displayBorder
             ? Border.all(
-                color: Constants.defaultBorderColor,
+                color: borderColor ?? themeColors.weekDayBorderColor,
                 width: 0.5,
               )
             : null,
@@ -283,7 +287,8 @@ class WeekDayTile extends StatelessWidget {
         style: textStyle ??
             TextStyle(
               fontSize: 17,
-              color: Constants.black,
+              fontWeight: FontWeight.w500,
+              color: themeColors.weekDayTextColor,
             ),
       ),
     );

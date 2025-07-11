@@ -4,13 +4,19 @@
 
 import 'package:flutter/material.dart';
 
-import '../../calendar_view.dart';
 import '../components/_internal_components.dart';
+import '../components/event_scroll_notifier.dart';
+import '../components/week_view_components.dart';
+import '../enumerations.dart';
+import '../event_arrangers/event_arrangers.dart';
+import '../event_controller.dart';
 import '../extensions.dart';
+import '../modals.dart';
 import '../painters.dart';
+import '../typedefs.dart';
 
 /// A single page for week view.
-class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
+class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// Width of the page.
   final double width;
 
@@ -84,9 +90,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Width of week title.
   final double weekTitleWidth;
 
-  /// Background color of week title
-  final Color? weekTitleBackgroundColor;
-
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -123,7 +126,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
-  final ScrollController weekViewScrollController;
+  final ScrollController multiDayViewScrollController;
 
   /// First hour displayed in the layout
   final int startHour;
@@ -136,6 +139,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
 
   /// Flag to display quarter hours
   final bool showQuarterHours;
+
+  /// Display workday bottom line
+  final bool showMutliDayBottomLine;
 
   /// Emulate vertical line offset from hour line starts.
   final double emulateVerticalOffsetBy;
@@ -164,70 +170,66 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
-  /// Use this to change background color of week view page
-  final Color? backgroundColor;
-
   /// A single page for week view.
-  const InternalWeekViewPage({
-    Key? key,
-    required this.showVerticalLine,
-    required this.weekTitleHeight,
-    required this.weekDayBuilder,
-    required this.weekNumberBuilder,
-    required this.width,
-    required this.dates,
-    required this.eventTileBuilder,
-    required this.controller,
-    required this.timeLineBuilder,
-    required this.hourIndicatorSettings,
-    required this.hourLinePainter,
-    required this.halfHourIndicatorSettings,
-    required this.quarterHourIndicatorSettings,
-    required this.showLiveLine,
-    required this.liveTimeIndicatorSettings,
-    required this.heightPerMinute,
-    required this.timeLineWidth,
-    required this.timeLineOffset,
-    required this.height,
-    required this.hourHeight,
-    required this.eventArranger,
-    required this.verticalLineOffset,
-    required this.weekTitleWidth,
-    required this.weekTitleBackgroundColor,
-    required this.onTileTap,
-    required this.onTileLongTap,
-    required this.onDateLongPress,
-    required this.onDateTap,
-    required this.weekDays,
-    required this.minuteSlotSize,
-    required this.scrollConfiguration,
-    required this.startHour,
-    required this.fullDayEventBuilder,
-    required this.weekDetectorBuilder,
-    required this.showWeekDayAtBottom,
-    required this.showHalfHours,
-    required this.showQuarterHours,
-    required this.emulateVerticalOffsetBy,
-    required this.onTileDoubleTap,
-    required this.endHour,
-    required this.onTimestampTap,
-    this.fullDayHeaderTitle = '',
-    required this.fullDayHeaderTextConfig,
-    required this.scrollPhysics,
-    required this.scrollListener,
-    required this.weekViewScrollController,
-    this.lastScrollOffset = 0.0,
-    this.keepScrollOffset = false,
-    this.backgroundColor,
-  }) : super(key: key);
+  const InternalMultiDayViewPage(
+      {Key? key,
+      required this.showVerticalLine,
+      required this.weekTitleHeight,
+      required this.weekDayBuilder,
+      required this.weekNumberBuilder,
+      required this.width,
+      required this.dates,
+      required this.eventTileBuilder,
+      required this.controller,
+      required this.timeLineBuilder,
+      required this.hourIndicatorSettings,
+      required this.hourLinePainter,
+      required this.halfHourIndicatorSettings,
+      required this.quarterHourIndicatorSettings,
+      required this.showLiveLine,
+      required this.liveTimeIndicatorSettings,
+      required this.heightPerMinute,
+      required this.timeLineWidth,
+      required this.timeLineOffset,
+      required this.height,
+      required this.hourHeight,
+      required this.eventArranger,
+      required this.verticalLineOffset,
+      required this.weekTitleWidth,
+      required this.onTileTap,
+      required this.onTileLongTap,
+      required this.onDateLongPress,
+      required this.onDateTap,
+      required this.weekDays,
+      required this.minuteSlotSize,
+      required this.scrollConfiguration,
+      required this.startHour,
+      required this.fullDayEventBuilder,
+      required this.weekDetectorBuilder,
+      required this.showWeekDayAtBottom,
+      required this.showHalfHours,
+      required this.showQuarterHours,
+      required this.emulateVerticalOffsetBy,
+      required this.onTileDoubleTap,
+      required this.endHour,
+      required this.onTimestampTap,
+      this.fullDayHeaderTitle = '',
+      required this.fullDayHeaderTextConfig,
+      required this.scrollPhysics,
+      required this.scrollListener,
+      required this.multiDayViewScrollController,
+      this.lastScrollOffset = 0.0,
+      this.keepScrollOffset = false,
+      this.showMutliDayBottomLine = true})
+      : super(key: key);
 
   @override
-  _InternalWeekViewPageState<T> createState() =>
-      _InternalWeekViewPageState<T>();
+  _InternalMultiDayViewPageState<T> createState() =>
+      _InternalMultiDayViewPageState<T>();
 }
 
-class _InternalWeekViewPageState<T extends Object?>
-    extends State<InternalWeekViewPage<T>> {
+class _InternalMultiDayViewPageState<T extends Object?>
+    extends State<InternalMultiDayViewPage<T>> {
   late ScrollController scrollController;
 
   @override
@@ -254,10 +256,9 @@ class _InternalWeekViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
-    final themeColor = context.weekViewColors;
+    final themeColor = context.multiDayViewTheme;
 
     return Container(
-      color: widget.backgroundColor ?? themeColor.pageBackgroundColor,
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
       child: Column(
@@ -266,11 +267,10 @@ class _InternalWeekViewPageState<T extends Object?>
             : VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SizedBox(
-            width: widget.width,
-            child: ColoredBox(
-              color: widget.weekTitleBackgroundColor ??
-                  themeColor.weekDayTileColor,
+          ColoredBox(
+            color: themeColor.headerBackgroundColor,
+            child: SizedBox(
+              width: widget.width,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -294,11 +294,12 @@ class _InternalWeekViewPageState<T extends Object?>
               ),
             ),
           ),
-          Divider(
-            thickness: 1,
-            height: 1,
-            color: themeColor.borderColor,
-          ),
+          if (widget.showMutliDayBottomLine)
+            Divider(
+              thickness: 1,
+              height: 1,
+              color: themeColor.borderColor,
+            ),
           SizedBox(
             width: widget.width,
             child: Container(
@@ -357,7 +358,7 @@ class _InternalWeekViewPageState<T extends Object?>
             child: SingleChildScrollView(
               controller: widget.keepScrollOffset
                   ? scrollController
-                  : widget.weekViewScrollController,
+                  : widget.multiDayViewScrollController,
               physics: widget.scrollPhysics,
               child: SizedBox(
                 height: widget.height,
@@ -367,7 +368,7 @@ class _InternalWeekViewPageState<T extends Object?>
                     CustomPaint(
                       size: Size(widget.width, widget.height),
                       painter: widget.hourLinePainter(
-                        widget.hourIndicatorSettings.color,
+                        themeColor.hourLineColor,
                         widget.hourIndicatorSettings.height,
                         widget.timeLineWidth +
                             widget.hourIndicatorSettings.offset,
@@ -386,7 +387,7 @@ class _InternalWeekViewPageState<T extends Object?>
                       CustomPaint(
                         size: Size(widget.width, widget.height),
                         painter: HalfHourLinePainter(
-                          lineColor: widget.halfHourIndicatorSettings.color,
+                          lineColor: themeColor.halfHourLineColor,
                           lineHeight: widget.halfHourIndicatorSettings.height,
                           offset: widget.timeLineWidth +
                               widget.halfHourIndicatorSettings.offset,
@@ -403,7 +404,7 @@ class _InternalWeekViewPageState<T extends Object?>
                       CustomPaint(
                         size: Size(widget.width, widget.height),
                         painter: QuarterHourLinePainter(
-                          lineColor: widget.quarterHourIndicatorSettings.color,
+                          lineColor: themeColor.quarterHourLineColor,
                           lineHeight:
                               widget.quarterHourIndicatorSettings.height,
                           offset: widget.timeLineWidth +
@@ -429,11 +430,6 @@ class _InternalWeekViewPageState<T extends Object?>
                               (index) => Container(
                                 decoration: widget.showVerticalLine
                                     ? BoxDecoration(
-                                        // To apply different colors to the timeline
-                                        // and cells, use the background color for the timeline.
-                                        // Additionally, set the `color` property here with an alpha value
-                                        // to see horizontal & vertical lines
-
                                         border: Border(
                                           right: BorderSide(
                                             color:
@@ -474,6 +470,28 @@ class _InternalWeekViewPageState<T extends Object?>
                                       heightPerMinute: widget.heightPerMinute,
                                       endHour: widget.endHour,
                                     ),
+                                    if (widget.showLiveLine &&
+                                        widget.liveTimeIndicatorSettings
+                                                .height >
+                                            0 &&
+                                        widget.liveTimeIndicatorSettings
+                                            .onlyShowToday)
+                                      if (DateUtils.isSameDay(
+                                          widget.dates[index], DateTime.now()))
+                                        LiveTimeIndicator(
+                                          liveTimeIndicatorSettings:
+                                              widget.liveTimeIndicatorSettings,
+                                          width: widget.width,
+                                          height: widget.height,
+                                          heightPerMinute:
+                                              widget.heightPerMinute,
+                                          timeLineWidth: widget.timeLineWidth,
+                                          startHour: widget.startHour,
+                                          endHour: widget.endHour,
+                                          onlyShowToday: widget
+                                              .liveTimeIndicatorSettings
+                                              .onlyShowToday,
+                                        ),
                                   ],
                                 ),
                               ),
@@ -497,10 +515,16 @@ class _InternalWeekViewPageState<T extends Object?>
                       onTimestampTap: widget.onTimestampTap,
                     ),
                     if (widget.showLiveLine &&
-                        widget.liveTimeIndicatorSettings.height > 0)
+                        widget.liveTimeIndicatorSettings.height > 0 &&
+                        !widget.liveTimeIndicatorSettings.onlyShowToday)
                       LiveTimeIndicator(
-                        liveTimeIndicatorSettings:
-                            widget.liveTimeIndicatorSettings,
+                        liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+                          color: themeColor.liveIndicatorColor,
+                          height: widget.liveTimeIndicatorSettings.height,
+                          offset: widget.liveTimeIndicatorSettings.offset,
+                          onlyShowToday:
+                              widget.liveTimeIndicatorSettings.onlyShowToday,
+                        ),
                         width: widget.width,
                         height: widget.height,
                         heightPerMinute: widget.heightPerMinute,

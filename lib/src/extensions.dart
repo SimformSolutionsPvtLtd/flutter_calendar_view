@@ -44,6 +44,24 @@ extension DateTimeExtensions on DateTime {
               7)
           .ceil();
 
+  /// Gets difference of multi-day between [date] and calling object.
+  int getMultiDayDifference(
+      {required DateTime startDate,
+      required DateTime endDate,
+      daysInView = 3}) {
+    final daysDifference =
+        startDate.withoutTime.difference(endDate.withoutTime).inDays.abs() + 1;
+
+    return (daysDifference / daysInView).ceil();
+  }
+
+  /// Returns the list of [DateTime] for given [index] and [daysInView].
+  List<DateTime> getMultiDateRangeList(DateTime startDate, int index,
+      {int daysInView = 3}) {
+    DateTime baseDate = startDate.add(Duration(days: index * daysInView));
+    return List.generate(daysInView, (i) => baseDate.add(Duration(days: i)));
+  }
+
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.
   /// Day will start from Monday to Sunday.
@@ -88,6 +106,36 @@ extension DateTimeExtensions on DateTime {
   /// Returns the last date of week containing the current date
   DateTime lastDayOfWeek({WeekDays start = WeekDays.monday}) =>
       DateTime(year, month, day + (6 - (weekday - start.index - 1) % 7));
+
+  DateTime firstDayOfMultiDay({
+    required DateTime startDate,
+    int daysInView = 3,
+  }) {
+    final diffDays = startDate.withoutTime
+        .difference(DateTime.now().withoutTime)
+        .inDays
+        .abs();
+    final offset = diffDays % daysInView;
+    return offset == 0
+        ? startDate.withoutTime
+        : startDate.subtract(Duration(days: daysInView - offset)).withoutTime;
+  }
+
+  /// Returns the last date of week containing the current date
+  DateTime lastDayOfMultiDay({
+    required DateTime endDate,
+    int daysInView = 3,
+  }) {
+    final diffDays = endDate.withoutTime
+            .difference(DateTime.now().withoutTime)
+            .inDays
+            .abs() +
+        1;
+    final offset = diffDays % daysInView;
+    return offset == 0
+        ? endDate.withoutTime
+        : endDate.add(Duration(days: daysInView - offset)).withoutTime;
+  }
 
   /// Returns list of all dates of [month].
   /// All the dates are week based that means it will return array of size 42
@@ -268,4 +316,34 @@ extension NullableCallback2<A, B> on void Function(A, B)? {
 extension NullableCallback3<A, B, C> on void Function(A, B, C)? {
   VoidCallback? safeVoidCall(A a, B b, C c) =>
       this == null ? null : () => this!(a, b, c);
+}
+
+extension BuildContextExtension on BuildContext {
+  MonthViewTheme get monthViewColors =>
+      Theme.of(this).extension<MonthViewTheme>() ?? MonthViewTheme.light();
+
+  DayViewTheme get dayViewColors =>
+      Theme.of(this).extension<DayViewTheme>() ?? DayViewTheme.light();
+
+  WeekViewTheme get weekViewColors =>
+      Theme.of(this).extension<WeekViewTheme>() ?? WeekViewTheme.light();
+
+  MultiDayViewTheme get multiDayViewColors =>
+      Theme.of(this).extension<MultiDayViewTheme>() ??
+      MultiDayViewTheme.light();
+}
+
+extension BuildContextMultiDayViewThemeExtension on BuildContext {
+  /// Get MultiDayViewTheme from Theme
+  MultiDayViewTheme get multiDayViewTheme {
+    final theme = Theme.of(this).extension<MultiDayViewTheme>();
+    if (theme != null) {
+      return theme;
+    }
+
+    // If no theme extension is available, return based on brightness
+    return Theme.of(this).brightness == Brightness.dark
+        ? MultiDayViewTheme.dark()
+        : MultiDayViewTheme.light();
+  }
 }

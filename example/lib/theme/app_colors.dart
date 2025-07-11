@@ -1,8 +1,13 @@
 import 'dart:ui';
 
+// TODO(Shubham): Remove if not required
 class AppColors {
   AppColors._();
 
+  static const Color primary = Color(0xffEF5366);
+  static const Color onPrimary = Color(0xfff0f0f0);
+  static const Color outlineVariant = Color(0xffd7c1c2);
+  static const Color outline = Color(0xff857373);
   static const Color black = Color(0xff626262);
   static const Color radiantWhite = Color(0xffffffff);
   static const Color white = Color(0xfff0f0f0);
