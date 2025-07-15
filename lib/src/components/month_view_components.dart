@@ -4,10 +4,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../calendar_event_data.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
-import '../typedefs.dart';
 
 class CircularCell extends StatelessWidget {
   /// Date of cell.
@@ -237,7 +236,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   }
 }
 
-class WeekDayTile extends StatelessWidget {
+class WeekDayTile extends StatefulWidget {
   /// Index of week day.
   final int dayIndex;
 
@@ -245,7 +244,9 @@ class WeekDayTile extends StatelessWidget {
   final String Function(int)? weekDayStringBuilder;
 
   /// Background color of single week day tile.
-  final Color backgroundColor;
+  final Color? backgroundColor;
+
+  final Color? borderColor;
 
   /// Should display border or not.
   final bool displayBorder;
@@ -257,33 +258,42 @@ class WeekDayTile extends StatelessWidget {
   const WeekDayTile({
     Key? key,
     required this.dayIndex,
-    this.backgroundColor = Constants.white,
+    this.backgroundColor,
+    this.borderColor,
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
   }) : super(key: key);
 
   @override
+  State<WeekDayTile> createState() => _WeekDayTileState();
+}
+
+class _WeekDayTileState extends State<WeekDayTile> {
+  @override
   Widget build(BuildContext context) {
+    final themeColors = context.monthViewColors;
+
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.zero,
       padding: EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        border: displayBorder
+        color: widget.backgroundColor ?? themeColors.weekDayTileColor,
+        border: widget.displayBorder
             ? Border.all(
-                color: Constants.defaultBorderColor,
+                color: widget.borderColor ?? themeColors.weekDayBorderColor,
                 width: 0.5,
               )
             : null,
       ),
       child: Text(
-        weekDayStringBuilder?.call(dayIndex) ?? Constants.weekTitles[dayIndex],
-        style: textStyle ??
+        widget.weekDayStringBuilder?.call(widget.dayIndex) ?? Constants.weekTitles[widget.dayIndex],
+        style: widget.textStyle ??
             TextStyle(
               fontSize: 17,
-              color: Constants.black,
+              fontWeight: FontWeight.w500,
+              color: themeColors.weekDayTextColor,
             ),
       ),
     );
