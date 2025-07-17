@@ -172,6 +172,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// saturday and sunday, only monday and tuesday will be visible in week view.
   final bool showWeekends;
 
+  /// Enable this flag to show 3-days view default is false.
+  /// i.e 7 days view
+  final bool showThreeDaysView;
+
   /// Defines which days should be displayed in one week.
   ///
   /// By default all the days will be visible.
@@ -287,6 +291,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onDateTap,
     this.weekDays = WeekDays.values,
     this.showWeekends = true,
+    this.showThreeDaysView = false,
     this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.weekDetectorBuilder,
@@ -333,6 +338,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
           endHour <= Constants.hoursADay || endHour < startHour,
           "End hour must be less than 24 or startHour must be less than endHour",
         ),
+        assert(!(showThreeDaysView && !showWeekends),
+            "For three days view, showWeekends should be true"),
+        assert(!(showThreeDaysView && weekDays.length != 7),
+            "For three days view, weekDays should not be set"),
         super(key: key);
 
   @override
@@ -411,6 +420,31 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _currentWeek = (widget.initialDay ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
+    if (widget.showThreeDaysView) {
+      updateRange();
+    }
+    // _totalWeeks = _minDate.getWeekDifference(
+    //   _maxDate,
+    //   start: widget.startDay,
+    //   isThreeDaysView: widget.showThreeDaysView,
+    // );
+    // TODO(Shubham): May need to check _totalWeeks = week difference
+    // Gives incorrect dates of after max date
+    // final datesOfWeek = DateTime(
+    //   _minDate.year,
+    //   _minDate.month,
+    //   _minDate.day + (_totalWeeks * 3),
+    // ).datesOfWeek(
+    //   start: widget.startDay,
+    //   showThreeDays: widget.showThreeDaysView,
+    // );
+
+    // TODO(Shubham): Handle using null or empty and we should move this in init state
+    // for consistency
+    // if (datesOfWeek.contains(_maxDate) && datesOfWeek.last != _maxDate) {
+    //   _maxDate = datesOfWeek.last;
+    //   debugPrint('Date found');
+    // }
 
     _calculateHeights();
 
@@ -463,7 +497,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         widget.maxDay != oldWidget.maxDay) {
       _setDateRange();
       _regulateCurrentDate();
-
+      if (widget.showThreeDaysView) {
+        updateRange();
+      }
+      // _totalWeeks = _minDate.getWeekDifference(
+      //   _maxDate,
+      //   start: widget.startDay,
+      //   isThreeDaysView: widget.showThreeDaysView,
+      // );
       _pageController.jumpToPage(_currentIndex);
     }
 
@@ -519,12 +560,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(
-                          start: widget.startDay,
-                          showWeekEnds: widget.showWeekends,
-                        );
+                        // final dates = DateTime(_minDate.year, _minDate.month,
+                        //         _minDate.day + (index * DateTime.daysPerWeek))
+                        //     .datesOfWeek(
+                        //   start: widget.startDay,
+                        //   showWeekEnds: widget.showWeekends,
+                        // );
+
+                        // TODO(Shubham): Three days view
+                        final dates = _getDatesOnWeek(index);
 
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
@@ -573,6 +617,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
+                            showThreeDaysView: widget.showThreeDaysView,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
@@ -631,7 +676,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         "Make sure you are providing weekdays in initialization of "
         "WeekView. or showWeekends is true if you are providing only "
         "saturday or sunday in weekDays.");
-    _totalDaysInWeek = _weekDays.length;
+    _totalDaysInWeek = widget.showThreeDaysView ? 3 : _weekDays.length;
   }
 
   void _updateViewDimensions() {
@@ -725,30 +770,74 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       _currentWeek = _maxDate;
     }
 
-    _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
-    _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
-    _currentIndex =
-        _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
+    // TODO(Shubham): Week may not exist for 3 days view just add 2 days to currentDate
+    _currentStartDate = _currentWeek.firstDayOfWeek(
+      start: widget.startDay,
+      isThreeDaysView: widget.showThreeDaysView,
+    );
+
+    _currentEndDate = _currentWeek.lastDayOfWeek(
+      start: widget.startDay,
+      isThreeDaysView: widget.showThreeDaysView,
+    );
+
+    _currentIndex = _minDate.getWeekDifference(
+      _currentEndDate,
+      start: widget.startDay,
+      isThreeDaysView: widget.showThreeDaysView,
+    );
+    // debugPrint('Start date: ${_currentStartDate}');
+    // debugPrint('End date: ${_currentEndDate}');
+    // debugPrint(
+    //     'Dates of week: week view -->> ${_getDatesOnWeek(_currentIndex)}');
   }
 
   /// Sets the minimum and maximum dates for current view.
   void _setDateRange() {
     _minDate = (widget.minDay ?? CalendarConstants.epochDate)
-        .firstDayOfWeek(start: widget.startDay)
+        .firstDayOfWeek(
+          start: widget.startDay,
+          isThreeDaysView: widget.showThreeDaysView,
+        )
         .withoutTime;
 
     _maxDate = (widget.maxDay ?? CalendarConstants.maxDate)
-        .lastDayOfWeek(start: widget.startDay)
+        .lastDayOfWeek(
+          start: widget.startDay,
+          isThreeDaysView: widget.showThreeDaysView,
+        )
         .withoutTime;
 
+    // if (widget.showThreeDaysView) {
+    //   // _minDate.subtract(Duration(days: 3));
+    //   _maxDate = _maxDate.subtract(const Duration(days: 1));
+    // }
     assert(
       _minDate.isBefore(_maxDate),
       "Minimum date must be less than maximum date.\n"
       "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
 
-    _totalWeeks =
-        _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+    // TODO(Shubham): Test whether updated _minDate if required
+    _totalWeeks = _minDate.getWeekDifference(
+          _maxDate,
+          start: widget.startDay,
+          isThreeDaysView: widget.showThreeDaysView,
+        ) +
+        1;
+  }
+
+  // Updates min & max dates
+  void updateRange() {
+    // Initially current start date might not had been updated
+    _minDate = DateTime(
+      _currentStartDate.year,
+      _currentStartDate.month,
+      _currentStartDate.day - _currentIndex * 3,
+    );
+
+    // TODO(Shubham): Update max date
+    debugPrint('Old max date: ${_maxDate}');
   }
 
   /// Default press detector builder. This builder will be used if
@@ -790,6 +879,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Default builder for week number.
   Widget _defaultWeekNumberBuilder(DateTime date) {
+    if (widget.showThreeDaysView) {
+      return const SizedBox.shrink();
+    }
     final daysToAdd = DateTime.thursday - date.weekday;
     final thursday = daysToAdd > 0
         ? date.add(Duration(days: daysToAdd))
@@ -891,16 +983,32 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   /// Called when user change page using any gesture or inbuilt functions.
   void _onPageChange(int index) {
+    debugPrint('Min date: ${_minDate}');
+    debugPrint('Max date: ${_maxDate}');
     if (mounted) {
-      setState(() {
-        _currentStartDate = DateTime(
-          _currentStartDate.year,
-          _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
-        );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
-        _currentIndex = index;
-      });
+      // Changes start date
+      _currentStartDate = DateTime(
+        _currentStartDate.year,
+        _currentStartDate.month,
+        // TODO(Shubham): Test this
+        _currentStartDate.day +
+            (index - _currentIndex) * (widget.showThreeDaysView ? 3 : 7),
+      );
+
+      // TODO(Shubham): Test this
+      // Add days for next page
+      _currentEndDate = _currentStartDate
+          .add(Duration(days: widget.showThreeDaysView ? 2 : 6));
+
+      // final datesOfWeek = _getDatesOnWeek(index);
+      // // TODO(Shubham): Handle using null or empty and we should move this in init state
+      // // for consistency
+      // if (datesOfWeek.contains(_maxDate) && datesOfWeek.last != _maxDate) {
+      //   _maxDate = datesOfWeek.last;
+      // }
+      _currentIndex = index;
+      debugPrint('_currentIndex : ${_currentIndex}');
+      setState(() {});
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
   }
@@ -954,8 +1062,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController
-        .jumpToPage(_minDate.getWeekDifference(week, start: widget.startDay));
+    _pageController.jumpToPage(
+      _minDate.getWeekDifference(
+        week,
+        start: widget.startDay,
+        isThreeDaysView: widget.showThreeDaysView,
+      ),
+    );
   }
 
   /// Animate to page which gives day calendar for [week].
@@ -969,7 +1082,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       throw "Invalid date selected.";
     }
     await _pageController.animateToPage(
-      _minDate.getWeekDifference(week, start: widget.startDay),
+      _minDate.getWeekDifference(
+        week,
+        start: widget.startDay,
+        isThreeDaysView: widget.showThreeDaysView,
+      ),
       duration: duration ?? widget.pageTransitionDuration,
       curve: curve ?? widget.pageTransitionCurve,
     );
@@ -1037,6 +1154,35 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Listener for every week page ScrollController
   void _scrollPageListener(ScrollController controller) {
     _lastScrollOffset = controller.offset;
+  }
+
+  List<DateTime> _getDatesOnWeek(int index) {
+    if (widget.showThreeDaysView) {
+      final days = _currentStartDate.datesOfWeek(
+        start: widget.startDay,
+        showThreeDays: widget.showThreeDaysView,
+      );
+      // debugPrint('Generate days: ${days}');
+      return days;
+    } else {
+      return DateTime(
+        _minDate.year,
+        _minDate.month,
+        _minDate.day + (index * DateTime.daysPerWeek),
+      ).datesOfWeek(
+        start: widget.startDay,
+        showThreeDays: widget.showThreeDaysView,
+      );
+    }
+    // return DateTime(
+    //   _minDate.year,
+    //   _minDate.month,
+    //   _minDate.day +
+    //       (index * (widget.showThreeDaysView ? 3 : DateTime.daysPerWeek)),
+    // ).datesOfWeek(
+    //   start: widget.startDay,
+    //   showThreeDays: widget.showThreeDaysView,
+    // );
   }
 }
 
