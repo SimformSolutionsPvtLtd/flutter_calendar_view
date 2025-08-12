@@ -103,7 +103,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Text(
                 'Recurring Event',
                 style: TextStyle(
-                  color: color.surface,
+                  color: color.onSurface,
                   fontSize: 16,
                 ),
               ),
@@ -128,7 +128,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   });
                 },
-                activeColor: color.surface,
               ),
             ],
           ),

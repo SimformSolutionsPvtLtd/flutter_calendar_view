@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   bool isDarkMode = false;
 
   // This widget is the root of your application.
+  final _controller = EventController()..addAll(_events);
   @override
   Widget build(BuildContext context) {
     return CalendarThemeProvider(
@@ -39,7 +40,7 @@ class _MyAppState extends State<MyApp> {
             : MultiDayViewThemeData.light(),
       ),
       child: CalendarControllerProvider(
-        controller: EventController()..addAll(_events),
+        controller: _controller,
         child: MaterialApp(
           title: 'Flutter Calendar Page Demo',
           debugShowCheckedModeBanner: false,
@@ -148,5 +149,98 @@ List<CalendarEventData> _events = [
         12),
     title: "Chemistry Viva",
     description: "Today is Joe's birthday.",
+  ),
+  CalendarEventData(
+    date: _now.add(Duration(days: 5)),
+    startTime: DateTime(
+        _now.add(Duration(days: 5)).year,
+        _now.add(Duration(days: 5)).month,
+        _now.add(Duration(days: 5)).day,
+        12,
+        13),
+    endTime: DateTime(
+        _now.add(Duration(days: 5)).year,
+        _now.add(Duration(days: 5)).month,
+        _now.add(Duration(days: 5)).day,
+        16,
+        13),
+    endDate: _now.add(Duration(days: 5)),
+    title: "Team Brainstorming",
+    description: "Quarterly planning session",
+    color: Color(0xFF9C27B0),
+    // 4294127905
+    recurrenceSettings: null,
+  ),
+  CalendarEventData(
+    date: _now.add(Duration(days: 2)),
+    startTime: DateTime(
+        _now.add(Duration(days: 2)).year,
+        _now.add(Duration(days: 2)).month,
+        _now.add(Duration(days: 2)).day,
+        18,
+        14),
+    endTime: DateTime(
+        _now.add(Duration(days: 2)).year,
+        _now.add(Duration(days: 2)).month,
+        _now.add(Duration(days: 2)).day,
+        20,
+        00),
+    endDate: _now.add(Duration(days: 2)),
+    title: "Project Review",
+    description: "Review sprint progress with stakeholders",
+    color: Color(0xFF4CAF35),
+    // 4280415061
+    recurrenceSettings: null,
+  ),
+  CalendarEventData(
+    date: _now.add(Duration(days: 7)),
+    startTime: DateTime(
+        _now.add(Duration(days: 7)).year,
+        _now.add(Duration(days: 7)).month,
+        _now.add(Duration(days: 7)).day,
+        18,
+        14),
+    endTime: DateTime(
+        _now.add(Duration(days: 7)).year,
+        _now.add(Duration(days: 7)).month,
+        _now.add(Duration(days: 7)).day,
+        22,
+        14),
+    endDate: _now.add(Duration(days: 7)),
+    title: "Design Workshop",
+    description: "UX/UI design planning for new features",
+    color: Color(0xFF4CAF2F),
+    // 4280415055
+    recurrenceSettings: null,
+  ),
+  CalendarEventData(
+      date: _now,
+      startTime: DateTime(_now.year, _now.month, _now.day, 15, 0),
+      endTime: DateTime(_now.year, _now.month, _now.day, 16, 0),
+      title: "col1 row1",
+      description: "",
+      color: AppColors.red),
+  CalendarEventData(
+      date: _now,
+      startTime: DateTime(_now.year, _now.month, _now.day, 16, 0),
+      endTime: DateTime(_now.year, _now.month, _now.day, 17, 0),
+      title: "col1 row2",
+      description: "",
+      color: Colors.pink),
+  CalendarEventData(
+    date: _now,
+    startTime: DateTime(_now.year, _now.month, _now.day, 15, 30),
+    endTime: DateTime(_now.year, _now.month, _now.day, 16, 30),
+    title: "col2 row1",
+    description: "col2 row1",
+    color: Colors.yellow,
+  ),
+  CalendarEventData(
+    date: _now,
+    startTime: DateTime(_now.year, _now.month, _now.day, 16, 30),
+    endTime: DateTime(_now.year, _now.month, _now.day, 17, 30),
+    title: "col2 row2",
+    description: "col2 row2",
+    color: AppColors.black,
   ),
 ];
