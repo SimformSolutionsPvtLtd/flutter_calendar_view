@@ -4,6 +4,81 @@
 
 part of 'event_arrangers.dart';
 
+/// Sweep event for the sweep line algorithm
+class _SweepEvent<T extends Object?> {
+  final int time;
+  final _EventType type;
+  final int eventIndex;
+  final CalendarEventData<T> event;
+
+  const _SweepEvent(this.time, this.type, this.eventIndex, this.event);
+}
+
+enum _EventType { start, end }
+
+/// Union-Find data structure for efficient merge group detection
+class _UnionFind {
+  List<int> parent;
+  List<int> rank;
+
+  _UnionFind(int size)
+      : parent = List.generate(size, (i) => i),
+        rank = List.filled(size, 0);
+
+  int find(int x) {
+    if (parent[x] != x) {
+      parent[x] = find(parent[x]); // Path compression
+    }
+    return parent[x];
+  }
+
+  void union(int x, int y) {
+    final rootX = find(x);
+    final rootY = find(y);
+
+    if (rootX != rootY) {
+      // Union by rank
+      if (rank[rootX] < rank[rootY]) {
+        parent[rootX] = rootY;
+      } else if (rank[rootX] > rank[rootY]) {
+        parent[rootY] = rootX;
+      } else {
+        parent[rootY] = rootX;
+        rank[rootX]++;
+      }
+    }
+  }
+
+  /// Groups elements by their root parent
+  Map<int, List<int>> getGroups(int size) {
+    final groups = <int, List<int>>{};
+    for (int i = 0; i < size; i++) {
+      final root = find(i);
+      groups.putIfAbsent(root, () => []).add(i);
+    }
+    return groups;
+  }
+}
+
+/// Internal data structure for normalized event information
+class _NormalizedEventData<T extends Object?> {
+  final CalendarEventData<T> event;
+  final int originalIndex;
+  final int startMinutes;
+  final int endMinutes;
+  final DateTime originalStartTime;
+  final DateTime originalEndTime;
+
+  const _NormalizedEventData({
+    required this.event,
+    required this.originalIndex,
+    required this.startMinutes,
+    required this.endMinutes,
+    required this.originalStartTime,
+    required this.originalEndTime,
+  });
+}
+
 class MergeEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will merge all the simultaneous
   /// events. and that will act like one single event.
@@ -23,8 +98,10 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
-  /// Make sure that all the events that are passed in [events], must be in
-  /// ascending order of start time.
+  /// Optimized implementation using Sweep Line + Union-Find algorithm.
+  /// Time complexity: O(n log n), Space complexity: O(n)
+  /// 
+  /// Note: Events no longer need to be pre-sorted by start time.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -34,14 +111,16 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required int startHour,
     required DateTime calendarViewDate,
   }) {
-    // TODO: Right now all the events that are passed in this function must be
-    // sorted in ascending order of the start time.
-    //
-    final arrangedEvents = <OrganizedCalendarEventData<T>>[];
-    final startHourInMinutes = startHour * 60;
+    if (events.isEmpty) return [];
 
-    //Checking if startTime and endTime are correct
-    for (final event in events) {
+    final startHourInMinutes = startHour * 60;
+    
+    // Step 1: Normalize and validate events - O(n)
+    final normalizedEvents = <_NormalizedEventData<T>>[];
+    
+    for (int i = 0; i < events.length; i++) {
+      final event = events[i];
+      
       if (event.startTime == null || event.endTime == null) {
         debugLog('startTime or endTime is null for ${event.title}');
         continue;
@@ -67,139 +146,302 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         }
       }
 
-      final startTime = event.startTime!;
-      final endTime = event.endTime!;
+      // Check if event should be displayed on this calendar date
+      if (!_shouldDisplayEventOnDate(event, calendarViewDate)) {
+        continue;
+      }
 
-      int eventStart;
-      int eventEnd;
+      final normalizedEvent = _normalizeEvent(
+        event, calendarViewDate, startHourInMinutes, i);
+      
+      if (normalizedEvent != null) {
+        normalizedEvents.add(normalizedEvent);
+      }
+    }
 
-      if (event.isRangingEvent) {
-        // Handle multi-day events differently based on which day is currently being viewed
-        final isStartDate =
-            calendarViewDate.isAtSameMomentAs(event.date.withoutTime);
-        final isEndDate =
-            calendarViewDate.isAtSameMomentAs(event.endDate.withoutTime);
+    if (normalizedEvents.isEmpty) return [];
 
-        if (isStartDate && isEndDate) {
-          // Single day event with start and end time
-          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-              ? Constants.minutesADay - (startHourInMinutes)
-              : endTime.getTotalMinutes - (startHourInMinutes);
-        } else if (isStartDate) {
-          // First day - show from start time to end of day
-          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-          eventEnd = Constants.minutesADay;
-        } else if (isEndDate) {
-          // Last day - show from start of day to end time
-          eventStart = 0;
-          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-              ? Constants.minutesADay - (startHourInMinutes)
-              : endTime.getTotalMinutes - (startHourInMinutes);
-        } else {
-          // Middle days - show full day
-          eventStart = 0;
-          eventEnd = Constants.minutesADay;
-        }
-      } else {
-        // Single day event - use normal start/end times
+    // Step 2: Use Sweep Line + Union-Find to find merge groups - O(n log n)
+    final mergeGroups = _findMergeGroups(normalizedEvents);
+
+    // Step 3: Build organized event data from merge groups - O(n)
+    return _buildOrganizedEvents(
+      mergeGroups, normalizedEvents, height, heightPerMinute, 
+      startHourInMinutes, calendarViewDate);
+  }
+
+  /// Checks if an event should be displayed on the given calendar view date
+  bool _shouldDisplayEventOnDate(CalendarEventData<T> event, DateTime calendarViewDate) {
+    final viewDateWithoutTime = calendarViewDate.withoutTime;
+    
+    if (event.isRangingEvent) {
+      // For multi-day events, check if the view date falls within the event range
+      final eventStartDate = event.date.withoutTime;
+      final eventEndDate = event.endDate.withoutTime;
+      
+      return !viewDateWithoutTime.isBefore(eventStartDate) && 
+             !viewDateWithoutTime.isAfter(eventEndDate);
+    } else {
+      // For single-day events, check if the view date matches the event date
+      return viewDateWithoutTime.isAtSameMomentAs(event.date.withoutTime);
+    }
+  }
+
+  /// Normalizes event time coordinates for the given calendar view date
+  _NormalizedEventData<T>? _normalizeEvent(
+    CalendarEventData<T> event,
+    DateTime calendarViewDate,
+    int startHourInMinutes,
+    int originalIndex,
+  ) {
+    final startTime = event.startTime!;
+    final endTime = event.endTime!;
+
+    int eventStart;
+    int eventEnd;
+
+    if (event.isRangingEvent) {
+      // Handle multi-day events differently based on which day is currently being viewed
+      final isStartDate =
+          calendarViewDate.isAtSameMomentAs(event.date.withoutTime);
+      final isEndDate =
+          calendarViewDate.isAtSameMomentAs(event.endDate.withoutTime);
+
+      if (isStartDate && isEndDate) {
+        // Single day event with start and end time
         eventStart = startTime.getTotalMinutes - (startHourInMinutes);
         eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
             ? Constants.minutesADay - (startHourInMinutes)
             : endTime.getTotalMinutes - (startHourInMinutes);
-      }
-
-      // Ensure values are within valid range
-      eventStart = math.max(0, eventStart);
-      eventEnd = math.min(
-        Constants.minutesADay - (startHourInMinutes),
-        eventEnd,
-      );
-
-      final arrangeEventLen = arrangedEvents.length;
-
-      var eventIndex = -1;
-
-      for (var i = 0; i < arrangeEventLen; i++) {
-        final arrangedEventStart =
-            arrangedEvents[i].startDuration.getTotalMinutes;
-
-        final arrangedEventEnd =
-            arrangedEvents[i].endDuration.getTotalMinutes == 0
-                ? Constants.minutesADay
-                : arrangedEvents[i].endDuration.getTotalMinutes;
-
-        if (_checkIsOverlapping(
-            arrangedEventStart, arrangedEventEnd, eventStart, eventEnd)) {
-          eventIndex = i;
-          break;
-        }
-      }
-
-      if (eventIndex == -1) {
-        final top = eventStart * heightPerMinute;
-
-        // Calculate visibleMinutes (the total minutes displayed in the view)
-        final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
-
-        // Check if event ends at or beyond the visible area
-        final bottom = eventEnd >= visibleMinutes
-            ? 0.0 // Event extends to bottom of view
-            : height - eventEnd * heightPerMinute;
-
-        final newEvent = OrganizedCalendarEventData<T>(
-          top: top,
-          bottom: bottom,
-          left: 0,
-          right: 0,
-          startDuration: startTime.copyFromMinutes(eventStart),
-          endDuration: endTime.copyFromMinutes(eventEnd),
-          events: [event],
-          calendarViewDate: calendarViewDate,
-        );
-
-        arrangedEvents.add(newEvent);
+      } else if (isStartDate) {
+        // First day - show from start time to end of day
+        eventStart = startTime.getTotalMinutes - (startHourInMinutes);
+        eventEnd = Constants.minutesADay - (startHourInMinutes);
+      } else if (isEndDate) {
+        // Last day - show from start of day to end time
+        eventStart = 0;
+        eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
+            ? Constants.minutesADay - (startHourInMinutes)
+            : endTime.getTotalMinutes - (startHourInMinutes);
       } else {
-        final arrangedEventData = arrangedEvents[eventIndex];
+        // Middle days - show full day
+        eventStart = 0;
+        eventEnd = Constants.minutesADay - (startHourInMinutes);
+      }
+    } else {
+      // Single day event - use normal start/end times
+      eventStart = startTime.getTotalMinutes - (startHourInMinutes);
+      eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
+          ? Constants.minutesADay - (startHourInMinutes)
+          : endTime.getTotalMinutes - (startHourInMinutes);
+    }
 
-        final arrangedEventStart =
-            arrangedEventData.startDuration.getTotalMinutes;
-        final arrangedEventEnd =
-            arrangedEventData.endDuration.getTotalMinutes == 0
-                ? Constants.minutesADay
-                : arrangedEventData.endDuration.getTotalMinutes;
+    // Ensure values are within valid range
+    eventStart = math.max(0, eventStart);
+    eventEnd = math.min(
+      Constants.minutesADay - (startHourInMinutes),
+      eventEnd,
+    );
 
-        final startDuration = math.min(eventStart, arrangedEventStart);
-        final endDuration = math.max(eventEnd, arrangedEventEnd);
+    return _NormalizedEventData<T>(
+      event: event,
+      originalIndex: originalIndex,
+      startMinutes: eventStart,
+      endMinutes: eventEnd,
+      originalStartTime: startTime,
+      originalEndTime: endTime,
+    );
+  }
 
-        final top = startDuration * heightPerMinute;
+  /// Uses Sweep Line + Union-Find to efficiently find merge groups
+  List<List<int>> _findMergeGroups(List<_NormalizedEventData<T>> normalizedEvents) {
+    if (normalizedEvents.isEmpty) return [];
 
-        // Calculate visibleMinutes (the total minutes displayed in the view)
-        final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
+    final eventCount = normalizedEvents.length;
+    final unionFind = _UnionFind(eventCount);
 
-        // Check if event ends at or beyond the visible area
-        final bottom = endDuration >= visibleMinutes
-            ? 0.0 // Event extends to bottom of view
-            : height - endDuration * heightPerMinute;
+    // Step 1: Create sweep events - O(n)
+    final sweepEvents = <_SweepEvent<T>>[];
+    for (int i = 0; i < eventCount; i++) {
+      final normalized = normalizedEvents[i];
+      sweepEvents.add(_SweepEvent(
+        normalized.startMinutes, _EventType.start, i, normalized.event));
+      sweepEvents.add(_SweepEvent(
+        normalized.endMinutes, _EventType.end, i, normalized.event));
+    }
 
-        final newEvent = OrganizedCalendarEventData<T>(
-          top: top,
-          bottom: bottom,
-          left: 0,
-          right: 0,
-          startDuration:
-              arrangedEventData.startDuration.copyFromMinutes(startDuration),
-          endDuration:
-              arrangedEventData.endDuration.copyFromMinutes(endDuration),
-          events: arrangedEventData.events..add(event),
-          calendarViewDate: calendarViewDate,
-        );
+    // Step 2: Sort sweep events by time - O(n log n)
+    sweepEvents.sort((a, b) {
+      final timeComparison = a.time.compareTo(b.time);
+      if (timeComparison != 0) return timeComparison;
+      
+      // If times are equal, process end events before start events
+      // This handles the includeEdges case properly
+      if (a.type == _EventType.end && b.type == _EventType.start) {
+        return includeEdges ? 1 : -1; // If includeEdges, end comes after start
+      } else if (a.type == _EventType.start && b.type == _EventType.end) {
+        return includeEdges ? -1 : 1; // If includeEdges, start comes before end
+      }
+      
+      return 0;
+    });
 
-        arrangedEvents[eventIndex] = newEvent;
+    // Step 3: Sweep line with Union-Find - O(n α(n))
+    final activeEvents = <int>{};
+
+    for (final sweepEvent in sweepEvents) {
+      if (sweepEvent.type == _EventType.start) {
+        // Union this event with all currently active events
+        for (final activeIndex in activeEvents) {
+          // Double-check overlap using the existing overlap logic
+          final activeEvent = normalizedEvents[activeIndex];
+          final currentEvent = normalizedEvents[sweepEvent.eventIndex];
+          
+          if (_checkIsOverlapping(
+            activeEvent.startMinutes,
+            activeEvent.endMinutes,
+            currentEvent.startMinutes,
+            currentEvent.endMinutes,
+          )) {
+            unionFind.union(activeIndex, sweepEvent.eventIndex);
+          }
+        }
+        activeEvents.add(sweepEvent.eventIndex);
+      } else {
+        activeEvents.remove(sweepEvent.eventIndex);
       }
     }
 
-    return arrangedEvents;
+    // Step 4: Extract groups from Union-Find - O(n)
+    final groups = unionFind.getGroups(eventCount);
+    return groups.values.toList();
+  }
+
+  /// Builds organized event data from merge groups
+  List<OrganizedCalendarEventData<T>> _buildOrganizedEvents(
+    List<List<int>> mergeGroups,
+    List<_NormalizedEventData<T>> normalizedEvents,
+    double height,
+    double heightPerMinute,
+    int startHourInMinutes,
+    DateTime calendarViewDate,
+  ) {
+    final result = <OrganizedCalendarEventData<T>>[];
+
+    for (final group in mergeGroups) {
+      if (group.isEmpty) continue;
+
+      // Find the merged time bounds for this group
+      int mergedStart = normalizedEvents[group.first].startMinutes;
+      int mergedEnd = normalizedEvents[group.first].endMinutes;
+      final groupEvents = <CalendarEventData<T>>[];
+
+      for (final eventIndex in group) {
+        final normalized = normalizedEvents[eventIndex];
+        mergedStart = math.min(mergedStart, normalized.startMinutes);
+        mergedEnd = math.max(mergedEnd, normalized.endMinutes);
+        groupEvents.add(normalized.event);
+      }
+
+      // Calculate visual positioning
+      final top = mergedStart * heightPerMinute;
+      final visibleMinutes = Constants.minutesADay - startHourInMinutes;
+      final bottom = mergedEnd >= visibleMinutes
+          ? 0.0 // Event extends to bottom of view
+          : height - mergedEnd * heightPerMinute;
+
+      // Calculate proper start and end duration times
+      // For multi-day events, we need to show the actual time bounds for this day
+      final startDurationTime = _calculateEventStartTimeForDay(groupEvents, calendarViewDate, mergedStart, startHourInMinutes);
+      final endDurationTime = _calculateEventEndTimeForDay(groupEvents, calendarViewDate, mergedEnd, startHourInMinutes);
+      
+      result.add(OrganizedCalendarEventData<T>(
+        top: top,
+        bottom: bottom,
+        left: 0,
+        right: 0,
+        startDuration: startDurationTime,
+        endDuration: endDurationTime,
+        events: groupEvents,
+        calendarViewDate: calendarViewDate,
+      ));
+    }
+
+    return result;
+  }
+
+  /// Calculate the start time for events on the given day
+  DateTime _calculateEventStartTimeForDay(
+    List<CalendarEventData<T>> groupEvents, 
+    DateTime calendarViewDate, 
+    int mergedStartMinutes,
+    int startHourInMinutes,
+  ) {
+    // Find if any event in the group is a multi-day event
+    final multiDayEvent = groupEvents.firstWhere(
+      (e) => e.isRangingEvent,
+      orElse: () => groupEvents.first,
+    );
+    
+    if (multiDayEvent.isRangingEvent) {
+      final isStartDate = calendarViewDate.isAtSameMomentAs(multiDayEvent.date.withoutTime);
+      final isEndDate = calendarViewDate.isAtSameMomentAs(multiDayEvent.endDate.withoutTime);
+      
+      if (isStartDate && !isEndDate) {
+        // Start date: use actual start time
+        return multiDayEvent.startTime!;
+      } else if (!isStartDate) {
+        // Middle or end date: start at beginning of day
+        return DateTime(calendarViewDate.year, calendarViewDate.month, calendarViewDate.day);
+      }
+    }
+    
+    // For single-day events or start+end on same date, use normalized minutes
+    final totalMinutes = mergedStartMinutes + startHourInMinutes;
+    return DateTime(
+      calendarViewDate.year,
+      calendarViewDate.month,
+      calendarViewDate.day,
+      totalMinutes ~/ 60,
+      totalMinutes % 60,
+    );
+  }
+
+  /// Calculate the end time for events on the given day
+  DateTime _calculateEventEndTimeForDay(
+    List<CalendarEventData<T>> groupEvents, 
+    DateTime calendarViewDate, 
+    int mergedEndMinutes,
+    int startHourInMinutes,
+  ) {
+    // Find if any event in the group is a multi-day event
+    final multiDayEvent = groupEvents.firstWhere(
+      (e) => e.isRangingEvent,
+      orElse: () => groupEvents.first,
+    );
+    
+    if (multiDayEvent.isRangingEvent) {
+      final isStartDate = calendarViewDate.isAtSameMomentAs(multiDayEvent.date.withoutTime);
+      final isEndDate = calendarViewDate.isAtSameMomentAs(multiDayEvent.endDate.withoutTime);
+      
+      if (isEndDate && !isStartDate) {
+        // End date: use actual end time
+        return multiDayEvent.endTime!;
+      } else if (!isEndDate) {
+        // Start or middle date: end at end of day (midnight next day)
+        return DateTime(calendarViewDate.year, calendarViewDate.month, calendarViewDate.day + 1);
+      }
+    }
+    
+    // For single-day events or start+end on same date, use normalized minutes
+    final totalMinutes = mergedEndMinutes + startHourInMinutes;
+    return DateTime(
+      calendarViewDate.year,
+      calendarViewDate.month,
+      calendarViewDate.day,
+      totalMinutes ~/ 60,
+      totalMinutes % 60,
+    );
   }
 
   bool _checkIsOverlapping(int eStart1, int eEnd1, int eStart2, int eEnd2) {
