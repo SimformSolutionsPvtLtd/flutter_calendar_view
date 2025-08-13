@@ -1,0 +1,53 @@
+"""
+Error type enumeration for standardized error handling.
+"""
+
+from enum import Enum
+
+
+class ErrorType(Enum):
+    """
+    Enumeration of error types for consistent error categorization.
+
+    This enum provides standardized error types that can be used across
+    the application for consistent error handling and logging.
+    """
+
+    # Validation Errors
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+    INVALID_REQUEST = "INVALID_REQUEST"
+    MISSING_REQUIRED_FIELD = "MISSING_REQUIRED_FIELD"
+    INVALID_FILE_PATH = "INVALID_FILE_PATH"
+
+    # Size and Limit Errors
+    SIZE_LIMIT_EXCEEDED = "SIZE_LIMIT_EXCEEDED"
+    FILE_COUNT_EXCEEDED = "FILE_COUNT_EXCEEDED"
+    MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED"
+
+    # Storage and Blob Errors
+    BLOB_NOT_FOUND = "BLOB_NOT_FOUND"
+    STORAGE_UNAVAILABLE = "STORAGE_UNAVAILABLE"
+    BLOB_ACCESS_DENIED = "BLOB_ACCESS_DENIED"
+    CONTAINER_NOT_FOUND = "CONTAINER_NOT_FOUND"
+
+    # SAS Integration Errors
+    SAS_SERVICE_UNAVAILABLE = "SAS_SERVICE_UNAVAILABLE"
+    SAS_TOKEN_EXPIRED = "SAS_TOKEN_EXPIRED"
+    SAS_TOKEN_INVALID = "SAS_TOKEN_INVALID"
+    SAS_GENERATION_FAILED = "SAS_GENERATION_FAILED"
+
+    # Processing Errors
+    ZIP_CREATION_FAILED = "ZIP_CREATION_FAILED"
+    COMPRESSION_ERROR = "COMPRESSION_ERROR"
+    PROCESSING_TIMEOUT = "PROCESSING_TIMEOUT"
+    DOWNLOAD_FAILED = "DOWNLOAD_FAILED"
+
+    # Network and Connectivity Errors
+    NETWORK_ERROR = "NETWORK_ERROR"
+    CONNECTION_TIMEOUT = "CONNECTION_TIMEOUT"
+    SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+
+    # System Errors
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    CONFIGURATION_ERROR = "CONFIGURATION_ERROR"
+    UNKNOWN_ERROR = "UNKNOWN_ERROR"
