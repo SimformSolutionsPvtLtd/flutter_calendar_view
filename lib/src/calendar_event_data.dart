@@ -10,6 +10,9 @@ import '../calendar_view.dart';
 
 /// {@macro calendar_event_data_doc}
 class CalendarEventData<T extends Object?> {
+  /// Unique identifier for the event.
+  final String? eventId;
+
   /// Specifies date on which all these events are.
   final DateTime date;
 
@@ -49,6 +52,7 @@ class CalendarEventData<T extends Object?> {
 
   /// {@macro calendar_event_data_doc}
   CalendarEventData({
+    this.eventId,
     required this.title,
     required DateTime date,
     this.description,
@@ -121,6 +125,7 @@ class CalendarEventData<T extends Object?> {
   /// Returns event data in [Map<String, dynamic>] format.
   ///
   Map<String, dynamic> toJson() => {
+        "eventId": eventId,
         "date": date,
         "startTime": startTime,
         "endTime": endTime,
@@ -135,6 +140,7 @@ class CalendarEventData<T extends Object?> {
   /// as the arguments.
   ///
   CalendarEventData<T> copyWith({
+    String? eventId,
     String? title,
     String? description,
     T? event,
@@ -148,6 +154,7 @@ class CalendarEventData<T extends Object?> {
     RecurrenceSettings? recurrenceSettings,
   }) {
     return CalendarEventData(
+      eventId: eventId ?? this.eventId,
       title: title ?? this.title,
       date: date ?? this.date,
       startTime: startTime ?? this.startTime,
@@ -168,6 +175,7 @@ class CalendarEventData<T extends Object?> {
   @override
   bool operator ==(Object other) {
     return other is CalendarEventData<T> &&
+        eventId == other.eventId &&
         date.compareWithoutTime(other.date) &&
         endDate.compareWithoutTime(other.endDate) &&
         ((event == null && other.event == null) ||
@@ -189,6 +197,7 @@ class CalendarEventData<T extends Object?> {
 
   @override
   int get hashCode =>
+      eventId.hashCode ^
       description.hashCode ^
       descriptionStyle.hashCode ^
       titleStyle.hashCode ^
