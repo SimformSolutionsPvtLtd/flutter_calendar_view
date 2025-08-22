@@ -6,15 +6,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../calendar_event_data.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
-import '../enumerations.dart';
-import '../event_arrangers/event_arrangers.dart';
-import '../extensions.dart';
-import '../modals.dart';
 import '../painters.dart';
-import '../typedefs.dart';
-import 'event_scroll_notifier.dart';
 
 /// Widget to display tile line according to current time.
 class LiveTimeIndicator extends StatefulWidget {
@@ -109,11 +103,18 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   Widget build(BuildContext context) {
     final currentHour = _currentTime.hourOfPeriod.appendLeadingZero();
     final currentMinute = _currentTime.minute.appendLeadingZero();
-    final currentPeriod = _currentTime.period.name;
+    final currentPeriod = _currentTime.period == DayPeriod.am
+        ? PackageStrings.currentLocale.am
+        : PackageStrings.currentLocale.pm;
     final currentDateTime = _getCurrentDateTime();
+    final localizedHour =
+        PackageStrings.localizeNumber(int.tryParse(currentHour) ?? 0);
+    final localizedMinute =
+        PackageStrings.localizeNumber(int.tryParse(currentMinute) ?? 0);
+
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
             ?.call(currentDateTime) ??
-        '$currentHour:$currentMinute $currentPeriod';
+        '$localizedHour:$localizedMinute $currentPeriod';
 
     /// remove startHour minute from [_currentTime.getTotalMinutes]
     /// to set dy offset of live time indicator

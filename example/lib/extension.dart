@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'enumerations.dart';
+import 'l10n/app_localizations.dart';
 import 'theme/app_colors.dart';
 import 'theme/app_theme_extension.dart';
 
@@ -131,4 +132,8 @@ extension BuildContextExtension on BuildContext {
   AppThemeExtension get appColors =>
       Theme.of(this).extension<AppThemeExtension>() ??
       AppThemeExtension.light();
+}
+
+extension Translate on BuildContext {
+  AppLocalizations get translate => AppLocalizations.of(this)!;
 }

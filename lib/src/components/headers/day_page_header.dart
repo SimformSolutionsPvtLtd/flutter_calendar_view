@@ -5,10 +5,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../../calendar_view.dart';
 import '../../constants.dart';
-import '../../style/header_style.dart';
-import '../../typedefs.dart';
-import 'calendar_page_header.dart';
 
 /// A header widget to display on day view.
 class DayPageHeader extends CalendarPageHeader {
@@ -43,5 +41,5 @@ class DayPageHeader extends CalendarPageHeader {
         );
 
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
-      "${date.day} - ${date.month} - ${date.year}";
+      "${PackageStrings.localizeNumber(date.day)} - ${PackageStrings.localizeNumber(date.month)} - ${PackageStrings.localizeNumber(date.year)}";
 }

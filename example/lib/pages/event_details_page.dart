@@ -14,6 +14,7 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translate = context.translate;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: event.color,
@@ -36,7 +37,7 @@ class DetailsPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         children: [
           Text(
-            "Date: ${event.date.dateToStringWithFormat(format: "dd/MM/yyyy")}",
+            "${translate.date} ${event.date.dateToStringWithFormat(format: "dd/MM/yyyy")}",
           ),
           SizedBox(height: 15.0),
           if (event.startTime != null && event.endTime != null) ...[
@@ -47,7 +48,7 @@ class DetailsPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("From"),
+                      Text(translate.from),
                       Text(
                         event.startTime?.getTimeInFormat(
                               TimeStampFormat.parse_12,
@@ -62,7 +63,7 @@ class DetailsPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("To"),
+                      Text(translate.to),
                       Text(
                         event.endTime?.getTimeInFormat(
                               TimeStampFormat.parse_12,
@@ -78,9 +79,11 @@ class DetailsPage extends StatelessWidget {
           ],
           if (event.description?.isNotEmpty ?? false) ...[
             Divider(),
-            Text("Description"),
-            SizedBox(height: 10.0),
-            Text(event.description!),
+            Text(translate.description),
+            SizedBox(
+              height: 10.0
+            ),
+            Text(event.description!)
           ],
           const SizedBox(height: 50),
           Row(
@@ -88,7 +91,7 @@ class DetailsPage extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   child: Text(
-                    'Delete Event',
+                    translate.deleteEvent,
                     style: TextStyle(color: AppColors.black),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -104,7 +107,7 @@ class DetailsPage extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   child: Text(
-                    'Edit Event',
+                    translate.editEvent,
                     style: TextStyle(color: AppColors.black),
                   ),
                   onPressed: () async {

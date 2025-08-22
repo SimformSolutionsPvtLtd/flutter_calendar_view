@@ -68,7 +68,7 @@ class DayViewWidget extends StatelessWidget {
             top: -8,
             right: 8,
             child: Text(
-              "${date.hour}:${date.minute}",
+              "${PackageStrings.localizeNumber(date.hour)}:${PackageStrings.localizeNumber(date.minute)}",
               textAlign: TextAlign.right,
               style: TextStyle(
                 color: Colors.grey,
@@ -89,7 +89,7 @@ class DayViewWidget extends StatelessWidget {
           top: -8,
           right: 8,
           child: Text(
-            "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}",
+            "${PackageStrings.localizeNumber(hour)} ${date.hour ~/ 12 == 0 ? PackageStrings.currentLocale.am : PackageStrings.currentLocale.pm}",
             textAlign: TextAlign.right,
           ),
         ),

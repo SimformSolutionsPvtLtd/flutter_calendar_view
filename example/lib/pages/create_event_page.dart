@@ -12,6 +12,7 @@ class CreateEventPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColor = context.appColors;
+    final translate = context.translate;
 
     return Scaffold(
       appBar: AppBar(
@@ -22,7 +23,7 @@ class CreateEventPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: themeColor.onPrimary),
         ),
         title: Text(
-          event == null ? "Create New Event" : "Update Event",
+          event == null ? translate.createNewEvent : translate.updateEvent,
           style: TextStyle(
             color: themeColor.onPrimary,
             fontSize: 20.0,
