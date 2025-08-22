@@ -5,10 +5,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../../calendar_view.dart';
 import '../../constants.dart';
-import '../../style/header_style.dart';
-import '../../typedefs.dart';
-import 'calendar_page_header.dart';
 
 class WeekPageHeader extends CalendarPageHeader {
   /// A header widget to display on week view.
@@ -43,8 +41,15 @@ class WeekPageHeader extends CalendarPageHeader {
           headerStyle: headerStyle,
         );
 
-  static String _weekStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
-      "${date.day} / ${date.month} / ${date.year} to "
-      "${secondaryDate != null ? "${secondaryDate.day} / "
-          "${secondaryDate.month} / ${secondaryDate.year}" : ""}";
+  static String _weekStringBuilder(DateTime date, {DateTime? secondaryDate}) {
+    String formatDate(DateTime d) =>
+        "${PackageStrings.localizeNumber(d.day)} / "
+        "${PackageStrings.localizeNumber(d.month)} / "
+        "${PackageStrings.localizeNumber(d.year)}";
+
+    final start = formatDate(date);
+    final end = secondaryDate != null ? formatDate(secondaryDate) : "";
+
+    return end.isNotEmpty ? "$start to $end" : start;
+  }
 }

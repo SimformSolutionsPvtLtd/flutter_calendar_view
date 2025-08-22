@@ -14,8 +14,6 @@ class Constants {
   static const int hoursADay = 24;
   static const int minutesADay = 1440;
 
-  static final List<String> weekTitles = ["M", "T", "W", "T", "F", "S", "S"];
-
   static const Color defaultLiveTimeIndicatorColor = Color(0xff444444);
   static const Color black = Color(0xff000000);
   static const Color white = Color(0xffffffff);

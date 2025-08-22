@@ -4,9 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../calendar_event_data.dart';
-import '../extensions.dart';
-import '../typedefs.dart';
+import '../../calendar_view.dart';
 
 /// This class defines default tile to display in day view.
 class RoundedEventTile extends StatelessWidget {
@@ -96,7 +94,7 @@ class RoundedEventTile extends StatelessWidget {
           if (totalEvents > 1)
             Expanded(
               child: Text(
-                "+${totalEvents - 1} more",
+                "+${totalEvents - 1} ${PackageStrings.currentLocale.more}",
                 style: (descriptionStyle ??
                         TextStyle(
                           color: backgroundColor.accent.withAlpha(200),
@@ -131,11 +129,14 @@ class DefaultTimeLineMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hour = ((date.hour - 1) % 12) + 1;
+    final localizedHour = PackageStrings.localizeNumber(hour);
+    final localizedMinute = PackageStrings.localizeNumber(date.minute);
+
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
         : date.minute != 0
-            ? "$hour:${date.minute}"
-            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+            ? "$localizedHour:$localizedMinute"
+            : "$localizedHour ${date.hour ~/ 12 == 0 ? PackageStrings.currentLocale.am : PackageStrings.currentLocale.pm}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(

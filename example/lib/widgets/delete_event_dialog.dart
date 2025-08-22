@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/extension.dart';
 import 'package:flutter/material.dart';
 
 class DeleteEventDialog extends StatefulWidget {
@@ -11,8 +12,10 @@ class _RadioDialogState extends State<DeleteEventDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final translate = context.translate;
+
     return AlertDialog(
-      title: Text('Delete recurring event '),
+      title: Text(translate.deleteRecurringEvent),
       content: RadioGroup(
         groupValue: _selectedOption,
         onChanged: (deleteType) {
@@ -24,25 +27,25 @@ class _RadioDialogState extends State<DeleteEventDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             RadioListTile(
-              title: Text('This event'),
+              title: Text(translate.thisEvent),
               value: DeleteEvent.current,
             ),
             RadioListTile(
-              title: Text('This and following events'),
+              title: Text(translate.thisAndFollowingEvents),
               value: DeleteEvent.following,
             ),
-            RadioListTile(title: Text('All events'), value: DeleteEvent.all),
+            RadioListTile(title: Text(translate.allEvents), value: DeleteEvent.all),
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel'),
+          child: Text(translate.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(_selectedOption),
-          child: Text('Done'),
+          child: Text(translate.done),
         ),
       ],
     );

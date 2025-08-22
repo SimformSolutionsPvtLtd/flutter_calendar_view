@@ -152,7 +152,8 @@ class FilledCell<T extends Object?> extends StatelessWidget {
               backgroundColor:
                   shouldHighlight ? highlightColor : Colors.transparent,
               child: Text(
-                dateStringBuilder?.call(date) ?? "${date.day}",
+                dateStringBuilder?.call(date) ??
+                    PackageStrings.localizeNumber(date.day),
                 style: TextStyle(
                   color: shouldHighlight ? highlightedTitleColor : titleColor,
                   fontSize: 12,
@@ -289,7 +290,7 @@ class _WeekDayTileState extends State<WeekDayTile> {
       ),
       child: Text(
         widget.weekDayStringBuilder?.call(widget.dayIndex) ??
-            Constants.weekTitles[widget.dayIndex],
+            PackageStrings.currentLocale.weekdays[widget.dayIndex],
         style: widget.textStyle ??
             TextStyle(
               fontSize: 17,

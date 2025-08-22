@@ -40,5 +40,5 @@ class MonthPageHeader extends CalendarPageHeader {
         );
 
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
-      "${date.month} - ${date.year}";
+      "${PackageStrings.localizeNumber(date.month)} - ${PackageStrings.localizeNumber(date.year)}";
 }

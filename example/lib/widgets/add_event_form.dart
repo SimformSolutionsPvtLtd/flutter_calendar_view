@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../constants.dart';
 import '../extension.dart';
+import '../l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
@@ -21,6 +22,7 @@ class AddOrEditEventForm extends StatefulWidget {
 class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   late DateTime _startDate = DateTime.now().withoutTime;
   late DateTime _endDate = DateTime.now().withoutTime;
+  late AppLocalizations translate;
   DateTime? _recurrenceEndDate;
 
   DateTime? _startTime;
@@ -61,6 +63,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
+    translate = context.translate;
 
     return Form(
       key: _form,
@@ -70,15 +73,17 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           TextFormField(
             controller: _titleController,
             decoration: InputDecoration(
-              labelText: "Event Title",
-              labelStyle: TextStyle(color: color.onSurfaceVariant),
+              labelText: translate.eventTitle,
+              labelStyle: TextStyle(
+                color: color.onSurfaceVariant,
+              ),
             ).applyDefaults(Theme.of(context).inputDecorationTheme),
             style: TextStyle(color: color.onSurface, fontSize: 17.0),
             validator: (value) {
               final title = value?.trim();
 
               if (title == null || title == "") {
-                return "Please enter event title.";
+                return translate.pleaseEnterEventTitle;
               }
 
               return null;
@@ -90,8 +95,11 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           Row(
             children: [
               Text(
-                'Recurring Event',
-                style: TextStyle(color: color.surface, fontSize: 16),
+                translate.recurringEvent,
+                style: TextStyle(
+                  color: color.surface,
+                  fontSize: 16,
+                ),
               ),
               SizedBox(width: 20),
               Switch(
@@ -124,8 +132,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
-                    labelText: "Start Date",
-                    labelStyle: TextStyle(color: color.onSurfaceVariant),
+                    labelText: translate.startDate,
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startDate,
                   onSelect: (date) {
@@ -153,7 +163,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   validator: (value) {
                     if (value == null || value == "") {
-                      return "Please select start date.";
+                      return translate.pleaseSelectStartDate;
                     }
 
                     return null;
@@ -168,18 +178,17 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   initialDateTime: _endDate,
                   decoration: InputDecoration(
-                    labelText: "End Date",
-                    labelStyle: TextStyle(color: color.onSurfaceVariant),
+                    labelText: translate.endDate,
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   onSelect: (date) {
-                    if (date.withoutTime.withoutTime.isBefore(
-                      _startDate.withoutTime,
-                    )) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('End date occurs before start date.'),
-                        ),
-                      );
+                    if (date.withoutTime.withoutTime
+                        .isBefore(_startDate.withoutTime)) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(translate.endDateBeforeStartDate),
+                      ));
                     } else {
                       _endDate = date.withoutTime;
                       _recurrenceEndDate = _endDate;
@@ -192,7 +201,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   },
                   validator: (value) {
                     if (value == null || value == "") {
-                      return "Please select end date.";
+                      return translate.pleaseSelectEndDate;
                     }
 
                     return null;
@@ -214,8 +223,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
-                    labelText: "Start Time",
-                    labelStyle: TextStyle(color: color.onSurfaceVariant),
+                    labelText: translate.startTime,
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startTime,
                   minimumDateTime: CalendarConstants.epochDate,
@@ -239,8 +250,10 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               Expanded(
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
-                    labelText: "End Time",
-                    labelStyle: TextStyle(color: color.onSurfaceVariant),
+                    labelText: translate.endTime,
+                    labelStyle: TextStyle(
+                      color: color.onSurfaceVariant,
+                    ),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _endTime,
                   onSelect: (date) {
@@ -251,11 +264,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                         _startDate.month == _endDate.month &&
                         _startDate.day == _endDate.day &&
                         date.getTotalMinutes < _startTime!.getTotalMinutes) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('End time is less then start time.'),
-                        ),
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(translate.endTimeLessThanStartTime),
+                      ));
                     } else {
                       _endTime = date;
                     }
@@ -284,13 +295,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             maxLength: 1000,
             validator: (value) {
               if (value == null || value.trim() == "") {
-                return "Please enter event description.";
+                return translate.pleaseEnterEventDescription;
               }
 
               return null;
             },
             decoration: InputDecoration(
-              hintText: "Event Description",
+              hintText: translate.eventDescription,
               counterStyle: TextStyle(color: color.onSurfaceVariant),
             ).applyDefaults(Theme.of(context).inputDecorationTheme),
           ),
@@ -307,7 +318,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Repeat',
+                      translate.repeat,
                       style: TextStyle(
                         color: AppColors.black,
                         fontWeight: FontWeight.w500,
@@ -319,7 +330,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     children: [
                       Radio(value: RepeatFrequency.daily),
                       Text(
-                        'Daily',
+                        translate.daily,
                         style: TextStyle(color: AppColors.black, fontSize: 17),
                       ),
                     ],
@@ -328,7 +339,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     children: [
                       Radio(value: RepeatFrequency.weekly),
                       Text(
-                        'Weekly',
+                        translate.weekly,
                         style: TextStyle(color: AppColors.black, fontSize: 17),
                       ),
                     ],
@@ -337,7 +348,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     children: [
                       Radio(value: RepeatFrequency.monthly),
                       Text(
-                        'Monthly',
+                        translate.monthly,
                         style: TextStyle(color: AppColors.black, fontSize: 17),
                       ),
                     ],
@@ -346,7 +357,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     children: [
                       Radio(value: RepeatFrequency.yearly),
                       Text(
-                        'Yearly',
+                        translate.yearly,
                         style: TextStyle(color: AppColors.black, fontSize: 17),
                       ),
                     ],
@@ -386,7 +397,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Reoccurrence ends on: ',
+                    translate.reoccurrenceEndsOn,
                       style: TextStyle(
                         color: AppColors.black,
                         fontWeight: FontWeight.w500,
@@ -397,7 +408,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       children: [
                         Radio(value: RecurrenceEnd.never),
                         Text(
-                          'Never',
+                        translate.never,
                           style: TextStyle(
                             color: AppColors.black,
                             fontSize: 17,
@@ -409,7 +420,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       children: [
                         Radio(value: RecurrenceEnd.onDate),
                         Text(
-                          'On',
+                          translate.on,
                           style: TextStyle(
                             color: AppColors.black,
                             fontSize: 17,
@@ -421,7 +432,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       children: [
                         Radio(value: RecurrenceEnd.after),
                         Text(
-                          'After',
+                          translate.after,
                           style: TextStyle(
                             color: AppColors.black,
                             fontSize: 17,
@@ -437,12 +448,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
               DateTimeSelectorFormField(
                 initialDateTime: _recurrenceEndDate,
                 decoration: AppConstants.inputDecoration.copyWith(
-                  labelText: 'Ends on',
+                  labelText: translate.endsOn,
                 ),
                 onSelect: (date) {
                   if (date.withoutTime.isBefore(_endDate.withoutTime)) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Recurrence ends after end date')),
+                      SnackBar(content: Text(translate.recurrenceEndsAfterEndDate)),
                     );
                   } else {
                     _recurrenceEndDate = date.withoutTime;
@@ -454,7 +465,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 },
                 validator: (value) {
                   if (value == null || value == "") {
-                    return 'Please select end date.';
+                    return translate.pleaseSelectEndDate;
                   }
 
                   // TODO(Shubham): Add validation of end occurrence >= end date
@@ -474,14 +485,14 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 maxLength: 3,
                 validator: (value) {
                   if (value == null || value.trim() == '') {
-                    return 'Please specify occurrences';
+                    return translate.pleaseSpecifyOccurrences;
                   }
 
                   return null;
                 },
                 decoration: AppConstants.inputDecoration.copyWith(
                   hintText: '30',
-                  suffixText: 'Occurrences',
+                  suffixText: translate.occurrences,
                   counterText: '',
                 ),
               ),
@@ -490,7 +501,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           Row(
             children: [
               Text(
-                "Event Color: ",
+                translate.eventColor,
                 style: TextStyle(color: color.onSurface, fontSize: 17),
               ),
               GestureDetector(
@@ -502,7 +513,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
           SizedBox(height: 15),
           CustomButton(
             onTap: _createEvent,
-            title: widget.event == null ? "Add Event" : "Update Event",
+            title: widget.event == null
+                ? translate.addEvent
+                : translate.updateEvent,
           ),
         ],
       ),
@@ -698,7 +711,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
         contentPadding: EdgeInsets.all(20.0),
         children: [
           Text(
-            "Select event color",
+            translate.selectEventColor,
             style: TextStyle(color: AppColors.black, fontSize: 25.0),
           ),
           Container(
@@ -718,7 +731,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             child: Padding(
               padding: EdgeInsets.only(top: 50.0, bottom: 30.0),
               child: CustomButton(
-                title: "Select",
+                title: translate.select,
                 onTap: () {
                   if (mounted) {
                     setState(() {

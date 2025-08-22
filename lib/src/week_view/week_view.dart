@@ -4,19 +4,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../calendar_constants.dart';
-import '../calendar_controller_provider.dart';
-import '../calendar_event_data.dart';
-import '../components/components.dart';
+import '../../calendar_view.dart';
 import '../constants.dart';
-import '../enumerations.dart';
-import '../event_arrangers/event_arrangers.dart';
-import '../event_controller.dart';
 import '../extensions.dart';
-import '../modals.dart';
 import '../painters.dart';
-import '../style/header_style.dart';
-import '../typedefs.dart';
 import '_internal_week_view_page.dart';
 
 /// [Widget] to display week view.
@@ -782,14 +773,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         children: [
           Text(
             widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-                Constants.weekTitles[date.weekday - 1],
+                PackageStrings.currentLocale.weekdays[date.weekday - 1],
             style: TextStyle(
               color: context.weekViewColors.weekDayTextColor,
             ),
           ),
           Text(
             widget.weekDayDateStringBuilder?.call(date.day) ??
-                date.day.toString(),
+                PackageStrings.localizeNumber(date.day),
             style: TextStyle(
               color: context.weekViewColors.weekDayTextColor,
             ),
@@ -809,7 +800,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
       child: Text(
-        "$weekNumber",
+        "${PackageStrings.localizeNumber(weekNumber)}",
         style: TextStyle(
           color: context.weekViewColors.weekDayTextColor,
         ),
