@@ -214,6 +214,8 @@ class _InternalDayViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final fullDayEventList = widget.controller.getFullDayEvent(widget.date);
+    final direction = Directionality.of(context);
+
     return Container(
       height: widget.height,
       width: widget.width,
@@ -269,6 +271,7 @@ class _InternalDayViewPageState<T extends Object?>
                               widget.halfHourIndicatorSettings.dashSpaceWidth,
                           startHour: widget.startHour,
                           endHour: widget.endHour,
+                          textDirection: direction,
                         ),
                       ),
                     if (widget.showQuarterHours)
@@ -287,6 +290,7 @@ class _InternalDayViewPageState<T extends Object?>
                               widget.quarterHourIndicatorSettings.dashWidth,
                           dashSpaceWidth: widget
                               .quarterHourIndicatorSettings.dashSpaceWidth,
+                          textDirection: direction,
                         ),
                       ),
                     widget.dayDetectorBuilder(

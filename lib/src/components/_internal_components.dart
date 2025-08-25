@@ -129,15 +129,22 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         widget.endHour <= _currentTime.hour) {
       return SizedBox.shrink();
     }
+
+    final direction = Directionality.of(context);
+
+    /// To support LTR & RTL we need to manage X position of point-1 to draw line
+    /// according to position of timeline add and subtract its width
+    final offsetX = direction == TextDirection.ltr
+        ? widget.liveTimeIndicatorSettings.offset + widget.timeLineWidth
+        : widget.liveTimeIndicatorSettings.offset - widget.timeLineWidth;
+
     return CustomPaint(
       size: Size(widget.width, widget.liveTimeIndicatorSettings.height),
       painter: CurrentTimeLinePainter(
         color: widget.liveTimeIndicatorSettings.color,
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
-          widget.onlyShowToday
-              ? 0
-              : widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
+          widget.onlyShowToday ? 0 : offsetX,
           (_currentTime.getTotalMinutes - startMinutes) *
               widget.heightPerMinute,
         ),
@@ -149,6 +156,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         bulletRadius: widget.liveTimeIndicatorSettings.bulletRadius,
         timeBackgroundViewWidth:
             widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
+        textDirection: direction,
       ),
     );
   }
@@ -433,12 +441,14 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       startHour: startHour,
       calendarViewDate: date,
     );
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
+
     return List.generate(events.length, (index) {
       return Positioned(
         top: events[index].top,
         bottom: events[index].bottom,
-        left: events[index].left,
-        right: events[index].right,
+        left: isLtr ? events[index].left : events[index].right,
+        right: isLtr ? events[index].right : events[index].left,
         child: GestureDetector(
           onLongPress: () => onTileLongTap?.call(events[index].events, date),
           onTap: () => onTileTap?.call(events[index].events, date),

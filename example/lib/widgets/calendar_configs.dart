@@ -29,8 +29,8 @@ class _CalendarConfigState extends State<CalendarConfig> {
   // Map of supported locales with their display names
   final Map<String, String> supportedLocales = {
     'en': 'English',
-    'es': 'Español',
-    'ar': 'العربية',
+    'es': 'Spanish',
+    'ar': 'Arabic',
   };
 
   @override

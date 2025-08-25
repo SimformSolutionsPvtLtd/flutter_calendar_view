@@ -11,13 +11,15 @@ class DayViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
+
     return DayView(
       key: state,
       width: width,
       startDuration: Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 3,
-      timeLineBuilder: _timeLineBuilder,
+      timeLineBuilder: (date) => _timeLineBuilder(date, isLtr),
       scrollPhysics: const BouncingScrollPhysics(),
       eventArranger: SideEventArranger(maxWidth: 30),
       showQuarterHours: false,
@@ -59,7 +61,7 @@ class DayViewWidget extends StatelessWidget {
     );
   }
 
-  Widget _timeLineBuilder(DateTime date) {
+  Widget _timeLineBuilder(DateTime date, bool isLtr) {
     if (date.minute != 0) {
       return Stack(
         clipBehavior: Clip.none,
@@ -67,9 +69,10 @@ class DayViewWidget extends StatelessWidget {
           Positioned.fill(
             top: -8,
             right: 8,
+            left: 8,
             child: Text(
               "${PackageStrings.localizeNumber(date.hour)}:${PackageStrings.localizeNumber(date.minute)}",
-              textAlign: TextAlign.right,
+              textAlign: isLtr ? TextAlign.right : TextAlign.left,
               style: TextStyle(
                 color: Colors.grey,
                 fontStyle: FontStyle.italic,
@@ -88,9 +91,10 @@ class DayViewWidget extends StatelessWidget {
         Positioned.fill(
           top: -8,
           right: 8,
+          left: 8,
           child: Text(
             "${PackageStrings.localizeNumber(hour)} ${date.hour ~/ 12 == 0 ? PackageStrings.currentLocale.am : PackageStrings.currentLocale.pm}",
-            textAlign: TextAlign.right,
+            textAlign: isLtr ? TextAlign.right : TextAlign.left,
           ),
         ),
       ],

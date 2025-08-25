@@ -140,10 +140,12 @@ class DefaultTimeLineMark extends StatelessWidget {
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
-        padding: const EdgeInsets.only(right: 7.0),
+        padding: const EdgeInsets.only(right: 7.0, left: 7.0),
         child: Text(
           timeString,
-          textAlign: TextAlign.right,
+          textAlign: Directionality.of(context) == TextDirection.ltr
+              ? TextAlign.right
+              : TextAlign.left,
           style: markingStyle,
         ),
       ),
@@ -195,6 +197,7 @@ class FullDayEventView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
     return ConstrainedBox(
       constraints: boxConstraints,
       child: ListView.builder(
@@ -223,7 +226,7 @@ class FullDayEventView<T> extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   color: events[index].color,
                 ),
-                alignment: Alignment.centerLeft,
+                alignment: isLtr ? Alignment.centerLeft : Alignment.centerRight,
               ),
         ),
       ),
