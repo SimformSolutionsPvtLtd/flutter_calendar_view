@@ -32,14 +32,11 @@ class _MobileHomePageState extends State<MobileHomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildLanguageOption(
-                  context, 'en', 'English', '🇺🇸', currentLocale),
-              Divider(height: 1),
-              _buildLanguageOption(
-                  context, 'es', 'Spanish', '🇪🇸', currentLocale),
-              Divider(height: 1),
-              _buildLanguageOption(
-                  context, 'ar', 'Arabic', '🇦🇪', currentLocale),
+              _buildLanguageOption(context, 'en', 'English', currentLocale),
+              Divider(),
+              _buildLanguageOption(context, 'es', 'Spanish', currentLocale),
+              Divider(),
+              _buildLanguageOption(context, 'ar', 'Arabic', currentLocale),
             ],
           ),
         ),
@@ -53,8 +50,8 @@ class _MobileHomePageState extends State<MobileHomePage> {
     );
   }
 
-  Widget _buildLanguageOption(BuildContext context, String locale, String name,
-      String flag, String currentLocale) {
+  Widget _buildLanguageOption(
+      BuildContext context, String locale, String name, String currentLocale) {
     final isSelected = locale == currentLocale;
 
     return InkWell(
@@ -66,14 +63,12 @@ class _MobileHomePageState extends State<MobileHomePage> {
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
               : null,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
           children: [
-            Text(flag, style: TextStyle(fontSize: 24)),
-            SizedBox(width: 16),
             Expanded(
               child: Text(
                 name,

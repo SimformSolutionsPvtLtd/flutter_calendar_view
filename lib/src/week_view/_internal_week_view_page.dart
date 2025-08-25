@@ -255,6 +255,7 @@ class _InternalWeekViewPageState<T extends Object?>
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
     final themeColor = context.weekViewColors;
+    final direction = Directionality.of(context);
 
     return Container(
       color: widget.backgroundColor ?? themeColor.pageBackgroundColor,
@@ -397,6 +398,7 @@ class _InternalWeekViewPageState<T extends Object?>
                               widget.halfHourIndicatorSettings.dashSpaceWidth,
                           startHour: widget.halfHourIndicatorSettings.startHour,
                           endHour: widget.endHour,
+                          textDirection: direction,
                         ),
                       ),
                     if (widget.showQuarterHours)
@@ -415,10 +417,13 @@ class _InternalWeekViewPageState<T extends Object?>
                               widget.quarterHourIndicatorSettings.dashWidth,
                           dashSpaceWidth: widget
                               .quarterHourIndicatorSettings.dashSpaceWidth,
+                          textDirection: direction,
                         ),
                       ),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: direction == TextDirection.ltr
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       child: SizedBox(
                         width: widget.weekTitleWidth * filteredDates.length,
                         height: widget.height,
@@ -435,12 +440,24 @@ class _InternalWeekViewPageState<T extends Object?>
                                         // to see horizontal & vertical lines
 
                                         border: Border(
-                                          right: BorderSide(
-                                            color:
-                                                themeColor.verticalLinesColor,
-                                            width: widget
-                                                .hourIndicatorSettings.height,
-                                          ),
+                                          right: direction == TextDirection.ltr
+                                              ? BorderSide(
+                                                  color: themeColor
+                                                      .verticalLinesColor,
+                                                  width: widget
+                                                      .hourIndicatorSettings
+                                                      .height,
+                                                )
+                                              : BorderSide.none,
+                                          left: direction == TextDirection.rtl
+                                              ? BorderSide(
+                                                  color: themeColor
+                                                      .verticalLinesColor,
+                                                  width: widget
+                                                      .hourIndicatorSettings
+                                                      .height,
+                                                )
+                                              : BorderSide.none,
                                         ),
                                       )
                                     : null,

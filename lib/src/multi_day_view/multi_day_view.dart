@@ -921,6 +921,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     int startHour,
     int endHour,
   ) {
+    final directionality = Directionality.of(context);
+
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
@@ -934,6 +936,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      timelineWidth: widget.timeLineWidth,
+      textDirection: directionality,
     );
   }
 

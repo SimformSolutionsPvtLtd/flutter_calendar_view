@@ -759,6 +759,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     int startHour,
     int endHour,
   ) {
+    final directionality = Directionality.of(context);
     return HourLinePainter(
       lineColor: lineColor,
       lineHeight: lineHeight,
@@ -772,6 +773,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       emulateVerticalOffsetBy: emulateVerticalOffsetBy,
       startHour: startHour,
       endHour: endHour,
+      timelineWidth: widget.timeLineWidth,
+      textDirection: directionality,
     );
   }
 
