@@ -268,7 +268,7 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = widget.startHour + 1; i <= widget.endHour; i++)
+          for (int i = widget.startHour; i < widget.endHour; i++)
             _timelinePositioned(
               topPosition: widget.hourHeight * (i - widget.startHour) -
                   widget.timeLineOffset,
@@ -278,7 +278,7 @@ class _TimeLineState extends State<TimeLine> {
               hour: i,
             ),
           if (widget.showHalfHours)
-            for (int i = widget.startHour; i <= widget.endHour; i++)
+            for (int i = widget.startHour; i < widget.endHour; i++)
               _timelinePositioned(
                 topPosition: widget.hourHeight * (i - widget.startHour) -
                     widget.timeLineOffset +
@@ -290,7 +290,7 @@ class _TimeLineState extends State<TimeLine> {
                 minutes: 30,
               ),
           if (widget.showQuarterHours)
-            for (int i = widget.startHour; i <= widget.endHour; i++) ...[
+            for (int i = widget.startHour; i < widget.endHour; i++) ...[
               /// this is for 15 minutes
               _timelinePositioned(
                 topPosition: widget.hourHeight * (i - widget.startHour) -
