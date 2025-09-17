@@ -338,7 +338,7 @@ class _TimeLineState extends State<TimeLine> {
       hour,
       minutes,
     );
-
+    print("_timelinePositioned currentDateTime:$currentDateTime dateTime:$dateTime");
     return Visibility(
       visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
               (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
