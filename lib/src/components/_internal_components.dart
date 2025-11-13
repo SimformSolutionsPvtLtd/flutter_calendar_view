@@ -450,9 +450,15 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
         left: isLtr ? events[index].left : events[index].right,
         right: isLtr ? events[index].right : events[index].left,
         child: GestureDetector(
-          onLongPress: () => onTileLongTap?.call(events[index].events, date),
-          onTap: () => onTileTap?.call(events[index].events, date),
-          onDoubleTap: () => onTileDoubleTap?.call(events[index].events, date),
+          onLongPress: onTileLongTap != null
+              ? () => onTileLongTap!.call(events[index].events, date)
+              : null,
+          onTap: onTileTap != null
+              ? () => onTileTap!.call(events[index].events, date)
+              : null,
+          onDoubleTap: onTileDoubleTap != null
+              ? () => onTileDoubleTap!.call(events[index].events, date)
+              : null,
           child: Builder(builder: (context) {
             if (scrollNotifier.shouldScroll &&
                 events[index]
