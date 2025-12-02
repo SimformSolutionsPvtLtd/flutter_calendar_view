@@ -55,57 +55,49 @@ class RoundedEventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      margin: margin,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: borderRadius,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (title.isNotEmpty)
-            Expanded(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        if (title.isNotEmpty)
+          Expanded(
+            child: Text(
+              title,
+              style: titleStyle ??
+                  TextStyle(
+                    fontSize: 20,
+                    color: backgroundColor.accent,
+                  ),
+              softWrap: true,
+              overflow: TextOverflow.fade,
+            ),
+          ),
+        if (description?.isNotEmpty ?? false)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
               child: Text(
-                title,
-                style: titleStyle ??
+                description!,
+                style: descriptionStyle ??
                     TextStyle(
-                      fontSize: 20,
-                      color: backgroundColor.accent,
+                      fontSize: 17,
+                      color: backgroundColor.accent.withAlpha(200),
                     ),
-                softWrap: true,
-                overflow: TextOverflow.fade,
               ),
             ),
-          if (description?.isNotEmpty ?? false)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  description!,
-                  style: descriptionStyle ??
-                      TextStyle(
-                        fontSize: 17,
-                        color: backgroundColor.accent.withAlpha(200),
-                      ),
-                ),
-              ),
+          ),
+        if (totalEvents > 1)
+          Expanded(
+            child: Text(
+              "+${totalEvents - 1} more",
+              style: (descriptionStyle ??
+                  TextStyle(
+                    color: backgroundColor.accent.withAlpha(200),
+                  ))
+                  .copyWith(fontSize: 17),
             ),
-          if (totalEvents > 1)
-            Expanded(
-              child: Text(
-                "+${totalEvents - 1} more",
-                style: (descriptionStyle ??
-                        TextStyle(
-                          color: backgroundColor.accent.withAlpha(200),
-                        ))
-                    .copyWith(fontSize: 17),
-              ),
-            ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -134,8 +126,8 @@ class DefaultTimeLineMark extends StatelessWidget {
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
         : date.minute != 0
-            ? "$hour:${date.minute}"
-            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+        ? "$hour:${date.minute}"
+        : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(
@@ -143,7 +135,10 @@ class DefaultTimeLineMark extends StatelessWidget {
         child: Text(
           timeString,
           textAlign: TextAlign.right,
-          style: markingStyle,
+          style: markingStyle ??
+              TextStyle(
+                fontSize: 15.0,
+              ),
         ),
       ),
     );

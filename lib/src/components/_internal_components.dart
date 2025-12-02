@@ -41,21 +41,17 @@ class LiveTimeIndicator extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
-  /// Flag to show only today's events.
-  final bool onlyShowToday;
-
   /// Widget to display tile line according to current time.
-  const LiveTimeIndicator(
-      {Key? key,
-      required this.width,
-      required this.height,
-      required this.timeLineWidth,
-      required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute,
-      required this.startHour,
-      this.endHour = Constants.hoursADay,
-      this.onlyShowToday = false})
-      : super(key: key);
+  const LiveTimeIndicator({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.timeLineWidth,
+    required this.liveTimeIndicatorSettings,
+    required this.heightPerMinute,
+    required this.startHour,
+    this.endHour = Constants.hoursADay,
+  }) : super(key: key);
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -68,7 +64,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
   @override
   void initState() {
     super.initState();
-    _currentTime = _updateCurrentTime();
+
     _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
@@ -78,31 +74,15 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     super.dispose();
   }
 
-  /// Returns the current time to display in the live time indicator.
-  ///
-  /// If [LiveTimeIndicatorSettings.currentTimeProvider] is provided,
-  /// uses that function to get the current time.
-  ///
-  /// Otherwise falls back to [DateTime.now] for the device's local time.
-  DateTime _getCurrentDateTime() {
-    final settings = widget.liveTimeIndicatorSettings;
-    return settings.currentTimeProvider?.call() ?? DateTime.now();
-  }
-
-  /// Update the current time based on timezone settings
-  TimeOfDay _updateCurrentTime() {
-    final dateTime = _getCurrentDateTime();
-    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
-  }
-
   /// Creates an recursive call that runs every 1 seconds.
   /// This will rebuild TimeLineIndicator every second. This will allow us
   /// to indicate live time in Week and Day view.
   void _onTick(Timer? timer) {
-    final time = _currentTime;
-    _currentTime = _updateCurrentTime();
-    if (time == _currentTime || !mounted) return;
-    setState(() {});
+    final time = TimeOfDay.now();
+    if (time != _currentTime && mounted) {
+      _currentTime = time;
+      setState(() {});
+    }
   }
 
   @override
@@ -110,9 +90,8 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final currentHour = _currentTime.hourOfPeriod.appendLeadingZero();
     final currentMinute = _currentTime.minute.appendLeadingZero();
     final currentPeriod = _currentTime.period.name;
-    final currentDateTime = _getCurrentDateTime();
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
-            ?.call(currentDateTime) ??
+        ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
 
     /// remove startHour minute from [_currentTime.getTotalMinutes]
@@ -134,9 +113,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         color: widget.liveTimeIndicatorSettings.color,
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
-          widget.onlyShowToday
-              ? 0
-              : widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
+          widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
           (_currentTime.getTotalMinutes - startMinutes) *
               widget.heightPerMinute,
         ),
@@ -144,10 +121,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         showBullet: widget.liveTimeIndicatorSettings.showBullet,
         showTime: widget.liveTimeIndicatorSettings.showTime,
         showTimeBackgroundView:
-            widget.liveTimeIndicatorSettings.showTimeBackgroundView,
+        widget.liveTimeIndicatorSettings.showTimeBackgroundView,
         bulletRadius: widget.liveTimeIndicatorSettings.bulletRadius,
         timeBackgroundViewWidth:
-            widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
+        widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
       ),
     );
   }
@@ -186,6 +163,8 @@ class TimeLine extends StatefulWidget {
   /// height of indicator and also allow to show time with custom format.
   final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
+  static DateTime get _date => DateTime.now();
+
   double get _halfHourHeight => hourHeight / 2;
 
   /// This field will be used to set end hour for day and week view
@@ -218,7 +197,6 @@ class _TimeLineState extends State<TimeLine> {
   @override
   void initState() {
     super.initState();
-    _currentTime = _updateCurrentTime();
     _timer = Timer.periodic(Duration(seconds: 1), _onTick);
   }
 
@@ -228,32 +206,16 @@ class _TimeLineState extends State<TimeLine> {
     super.dispose();
   }
 
-  /// Returns the current time for the timeline, respecting timezone settings.
-  DateTime _getCurrentDateTime() {
-    final settings = widget.liveTimeIndicatorSettings;
-
-    if (settings.currentTimeProvider != null) {
-      return settings.currentTimeProvider!();
-    } else {
-      return DateTime.now();
-    }
-  }
-
-  /// Update the current time based on timezone settings
-  TimeOfDay _updateCurrentTime() {
-    final dateTime = _getCurrentDateTime();
-    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
-  }
-
   /// Creates an recursive call that runs every 1 seconds.
   /// This will rebuild TimeLine every second. This will allow us
   /// to show/hide time line when there is overlap with
   /// live time line indicator in Week and Day view.
   void _onTick(Timer? timer) {
-    final time = _currentTime;
-    _currentTime = _updateCurrentTime();
-    if (time == _currentTime || !mounted) return;
-    setState(() {});
+    final time = TimeOfDay.now();
+    if (time != _currentTime && mounted) {
+      _currentTime = time;
+      setState(() {});
+    }
   }
 
   @override
@@ -329,19 +291,17 @@ class _TimeLineState extends State<TimeLine> {
     required int hour,
     int minutes = 0,
   }) {
-    final currentDateTime = _getCurrentDateTime();
-
     final dateTime = DateTime(
-      currentDateTime.year,
-      currentDateTime.month,
-      currentDateTime.day,
+      TimeLine._date.year,
+      TimeLine._date.month,
+      TimeLine._date.day,
       hour,
       minutes,
     );
 
     return Visibility(
       visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
-              (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
+          (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
           !(widget.liveTimeIndicatorSettings.showTime ||
               widget.liveTimeIndicatorSettings.showTimeBackgroundView),
       child: Positioned(
@@ -353,7 +313,11 @@ class _TimeLineState extends State<TimeLine> {
           height: widget.hourHeight,
           width: widget.timeLineWidth,
           child: InkWell(
-            onTap: widget.onTimestampTap.safeVoidCall(dateTime),
+            onTap: () {
+              if (widget.onTimestampTap != null) {
+                widget.onTimestampTap!(dateTime);
+              }
+            },
             child: widget.timeLineBuilder.call(dateTime),
           ),
         ),
@@ -435,9 +399,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     return List.generate(events.length, (index) {
       return Positioned(
         top: events[index].top,
-        bottom: events[index].bottom,
         left: events[index].left,
-        right: events[index].right,
         child: GestureDetector(
           onLongPress: () => onTileLongTap?.call(events[index].events, date),
           onTap: () => onTileTap?.call(events[index].events, date),
