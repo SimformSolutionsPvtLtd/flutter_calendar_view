@@ -16,35 +16,38 @@ class _RadioDialogState extends State<DeleteEventDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile(
-            title: Text('This event'),
-            value: DeleteEvent.current,
-            groupValue: _selectedOption,
+          RadioGroup<DeleteEvent>(
             onChanged: (deleteType) {
               if (deleteType != null) {
                 setState(() => _selectedOption = deleteType);
               }
             },
+            child: RadioListTile(
+              title: Text('This event'),
+              value: DeleteEvent.current,
+            ),
           ),
-          RadioListTile(
-            title: Text('This and following events'),
-            value: DeleteEvent.following,
-            groupValue: _selectedOption,
+          RadioGroup<DeleteEvent>(
             onChanged: (deleteType) {
               if (deleteType != null) {
                 setState(() => _selectedOption = deleteType);
               }
             },
+            child: RadioListTile(
+              title: Text('This and following events'),
+              value: DeleteEvent.following,
+            ),
           ),
-          RadioListTile(
-            title: Text('All events'),
-            value: DeleteEvent.all,
-            groupValue: _selectedOption,
+          RadioGroup<DeleteEvent>(
             onChanged: (deleteType) {
               if (deleteType != null) {
                 setState(() => _selectedOption = deleteType);
               }
             },
+            child: RadioListTile(
+              title: Text('All events'),
+              value: DeleteEvent.all,
+            ),
           ),
         ],
       ),

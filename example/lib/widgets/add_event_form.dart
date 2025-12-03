@@ -128,7 +128,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   });
                 },
-                activeColor: color.surface,
+                activeThumbColor: color.surface,
               ),
             ],
           ),
@@ -340,14 +340,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             ),
             Row(
               children: [
-                Radio(
-                  value: RepeatFrequency.daily,
-                  groupValue: _selectedFrequency,
-                  onChanged: (value) {
-                    setState(
-                      () => _selectedFrequency = value,
-                    );
-                  },
+                RadioGroup<RepeatFrequency?>(
+                  onChanged: (value) => setState(
+                    () => _selectedFrequency = value,
+                  ),
+                  child: Radio(
+                    value: RepeatFrequency.daily,
+                  ),
                 ),
                 Text(
                   'Daily',
@@ -360,14 +359,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             ),
             Row(
               children: [
-                Radio(
-                  value: RepeatFrequency.weekly,
-                  groupValue: _selectedFrequency,
-                  onChanged: (value) {
-                    setState(
-                      () => _selectedFrequency = value,
-                    );
-                  },
+                RadioGroup<RepeatFrequency?>(
+                  onChanged: (value) => setState(
+                    () => _selectedFrequency = value,
+                  ),
+                  child: Radio(
+                    value: RepeatFrequency.weekly,
+                  ),
                 ),
                 Text(
                   'Weekly',
@@ -380,14 +378,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             ),
             Row(
               children: [
-                Radio(
-                  value: RepeatFrequency.monthly,
-                  groupValue: _selectedFrequency,
-                  onChanged: (value) {
-                    setState(
-                      () => _selectedFrequency = value,
-                    );
-                  },
+                RadioGroup<RepeatFrequency?>(
+                  onChanged: (value) => setState(
+                    () => _selectedFrequency = value,
+                  ),
+                  child: Radio(
+                    value: RepeatFrequency.monthly,
+                  ),
                 ),
                 Text(
                   'Monthly',
@@ -400,14 +397,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             ),
             Row(
               children: [
-                Radio(
-                  value: RepeatFrequency.yearly,
-                  groupValue: _selectedFrequency,
-                  onChanged: (value) {
-                    setState(
-                      () => _selectedFrequency = value,
-                    );
-                  },
+                RadioGroup<RepeatFrequency?>(
+                  onChanged: (value) => setState(
+                    () => _selectedFrequency = value,
+                  ),
+                  child: Radio(
+                    value: RepeatFrequency.yearly,
+                  ),
                 ),
                 Text(
                   'Yearly',
@@ -454,13 +450,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   ),
                   Row(
                     children: [
-                      Radio(
-                        value: RecurrenceEnd.never,
-                        groupValue: _selectedRecurrenceEnd,
-                        onChanged: (value) => setState(
-                          () => _selectedRecurrenceEnd = value,
-                        ),
-                      ),
+                      RadioGroup<RecurrenceEnd?>(
+                          onChanged: (value) => setState(
+                                () => _selectedRecurrenceEnd = value,
+                              ),
+                          child: Radio(
+                            value: RecurrenceEnd.never,
+                          )),
                       Text(
                         'Never',
                         style: TextStyle(
@@ -472,13 +468,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   ),
                   Row(
                     children: [
-                      Radio(
-                        value: RecurrenceEnd.onDate,
-                        groupValue: _selectedRecurrenceEnd,
-                        onChanged: (value) => setState(
-                          () => _selectedRecurrenceEnd = value,
-                        ),
-                      ),
+                      RadioGroup<RecurrenceEnd?>(
+                          onChanged: (value) => setState(
+                                () => _selectedRecurrenceEnd = value,
+                              ),
+                          child: Radio(
+                            value: RecurrenceEnd.onDate,
+                          )),
                       Text(
                         'On',
                         style: TextStyle(
@@ -490,12 +486,17 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   ),
                   Row(
                     children: [
-                      Radio(
-                        value: RecurrenceEnd.after,
-                        groupValue: _selectedRecurrenceEnd,
+                      RadioGroup<RecurrenceEnd?>(
                         onChanged: (value) => setState(
                           () => _selectedRecurrenceEnd = value,
                         ),
+                        child: RadioGroup<RecurrenceEnd?>(
+                            onChanged: (value) => setState(
+                                  () => _selectedRecurrenceEnd = value,
+                                ),
+                            child: Radio(
+                              value: RecurrenceEnd.after,
+                            )),
                       ),
                       Text(
                         'After',

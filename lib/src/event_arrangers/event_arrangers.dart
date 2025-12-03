@@ -11,7 +11,6 @@ import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
-
 part 'side_event_arranger.dart';
 
 /// {@template event_arranger_arrange_method_doc}

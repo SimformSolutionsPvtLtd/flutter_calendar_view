@@ -258,7 +258,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
 
   /// Main widget for week view.
   const MultiDayView({
-    Key? key,
+    super.key,
     this.controller,
     this.eventTileBuilder,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
@@ -340,8 +340,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
         assert(
           endHour <= Constants.hoursADay || endHour < startHour,
           "End hour must be less than 24 or startHour must be less than endHour",
-        ),
-        super(key: key);
+        );
 
   @override
   MultiDayViewState<T> createState() => MultiDayViewState<T>();

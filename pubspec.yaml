@@ -5,8 +5,8 @@ homepage: https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view
 issue_tracker: https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues?q=is%3Aissue+is%3Aopen+label%3Abug
 
 environment:
-  sdk: ">=2.15.0 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.5"
 
 dependencies:
   flutter:
@@ -16,5 +16,3 @@ dev_dependencies:
   lints:
   flutter_test:
     sdk: flutter
-
-flutter:

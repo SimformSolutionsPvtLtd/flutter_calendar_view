@@ -434,7 +434,8 @@ class CalendarData<T extends Object?> {
     required DateTime currentDate,
     required RecurrenceSettings recurrenceSettings,
   }) {
-    final recurrenceEndDate = recurrenceSettings.endDate;
+    final recurrenceEndDate =
+        recurrenceSettings.endDate?.subtract(const Duration(days: 1));
     return recurrenceEndDate == null ||
         (currentDate.isBefore(recurrenceEndDate) ||
             currentDate.isAtSameMomentAs(recurrenceEndDate));
@@ -456,7 +457,7 @@ class CalendarData<T extends Object?> {
     // Adjust weekday to zero-based indexing and
     // check if date’s weekday is in the recurrence weekdays
     final isMatchingWeekday =
-        recurrenceSettings.weekdays.contains(currentDate.weekday - 1);
+        recurrenceSettings.weekdays.contains(currentDate.weekday);
     final recurrenceEndDate = recurrenceSettings.endDate;
 
     if (!isMatchingWeekday) {

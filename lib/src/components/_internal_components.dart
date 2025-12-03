@@ -46,7 +46,7 @@ class LiveTimeIndicator extends StatefulWidget {
 
   /// Widget to display tile line according to current time.
   const LiveTimeIndicator(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.height,
       required this.timeLineWidth,
@@ -54,8 +54,7 @@ class LiveTimeIndicator extends StatefulWidget {
       required this.heightPerMinute,
       required this.startHour,
       this.endHour = Constants.hoursADay,
-      this.onlyShowToday = false})
-      : super(key: key);
+      this.onlyShowToday = false});
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -186,6 +185,7 @@ class TimeLine extends StatefulWidget {
   /// height of indicator and also allow to show time with custom format.
   final LiveTimeIndicatorSettings liveTimeIndicatorSettings;
 
+
   double get _halfHourHeight => hourHeight / 2;
 
   /// This field will be used to set end hour for day and week view
@@ -193,7 +193,7 @@ class TimeLine extends StatefulWidget {
 
   /// Time line to display time at left side of day or week view.
   const TimeLine({
-    Key? key,
+    super.key,
     required this.timeLineWidth,
     required this.hourHeight,
     required this.height,
@@ -205,7 +205,7 @@ class TimeLine extends StatefulWidget {
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
-  }) : super(key: key);
+  });
 
   @override
   State<TimeLine> createState() => _TimeLineState();
@@ -404,7 +404,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.events,
@@ -418,7 +418,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     required this.scrollNotifier,
     required this.onTileDoubleTap,
     this.endHour = Constants.hoursADay,
-  }) : super(key: key);
+  });
 
   /// Arrange events and returns list of [Widget] that displays event
   /// tile on display area. This method uses [eventArranger] to get position
@@ -435,9 +435,7 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
     return List.generate(events.length, (index) {
       return Positioned(
         top: events[index].top,
-        bottom: events[index].bottom,
         left: events[index].left,
-        right: events[index].right,
         child: GestureDetector(
           onLongPress: () => onTileLongTap?.call(events[index].events, date),
           onTap: () => onTileTap?.call(events[index].events, date),
@@ -534,7 +532,7 @@ class PressDetector extends StatelessWidget {
 
   /// A widget that display event tiles in day/week view.
   const PressDetector({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.heightPerMinute,
@@ -543,7 +541,7 @@ class PressDetector extends StatelessWidget {
     required this.onDateTap,
     required this.minuteSlotSize,
     required this.startHour,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

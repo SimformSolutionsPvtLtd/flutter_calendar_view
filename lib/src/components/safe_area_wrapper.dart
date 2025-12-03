@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SafeAreaWrapper extends SafeArea {
   SafeAreaWrapper({
     SafeAreaOption option = const SafeAreaOption(),
-    required Widget child,
+    required super.child,
   }) : super(
           left: option.left,
           top: option.top,
@@ -11,7 +11,6 @@ class SafeAreaWrapper extends SafeArea {
           bottom: option.bottom,
           minimum: option.minimum,
           maintainBottomViewPadding: option.maintainBottomViewPadding,
-          child: child,
         );
 }
 

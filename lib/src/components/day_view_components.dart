@@ -41,7 +41,7 @@ class RoundedEventTile extends StatelessWidget {
 
   /// This is default tile to display in day view.
   const RoundedEventTile({
-    Key? key,
+    super.key,
     required this.title,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
@@ -51,61 +51,53 @@ class RoundedEventTile extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      margin: margin,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: borderRadius,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (title.isNotEmpty)
-            Expanded(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        if (title.isNotEmpty)
+          Expanded(
+            child: Text(
+              title,
+              style: titleStyle ??
+                  TextStyle(
+                    fontSize: 20,
+                    color: backgroundColor.accent,
+                  ),
+              softWrap: true,
+              overflow: TextOverflow.fade,
+            ),
+          ),
+        if (description?.isNotEmpty ?? false)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
               child: Text(
-                title,
-                style: titleStyle ??
+                description!,
+                style: descriptionStyle ??
                     TextStyle(
-                      fontSize: 20,
-                      color: backgroundColor.accent,
+                      fontSize: 17,
+                      color: backgroundColor.accent.withAlpha(200),
                     ),
-                softWrap: true,
-                overflow: TextOverflow.fade,
               ),
             ),
-          if (description?.isNotEmpty ?? false)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  description!,
-                  style: descriptionStyle ??
+          ),
+        if (totalEvents > 1)
+          Expanded(
+            child: Text(
+              "+${totalEvents - 1} more",
+              style: (descriptionStyle ??
                       TextStyle(
-                        fontSize: 17,
                         color: backgroundColor.accent.withAlpha(200),
-                      ),
-                ),
-              ),
+                      ))
+                  .copyWith(fontSize: 17),
             ),
-          if (totalEvents > 1)
-            Expanded(
-              child: Text(
-                "+${totalEvents - 1} more",
-                style: (descriptionStyle ??
-                        TextStyle(
-                          color: backgroundColor.accent.withAlpha(200),
-                        ))
-                    .copyWith(fontSize: 17),
-              ),
-            ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -122,11 +114,11 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
-    Key? key,
+    super.key,
     required this.date,
     this.markingStyle,
     this.timeStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +135,10 @@ class DefaultTimeLineMark extends StatelessWidget {
         child: Text(
           timeString,
           textAlign: TextAlign.right,
-          style: markingStyle,
+          style: markingStyle ??
+              TextStyle(
+                fontSize: 15.0,
+              ),
         ),
       ),
     );
@@ -153,7 +148,7 @@ class DefaultTimeLineMark extends StatelessWidget {
 /// This class is defined default view of full day event
 class FullDayEventView<T> extends StatelessWidget {
   const FullDayEventView({
-    Key? key,
+    super.key,
     this.boxConstraints = const BoxConstraints(maxHeight: 100),
     required this.events,
     this.padding,
@@ -163,7 +158,7 @@ class FullDayEventView<T> extends StatelessWidget {
     required this.date,
     this.onEventDoubleTap,
     this.onEventLongPress,
-  }) : super(key: key);
+  });
 
   /// Constraints for view
   final BoxConstraints boxConstraints;

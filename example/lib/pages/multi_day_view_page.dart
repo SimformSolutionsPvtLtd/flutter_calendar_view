@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../enumerations.dart';
 import '../extension.dart';
-import '../widgets/responsive_widget.dart';
 import '../widgets/multi_day_view_widget.dart';
+import '../widgets/responsive_widget.dart';
 import 'create_event_page.dart';
 import 'web/web_home_page.dart';
 

@@ -9,9 +9,9 @@ class CalendarThemeProvider extends InheritedWidget {
   /// view widgets and synchronize the theme between them.
   const CalendarThemeProvider({
     required this.calendarTheme,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, child: child);
+    required super.child,
+    super.key,
+  });
 
   /// Theme for Calendar views.
   final CalendarThemeData calendarTheme;
