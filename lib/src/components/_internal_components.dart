@@ -45,17 +45,17 @@ class LiveTimeIndicator extends StatefulWidget {
   final bool onlyShowToday;
 
   /// Widget to display tile line according to current time.
-  const LiveTimeIndicator({
-    Key? key,
-    required this.width,
-    required this.height,
-    required this.timeLineWidth,
-    required this.liveTimeIndicatorSettings,
-    required this.heightPerMinute,
-    required this.startHour,
-    this.endHour = Constants.hoursADay,
-    this.onlyShowToday = false
-  }) : super(key: key);
+  const LiveTimeIndicator(
+      {Key? key,
+      required this.width,
+      required this.height,
+      required this.timeLineWidth,
+      required this.liveTimeIndicatorSettings,
+      required this.heightPerMinute,
+      required this.startHour,
+      this.endHour = Constants.hoursADay,
+      this.onlyShowToday = false})
+      : super(key: key);
 
   @override
   _LiveTimeIndicatorState createState() => _LiveTimeIndicatorState();
@@ -95,7 +95,7 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
     final currentMinute = _currentTime.minute.appendLeadingZero();
     final currentPeriod = _currentTime.period.name;
     final timeString = widget.liveTimeIndicatorSettings.timeStringBuilder
-        ?.call(DateTime.now()) ??
+            ?.call(DateTime.now()) ??
         '$currentHour:$currentMinute $currentPeriod';
 
     /// remove startHour minute from [_currentTime.getTotalMinutes]
@@ -127,10 +127,10 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         showBullet: widget.liveTimeIndicatorSettings.showBullet,
         showTime: widget.liveTimeIndicatorSettings.showTime,
         showTimeBackgroundView:
-        widget.liveTimeIndicatorSettings.showTimeBackgroundView,
+            widget.liveTimeIndicatorSettings.showTimeBackgroundView,
         bulletRadius: widget.liveTimeIndicatorSettings.bulletRadius,
         timeBackgroundViewWidth:
-        widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
+            widget.liveTimeIndicatorSettings.timeBackgroundViewWidth,
       ),
     );
   }
@@ -307,7 +307,7 @@ class _TimeLineState extends State<TimeLine> {
 
     return Visibility(
       visible: !((_currentTime.minute >= 45 && _currentTime.hour == hour - 1) ||
-          (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
+              (_currentTime.minute <= 15 && _currentTime.hour == hour)) ||
           !(widget.liveTimeIndicatorSettings.showTime ||
               widget.liveTimeIndicatorSettings.showTimeBackgroundView),
       child: Positioned(

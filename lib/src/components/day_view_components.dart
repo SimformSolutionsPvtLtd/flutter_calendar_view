@@ -91,9 +91,9 @@ class RoundedEventTile extends StatelessWidget {
             child: Text(
               "+${totalEvents - 1} more",
               style: (descriptionStyle ??
-                  TextStyle(
-                    color: backgroundColor.accent.withAlpha(200),
-                  ))
+                      TextStyle(
+                        color: backgroundColor.accent.withAlpha(200),
+                      ))
                   .copyWith(fontSize: 17),
             ),
           ),
@@ -126,8 +126,8 @@ class DefaultTimeLineMark extends StatelessWidget {
     final timeString = (timeStringBuilder != null)
         ? timeStringBuilder!(date)
         : date.minute != 0
-        ? "$hour:${date.minute}"
-        : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
+            ? "$hour:${date.minute}"
+            : "$hour ${date.hour ~/ 12 == 0 ? "am" : "pm"}";
     return Transform.translate(
       offset: Offset(0, -7.5),
       child: Padding(

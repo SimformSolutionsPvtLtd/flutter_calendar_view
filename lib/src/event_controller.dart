@@ -434,7 +434,8 @@ class CalendarData<T extends Object?> {
     required DateTime currentDate,
     required RecurrenceSettings recurrenceSettings,
   }) {
-    final recurrenceEndDate = recurrenceSettings.endDate?.subtract(const Duration(days: 1));
+    final recurrenceEndDate =
+        recurrenceSettings.endDate?.subtract(const Duration(days: 1));
     return recurrenceEndDate == null ||
         (currentDate.isBefore(recurrenceEndDate) ||
             currentDate.isAtSameMomentAs(recurrenceEndDate));
