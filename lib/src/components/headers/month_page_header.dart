@@ -16,7 +16,8 @@ class MonthPageHeader extends CalendarPageHeader {
     super.onTitleTapped,
     VoidCallback? onPreviousMonth,
     super.showPreviousIcon,
-    @Deprecated("Use HeaderStyle to provide icon color") super.iconColor,
+    @Deprecated("Use HeaderStyle to provide icon color")
+    super.iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
     super.backgroundColor,
     StringProvider? dateStringBuilder,
