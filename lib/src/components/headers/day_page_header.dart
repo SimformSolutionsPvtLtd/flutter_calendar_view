@@ -18,8 +18,7 @@ class DayPageHeader extends CalendarPageHeader {
     StringProvider? dateStringBuilder,
     required super.date,
     @Deprecated("Use HeaderStyle to provide icon color") super.iconColor,
-    @Deprecated("Use HeaderStyle to provide background")
-    super.backgroundColor,
+    @Deprecated("Use HeaderStyle to provide background") super.backgroundColor,
     super.headerStyle,
   }) : super(
           dateStringBuilder:
