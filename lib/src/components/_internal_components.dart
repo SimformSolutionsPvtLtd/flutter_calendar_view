@@ -41,6 +41,9 @@ class LiveTimeIndicator extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Flag to show only today's events.
+  final bool onlyShowToday;
+
   /// Widget to display tile line according to current time.
   const LiveTimeIndicator({
     Key? key,
@@ -51,6 +54,7 @@ class LiveTimeIndicator extends StatefulWidget {
     required this.heightPerMinute,
     required this.startHour,
     this.endHour = Constants.hoursADay,
+    this.onlyShowToday = false
   }) : super(key: key);
 
   @override
@@ -113,7 +117,9 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         color: widget.liveTimeIndicatorSettings.color,
         height: widget.liveTimeIndicatorSettings.height,
         offset: Offset(
-          widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
+          widget.onlyShowToday
+              ? 0
+              : widget.timeLineWidth + widget.liveTimeIndicatorSettings.offset,
           (_currentTime.getTotalMinutes - startMinutes) *
               widget.heightPerMinute,
         ),
