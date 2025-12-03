@@ -30,14 +30,14 @@ class CircularCell extends StatelessWidget {
   /// This class will defines how cell will be displayed.
   /// To get proper view user [CircularCell] with 1 [MonthView.cellAspectRatio].
   const CircularCell({
-    Key? key,
+    super.key,
     required this.date,
     this.events = const [],
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightedTitleColor = Constants.white,
     this.titleColor = Constants.black,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// This class will defines how cell will be displayed.
   /// This widget will display all the events as tile below date title.
   const FilledCell({
-    Key? key,
+    super.key,
     required this.date,
     required this.events,
     this.isInMonth = false,
@@ -135,7 +135,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.highlightedTitleColor = Constants.white,
     this.dateStringBuilder,
     this.onTileDoubleTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -256,14 +256,14 @@ class WeekDayTile extends StatefulWidget {
 
   /// Title for week day in month view.
   const WeekDayTile({
-    Key? key,
+    super.key,
     required this.dayIndex,
     this.backgroundColor,
     this.borderColor,
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<WeekDayTile> createState() => _WeekDayTileState();

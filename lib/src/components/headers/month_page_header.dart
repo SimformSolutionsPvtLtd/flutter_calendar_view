@@ -6,37 +6,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../calendar_view.dart';
-import '../../constants.dart';
 
 class MonthPageHeader extends CalendarPageHeader {
   /// A header widget to display on month view.
   const MonthPageHeader({
-    Key? key,
+    super.key,
     VoidCallback? onNextMonth,
-    bool showNextIcon = true,
-    AsyncCallback? onTitleTapped,
+    super.showNextIcon,
+    super.onTitleTapped,
     VoidCallback? onPreviousMonth,
-    bool showPreviousIcon = true,
-    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
+    super.showPreviousIcon,
+    @Deprecated("Use HeaderStyle to provide icon color") super.iconColor,
     @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
+    super.backgroundColor,
     StringProvider? dateStringBuilder,
-    required DateTime date,
-    HeaderStyle headerStyle = const HeaderStyle(),
+    required super.date,
+    super.headerStyle,
   }) : super(
-          key: key,
-          date: date,
           onNextDay: onNextMonth,
-          showNextIcon: showNextIcon,
           onPreviousDay: onPreviousMonth,
-          showPreviousIcon: showPreviousIcon,
-          onTitleTapped: onTitleTapped,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
-          headerStyle: headerStyle,
         );
 
   static String _monthStringBuilder(DateTime date, {DateTime? secondaryDate}) =>

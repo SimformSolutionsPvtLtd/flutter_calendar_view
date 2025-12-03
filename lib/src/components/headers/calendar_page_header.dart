@@ -78,7 +78,7 @@ class CalendarPageHeader extends StatelessWidget {
   /// Common header for month and day view In this header user can define format
   /// in which date will be displayed by providing [dateStringBuilder] function.
   const CalendarPageHeader({
-    Key? key,
+    super.key,
     required this.date,
     this.dateStringBuilder,
     this.titleBuilder,
@@ -95,8 +95,7 @@ class CalendarPageHeader extends StatelessWidget {
   })  : assert(
             titleBuilder != null || dateStringBuilder != null,
             'titleBuilder and dateStringBuilder '
-            'can not be null at the same time'),
-        super(key: key);
+            'can not be null at the same time');
 
   @override
   Widget build(BuildContext context) {
