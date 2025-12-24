@@ -7,10 +7,7 @@ import '../multi_day_view_page.dart';
 import '../week_view_page.dart';
 
 class MobileHomePage extends StatefulWidget {
-  MobileHomePage({
-    this.onChangeTheme,
-    super.key,
-  });
+  MobileHomePage({this.onChangeTheme, super.key});
 
   final void Function(bool)? onChangeTheme;
 
@@ -24,10 +21,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Flutter Calendar Page"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text("Flutter Calendar Page"), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -36,23 +30,17 @@ class _MobileHomePageState extends State<MobileHomePage> {
               onPressed: () => context.pushRoute(MonthViewPageDemo()),
               child: Text("Month View"),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.pushRoute(DayViewPageDemo()),
               child: Text("Day View"),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.pushRoute(WeekViewDemo()),
               child: Text("Week View"),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.pushRoute(MultiDayViewDemo()),
               child: Text("Multi-Day View"),
@@ -61,10 +49,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.dark_mode,
-          color: context.appColors.onPrimary,
-        ),
+        child: Icon(Icons.dark_mode, color: context.appColors.onPrimary),
         onPressed: () {
           isDarkMode = !isDarkMode;
           if (widget.onChangeTheme != null) {

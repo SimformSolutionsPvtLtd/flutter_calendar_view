@@ -7,11 +7,7 @@ class DayViewWidget extends StatelessWidget {
   final GlobalKey<DayViewState>? state;
   final double? width;
 
-  const DayViewWidget({
-    super.key,
-    this.state,
-    this.width,
-  });
+  const DayViewWidget({super.key, this.state, this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +33,7 @@ class DayViewWidget extends StatelessWidget {
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => DetailsPage(
-              event: events.first,
-              date: date,
-            ),
+            builder: (_) => DetailsPage(event: events.first, date: date),
           ),
         );
       },
@@ -49,10 +42,9 @@ class DayViewWidget extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
       halfHourIndicatorSettings: HourIndicatorSettings(
-        color: CalendarThemeProvider.of(context)
-            .calendarTheme
-            .dayViewTheme
-            .hourLineColor,
+        color: CalendarThemeProvider.of(
+          context,
+        ).calendarTheme.dayViewTheme.hourLineColor,
         lineStyle: LineStyle.dashed,
       ),
       verticalLineOffset: 0,

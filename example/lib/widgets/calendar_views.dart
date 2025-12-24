@@ -26,16 +26,10 @@ class CalendarViews extends StatelessWidget {
       color: AppColors.grey,
       child: Center(
         child: view == CalendarView.month
-            ? MonthViewWidget(
-                width: width,
-              )
+            ? MonthViewWidget(width: width)
             : view == CalendarView.day
-                ? DayViewWidget(
-                    width: width,
-                  )
-                : WeekViewWidget(
-                    width: width,
-                  ),
+            ? DayViewWidget(width: width)
+            : WeekViewWidget(width: width),
       ),
     );
   }

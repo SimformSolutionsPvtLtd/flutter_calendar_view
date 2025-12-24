@@ -5,10 +5,7 @@ import 'mobile/mobile_home_page.dart';
 import 'web/web_home_page.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({
-    this.onChangeTheme,
-    super.key,
-  });
+  const HomePage({this.onChangeTheme, super.key});
 
   /// Return true for dark mode
   /// false for light mode

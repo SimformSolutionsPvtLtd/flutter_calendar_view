@@ -10,11 +10,7 @@ class DetailsPage extends StatelessWidget {
   final CalendarEventData event;
   final DateTime date;
 
-  const DetailsPage({
-    required this.event,
-    required this.date,
-    super.key,
-  });
+  const DetailsPage({required this.event, required this.date, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +29,7 @@ class DetailsPage extends StatelessWidget {
         ),
         leading: IconButton(
           onPressed: context.pop,
-          icon: Icon(
-            Icons.arrow_back,
-            color: event.color.accentColor,
-          ),
+          icon: Icon(Icons.arrow_back, color: event.color.accentColor),
         ),
       ),
       body: ListView(
@@ -45,9 +38,7 @@ class DetailsPage extends StatelessWidget {
           Text(
             "Date: ${event.date.dateToStringWithFormat(format: "dd/MM/yyyy")}",
           ),
-          SizedBox(
-            height: 15.0,
-          ),
+          SizedBox(height: 15.0),
           if (event.startTime != null && event.endTime != null) ...[
             Row(
               children: [
@@ -58,8 +49,9 @@ class DetailsPage extends StatelessWidget {
                     children: [
                       Text("From"),
                       Text(
-                        event.startTime
-                                ?.getTimeInFormat(TimeStampFormat.parse_12) ??
+                        event.startTime?.getTimeInFormat(
+                              TimeStampFormat.parse_12,
+                            ) ??
                             "",
                       ),
                     ],
@@ -72,8 +64,9 @@ class DetailsPage extends StatelessWidget {
                     children: [
                       Text("To"),
                       Text(
-                        event.endTime
-                                ?.getTimeInFormat(TimeStampFormat.parse_12) ??
+                        event.endTime?.getTimeInFormat(
+                              TimeStampFormat.parse_12,
+                            ) ??
                             "",
                       ),
                     ],
@@ -81,17 +74,13 @@ class DetailsPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox(height: 30.0),
           ],
           if (event.description?.isNotEmpty ?? false) ...[
             Divider(),
             Text("Description"),
-            SizedBox(
-              height: 10.0,
-            ),
-            Text(event.description!)
+            SizedBox(height: 10.0),
+            Text(event.description!),
           ],
           const SizedBox(height: 50),
           Row(
@@ -100,9 +89,7 @@ class DetailsPage extends StatelessWidget {
                 child: ElevatedButton(
                   child: Text(
                     'Delete Event',
-                    style: TextStyle(
-                      color: AppColors.black,
-                    ),
+                    style: TextStyle(color: AppColors.black),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white70,
@@ -118,16 +105,12 @@ class DetailsPage extends StatelessWidget {
                 child: ElevatedButton(
                   child: Text(
                     'Edit Event',
-                    style: TextStyle(
-                      color: AppColors.black,
-                    ),
+                    style: TextStyle(color: AppColors.black),
                   ),
                   onPressed: () async {
                     final result = await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => CreateEventPage(
-                          event: event,
-                        ),
+                        builder: (_) => CreateEventPage(event: event),
                       ),
                     );
 
@@ -167,10 +150,10 @@ class DetailsPage extends StatelessWidget {
     }
     if (result != null) {
       CalendarControllerProvider.of(context).controller.deleteRecurrenceEvent(
-            date: date,
-            event: event,
-            deleteEventType: result,
-          );
+        date: date,
+        event: event,
+        deleteEventType: result,
+      );
     }
   }
 }

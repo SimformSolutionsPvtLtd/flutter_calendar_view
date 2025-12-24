@@ -79,17 +79,16 @@ extension DateUtils on DateTime {
     int? second,
     int? millisecond,
     int? microsecond,
-  }) =>
-      DateTime(
-        year ?? this.year,
-        month ?? this.month,
-        day ?? this.day,
-        hour ?? this.hour,
-        minute ?? this.minute,
-        second ?? this.second,
-        millisecond ?? this.millisecond,
-        microsecond ?? this.microsecond,
-      );
+  }) => DateTime(
+    year ?? this.year,
+    month ?? this.month,
+    day ?? this.day,
+    hour ?? this.hour,
+    minute ?? this.minute,
+    second ?? this.second,
+    millisecond ?? this.millisecond,
+    microsecond ?? this.microsecond,
+  );
 
   String dateToStringWithFormat({String format = 'y-M-d'}) {
     return DateFormat(format).format(this);
@@ -98,13 +97,11 @@ extension DateUtils on DateTime {
   DateTime stringToDateWithFormat({
     required String format,
     required String dateString,
-  }) =>
-      DateFormat(format).parse(dateString);
+  }) => DateFormat(format).parse(dateString);
 
-  String getTimeInFormat(TimeStampFormat format) =>
-      DateFormat('h:mm${format == TimeStampFormat.parse_12 ? " a" : ""}')
-          .format(this)
-          .toUpperCase();
+  String getTimeInFormat(TimeStampFormat format) => DateFormat(
+    'h:mm${format == TimeStampFormat.parse_12 ? " a" : ""}',
+  ).format(this).toUpperCase();
 
   bool compareWithoutTime(DateTime date) =>
       day == date.day && month == date.month && year == date.year;

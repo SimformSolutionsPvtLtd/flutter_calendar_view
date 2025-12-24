@@ -26,14 +26,18 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return CalendarThemeProvider(
       calendarTheme: CalendarThemeData(
-        monthViewTheme:
-            isDarkMode ? MonthViewThemeData.dark() : MonthViewThemeData.light(),
+        monthViewTheme: isDarkMode
+            ? MonthViewThemeData.dark()
+            : MonthViewThemeData.light(),
         dayViewTheme: isDarkMode
             ? DayViewThemeData.dark()
-            : DayViewThemeData.light()
-                .copyWith(hourLineColor: AppColors.primary) as DayViewThemeData,
-        weekViewTheme:
-            isDarkMode ? WeekViewThemeData.dark() : WeekViewThemeData.light(),
+            : DayViewThemeData.light().copyWith(
+                    hourLineColor: AppColors.primary,
+                  )
+                  as DayViewThemeData,
+        weekViewTheme: isDarkMode
+            ? WeekViewThemeData.dark()
+            : WeekViewThemeData.light(),
         multiDayViewTheme: isDarkMode
             ? MultiDayViewThemeData.dark()
             : MultiDayViewThemeData.light(),
@@ -112,40 +116,52 @@ List<CalendarEventData> _events = [
   ),
   CalendarEventData(
     date: _now.add(Duration(days: 3)),
-    startTime: DateTime(_now.add(Duration(days: 3)).year,
-        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 10),
-    endTime: DateTime(_now.add(Duration(days: 3)).year,
-        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 14),
+    startTime: DateTime(
+      _now.add(Duration(days: 3)).year,
+      _now.add(Duration(days: 3)).month,
+      _now.add(Duration(days: 3)).day,
+      10,
+    ),
+    endTime: DateTime(
+      _now.add(Duration(days: 3)).year,
+      _now.add(Duration(days: 3)).month,
+      _now.add(Duration(days: 3)).day,
+      14,
+    ),
     title: "Sprint Meeting.",
     description: "Last day of project submission for last year.",
   ),
   CalendarEventData(
     date: _now.subtract(Duration(days: 2)),
     startTime: DateTime(
-        _now.subtract(Duration(days: 2)).year,
-        _now.subtract(Duration(days: 2)).month,
-        _now.subtract(Duration(days: 2)).day,
-        14),
+      _now.subtract(Duration(days: 2)).year,
+      _now.subtract(Duration(days: 2)).month,
+      _now.subtract(Duration(days: 2)).day,
+      14,
+    ),
     endTime: DateTime(
-        _now.subtract(Duration(days: 2)).year,
-        _now.subtract(Duration(days: 2)).month,
-        _now.subtract(Duration(days: 2)).day,
-        16),
+      _now.subtract(Duration(days: 2)).year,
+      _now.subtract(Duration(days: 2)).month,
+      _now.subtract(Duration(days: 2)).day,
+      16,
+    ),
     title: "Team Meeting",
     description: "Team Meeting",
   ),
   CalendarEventData(
     date: _now.subtract(Duration(days: 2)),
     startTime: DateTime(
-        _now.subtract(Duration(days: 2)).year,
-        _now.subtract(Duration(days: 2)).month,
-        _now.subtract(Duration(days: 2)).day,
-        10),
+      _now.subtract(Duration(days: 2)).year,
+      _now.subtract(Duration(days: 2)).month,
+      _now.subtract(Duration(days: 2)).day,
+      10,
+    ),
     endTime: DateTime(
-        _now.subtract(Duration(days: 2)).year,
-        _now.subtract(Duration(days: 2)).month,
-        _now.subtract(Duration(days: 2)).day,
-        12),
+      _now.subtract(Duration(days: 2)).year,
+      _now.subtract(Duration(days: 2)).month,
+      _now.subtract(Duration(days: 2)).day,
+      12,
+    ),
     title: "Chemistry Viva",
     description: "Today is Joe's birthday.",
   ),

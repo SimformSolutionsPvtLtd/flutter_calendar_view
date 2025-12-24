@@ -20,19 +20,12 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
     final themeColors = context.appColors;
 
     return ResponsiveWidget(
-      webWidget: WebHomePage(
-        selectedView: CalendarView.week,
-      ),
+      webWidget: WebHomePage(selectedView: CalendarView.week),
       mobileWidget: Scaffold(
         primary: false,
-        appBar: AppBar(
-          leading: const SizedBox.shrink(),
-        ),
+        appBar: AppBar(leading: const SizedBox.shrink()),
         floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            color: themeColors.onPrimary,
-          ),
+          child: Icon(Icons.add, color: themeColors.onPrimary),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),

@@ -7,11 +7,7 @@ class MonthViewWidget extends StatelessWidget {
   final GlobalKey<MonthViewState>? state;
   final double? width;
 
-  const MonthViewWidget({
-    super.key,
-    this.state,
-    this.width,
-  });
+  const MonthViewWidget({super.key, this.state, this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +21,7 @@ class MonthViewWidget extends StatelessWidget {
       onEventTap: (event, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => DetailsPage(
-              event: event,
-              date: date,
-            ),
+            builder: (_) => DetailsPage(event: event, date: date),
           ),
         );
       },
