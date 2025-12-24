@@ -19,10 +19,7 @@ class CreateEventPage extends StatelessWidget {
         centerTitle: false,
         leading: IconButton(
           onPressed: context.pop,
-          icon: Icon(
-            Icons.arrow_back,
-            color: themeColor.onPrimary,
-          ),
+          icon: Icon(Icons.arrow_back, color: themeColor.onPrimary),
         ),
         title: Text(
           event == null ? "Create New Event" : "Update Event",
@@ -40,9 +37,9 @@ class CreateEventPage extends StatelessWidget {
           child: AddOrEditEventForm(
             onEventAdd: (newEvent) {
               if (this.event != null) {
-                CalendarControllerProvider.of(context)
-                    .controller
-                    .update(this.event!, newEvent);
+                CalendarControllerProvider.of(
+                  context,
+                ).controller.update(this.event!, newEvent);
               } else {
                 CalendarControllerProvider.of(context).controller.add(newEvent);
               }

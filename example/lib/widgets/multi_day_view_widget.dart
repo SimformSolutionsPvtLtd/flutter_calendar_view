@@ -32,10 +32,7 @@ class MultiDayViewWidget extends StatelessWidget {
       onEventTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => DetailsPage(
-              event: events.first,
-              date: date,
-            ),
+            builder: (_) => DetailsPage(event: events.first, date: date),
           ),
         );
       },

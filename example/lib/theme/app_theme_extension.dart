@@ -12,15 +12,15 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
 
   // Light theme constructor
   AppThemeExtension.light()
-      : primary = AppColors.primary,
-        onPrimary = AppColors.onPrimary,
-        outlineVariant = AppColors.outlineVariant;
+    : primary = AppColors.primary,
+      onPrimary = AppColors.onPrimary,
+      outlineVariant = AppColors.outlineVariant;
 
   // Dark theme constructor
   AppThemeExtension.dark()
-      : primary = DarkAppColors.primary,
-        onPrimary = DarkAppColors.onPrimary,
-        outlineVariant = DarkAppColors.outlineVariant;
+    : primary = DarkAppColors.primary,
+      onPrimary = DarkAppColors.onPrimary,
+      outlineVariant = DarkAppColors.outlineVariant;
 
   final Color primary;
   final Color onPrimary;

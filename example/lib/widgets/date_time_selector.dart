@@ -125,15 +125,17 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
     if (widget.type == DateTimeSelectionType.date) {
       date = await _showDateSelector();
 
-      _textEditingController.text = (date ?? _selectedDate)
-              ?.dateToStringWithFormat(format: "dd/MM/yyyy") ??
+      _textEditingController.text =
+          (date ?? _selectedDate)?.dateToStringWithFormat(
+            format: "dd/MM/yyyy",
+          ) ??
           '';
     } else {
       date = await _showTimeSelector();
 
       _textEditingController.text =
           (date ?? _selectedDate)?.getTimeInFormat(TimeStampFormat.parse_12) ??
-              '';
+          '';
     }
 
     _selectedDate = date ?? _selectedDate;
@@ -171,10 +173,7 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
 
     if (time == null) return null;
 
-    final date = now.copyWith(
-      hour: time.hour,
-      minute: time.minute,
-    );
+    final date = now.copyWith(hour: time.hour, minute: time.minute);
 
     return date;
   }

@@ -13,40 +13,27 @@ class _RadioDialogState extends State<DeleteEventDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Delete recurring event '),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RadioListTile(
-            title: Text('This event'),
-            value: DeleteEvent.current,
-            groupValue: _selectedOption,
-            onChanged: (deleteType) {
-              if (deleteType != null) {
-                setState(() => _selectedOption = deleteType);
-              }
-            },
-          ),
-          RadioListTile(
-            title: Text('This and following events'),
-            value: DeleteEvent.following,
-            groupValue: _selectedOption,
-            onChanged: (deleteType) {
-              if (deleteType != null) {
-                setState(() => _selectedOption = deleteType);
-              }
-            },
-          ),
-          RadioListTile(
-            title: Text('All events'),
-            value: DeleteEvent.all,
-            groupValue: _selectedOption,
-            onChanged: (deleteType) {
-              if (deleteType != null) {
-                setState(() => _selectedOption = deleteType);
-              }
-            },
-          ),
-        ],
+      content: RadioGroup(
+        groupValue: _selectedOption,
+        onChanged: (deleteType) {
+          if (deleteType != null) {
+            setState(() => _selectedOption = deleteType);
+          }
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile(
+              title: Text('This event'),
+              value: DeleteEvent.current,
+            ),
+            RadioListTile(
+              title: Text('This and following events'),
+              value: DeleteEvent.following,
+            ),
+            RadioListTile(title: Text('All events'), value: DeleteEvent.all),
+          ],
+        ),
       ),
       actions: [
         TextButton(

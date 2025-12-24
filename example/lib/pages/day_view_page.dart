@@ -20,19 +20,12 @@ class _DayViewPageDemoState extends State<DayViewPageDemo> {
     final appColors = context.appColors;
 
     return ResponsiveWidget(
-      webWidget: WebHomePage(
-        selectedView: CalendarView.day,
-      ),
+      webWidget: WebHomePage(selectedView: CalendarView.day),
       mobileWidget: Scaffold(
         primary: false,
-        appBar: AppBar(
-          leading: const SizedBox.shrink(),
-        ),
+        appBar: AppBar(leading: const SizedBox.shrink()),
         floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            color: appColors.onPrimary,
-          ),
+          child: Icon(Icons.add, color: appColors.onPrimary),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),
