@@ -821,7 +821,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
       child: Text(
-        "${PackageStrings.localizeNumber(weekNumber)}",
+        PackageStrings.localizeNumber(weekNumber),
         style: TextStyle(
           color: context.multiDayViewColors.multiDayTextColor,
         ),
@@ -881,6 +881,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
             initialDate: startDate,
             firstDate: _minDate,
             lastDate: _maxDate,
+            locale: Locale(PackageStrings.selectedLocale),
           );
 
           if (selectedDate == null) return;

@@ -195,6 +195,8 @@ class HalfHourLinePainter extends CustomPainter {
       final dy = (i - startHour) * minuteHeight * 60 + (minuteHeight * 30);
       final width = isLtr ? size.width : size.width - offset;
       if (lineStyle == LineStyle.dashed) {
+        /// Starting offset for drawing dashed line when direction is RTL is 5.0
+        /// to align dashes with hour line dashes.
         var startX = isLtr ? offset : 5.0;
         while (startX < width) {
           canvas.drawLine(
