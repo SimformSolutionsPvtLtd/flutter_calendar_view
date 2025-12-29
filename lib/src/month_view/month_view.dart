@@ -378,6 +378,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
             initialDate: date,
             firstDate: _minDate,
             lastDate: _maxDate,
+            locale: Locale(PackageStrings.selectedLocale),
           );
 
           if (selectedDate == null) return;

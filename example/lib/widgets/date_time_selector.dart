@@ -151,11 +151,11 @@ class _DateTimeSelectorFormFieldState extends State<DateTimeSelectorFormField> {
 
   Future<DateTime?> _showDateSelector() async {
     final date = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: widget.minimumDateTime ?? CalendarConstants.minDate,
-      lastDate: CalendarConstants.maxDate,
-    );
+        context: context,
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: widget.minimumDateTime ?? CalendarConstants.minDate,
+        lastDate: CalendarConstants.maxDate,
+        locale: Locale(PackageStrings.selectedLocale));
 
     return date;
   }

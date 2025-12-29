@@ -709,7 +709,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
             initialDate: date,
             firstDate: _minDate,
             lastDate: _maxDate,
-            locale: Locale('${PackageStrings.selectedLocale}', ''),
+            locale: Locale(PackageStrings.selectedLocale),
           );
 
           if (selectedDate == null) return;

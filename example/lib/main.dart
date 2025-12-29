@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    CalendarLocales.initialize(initialLocale);
+    CalendarLocales.initialize();
   }
 
   // This widget is the root of your application.
@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
             child: MaterialApp(
               title: 'Flutter Calendar Page Demo',
               debugShowCheckedModeBanner: false,
-              locale: Locale(localeController.currentLocale, ''),
+              locale: Locale(localeController.currentLocale),
               theme: AppTheme.light,
               darkTheme: AppTheme.dark,
               themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,

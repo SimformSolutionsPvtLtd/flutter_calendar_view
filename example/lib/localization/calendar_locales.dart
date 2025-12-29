@@ -7,7 +7,6 @@ class CalendarLocales {
         am: 'a. m.',
         pm: 'p. m.',
         more: 'Más',
-        numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
         weekdays: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
       );
 
@@ -30,12 +29,12 @@ class CalendarLocales {
       });
 
   /// Initialize and register all supported calendar localizations
-  static void initialize(String initialLocale) {
+  static void initialize() {
     // Register all custom localizations
     PackageStrings.addLocaleObject('es', spanish);
     PackageStrings.addLocaleObject('ar', arabic);
 
     // Set the initial locale
-    PackageStrings.setLocale(PackageStrings.selectedLocale ?? initialLocale);
+    PackageStrings.setLocale(PackageStrings.selectedLocale);
   }
 }

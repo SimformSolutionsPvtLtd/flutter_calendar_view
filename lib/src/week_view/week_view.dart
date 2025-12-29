@@ -800,7 +800,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
       child: Text(
-        "${PackageStrings.localizeNumber(weekNumber)}",
+        PackageStrings.localizeNumber(weekNumber),
         style: TextStyle(
           color: context.weekViewColors.weekDayTextColor,
         ),
@@ -859,6 +859,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             initialDate: startDate,
             firstDate: _minDate,
             lastDate: _maxDate,
+            locale: Locale(PackageStrings.selectedLocale),
           );
 
           if (selectedDate == null) return;

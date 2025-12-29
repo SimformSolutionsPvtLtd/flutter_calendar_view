@@ -124,6 +124,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: null,
             child: Icon(
               Icons.dark_mode,
               color: context.appColors.onPrimary,
@@ -138,6 +139,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
           ),
           SizedBox(width: 16),
           FloatingActionButton(
+            heroTag: null,
             child: Icon(
               Icons.language,
               color: context.appColors.onPrimary,
