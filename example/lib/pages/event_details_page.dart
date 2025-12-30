@@ -80,10 +80,8 @@ class DetailsPage extends StatelessWidget {
           if (event.description?.isNotEmpty ?? false) ...[
             Divider(),
             Text(translate.description),
-            SizedBox(
-              height: 10.0
-            ),
-            Text(event.description!)
+            SizedBox(height: 10.0),
+            Text(event.description!),
           ],
           const SizedBox(height: 50),
           Row(

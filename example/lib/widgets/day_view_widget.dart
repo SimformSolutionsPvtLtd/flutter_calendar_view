@@ -21,7 +21,7 @@ class DayViewWidget extends StatelessWidget {
       heightPerMinute: 3,
       timeLineBuilder: (date) => _timeLineBuilder(date, isLtr),
       scrollPhysics: const BouncingScrollPhysics(),
-      eventArranger: SideEventArranger(maxWidth: 30),
+      eventArranger: SideEventArranger(),
       showQuarterHours: false,
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,

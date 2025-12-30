@@ -35,58 +35,63 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return LocaleController(
       initialLocale: PackageStrings.selectedLocale,
-      child: Builder(builder: (context) {
-        final localeController = LocaleController.of(context);
-        return CalendarThemeProvider(
-          calendarTheme: CalendarThemeData(
-            monthViewTheme: isDarkMode
-                ? MonthViewThemeData.dark()
-                : MonthViewThemeData.light(),
-            dayViewTheme: isDarkMode
-                ? DayViewThemeData.dark()
-                : DayViewThemeData.light().copyWith(
-                    hourLineColor: AppColors.primary) as DayViewThemeData,
-            weekViewTheme: isDarkMode
-                ? WeekViewThemeData.dark()
-                : WeekViewThemeData.light(),
-            multiDayViewTheme: isDarkMode
-                ? MultiDayViewThemeData.dark()
-                : MultiDayViewThemeData.light(),
-          ),
-          child: CalendarControllerProvider(
-            controller: EventController(),
-            child: MaterialApp(
-              title: 'Flutter Calendar Page Demo',
-              debugShowCheckedModeBanner: false,
-              locale: Locale(localeController.currentLocale),
-              theme: AppTheme.light,
-              darkTheme: AppTheme.dark,
-              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: [
-                Locale('en', ''),
-                Locale('es', ''),
-                Locale('ar', ''),
-              ],
-              scrollBehavior: ScrollBehavior().copyWith(
-                dragDevices: {
-                  PointerDeviceKind.trackpad,
-                  PointerDeviceKind.mouse,
-                  PointerDeviceKind.touch,
-                },
-              ),
-              home: HomePage(
-                onChangeTheme: (isDark) => setState(() => isDarkMode = isDark),
+      child: Builder(
+        builder: (context) {
+          final localeController = LocaleController.of(context);
+          return CalendarThemeProvider(
+            calendarTheme: CalendarThemeData(
+              monthViewTheme: isDarkMode
+                  ? MonthViewThemeData.dark()
+                  : MonthViewThemeData.light(),
+              dayViewTheme: isDarkMode
+                  ? DayViewThemeData.dark()
+                  : DayViewThemeData.light().copyWith(
+                          hourLineColor: AppColors.primary,
+                        )
+                        as DayViewThemeData,
+              weekViewTheme: isDarkMode
+                  ? WeekViewThemeData.dark()
+                  : WeekViewThemeData.light(),
+              multiDayViewTheme: isDarkMode
+                  ? MultiDayViewThemeData.dark()
+                  : MultiDayViewThemeData.light(),
+            ),
+            child: CalendarControllerProvider(
+              controller: EventController(),
+              child: MaterialApp(
+                title: 'Flutter Calendar Page Demo',
+                debugShowCheckedModeBanner: false,
+                locale: Locale(localeController.currentLocale),
+                theme: AppTheme.light,
+                darkTheme: AppTheme.dark,
+                themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  Locale('en', ''),
+                  Locale('es', ''),
+                  Locale('ar', ''),
+                ],
+                scrollBehavior: ScrollBehavior().copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.trackpad,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                  },
+                ),
+                home: HomePage(
+                  onChangeTheme: (isDark) =>
+                      setState(() => isDarkMode = isDark),
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

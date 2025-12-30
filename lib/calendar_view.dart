@@ -18,7 +18,6 @@ export './src/localization/calendar_localizations.dart';
 export './src/localization/package_locals.dart';
 export './src/modals.dart';
 export './src/month_view/month_view.dart';
-export './src/multi_day_view/multi_day_view.dart';
 export './src/style/header_style.dart';
 export './src/theme/calendar_theme_data.dart';
 export './src/theme/day_view_theme_data.dart';

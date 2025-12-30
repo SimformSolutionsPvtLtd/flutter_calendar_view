@@ -24,7 +24,13 @@ jobs:
         
       - name: Install dependencies
         run: flutter pub get
-        
+
+      - name: Install example dependencies
+        run: cd example && flutter pub get
+
+      - name: Generate localization files
+        run: cd example && flutter gen-l10n
+
       - name: Build Artifect
         run: cd example && flutter build web
 

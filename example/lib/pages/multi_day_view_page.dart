@@ -21,10 +21,7 @@ class _MultiDayViewDemoState extends State<MultiDayViewDemo> {
       webWidget: WebHomePage(selectedView: CalendarView.week),
       mobileWidget: Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            color: context.appColors.onPrimary,
-          ),
+          child: Icon(Icons.add, color: context.appColors.onPrimary),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),

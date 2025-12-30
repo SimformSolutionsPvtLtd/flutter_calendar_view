@@ -74,9 +74,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             controller: _titleController,
             decoration: InputDecoration(
               labelText: translate.eventTitle,
-              labelStyle: TextStyle(
-                color: color.onSurfaceVariant,
-              ),
+              labelStyle: TextStyle(color: color.onSurfaceVariant),
             ).applyDefaults(Theme.of(context).inputDecorationTheme),
             style: TextStyle(color: color.onSurface, fontSize: 17.0),
             validator: (value) {
@@ -96,10 +94,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             children: [
               Text(
                 translate.recurringEvent,
-                style: TextStyle(
-                  color: color.surface,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: color.onSurface, fontSize: 16),
               ),
               SizedBox(width: 20),
               Switch(
@@ -133,9 +128,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
                     labelText: translate.startDate,
-                    labelStyle: TextStyle(
-                      color: color.onSurfaceVariant,
-                    ),
+                    labelStyle: TextStyle(color: color.onSurfaceVariant),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startDate,
                   onSelect: (date) {
@@ -179,16 +172,17 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   initialDateTime: _endDate,
                   decoration: InputDecoration(
                     labelText: translate.endDate,
-                    labelStyle: TextStyle(
-                      color: color.onSurfaceVariant,
-                    ),
+                    labelStyle: TextStyle(color: color.onSurfaceVariant),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   onSelect: (date) {
-                    if (date.withoutTime.withoutTime
-                        .isBefore(_startDate.withoutTime)) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(translate.endDateBeforeStartDate),
-                      ));
+                    if (date.withoutTime.withoutTime.isBefore(
+                      _startDate.withoutTime,
+                    )) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(translate.endDateBeforeStartDate),
+                        ),
+                      );
                     } else {
                       _endDate = date.withoutTime;
                       _recurrenceEndDate = _endDate;
@@ -224,9 +218,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
                     labelText: translate.startTime,
-                    labelStyle: TextStyle(
-                      color: color.onSurfaceVariant,
-                    ),
+                    labelStyle: TextStyle(color: color.onSurfaceVariant),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startTime,
                   minimumDateTime: CalendarConstants.epochDate,
@@ -251,9 +243,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 child: DateTimeSelectorFormField(
                   decoration: InputDecoration(
                     labelText: translate.endTime,
-                    labelStyle: TextStyle(
-                      color: color.onSurfaceVariant,
-                    ),
+                    labelStyle: TextStyle(color: color.onSurfaceVariant),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _endTime,
                   onSelect: (date) {
@@ -264,9 +254,11 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                         _startDate.month == _endDate.month &&
                         _startDate.day == _endDate.day &&
                         date.getTotalMinutes < _startTime!.getTotalMinutes) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(translate.endTimeLessThanStartTime),
-                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(translate.endTimeLessThanStartTime),
+                        ),
+                      );
                     } else {
                       _endTime = date;
                     }
@@ -397,7 +389,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                    translate.reoccurrenceEndsOn,
+                      translate.reoccurrenceEndsOn,
                       style: TextStyle(
                         color: AppColors.black,
                         fontWeight: FontWeight.w500,
@@ -408,7 +400,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       children: [
                         Radio(value: RecurrenceEnd.never),
                         Text(
-                        translate.never,
+                          translate.never,
                           style: TextStyle(
                             color: AppColors.black,
                             fontSize: 17,
@@ -453,7 +445,9 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                 onSelect: (date) {
                   if (date.withoutTime.isBefore(_endDate.withoutTime)) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(translate.recurrenceEndsAfterEndDate)),
+                      SnackBar(
+                        content: Text(translate.recurrenceEndsAfterEndDate),
+                      ),
                     );
                   } else {
                     _recurrenceEndDate = date.withoutTime;

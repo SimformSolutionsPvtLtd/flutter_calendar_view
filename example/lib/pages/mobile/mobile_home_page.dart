@@ -22,11 +22,11 @@ class _MobileHomePageState extends State<MobileHomePage> {
   void _showLocaleDialog(BuildContext context) {
     final localeController = LocaleController.of(context);
     final currentLocale = localeController.currentLocale;
-
+    final translate = context.translate;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Select Language'),
+        title: Text(translate.selectLanguage),
         content: Container(
           width: double.maxFinite,
           child: Column(
@@ -43,7 +43,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: Text(translate.cancel),
           ),
         ],
       ),
@@ -51,7 +51,11 @@ class _MobileHomePageState extends State<MobileHomePage> {
   }
 
   Widget _buildLanguageOption(
-      BuildContext context, String locale, String name, String currentLocale) {
+    BuildContext context,
+    String locale,
+    String name,
+    String currentLocale,
+  ) {
     final isSelected = locale == currentLocale;
 
     return InkWell(
@@ -125,10 +129,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
         children: [
           FloatingActionButton(
             heroTag: null,
-            child: Icon(
-              Icons.dark_mode,
-              color: context.appColors.onPrimary,
-            ),
+            child: Icon(Icons.dark_mode, color: context.appColors.onPrimary),
             onPressed: () {
               isDarkMode = !isDarkMode;
               if (widget.onChangeTheme != null) {
@@ -140,10 +141,7 @@ class _MobileHomePageState extends State<MobileHomePage> {
           SizedBox(width: 16),
           FloatingActionButton(
             heroTag: null,
-            child: Icon(
-              Icons.language,
-              color: context.appColors.onPrimary,
-            ),
+            child: Icon(Icons.language, color: context.appColors.onPrimary),
             onPressed: () => _showLocaleDialog(context),
           ),
         ],
