@@ -68,5 +68,6 @@
   "thisAndFollowingEvents": "Este y los siguientes eventos",
   "allEvents": "Todos los eventos",
   "cancel": "Cancelar",
-  "done": "Hecho"
+  "done": "Hecho",
+  "selectLanguage": "Seleccionar idioma"
 }

@@ -47,15 +47,10 @@ class _CalendarConfigState extends State<CalendarConfig> {
           padding: EdgeInsets.only(left: 20, top: 20),
           child: Text(
             translate.flutterCalendarPage,
-            style: TextStyle(
-              color: color.onSurface,
-              fontSize: 30,
-            ),
+            style: TextStyle(color: color.onSurface, fontSize: 30),
           ),
         ),
-        Divider(
-          color: AppColors.lightNavyBlue,
-        ),
+        Divider(color: AppColors.lightNavyBlue),
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -71,10 +66,7 @@ class _CalendarConfigState extends State<CalendarConfig> {
                       value: localeController.currentLocale,
                       icon: const Icon(Icons.language),
                       elevation: 16,
-                      style: TextStyle(
-                        color: color.onSurface,
-                        fontSize: 20,
-                      ),
+                      style: TextStyle(color: color.onSurface, fontSize: 20),
                       onChanged: (String? value) {
                         if (value != null) {
                           localeController.setLocale(value);
@@ -82,11 +74,12 @@ class _CalendarConfigState extends State<CalendarConfig> {
                       },
                       items: supportedLocales.entries
                           .map<DropdownMenuItem<String>>((entry) {
-                        return DropdownMenuItem<String>(
-                          value: entry.key,
-                          child: Text(entry.value),
-                        );
-                      }).toList(),
+                            return DropdownMenuItem<String>(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            );
+                          })
+                          .toList(),
                     ),
                     Row(
                       children: [
@@ -110,9 +103,7 @@ class _CalendarConfigState extends State<CalendarConfig> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Text(
                   translate.activeView,
                   style: TextStyle(
@@ -121,72 +112,59 @@ class _CalendarConfigState extends State<CalendarConfig> {
                   ),
                 ),
                 Wrap(
-                  children: List.generate(
-                    CalendarView.values.length,
-                    (index) {
-                      final view = CalendarView.values[index];
-                      // Get translated name based on the view
-                      String viewName = '';
-                      switch (view) {
-                        case CalendarView.month:
-                          viewName = translate.monthView;
-                          break;
-                        case CalendarView.day:
-                          viewName = translate.dayView;
-                          break;
-                        case CalendarView.week:
-                          viewName = translate.weekView;
-                          break;
-                      }
-                      return GestureDetector(
-                        onTap: () => widget.onViewChange(view),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 40,
-                          ),
-                          margin: EdgeInsets.only(
-                            right: 20,
-                            top: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
+                  children: List.generate(CalendarView.values.length, (index) {
+                    final view = CalendarView.values[index];
+                    // Get translated name based on the view
+                    String viewName = '';
+                    switch (view) {
+                      case CalendarView.month:
+                        viewName = translate.monthView;
+                        break;
+                      case CalendarView.day:
+                        viewName = translate.dayView;
+                        break;
+                      case CalendarView.week:
+                        viewName = translate.weekView;
+                        break;
+                    }
+                    return GestureDetector(
+                      onTap: () => widget.onViewChange(view),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 40,
+                        ),
+                        margin: EdgeInsets.only(right: 20, top: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: view == widget.currentView
+                              ? AppColors.navyBlue
+                              : AppColors.bluishGrey,
+                        ),
+                        child: Text(
+                          viewName,
+                          style: TextStyle(
                             color: view == widget.currentView
-                                ? AppColors.navyBlue
-                                : AppColors.bluishGrey,
-                          ),
-                          child: Text(
-                            viewName,
-                            style: TextStyle(
-                              color: view == widget.currentView
-                                  ? AppColors.white
-                                  : AppColors.black,
-                              fontSize: 17,
-                            ),
+                                ? AppColors.white
+                                : AppColors.black,
+                            fontSize: 17,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ),
-                SizedBox(
-                  height: 40,
-                ),
+                SizedBox(height: 40),
                 Text(
                   "${translate.addEvent}: ",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: color.onSurface,
-                  ),
+                  style: TextStyle(fontSize: 20.0, color: color.onSurface),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 AddOrEditEventForm(
                   onEventAdd: (event) {
-                    CalendarControllerProvider.of(context)
-                        .controller
-                        .add(event);
+                    CalendarControllerProvider.of(
+                      context,
+                    ).controller.add(event);
                   },
                 ),
               ],

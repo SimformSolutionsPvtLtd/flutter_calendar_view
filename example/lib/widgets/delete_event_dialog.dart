@@ -34,7 +34,10 @@ class _RadioDialogState extends State<DeleteEventDialog> {
               title: Text(translate.thisAndFollowingEvents),
               value: DeleteEvent.following,
             ),
-            RadioListTile(title: Text(translate.allEvents), value: DeleteEvent.all),
+            RadioListTile(
+              title: Text(translate.allEvents),
+              value: DeleteEvent.all,
+            ),
           ],
         ),
       ),

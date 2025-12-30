@@ -68,5 +68,6 @@
   "thisAndFollowingEvents": "هذا الحدث والأحداث التالية",
   "allEvents": "جميع الأحداث",
   "cancel": "إلغاء",
-  "done": "تم"
+  "done": "تم",
+  "selectLanguage": "اختر اللغة"
 }

@@ -7,14 +7,14 @@ class LocaleController extends InheritedNotifier<ValueNotifier<String>> {
     required String initialLocale,
     Key? key,
   }) : super(
-          key: key,
-          child: child,
-          notifier: ValueNotifier<String>(initialLocale),
-        );
+         key: key,
+         child: child,
+         notifier: ValueNotifier<String>(initialLocale),
+       );
 
   static LocaleController of(BuildContext context) {
-    final result =
-        context.dependOnInheritedWidgetOfExactType<LocaleController>();
+    final result = context
+        .dependOnInheritedWidgetOfExactType<LocaleController>();
     assert(result != null, 'No LocaleController found in context');
     return result!;
   }

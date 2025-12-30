@@ -31,6 +31,10 @@
 .pub/
 /build/
 
+# Generated localization files
+lib/l10n/app_localizations.dart
+lib/l10n/app_localizations_*.dart
+
 # Web related
 
 # Symbolication related

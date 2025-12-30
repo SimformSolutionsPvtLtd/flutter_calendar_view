@@ -301,7 +301,9 @@ class _InternalDayViewPageState<T extends Object?>
                       minuteSlotSize: widget.minuteSlotSize,
                     ),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: direction == TextDirection.rtl
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: EventGenerator<T>(
                         height: widget.height,
                         date: widget.date,

@@ -1,40 +1,30 @@
 import 'package:calendar_view/calendar_view.dart';
 
 /// Provides localization data for the calendar package
+///
+/// This example shows how to use built-in localizations from PackageStrings.
+/// The package includes built-in support for: English, Spanish, Arabic, French,
+/// German, Hindi, Chinese, and Japanese.
 class CalendarLocales {
-  /// Spanish (es) localizations
+  /// Override built-in Spanish with full weekday names
   static CalendarLocalizations get spanish => CalendarLocalizations(
-        am: 'a. m.',
-        pm: 'p. m.',
-        more: 'Más',
-        weekdays: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
-      );
+    am: PackageStrings.spanish.am,
+    pm: PackageStrings.spanish.pm,
+    more: 'Ver más',
+    weekdays: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+  );
 
-  /// Arabic (ar) localizations
-  static CalendarLocalizations get arabic => CalendarLocalizations.fromMap({
-        'am': 'ص',
-        'pm': 'م',
-        'more': 'المزيد',
-        'weekdays': [
-          'الاثنين',
-          'الثلاثاء',
-          'الأربعاء',
-          'الخميس',
-          'الجمعة',
-          'السبت',
-          'الأحد'
-        ],
-        'numbers': ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
-        'isRTL': true,
-      });
-
-  /// Initialize and register all supported calendar localizations
+  /// Initialize and register calendar localizations
+  ///
+  /// This example demonstrates overriding built-in localizations
   static void initialize() {
-    // Register all custom localizations
+    // Override built-in Spanish with full weekday names
     PackageStrings.addLocaleObject('es', spanish);
-    PackageStrings.addLocaleObject('ar', arabic);
 
-    // Set the initial locale
+    // You can also add completely new languages:
+    // PackageStrings.addLocaleObject('pt', portugueseLocale);
+
+    // Set the initial locale (optional, defaults to 'en')
     PackageStrings.setLocale(PackageStrings.selectedLocale);
   }
 }
