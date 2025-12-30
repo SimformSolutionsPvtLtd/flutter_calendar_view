@@ -144,7 +144,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   final WeekNumberBuilder? weekNumberBuilder;
 
   /// Background color of week view page.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Scroll offset of week view page.
   final double scrollOffset;
@@ -284,7 +284,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.weekTitleHeight = 50,
     this.weekDayBuilder,
     this.weekNumberBuilder,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
     this.onEventTap,
