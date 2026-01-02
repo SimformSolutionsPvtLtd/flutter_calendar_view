@@ -24,6 +24,8 @@
   example app. [#480](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/480)
 - Adds support for dark theme. [#263](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/263)
 - Add `MonthViewBuilders` and `MonthViewStyle` for better customisation of month view. [#501](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/501)
+- Added localization and RTL (Right-to-Left) support for calendar views[#505](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/505).
+- Added callbacks for pagination start and end in `MonthView`[#507](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/507).
 
 # [1.4.0 - 7 Jan 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/1.4.0)
 
