@@ -5,10 +5,25 @@
 [![calendar_view](https://img.shields.io/pub/v/calendar_view?label=calendar_view)](https://pub.dev/packages/calendar_view)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/blob/main/LICENSE)
 
+A Flutter package that allows you to easily implement all calendar UI and calendar event
+functionality in your application.
 
-A Flutter package that allows you to easily implement all calendar UI and calendar event functionality in your application.
+_Check out other amazing
+open-source [Flutter libraries](https://pub.dev/publishers/simform.com/packages)
+and [Awesome Mobile Libraries](https://github.com/SimformSolutionsPvtLtd/Awesome-Mobile-Libraries)
+developed by Simform Solutions!_
 
-_Check out other amazing open-source [Flutter libraries](https://pub.dev/publishers/simform.com/packages) and [Awesome Mobile Libraries](https://github.com/SimformSolutionsPvtLtd/Awesome-Mobile-Libraries) developed by Simform Solutions!_
+## ⚠ Note
+
+All 2.x.x releases may include breaking changes. To avoid unexpected issues, do not use the
+caret (^) when depending on any versions of 2.x.x Instead, pin the exact version.
+
+Example:
+
+```yaml
+dependencies:
+  calendar_view: 2.0.0
+```
 
 ## Preview
 
@@ -17,9 +32,9 @@ _Check out other amazing open-source [Flutter libraries](https://pub.dev/publish
 ## Features
 
 - Multiple calendar view options:
-  - Month View
-  - Day View
-  - Week View
+    - Month View
+    - Day View
+    - Week View
 - Highly customisable UI components
 - Manage events (add, remove, update)
 - Manage reminders (add, remove, update)
@@ -29,7 +44,8 @@ _Check out other amazing open-source [Flutter libraries](https://pub.dev/publish
 
 ## Documentation
 
-Visit our [documentation](https://simform-flutter-packages.web.app/calendarView) site for all implementation details, usage instructions, code examples, and advanced features.
+Visit our [documentation](https://simform-flutter-packages.web.app/calendarView) site for all
+implementation details, usage instructions, code examples, and advanced features.
 
 ## Installation
 
@@ -42,9 +58,14 @@ dependencies:
 
 ## Support
 
-For questions, issues, or feature requests, [create an issue](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues) on GitHub or reach out via the GitHub Discussions tab. We're happy to help and encourage community contributions.
-To contribute documentation updates specifically, please make changes to the doc/documentation.md file and submit a pull request.
+For questions, issues, or feature
+requests, [create an issue](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues)
+on GitHub or reach out via the GitHub Discussions tab. We're happy to help and encourage community
+contributions.
+To contribute documentation updates specifically, please make changes to the doc/documentation.md
+file and submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://simform-flutter-packages.web.app/calendarView/license) file for details.
+This project is licensed under the MIT License - see
+the [LICENSE](https://simform-flutter-packages.web.app/calendarView/license) file for details.
