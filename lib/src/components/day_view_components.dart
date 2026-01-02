@@ -211,7 +211,7 @@ class FullDayEventView<T> extends StatelessWidget {
           onTap:
               onEventTap != null ? () => onEventTap!.call(events, date) : null,
           onDoubleTap: onEventDoubleTap != null
-              ? () => onEventDoubleTap?.call(events, date)
+              ? () => onEventDoubleTap!.call(events, date)
               : null,
           child: itemView?.call(events[index]) ??
               Container(
