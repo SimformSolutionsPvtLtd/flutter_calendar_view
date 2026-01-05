@@ -8,22 +8,27 @@ part of 'event_arrangers.dart';
 /// Supports multi-day and full-day events, fixed or dynamic width allocation, and configurable edge overlap handling.
 ///
 /// Events are grouped into columns to prevent overlaps, and each event is positioned and sized for best readability.
-/// Use [maxWidth] to constrain event width, and [includeEdges] to control whether touching events are treated as overlapping.
+/// Use [maxWidth] to constrain event width, and [countAdjacentEventsAsOverlapping] to control whether touching events are treated as overlapping.
 class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// This class will provide method that will arrange
   /// all the events side by side.
   const SideEventArranger({
     this.maxWidth,
-    this.includeEdges = false,
+    this.countAdjacentEventsAsOverlapping = false,
   });
 
-  /// Decides whether events that are overlapping on edge
-  /// (ex, event1 has the same end-time as the start-time of event 2)
-  /// should be offset or not.
+  /// Controls how back-to-back events are positioned.
   ///
-  /// If includeEdges is true, it will offset the events else it will not.
-  /// Defaults to false.
-  final bool includeEdges;
+  /// **When `false` (default):**
+  /// - Events touching at edges (e.g., Event A ends at 2:00 PM, Event B starts at 2:00 PM) are NOT overlapping
+  /// - Each event expands to fill available width
+  ///
+  /// **When `true`:**
+  /// - Events touching at edges ARE considered overlapping
+  /// - Events are positioned side-by-side with reduced width
+  ///
+  /// Defaults to `false`.
+  final bool countAdjacentEventsAsOverlapping;
 
   /// If enough space is available, the event slot will
   /// use the specified max width.
@@ -38,7 +43,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   ///
   /// Handles edge cases like empty event lists, events outside the visible range, multi-day events, zero-duration events, and events spanning midnight.
   ///
-  /// Optimized for typical calendar scenarios. Events should be sorted by start time for
+  /// Optimized for typical calendar scenarios. Events may be provided in any order; they are sorted by start time internally before layout is computed.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -214,9 +219,11 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
   /// Returns true if a new event can be placed in a column without overlapping any existing events.
   ///
-  // Optimization: Since events are sorted by start time, we only need to check
-  // if the new event overlaps with the last event in the column.
-  // If it doesn't overlap the last one, it won't overlap any previous ones.
+  /// Optimization: Events are processed in non-decreasing start-time order and
+  /// are always appended to the end of a column. This keeps each column's events
+  /// in start-time order, so we only need to check the new event against the
+  /// last event in the column. If it doesn't overlap the last one, it can't
+  /// overlap any earlier ones.
   ///
   /// Used for column selection and layout validation.
   bool _canEventFitInColumn(
@@ -226,15 +233,15 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     return !_eventsOverlap(event, lastEvent);
   }
 
-  /// Returns true if two events overlap in time, considering [includeEdges].
+  /// Checks if two events overlap based on [countAdjacentEventsAsOverlapping].
   ///
-  /// If [includeEdges] is false, events that only touch at edges are not considered overlapping.
-  /// If true, touching events are treated as overlapping.
+  /// When `false`: Events touching at edges are NOT overlapping.
+  /// Example: Event A (1:00-2:00) and Event B (2:00-3:00) → NO overlap
   ///
-  /// Handles edge cases like zero-duration events and identical start/end times.
-  /// Optimized for fast arithmetic comparison.
+  /// When `true`: Events touching at edges ARE overlapping.
+  /// Example: Event A (1:00-2:00) and Event B (2:00-3:00) → OVERLAP
   bool _eventsOverlap(_NormalizedEvent<T> event1, _NormalizedEvent<T> event2) {
-    if (includeEdges) {
+    if (countAdjacentEventsAsOverlapping) {
       // Events overlap if they have any overlapping time (including touching edges)
       return event1.effectiveStartTime <= event2.effectiveEndTime &&
           event2.effectiveStartTime <= event1.effectiveEndTime;
