@@ -52,22 +52,50 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
     final startHourInMinutes = startHour * 60;
 
-    // Step 1: Normalize all events for the current calendar view date
-    final normalizedEvents =
-        _normalizeEventsForDate(events, calendarViewDate, startHourInMinutes);
+    // Step 1: Filter out invalid events (null times, zero duration)
+    final validEvents = _getValidEvents(events);
+    if (validEvents.isEmpty) return [];
+
+    // Step 2: Normalize all events for the current calendar view date
+    final normalizedEvents = _normalizeEventsForDate(
+        validEvents, calendarViewDate, startHourInMinutes);
 
     if (normalizedEvents.isEmpty) return [];
 
-    // Step 2: Sort events by start time for optimal processing
+    // Step 3: Sort events by start time for optimal processing
     normalizedEvents
         .sort((a, b) => a.effectiveStartTime.compareTo(b.effectiveStartTime));
 
-    // Step 3: Create columns using simple algorithm that prevents overlapping
+    // Step 4: Create columns using simple algorithm that prevents overlapping
     final columns = _createOptimalColumns(normalizedEvents);
 
-    // Step 4: Convert columns to organized calendar event data
+    // Step 5: Convert columns to organized calendar event data
     return _convertColumnsToOrganizedData(columns, width, height,
         heightPerMinute, startHourInMinutes, calendarViewDate);
+  }
+
+  /// Filters out invalid events from the input list.
+  ///
+  /// Removes events with:
+  /// - Null start or end times
+  /// - Zero duration (same start and end time on the same date)
+  ///
+  /// Returns a list of valid events that can be safely processed for layout.
+  /// Used to prevent rendering issues and ensure all events have valid time boundaries.
+  List<CalendarEventData<T>> _getValidEvents(
+      List<CalendarEventData<T>> events) {
+    return events.where((event) {
+      // Filter out events with null times
+      if (event.startTime == null || event.endTime == null) return false;
+
+      // Filter out events with zero duration (same start and end time)
+      if (event.date.isAtSameMomentAs(event.endDate) &&
+          event.startTime!.getTotalMinutes == event.endTime!.getTotalMinutes) {
+        return false;
+      }
+
+      return true;
+    }).toList();
   }
 
   /// Normalizes events for the given date.
@@ -186,18 +214,16 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
   /// Returns true if a new event can be placed in a column without overlapping any existing events.
   ///
-  /// Iterates through events in the target column and returns false immediately if any overlap is found.
-  /// Optimized for early exit and minimal memory usage.
+  // Optimization: Since events are sorted by start time, we only need to check
+  // if the new event overlaps with the last event in the column.
+  // If it doesn't overlap the last one, it won't overlap any previous ones.
   ///
   /// Used for column selection and layout validation.
   bool _canEventFitInColumn(
       _NormalizedEvent<T> event, List<_NormalizedEvent<T>> column) {
-    for (final existing in column) {
-      if (_eventsOverlap(event, existing)) {
-        return false;
-      }
-    }
-    return true;
+    if (column.isEmpty) return true;
+    final lastEvent = column.last;
+    return !_eventsOverlap(event, lastEvent);
   }
 
   /// Returns true if two events overlap in time, considering [includeEdges].
