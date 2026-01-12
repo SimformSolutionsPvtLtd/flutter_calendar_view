@@ -44,7 +44,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// This function will generate WeekDayString in the weekday.
   /// Useful for I18n
-  final String Function(int)? weekDayStringBuilder;
+  final String Function(WeekDays)? weekDayStringBuilder;
 
   /// This function will generate WeekDayDateString in the weekday.
   /// Useful for I18n
@@ -772,8 +772,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-                PackageStrings.currentLocale.weekdays[date.weekday - 1],
+            widget.weekDayStringBuilder?.call(date.weekDayEnum) ??
+                PackageStrings.currentLocale.weekdays[date.weekDayEnum.index],
             style: TextStyle(
               color: context.weekViewColors.weekDayTextColor,
             ),

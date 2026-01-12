@@ -69,7 +69,7 @@ class MonthViewBuilders<T extends Object?> {
   /// This function will generate WeekDayString in weekday view.
   /// Useful for I18n
   /// Ex : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
-  final String Function(int)? weekDayStringBuilder;
+  final String Function(WeekDays)? weekDayStringBuilder;
 
   /// Called when user changes month.
   final CalendarPageChangeCallBack? onPageChange;

@@ -1,3 +1,10 @@
+# [Unreleased]
+
+- Refactored `CalendarEventData` to support clearer event creation with new constructors: `timeRanged`, `wholeDay`, and `multiDay`.
+- [BREAKING] `CalendarEventData.startTime`/`endTime` now use `TimeOfDay` (previously `DateTime`), and weekday APIs now use `WeekDays` enum instead of `int`. [#293](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/293)
+- Improved duration and layout handling for full-day, multi-day, and overnight timed events across day/week arrangements. [#511](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/511)
+- Updated recurrence and weekday builder APIs to align with enum-based weekday handling. [#509](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/509)
+
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
 - Added clear method to `EventController`.

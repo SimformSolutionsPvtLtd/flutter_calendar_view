@@ -238,11 +238,11 @@ class FilledCell<T extends Object?> extends StatelessWidget {
 }
 
 class WeekDayTile extends StatefulWidget {
-  /// Index of week day.
-  final int dayIndex;
+  /// Week day enum value.
+  final WeekDays weekDay;
 
   /// display week day
-  final String Function(int)? weekDayStringBuilder;
+  final String Function(WeekDays)? weekDayStringBuilder;
 
   /// Background color of single week day tile.
   final Color? backgroundColor;
@@ -258,7 +258,7 @@ class WeekDayTile extends StatefulWidget {
   /// Title for week day in month view.
   const WeekDayTile({
     Key? key,
-    required this.dayIndex,
+    required this.weekDay,
     this.backgroundColor,
     this.borderColor,
     this.displayBorder = true,
@@ -289,8 +289,8 @@ class _WeekDayTileState extends State<WeekDayTile> {
             : null,
       ),
       child: Text(
-        widget.weekDayStringBuilder?.call(widget.dayIndex) ??
-            PackageStrings.currentLocale.weekdays[widget.dayIndex],
+        widget.weekDayStringBuilder?.call(widget.weekDay) ??
+            PackageStrings.currentLocale.weekdays[widget.weekDay.index],
         style: widget.textStyle ??
             TextStyle(
               fontSize: 17,

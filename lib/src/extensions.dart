@@ -209,6 +209,42 @@ extension DateTimeExtensions on DateTime {
       "This extension is not being used in this package and will be removed "
       "in next major release. Please use withoutTime instead.")
   DateTime get dateYMD => DateTime(year, month, day);
+
+  /// Returns the corresponding [WeekDays] enum value for this DateTime's weekday.
+  ///
+  /// This provides an ergonomic way to convert DateTime.weekday (1-7, Monday-Sunday)
+  /// to the [WeekDays] enum (0-6, monday-sunday).
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15); // Monday
+  /// print(date.weekDayEnum); // WeekDays.monday
+  /// ```
+  WeekDays get weekDayEnum => WeekDays.values[weekday - 1];
+}
+
+extension TimeOfDayExtension on TimeOfDay {
+  /// Returns true if this time represents the start of day (00:00).
+  bool get isDayStart => hour == 0 && minute == 0;
+  int get getTotalMinutes => hour * 60 + minute;
+
+  /// Converts TimeOfDay to DateTime on the given date.
+  DateTime toDateTime(DateTime date) {
+    return DateTime(date.year, date.month, date.day, hour, minute);
+  }
+
+  /// Compares if two TimeOfDay objects represent the same time.
+  bool isSameAs(TimeOfDay other) {
+    return hour == other.hour && minute == other.minute;
+  }
+
+  /// Creates a TimeOfDay from total minutes since midnight
+  /// For example, 870 minutes = 14:30 (2:30 PM)
+  static TimeOfDay copyFromMinutes(int totalMinutes) {
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    return TimeOfDay(hour: hours % 24, minute: minutes);
+  }
 }
 
 extension ColorExtension on Color {
@@ -282,10 +318,6 @@ int defaultEventSorter<T extends Object?>(
       (b.startTime?.getTotalMinutes ?? 0);
 }
 
-extension TimerOfDayExtension on TimeOfDay {
-  int get getTotalMinutes => hour * 60 + minute;
-}
-
 extension IntExtension on int {
   String appendLeadingZero() {
     return toString().padLeft(2, '0');
@@ -298,8 +330,8 @@ void debugLog(String message) {
       debugPrint(message);
     } catch (e) {} //ignore: empty_catches Suppress exception...
 
-    return false;
-  }(), '');
+    return true;
+  }());
 }
 
 /// For callbacks with one argument
@@ -364,52 +396,67 @@ extension BuildContextMultiDayViewThemeExtension on BuildContext {
 }
 
 /// Extension on CalendarEventData to calculate visible time ranges
-/// for multi-day events on a specific calendar date.
+/// for single-day and multi-day events on a specific calendar date.
 extension CalendarEventDataVisibility<T extends Object?>
     on CalendarEventData<T> {
   /// Gets the visible start minute of the event on the given calendar date.
-  /// For multi-day events, returns 0 for middle/end days, actual start time for start day.
+  ///
+  /// Behavior:
+  /// - Full-day events always start at 00:00.
+  /// - Single-day events use their actual start time.
+  /// - Multi-day events:
+  ///   - Start day -> actual start time
+  ///   - Middle/end days -> 00:00
   int getVisibleStartMinutes(DateTime calendarDate) {
-    if (isRangingEvent) {
-      // For multi-day events, endDate is always after date (at least 1 day difference)
-      final eventStartDate = date.withoutTime;
-      final isStartDate = calendarDate.isAtSameMomentAs(eventStartDate);
+    final visibleDate = calendarDate.withoutTime;
 
-      if (isStartDate) {
-        // First day of multi-day event - use actual start time
-        return startTime!.getTotalMinutes;
-      } else {
-        // Middle or end day - starts at beginning of day (00:00)
-        return 0;
-      }
+    // Full-day or invalid events always start at beginning of day.
+    if (isFullDayEvent || startTime == null) {
+      return 0;
     }
-    return startTime!.getTotalMinutes;
+
+    // Multi-day events start at 00:00 on every day except the first day.
+    final isStartDate = visibleDate.compareWithoutTime(date);
+
+    return isRangingEvent && !isStartDate ? 0 : startTime!.getTotalMinutes;
   }
 
   /// Gets the visible end minute of the event on the given calendar date.
-  /// For multi-day events, returns 1440 (end of day) for start/middle days, actual end time for end day.
-  /// Note: An endTime of 0 (midnight) is treated as end-of-day (1440) for timed events.
+  ///
+  /// Behavior:
+  /// - Full-day events always end at 24:00 (1440 minutes).
+  /// - Single-day events use their actual end time.
+  /// - Multi-day events:
+  ///   - Start/middle days -> 24:00
+  ///   - End day -> actual end time
+  ///
+  /// Note:
+  /// An endTime of 00:00 is treated as end-of-day (1440 minutes)
+  /// to correctly represent events ending at midnight.
   int getVisibleEndMinutes(DateTime calendarDate) {
-    if (isRangingEvent) {
-      // For multi-day events, endDate is always after date (at least 1 day difference)
-      final eventEndDate = endDate.withoutTime;
-      final isEndDate = calendarDate.isAtSameMomentAs(eventEndDate);
+    final visibleDate = calendarDate.withoutTime;
 
-      if (isEndDate) {
-        // Last day of multi-day event - check if endTime is 0 (treat as end-of-day)
-        final endMinutes = endTime!.getTotalMinutes;
-        return endMinutes == 0 ? Constants.minutesADay : endMinutes;
-      } else {
-        // Start or middle day - extends to end of day (23:59)
-        return Constants.minutesADay;
-      }
+    // Full-day or invalid events always occupy the full day.
+    if (isFullDayEvent || endTime == null) {
+      return Constants.minutesADay;
     }
-    // Single day event - check if endTime is 0 (treat as end-of-day)
+
+    // Multi-day events extend until end of day on every day
+    // except the final day.
+    final isEndDate = visibleDate.compareWithoutTime(endDate);
+
+    if (isRangingEvent && !isEndDate) {
+      return Constants.minutesADay;
+    }
+
     final endMinutes = endTime!.getTotalMinutes;
+
+    // Treat midnight (00:00) as end-of-day for rendering purposes.
     return endMinutes == 0 ? Constants.minutesADay : endMinutes;
   }
 
-  /// Gets the visible duration (in minutes) of the event on the given calendar date.
+  /// Gets the visible duration (in minutes) of the event
+  /// on the given calendar date.
   int getVisibleDuration(DateTime calendarDate) {
     return getVisibleEndMinutes(calendarDate) -
         getVisibleStartMinutes(calendarDate);

@@ -124,6 +124,22 @@ extension StringExt on String {
   String get capitalized => toBeginningOfSentenceCase(this) ?? "";
 }
 
+extension TimeOfDayExtension on TimeOfDay {
+  /// Formats the time as a string (e.g., "2:30 PM" or "14:30")
+  String getTimeInFormat(TimeStampFormat format) {
+    if (format == TimeStampFormat.parse_12) {
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+      final minuteStr = minute.toString().padLeft(2, '0');
+      return '$displayHour:$minuteStr $period';
+    } else {
+      final hourStr = hour.toString().padLeft(2, '0');
+      final minuteStr = minute.toString().padLeft(2, '0');
+      return '$hourStr:$minuteStr';
+    }
+  }
+}
+
 extension ViewNameExt on CalendarView {
   String get name => toString().split(".").last;
 }

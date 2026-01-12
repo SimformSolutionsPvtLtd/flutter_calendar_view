@@ -68,10 +68,6 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         }
       }
 
-      final startTime = event.startTime!;
-      final endTime = event.endTime!;
-
-      // Use visible time range for this calendar date
       int eventStart =
           event.getVisibleStartMinutes(calendarDate) - startHourInMinutes;
       int eventEnd =
@@ -80,8 +76,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       // Ensure values are within valid range
       // Clamp to [0, minutesInView] where minutesInView = 1440 - startHourInMinutes
       eventStart = math.max(0, eventStart);
-      eventEnd = math.max(
-          0, eventEnd); // Prevent negative values from midnight handling
+      // Prevent negative values from midnight handling
+      eventEnd = math.max(0, eventEnd);
       eventEnd = math.min(
         Constants.minutesADay - startHourInMinutes,
         eventEnd,
@@ -123,8 +119,10 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration: startTime.copyFromMinutes(eventStart),
-          endDuration: endTime.copyFromMinutes(eventEnd),
+          startDuration: TimeOfDayExtension.copyFromMinutes(eventStart)
+              .toDateTime(calendarViewDate),
+          endDuration: TimeOfDayExtension.copyFromMinutes(eventEnd)
+              .toDateTime(calendarViewDate),
           events: [event],
           calendarViewDate: calendarViewDate,
         );
@@ -168,8 +166,10 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration: startTime.copyFromMinutes(mergedStartDuration),
-          endDuration: endTime.copyFromMinutes(mergedEndDuration),
+          startDuration: TimeOfDayExtension.copyFromMinutes(mergedStartDuration)
+              .toDateTime(calendarViewDate),
+          endDuration: TimeOfDayExtension.copyFromMinutes(mergedEndDuration)
+              .toDateTime(calendarViewDate),
           events: mergedEvents,
           calendarViewDate: calendarViewDate,
         );

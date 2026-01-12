@@ -36,189 +36,166 @@ class _HomePageState extends State<HomePage> {
       final events = [
         // ========== EDGE CASE 1: Midnight boundary events ==========
         // Event that spans across midnight (23:00 to 01:00 next day)
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.midnightShiftTitle,
+          description: translate.midnightShiftDesc,
           date: _now,
-          title: "Midnight Shift",
-          description: "Tests midnight boundary handling",
-          startTime: DateTime(_now.year, _now.month, _now.day, 23, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 23, 59, 59),
+          startTime: TimeOfDay(hour: 23, minute: 0),
+          endTime: TimeOfDay(hour: 23, minute: 59),
           color: Colors.purple,
         ),
 
         // ========== EDGE CASE 2: Early morning event (00:00 - 00:30) ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.earlyBirdMeetingTitle,
+          description: translate.earlyBirdMeetingDesc,
           date: _now,
-          title: "Early Bird Meeting",
-          description: "Tests day start boundary",
-          startTime: DateTime(_now.year, _now.month, _now.day, 0, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 0, 30),
+          startTime: TimeOfDay(hour: 0, minute: 0),
+          endTime: TimeOfDay(hour: 0, minute: 30),
           color: Colors.indigo,
         ),
 
         // ========== EDGE CASE 3: Full day event (all day) ==========
-        CalendarEventData(
+        CalendarEventData.wholeDay(
+          title: translate.allDayConferenceTitle,
+          description: translate.allDayConferenceDesc,
           date: _now,
-          title: "All Day Conference",
-          description:
-              "Tests full day event rendering without startTime/endTime",
           color: Colors.teal,
         ),
 
         // ========== EDGE CASE 4: Multi-day spanning event ==========
-        CalendarEventData(
+        CalendarEventData.multiDay(
+          title: translate.threeDayWorkshopTitle,
+          description: translate.threeDayWorkshopDesc,
           date: _now.subtract(Duration(days: 1)),
-          title: "3-Day Workshop",
-          description: "Tests multi-day event spanning",
-          startTime: DateTime(
-            _now.subtract(Duration(days: 1)).year,
-            _now.subtract(Duration(days: 1)).month,
-            _now.subtract(Duration(days: 1)).day,
-            9,
-            0,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 1)).year,
-            _now.subtract(Duration(days: 1)).month,
-            _now.subtract(Duration(days: 1)).day,
-            17,
-            0,
-          ),
           endDate: _now.add(Duration(days: 1)),
+          startTime: TimeOfDay(hour: 9, minute: 0),
+          endTime: TimeOfDay(hour: 17, minute: 0),
           color: Colors.deepOrange,
         ),
 
         // ========== EDGE CASE 5: Very short event (1 minute) ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.quickStandupTitle,
+          description: translate.quickStandupDesc,
           date: _now,
-          title: "Quick Standup",
-          description: "Tests minimum duration rendering",
-          startTime: DateTime(_now.year, _now.month, _now.day, 9, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 9, 1),
+          startTime: TimeOfDay(hour: 9, minute: 0),
+          endTime: TimeOfDay(hour: 9, minute: 1),
           color: Colors.amber,
         ),
 
         // ========== EDGE CASE 6: Very long event (12+ hours) ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.marathonCodingSessionTitle,
+          description: translate.marathonCodingSessionDesc,
           date: _now,
-          title: "Marathon Coding Session",
-          description: "Tests long duration event",
-          startTime: DateTime(_now.year, _now.month, _now.day, 8, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 22, 0),
+          startTime: TimeOfDay(hour: 8, minute: 0),
+          endTime: TimeOfDay(hour: 22, minute: 0),
           color: Colors.red,
         ),
 
         // ========== EDGE CASE 7: Overlapping events (same time slot) ==========
-        CalendarEventData(
-          date: _now,
+        CalendarEventData.timeRanged(
           title: translate.projectMeetingTitle,
           description: translate.projectMeetingDesc,
-          startTime: DateTime(_now.year, _now.month, _now.day, 14, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 15, 0),
+          date: _now,
+          startTime: TimeOfDay(hour: 14, minute: 0),
+          endTime: TimeOfDay(hour: 15, minute: 0),
           color: Colors.blue,
         ),
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.designReviewOverlappingTitle,
+          description: translate.designReviewOverlappingDesc,
           date: _now,
-          title: "Design Review (Overlapping)",
-          description: "Tests overlapping event rendering",
-          startTime: DateTime(_now.year, _now.month, _now.day, 14, 30),
-          endTime: DateTime(_now.year, _now.month, _now.day, 15, 30),
+          startTime: TimeOfDay(hour: 14, minute: 30),
+          endTime: TimeOfDay(hour: 15, minute: 30),
           color: Colors.cyan,
         ),
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.codeReviewTripleOverlapTitle,
+          description: translate.codeReviewTripleOverlapDesc,
           date: _now,
-          title: "Code Review (Triple Overlap)",
-          description: "Tests multiple overlapping events",
-          startTime: DateTime(_now.year, _now.month, _now.day, 14, 15),
-          endTime: DateTime(_now.year, _now.month, _now.day, 15, 15),
+          startTime: TimeOfDay(hour: 14, minute: 15),
+          endTime: TimeOfDay(hour: 15, minute: 15),
           color: Colors.lightBlue,
         ),
 
         // ========== EDGE CASE 8: Back-to-back events (no gap) ==========
         // NOTE: These events also overlap with Marathon Coding Session (8:00-22:00)
         // So they should be arranged side-by-side with it in Day/Week views
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.morningSyncTitle,
+          description: translate.morningSyncDesc,
           date: _now,
-          title: "Morning Sync",
-          description: "Tests consecutive events + overlaps with long event",
-          startTime: DateTime(_now.year, _now.month, _now.day, 10, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 11, 0),
+          startTime: TimeOfDay(hour: 10, minute: 0),
+          endTime: TimeOfDay(hour: 11, minute: 0),
           color: Colors.green,
         ),
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.teamPlanningTitle,
+          description: translate.teamPlanningDesc,
           date: _now,
-          title: "Team Planning",
-          description: "Back-to-back with previous + overlaps with long event",
-          startTime: DateTime(_now.year, _now.month, _now.day, 11, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 12, 0),
+          startTime: TimeOfDay(hour: 11, minute: 0),
+          endTime: TimeOfDay(hour: 12, minute: 0),
           color: Colors.lightGreen,
         ),
 
         // ========== EDGE CASE 8b: Explicit overlap with long event ==========
         // This event explicitly tests that shorter events are arranged
         // side-by-side with the Marathon Coding Session
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.lunchBreakTitle,
+          description: translate.lunchBreakDesc,
           date: _now,
-          title: "Lunch Break",
-          description: "Tests side-by-side arrangement with long event",
-          startTime: DateTime(_now.year, _now.month, _now.day, 12, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 13, 0),
+          startTime: TimeOfDay(hour: 12, minute: 0),
+          endTime: TimeOfDay(hour: 13, minute: 0),
           color: Colors.orange,
         ),
 
         // ========== EDGE CASE 8c: Early overlap with long event ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.morningCoffeeTitle,
+          description: translate.morningCoffeeDesc,
           date: _now,
-          title: "Morning Coffee",
-          description: "Early event overlapping with long event (8:30-9:00)",
-          startTime: DateTime(_now.year, _now.month, _now.day, 8, 30),
-          endTime: DateTime(_now.year, _now.month, _now.day, 9, 0),
+          startTime: TimeOfDay(hour: 8, minute: 30),
+          endTime: TimeOfDay(hour: 9, minute: 0),
           color: Colors.brown[300]!,
         ),
 
         // ========== EDGE CASE 8d: Late overlap with long event ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.eveningWrapUpTitle,
+          description: translate.eveningWrapUpDesc,
           date: _now,
-          title: "Evening Wrap-up",
-          description: "Late event overlapping with long event (21:00-21:30)",
-          startTime: DateTime(_now.year, _now.month, _now.day, 21, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 21, 30),
+          startTime: TimeOfDay(hour: 21, minute: 0),
+          endTime: TimeOfDay(hour: 21, minute: 30),
           color: Colors.purple[300]!,
         ),
 
         // ========== EDGE CASE 9: Weekly recurring event ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.weeklyStandupTitle,
+          description: translate.weeklyStandupDesc,
           date: _now.subtract(Duration(days: 7)),
-          title: "Weekly Standup",
-          description: "Tests weekly recurrence",
-          startTime: DateTime(
-            _now.subtract(Duration(days: 7)).year,
-            _now.subtract(Duration(days: 7)).month,
-            _now.subtract(Duration(days: 7)).day,
-            9,
-            30,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 7)).year,
-            _now.subtract(Duration(days: 7)).month,
-            _now.subtract(Duration(days: 7)).day,
-            10,
-            0,
-          ),
+          startTime: TimeOfDay(hour: 9, minute: 30),
+          endTime: TimeOfDay(hour: 10, minute: 0),
           recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
             startDate: _now.subtract(Duration(days: 7)),
             frequency: RepeatFrequency.weekly,
             recurrenceEndOn: RecurrenceEnd.after,
             occurrences: 10,
-            weekdays: [_now.subtract(Duration(days: 7)).weekday - 1],
+            weekdays: [
+              WeekDays.values[_now.subtract(Duration(days: 7)).weekday - 1],
+            ],
           ),
           color: Colors.orange,
         ),
 
         // ========== EDGE CASE 10: Daily recurring with specific weekdays ==========
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 3)),
+        CalendarEventData.wholeDay(
           title: translate.leetcodeContestTitle,
           description: translate.leetcodeContestDesc,
+          date: _now.subtract(Duration(days: 3)),
           recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
             startDate: _now.subtract(Duration(days: 3)),
             frequency: RepeatFrequency.daily,
@@ -229,12 +206,12 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // ========== EDGE CASE 11: Monthly recurring event ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.monthlyReviewTitle,
+          description: translate.monthlyReviewDesc,
           date: _now,
-          title: "Monthly Review",
-          description: "Tests monthly recurrence across month boundaries",
-          startTime: DateTime(_now.year, _now.month, _now.day, 15, 0),
-          endTime: DateTime(_now.year, _now.month, _now.day, 16, 0),
+          startTime: TimeOfDay(hour: 15, minute: 0),
+          endTime: TimeOfDay(hour: 16, minute: 0),
           recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
             startDate: _now,
             frequency: RepeatFrequency.monthly,
@@ -245,24 +222,12 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // ========== EDGE CASE 12: Event with custom styles ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.vipClientMeetingTitle,
+          description: translate.vipClientMeetingDesc,
           date: _now.add(Duration(days: 1)),
-          title: "VIP Client Meeting",
-          description: "Tests custom title and description styles",
-          startTime: DateTime(
-            _now.add(Duration(days: 1)).year,
-            _now.add(Duration(days: 1)).month,
-            _now.add(Duration(days: 1)).day,
-            16,
-            0,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 1)).year,
-            _now.add(Duration(days: 1)).month,
-            _now.add(Duration(days: 1)).day,
-            17,
-            30,
-          ),
+          startTime: TimeOfDay(hour: 16, minute: 0),
+          endTime: TimeOfDay(hour: 17, minute: 30),
           color: Colors.black,
           titleStyle: TextStyle(
             color: Colors.white,
@@ -277,44 +242,32 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // ========== EDGE CASE 13: Events at odd minutes (15, 45) ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.oddTimeMeetingTitle,
+          description: translate.oddTimeMeetingDesc,
           date: _now,
-          title: "Odd Time Meeting",
-          description: "Tests non-standard time slots",
-          startTime: DateTime(_now.year, _now.month, _now.day, 13, 15),
-          endTime: DateTime(_now.year, _now.month, _now.day, 13, 45),
+          startTime: TimeOfDay(hour: 13, minute: 15),
+          endTime: TimeOfDay(hour: 13, minute: 45),
           color: Colors.brown,
         ),
 
         // ========== EDGE CASE 14: Multiple events on same day ==========
-        CalendarEventData(
-          date: _now,
+        CalendarEventData.timeRanged(
           title: translate.footballTournamentTitle,
           description: translate.footballTournamentDesc,
-          startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
-          endTime: DateTime(_now.year, _now.month, _now.day, 20, 0),
+          date: _now,
+          startTime: TimeOfDay(hour: 18, minute: 30),
+          endTime: TimeOfDay(hour: 20, minute: 0),
           color: Colors.blueGrey,
         ),
 
         // ========== EDGE CASE 15: Past recurring events ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.pastDailyScrumTitle,
+          description: translate.pastDailyScrumDesc,
           date: _now.subtract(Duration(days: 10)),
-          title: "Past Daily Scrum",
-          description: "Tests past recurring events",
-          startTime: DateTime(
-            _now.subtract(Duration(days: 10)).year,
-            _now.subtract(Duration(days: 10)).month,
-            _now.subtract(Duration(days: 10)).day,
-            9,
-            0,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 10)).year,
-            _now.subtract(Duration(days: 10)).month,
-            _now.subtract(Duration(days: 10)).day,
-            9,
-            15,
-          ),
+          startTime: TimeOfDay(hour: 9, minute: 0),
+          endTime: TimeOfDay(hour: 9, minute: 15),
           recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
             startDate: _now.subtract(Duration(days: 10)),
             frequency: RepeatFrequency.daily,
@@ -325,139 +278,80 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // ========== EDGE CASE 16: Future events ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.futureSprintPlanningTitle,
+          description: translate.futureSprintPlanningDesc,
           date: _now.add(Duration(days: 5)),
-          title: "Future Sprint Planning",
-          description: "Tests future event rendering",
-          startTime: DateTime(
-            _now.add(Duration(days: 5)).year,
-            _now.add(Duration(days: 5)).month,
-            _now.add(Duration(days: 5)).day,
-            10,
-            0,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 5)).year,
-            _now.add(Duration(days: 5)).month,
-            _now.add(Duration(days: 5)).day,
-            12,
-            0,
-          ),
+          startTime: TimeOfDay(hour: 10, minute: 0),
+          endTime: TimeOfDay(hour: 12, minute: 0),
           color: Colors.lime,
         ),
 
         // ========== EDGE CASE 17: Weekend events ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.weekendHackathonTitle,
+          description: translate.weekendHackathonDesc,
           date: _now.add(Duration(days: 6 - _now.weekday)),
-          title: "Weekend Hackathon",
-          description: "Tests weekend event handling",
-          startTime: DateTime(
-            _now.add(Duration(days: 6 - _now.weekday)).year,
-            _now.add(Duration(days: 6 - _now.weekday)).month,
-            _now.add(Duration(days: 6 - _now.weekday)).day,
-            10,
-            0,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 6 - _now.weekday)).year,
-            _now.add(Duration(days: 6 - _now.weekday)).month,
-            _now.add(Duration(days: 6 - _now.weekday)).day,
-            18,
-            0,
-          ),
+          startTime: TimeOfDay(hour: 10, minute: 0),
+          endTime: TimeOfDay(hour: 18, minute: 0),
           color: Colors.cyan,
         ),
 
         // ========== EDGE CASE 18: Very long title ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.veryLongTitle,
+          description: translate.veryLongDesc,
           date: _now.add(Duration(days: 2)),
-          title:
-              "This is a very long event title to test text overflow and wrapping in different calendar views including month, week, and day views",
-          description: "Tests long text handling and overflow",
-          startTime: DateTime(
-            _now.add(Duration(days: 2)).year,
-            _now.add(Duration(days: 2)).month,
-            _now.add(Duration(days: 2)).day,
-            11,
-            0,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 2)).year,
-            _now.add(Duration(days: 2)).month,
-            _now.add(Duration(days: 2)).day,
-            12,
-            0,
-          ),
+          startTime: TimeOfDay(hour: 11, minute: 0),
+          endTime: TimeOfDay(hour: 12, minute: 0),
           color: Colors.deepOrange,
         ),
 
         // ========== EDGE CASE 19: Event ending at 23:59 ==========
-        CalendarEventData(
+        CalendarEventData.timeRanged(
+          title: translate.lateNightWorkTitle,
+          description: translate.lateNightWorkDesc,
           date: _now.add(Duration(days: 1)),
-          title: "Late Night Work",
-          description: "Tests end of day boundary",
-          startTime: DateTime(
-            _now.add(Duration(days: 1)).year,
-            _now.add(Duration(days: 1)).month,
-            _now.add(Duration(days: 1)).day,
-            22,
-            0,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 1)).year,
-            _now.add(Duration(days: 1)).month,
-            _now.add(Duration(days: 1)).day,
-            23,
-            59,
-          ),
+          startTime: TimeOfDay(hour: 22, minute: 0),
+          endTime: TimeOfDay(hour: 23, minute: 59),
           color: Colors.indigo,
         ),
 
         // ========== EDGE CASE 20: Multi-day all-day event ==========
-        CalendarEventData(
+        CalendarEventData.multiDay(
+          title: translate.companyRetreatTitle,
+          description: translate.companyRetreatDesc,
           date: _now.add(Duration(days: 7)),
-          title: "Company Retreat",
-          description: "Tests multi-day all-day event",
           endDate: _now.add(Duration(days: 9)),
           color: Colors.green,
         ),
 
+        // ===== EDGE CASE 21: Multi-day event with end time before start time =====
+        CalendarEventData.multiDay(
+          title: translate.extendedWorkshopTitle,
+          description: translate.extendedWorkshopDesc,
+          date: _now.add(const Duration(days: 10)),
+          endDate: _now.add(const Duration(days: 12)),
+          startTime: const TimeOfDay(hour: 9, minute: 0),
+          endTime: const TimeOfDay(hour: 8, minute: 0),
+        ),
+
         // ========== Additional original events for variety ==========
-        CalendarEventData(
-          date: _now.add(Duration(days: 3)),
-          startTime: DateTime(
-            _now.add(Duration(days: 3)).year,
-            _now.add(Duration(days: 3)).month,
-            _now.add(Duration(days: 3)).day,
-            10,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 3)).year,
-            _now.add(Duration(days: 3)).month,
-            _now.add(Duration(days: 3)).day,
-            14,
-          ),
+        CalendarEventData.timeRanged(
           title: translate.sprintMeetingTitle,
           description: translate.sprintMeetingDesc,
+          date: _now.add(Duration(days: 3)),
+          startTime: TimeOfDay(hour: 10, minute: 0),
+          endTime: TimeOfDay(hour: 14, minute: 0),
           color: Colors.teal,
         ),
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 2)),
-          startTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            14,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            16,
-          ),
+        CalendarEventData.timeRanged(
           title: translate.teamMeetingTitle,
           description: translate.teamMeetingDesc,
           color: Colors.blue,
+          date: _now.subtract(Duration(days: 2)),
+          startTime: TimeOfDay(hour: 14, minute: 0),
+          endTime: TimeOfDay(hour: 16, minute: 0),
         ),
       ];
       _controller!.addAll(events);

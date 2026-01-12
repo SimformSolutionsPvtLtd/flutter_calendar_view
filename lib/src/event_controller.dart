@@ -456,7 +456,7 @@ class CalendarData<T extends Object?> {
     // Adjust weekday to zero-based indexing and
     // check if date’s weekday is in the recurrence weekdays
     final isMatchingWeekday =
-        recurrenceSettings.weekdays.contains(currentDate.weekday - 1);
+        recurrenceSettings.weekdays.contains(currentDate.weekDayEnum);
     final recurrenceEndDate = recurrenceSettings.endDate;
 
     if (!isMatchingWeekday) {
