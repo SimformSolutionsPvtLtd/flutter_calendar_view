@@ -16,7 +16,8 @@ class MultiDayViewWidget extends StatelessWidget {
       daysInView: 3,
       width: width,
       showLiveTimeLineInAllDays: true,
-      eventArranger: SideEventArranger(maxWidth: 30),
+      eventArranger: SideEventArranger(),
+      backgroundColor: Colors.white,
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(

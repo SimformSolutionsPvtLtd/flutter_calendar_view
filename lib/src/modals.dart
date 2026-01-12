@@ -129,8 +129,8 @@ class RecurrenceSettings {
     this.frequency = RepeatFrequency.doNotRepeat,
     this.recurrenceEndOn = RecurrenceEnd.never,
     this.excludeDates,
-    List<int>? weekdays,
-  }) : weekdays = weekdays ?? [startDate.weekday];
+    List<WeekDays>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekDayEnum];
 
   /// If recurrence event does not have an end date it will calculate end date
   /// from the start date.
@@ -151,8 +151,8 @@ class RecurrenceSettings {
     this.frequency = RepeatFrequency.doNotRepeat,
     this.recurrenceEndOn = RecurrenceEnd.never,
     this.excludeDates,
-    List<int>? weekdays,
-  }) : weekdays = weekdays ?? [startDate.weekday] {
+    List<WeekDays>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekDayEnum] {
     this.endDate = endDate ?? _getEndDate(startDate);
   }
 
@@ -161,7 +161,7 @@ class RecurrenceSettings {
   final int? occurrences;
   final RepeatFrequency frequency;
   final RecurrenceEnd recurrenceEndOn;
-  final List<int> weekdays;
+  final List<WeekDays> weekdays;
   final List<DateTime>? excludeDates;
 
   // For recurrence patterns other than weekly, where the event may not repeat
@@ -231,19 +231,20 @@ class RecurrenceSettings {
     var currentDate = startDate;
 
     // Check if the start date is one of the recurring weekdays
-    if (sortedWeekdays.contains(startDate.weekday - 1)) {
+    if (sortedWeekdays.contains(startDate.weekDayEnum)) {
       remainingOccurrences--;
     }
 
     while (remainingOccurrences > 0) {
       // Find the next valid weekday
       final nextWeekday = sortedWeekdays.firstWhere(
-        (day) => day > currentDate.weekday - 1,
+        (day) => day.index > currentDate.weekDayEnum.index,
         orElse: () => sortedWeekdays.first,
       );
 
       // Calculate the days to the next occurrence
-      final daysToAdd = (nextWeekday - (currentDate.weekday - 1) + 7) % 7;
+      final daysToAdd =
+          (nextWeekday.index - currentDate.weekDayEnum.index + 7) % 7;
 
       // Move the current date to the next occurrence
       currentDate = currentDate.add(Duration(days: daysToAdd));
@@ -348,7 +349,7 @@ class RecurrenceSettings {
     int? occurrences,
     RepeatFrequency? frequency,
     RecurrenceEnd? recurrenceEndOn,
-    List<int>? weekdays,
+    List<WeekDays>? weekdays,
     List<DateTime>? excludeDates,
   }) {
     return RecurrenceSettings(

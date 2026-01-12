@@ -793,8 +793,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            widget.weekDayStringBuilder?.call(date.weekday - 1) ??
-                PackageStrings.currentLocale.weekdays[date.weekday - 1],
+            widget.weekDayStringBuilder?.call(date.weekDayEnum.index) ??
+                PackageStrings.currentLocale.weekdays[date.weekDayEnum.index],
             style: TextStyle(
               color: textColor,
             ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:example/widgets/multi_day_view_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../enumerations.dart';
@@ -25,7 +26,9 @@ class CalendarViews extends StatelessWidget {
       width: double.infinity,
       color: AppColors.grey,
       child: Center(
-        child: view == CalendarView.month
+        child: view == CalendarView.multiDay
+            ? MultiDayViewWidget(width: width)
+            : view == CalendarView.month
             ? MonthViewWidget(width: width)
             : view == CalendarView.day
             ? DayViewWidget(width: width)

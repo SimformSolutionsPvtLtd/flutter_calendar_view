@@ -1,43 +1,43 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Custom sort', () {
     final date = DateTime(2024, 01, 01);
-    const oneHour = Duration(hours: 1);
 
     /// The bool value indicates if the event is "important" or "regular".
 
     final first = CalendarEventData(
       title: 'Regular event - first',
       event: false,
-      date: date,
-      startTime: date.add(oneHour),
-      endTime: date.add(oneHour * 2),
+      startDate: date,
+      startTime: TimeOfDay(hour: 1, minute: 0),
+      endTime: TimeOfDay(hour: 2, minute: 0),
     );
 
     final second = CalendarEventData(
       title: 'Important event - second',
       event: true,
-      date: date,
-      startTime: date.add(oneHour * 2),
-      endTime: date.add(oneHour * 3),
+      startDate: date,
+      startTime: TimeOfDay(hour: 2, minute: 0),
+      endTime: TimeOfDay(hour: 3, minute: 0),
     );
 
     final third = CalendarEventData(
       title: 'Important event - third',
       event: true,
-      date: date,
-      startTime: date.add(oneHour * 3),
-      endTime: date.add(oneHour * 4),
+      startDate: date,
+      startTime: TimeOfDay(hour: 3, minute: 0),
+      endTime: TimeOfDay(hour: 4, minute: 0),
     );
 
     final fourth = CalendarEventData(
       title: 'Regular event - fourth',
       event: false,
-      date: date,
-      startTime: date.add(oneHour * 4),
-      endTime: date.add(oneHour * 5),
+      startDate: date,
+      startTime: TimeOfDay(hour: 4, minute: 0),
+      endTime: TimeOfDay(hour: 5, minute: 0),
     );
 
     /// Events are in random order

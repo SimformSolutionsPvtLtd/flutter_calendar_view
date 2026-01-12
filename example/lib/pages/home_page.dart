@@ -34,103 +34,97 @@ class _HomePageState extends State<HomePage> {
 
       final translate = context.translate;
       final events = [
-        CalendarEventData(
-          date: _now,
+        // Example of timeRanged event - for events with specific start/end times on a single day
+        CalendarEventData.timeRanged(
           title: translate.projectMeetingTitle,
           description: translate.projectMeetingDesc,
-          startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
-          endTime: DateTime(_now.year, _now.month, _now.day, 22),
+          date: _now,
+          startTime: const TimeOfDay(hour: 18, minute: 30),
+          endTime: const TimeOfDay(hour: 22, minute: 0),
         ),
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 3)),
-          recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
-            startDate: _now.subtract(Duration(days: 3)),
-          ),
+        // Example of wholeDay event with recurrence - for all-day events
+        CalendarEventData.wholeDay(
           title: translate.leetcodeContestTitle,
           description: translate.leetcodeContestDesc,
-        ),
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 3)),
+          date: _now.subtract(const Duration(days: 3)),
           recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
-            startDate: _now.subtract(Duration(days: 3)),
-            frequency: RepeatFrequency.daily,
-            recurrenceEndOn: RecurrenceEnd.after,
-            occurrences: 5,
+            startDate: _now.subtract(const Duration(days: 3)),
           ),
+        ),
+        // Example of wholeDay event with daily recurrence
+        CalendarEventData.wholeDay(
           title: translate.physicsTestTitle,
           description: translate.physicsTestDesc,
-        ),
-        CalendarEventData(
-          date: _now.add(Duration(days: 1)),
-          startTime: DateTime(_now.year, _now.month, _now.day, 18),
-          endTime: DateTime(_now.year, _now.month, _now.day, 19),
-          recurrenceSettings: RecurrenceSettings(
-            startDate: _now,
-            endDate: _now.add(Duration(days: 5)),
+          date: _now.subtract(const Duration(days: 3)),
+          recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
+            startDate: _now.subtract(const Duration(days: 3)),
             frequency: RepeatFrequency.daily,
             recurrenceEndOn: RecurrenceEnd.after,
             occurrences: 5,
           ),
+        ),
+        // Example of timeRanged event with recurrence
+        CalendarEventData.timeRanged(
           title: translate.weddingAnniversaryTitle,
           description: translate.weddingAnniversaryDesc,
+          date: _now.add(const Duration(days: 1)),
+          startTime: const TimeOfDay(hour: 18, minute: 0),
+          endTime: const TimeOfDay(hour: 19, minute: 0),
+          recurrenceSettings: RecurrenceSettings(
+            startDate: _now,
+            endDate: _now.add(const Duration(days: 5)),
+            frequency: RepeatFrequency.daily,
+            recurrenceEndOn: RecurrenceEnd.after,
+            occurrences: 5,
+          ),
         ),
-        CalendarEventData(
-          date: _now,
-          startTime: DateTime(_now.year, _now.month, _now.day, 14),
-          endTime: DateTime(_now.year, _now.month, _now.day, 17),
+        // Example of timeRanged event - afternoon tournament
+        CalendarEventData.timeRanged(
           title: translate.footballTournamentTitle,
           description: translate.footballTournamentDesc,
+          date: _now,
+          startTime: const TimeOfDay(hour: 14, minute: 0),
+          endTime: const TimeOfDay(hour: 17, minute: 0),
         ),
-        CalendarEventData(
-          date: _now.add(Duration(days: 3)),
-          startTime: DateTime(
-            _now.add(Duration(days: 3)).year,
-            _now.add(Duration(days: 3)).month,
-            _now.add(Duration(days: 3)).day,
-            10,
-          ),
-          endTime: DateTime(
-            _now.add(Duration(days: 3)).year,
-            _now.add(Duration(days: 3)).month,
-            _now.add(Duration(days: 3)).day,
-            14,
-          ),
+        // Example of timeRanged event - morning meeting
+        CalendarEventData.timeRanged(
           title: translate.sprintMeetingTitle,
           description: translate.sprintMeetingDesc,
+          date: _now.add(const Duration(days: 3)),
+          startTime: const TimeOfDay(hour: 10, minute: 0),
+          endTime: const TimeOfDay(hour: 14, minute: 0),
         ),
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 2)),
-          startTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            14,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            16,
-          ),
+        // Example of timeRanged event - 2 hour meeting
+        CalendarEventData.timeRanged(
           title: translate.teamMeetingTitle,
           description: translate.teamMeetingDesc,
+          date: _now.subtract(const Duration(days: 2)),
+          startTime: const TimeOfDay(hour: 14, minute: 0),
+          endTime: const TimeOfDay(hour: 16, minute: 0),
         ),
-        CalendarEventData(
-          date: _now.subtract(Duration(days: 2)),
-          startTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            10,
-          ),
-          endTime: DateTime(
-            _now.subtract(Duration(days: 2)).year,
-            _now.subtract(Duration(days: 2)).month,
-            _now.subtract(Duration(days: 2)).day,
-            12,
-          ),
+        // Example of timeRanged event - chemistry viva
+        CalendarEventData.timeRanged(
           title: translate.chemistryVivaTitle,
           description: translate.chemistryVivaDesc,
+          date: _now.subtract(const Duration(days: 2)),
+          startTime: const TimeOfDay(hour: 10, minute: 0),
+          endTime: const TimeOfDay(hour: 12, minute: 0),
+        ),
+        // Example of multiDay event - spanning multiple days without specific times
+        CalendarEventData.multiDay(
+          title: translate.annualTechConferenceTitle,
+          description: translate.annualTechConferenceDesc,
+          startDate: _now.add(const Duration(days: 5)),
+          endDate: _now.add(const Duration(days: 7)),
+        ),
+        // Example of multiDay event with specific times - workshop spanning multiple days
+        CalendarEventData.multiDay(
+          title: translate.extendedWorkshopTitle,
+          description: translate.extendedWorkshopDesc,
+          startDate: _now.add(const Duration(days: 10)),
+          endDate: _now.add(const Duration(days: 12)),
+          startTime: const TimeOfDay(hour: 9, minute: 0),
+          endTime: const TimeOfDay(hour: 17, minute: 0),
         ),
       ];
       _controller!.addAll(events);

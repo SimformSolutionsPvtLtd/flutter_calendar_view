@@ -246,8 +246,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                             (index) => Expanded(
                               child: SizedBox(
                                 width: _cellWidth,
-                                child:
-                                    _weekBuilder(weekDays[index].weekday - 1),
+                                child: _weekBuilder(
+                                    weekDays[index].weekDayEnum.index),
                               ),
                             ),
                           ),

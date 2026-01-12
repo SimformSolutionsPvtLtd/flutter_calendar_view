@@ -152,8 +152,10 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration: startTime.copyFromMinutes(eventStart),
-          endDuration: endTime.copyFromMinutes(eventEnd),
+          startDuration: TimeOfDayExtension.copyFromMinutes(eventStart)
+              .toDateTime(calendarViewDate),
+          endDuration: TimeOfDayExtension.copyFromMinutes(eventEnd)
+              .toDateTime(calendarViewDate),
           events: [event],
           calendarViewDate: calendarViewDate,
         );
