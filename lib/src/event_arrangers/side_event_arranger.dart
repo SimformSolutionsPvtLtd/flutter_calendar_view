@@ -181,8 +181,10 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
               right: totalWidth - (offset + slotWidth),
               top: top,
               bottom: bottom,
-              startDuration: startTime.copyFromMinutes(eventStart),
-              endDuration: endTime.copyFromMinutes(eventEnd),
+              startDuration: TimeOfDayExtension.copyFromMinutes(eventStart)
+                  .toDateTime(calendarViewDate),
+              endDuration: TimeOfDayExtension.copyFromMinutes(eventEnd)
+                  .toDateTime(calendarViewDate),
               events: [e],
               calendarViewDate: calendarViewDate,
             );

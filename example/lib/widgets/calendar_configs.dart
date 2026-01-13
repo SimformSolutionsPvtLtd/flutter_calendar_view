@@ -125,6 +125,8 @@ class _CalendarConfigState extends State<CalendarConfig> {
                         break;
                       case CalendarView.week:
                         viewName = translate.weekView;
+                      case CalendarView.multiDay:
+                        viewName = translate.multidayView;
                         break;
                     }
                     return GestureDetector(

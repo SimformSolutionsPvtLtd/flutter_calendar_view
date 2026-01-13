@@ -71,5 +71,9 @@
   "done": "Hecho",
   "selectLanguage": "Seleccionar idioma",
   "reachedTheEndPage": "Has llegado al final de la página.",
-  "reachedTheStartPage": "Has llegado al inicio de la página."
+  "reachedTheStartPage": "Has llegado al inicio de la página.",
+  "annualTechConferenceTitle": "Conferencia Anual de Tecnología",
+  "annualTechConferenceDesc": "Asistir a la conferencia anual de tecnología.",
+  "extendedWorkshopTitle": "Taller Extendido",
+  "extendedWorkshopDesc": "Participa en el taller extendido de desarrollo de software."
 }

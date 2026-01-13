@@ -1,4 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -8,12 +9,12 @@ void main() {
     final now = DateTime.now();
     controller.add(CalendarEventData<String>(
         title: 'none',
-        date: now,
-        startTime: now,
-        endTime: now.add(Duration(hours: 1))));
+        startDate: now,
+        startTime: TimeOfDay(hour: now.hour, minute: now.minute),
+        endTime: TimeOfDay(hour: (now.hour + 1) % 24, minute: now.minute)));
     controller.add(CalendarEventData<String>(
       title: 'All Day',
-      date: DateTime.now().withoutTime,
+      startDate: now.withoutTime,
     ));
 
     expect(controller.getFullDayEvent(now).length, equals(1));

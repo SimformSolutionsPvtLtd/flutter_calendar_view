@@ -14,14 +14,12 @@ class CalendarEventData<T extends Object?> {
   final DateTime date;
 
   /// Defines the start time of the event.
-  /// [endTime] and [startTime] will defines time on same day.
   /// This is required when you are using [CalendarEventData] for [DayView] or [WeekView]
-  final DateTime? startTime;
+  final TimeOfDay? startTime;
 
   /// Defines the end time of the event.
-  /// [endTime] and [startTime] defines time on same day.
   /// This is required when you are using [CalendarEventData] for [DayView]
-  final DateTime? endTime;
+  final TimeOfDay? endTime;
 
   /// Title of the event.
   final String title;
@@ -47,21 +45,191 @@ class CalendarEventData<T extends Object?> {
   /// Define reoccurrence settings
   final RecurrenceSettings? recurrenceSettings;
 
-  /// {@macro calendar_event_data_doc}
-  CalendarEventData({
+  /// Private constructor for internal use
+  const CalendarEventData._({
     required this.title,
-    required DateTime date,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    DateTime? endDate,
     this.description,
     this.event,
     this.color = Colors.blue,
-    this.startTime,
-    this.endTime,
     this.titleStyle,
     this.descriptionStyle,
     this.recurrenceSettings,
+  }) : _endDate = endDate;
+
+  /// {@macro calendar_event_data_doc}
+  /// Creates a basic calendar event.
+  /// Use type-specific factories ([timeRanged], [wholeDay], [multiDay]) for better clarity.
+  factory CalendarEventData({
+    required String title,
+    required DateTime startDate,
+    String? description,
+    T? event,
+    Color color = Colors.blue,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
+    TextStyle? titleStyle,
+    TextStyle? descriptionStyle,
+    RecurrenceSettings? recurrenceSettings,
+    // End date of the event (only date part is considered)
     DateTime? endDate,
-  })  : _endDate = endDate?.withoutTime,
-        date = date.withoutTime;
+  }) {
+    return CalendarEventData._(
+      title: title,
+      date: startDate.withoutTime,
+      startTime: startTime,
+      endTime: endTime,
+      endDate: endDate?.withoutTime,
+      description: description,
+      event: event,
+      color: color,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      recurrenceSettings: recurrenceSettings,
+    );
+  }
+
+  /// Creates a time-ranged event with specific start and end times on a single day.
+  ///
+  /// This factory is ideal for events that occur within a specific time range
+  /// on a single day (e.g., "Meeting from 2 PM to 4 PM").
+  ///
+  /// Example:
+  /// ```dart
+  /// final meeting = CalendarEventData.timeRanged(
+  ///   title: "Team Meeting",
+  ///   date: DateTime(2024, 1, 15),
+  ///   startTime: TimeOfDay(hour: 14, minute: 0), // 2 PM
+  ///   endTime: TimeOfDay(hour: 16, minute: 0),   // 4 PM
+  ///   description: "Weekly sync",
+  /// );
+  /// ```
+  factory CalendarEventData.timeRanged({
+    required String title,
+    required DateTime date,
+    required TimeOfDay startTime,
+    required TimeOfDay endTime,
+    String? description,
+    T? event,
+    Color color = Colors.blue,
+    TextStyle? titleStyle,
+    TextStyle? descriptionStyle,
+    RecurrenceSettings? recurrenceSettings,
+  }) {
+    return CalendarEventData._(
+      title: title,
+      date: date.withoutTime,
+      startTime: startTime,
+      endTime: endTime,
+      endDate: null,
+      description: description,
+      event: event,
+      color: color,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      recurrenceSettings: recurrenceSettings,
+    );
+  }
+
+  /// Creates a whole day event that spans exactly one full day.
+  ///
+  /// This factory is ideal for all-day events like holidays, birthdays,
+  /// or any event that doesn't have specific start/end times.
+  ///
+  /// Example:
+  /// ```dart
+  /// final holiday = CalendarEventData.wholeDay(
+  ///   title: "Independence Day",
+  ///   date: DateTime(2024, 7, 4),
+  ///   description: "National Holiday",
+  /// );
+  /// ```
+  factory CalendarEventData.wholeDay({
+    required String title,
+    required DateTime date,
+    String? description,
+    T? event,
+    Color color = Colors.blue,
+    TextStyle? titleStyle,
+    TextStyle? descriptionStyle,
+    RecurrenceSettings? recurrenceSettings,
+  }) {
+    return CalendarEventData._(
+      title: title,
+      date: date.withoutTime,
+      startTime: null,
+      endTime: null,
+      endDate: null,
+      description: description,
+      event: event,
+      color: color,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      recurrenceSettings: recurrenceSettings,
+    );
+  }
+
+  /// Creates a multi-day event that spans multiple days.
+  ///
+  /// This factory supports two modes:
+  /// 1. **Whole-day multi-day events**: Omit [startTime] and [endTime]
+  /// 2. **Timed multi-day events**: Provide [startTime] and [endTime]
+  ///
+  /// Use this for events like conferences, vacations, workshops, or any event
+  /// spanning multiple days with or without specific times.
+  ///
+  /// Examples:
+  /// ```dart
+  /// // Whole-day multi-day event (vacation, conference)
+  /// final conference = CalendarEventData.multiDay(
+  ///   title: "Tech Conference",
+  ///   startDate: DateTime(2024, 3, 10),
+  ///   endDate: DateTime(2024, 3, 12),
+  ///   description: "3-day tech event",
+  /// );
+  ///
+  /// // Multi-day event with specific times (e.g., 3 PM on 3rd to 6 PM on 6th)
+  /// final workshop = CalendarEventData.multiDay(
+  ///   title: "Extended Workshop",
+  ///   startDate: DateTime(2024, 2, 3),
+  ///   endDate: DateTime(2024, 2, 6),
+  ///   startTime: TimeOfDay(hour: 15, minute: 0),  // 3 PM
+  ///   endTime: TimeOfDay(hour: 18, minute: 0),    // 6 PM
+  ///   description: "Workshop from 3 PM on 3rd to 6 PM on 6th",
+  /// );
+  /// ```
+  factory CalendarEventData.multiDay({
+    required String title,
+    // Start date of the multi-day event (only date part is considered)
+    required DateTime startDate,
+    // End date of the multi-day event (only date part is considered)
+    required DateTime endDate,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
+    String? description,
+    T? event,
+    Color color = Colors.blue,
+    TextStyle? titleStyle,
+    TextStyle? descriptionStyle,
+    RecurrenceSettings? recurrenceSettings,
+  }) {
+    return CalendarEventData._(
+      title: title,
+      date: startDate.withoutTime,
+      startTime: startTime,
+      endTime: endTime,
+      endDate: endDate.withoutTime,
+      description: description,
+      event: event,
+      color: color,
+      titleStyle: titleStyle,
+      descriptionStyle: descriptionStyle,
+      recurrenceSettings: recurrenceSettings,
+    );
+  }
 
   DateTime get endDate => _endDate ?? date;
 
@@ -91,20 +259,49 @@ class CalendarEventData<T extends Object?> {
   }
 
   Duration get duration {
-    if (isFullDayEvent) return Duration(days: 1);
+    if (isFullDayEvent) {
+      // For full-day events, calculate the number of days between start and end dates
+      final daysDifference = endDate.difference(date).inDays;
+      return Duration(days: daysDifference + 1);
+    }
 
-    final now = DateTime.now();
+    // For events with specific times, check if it's a multi-day event
+    if (isRangingEvent) {
+      // Multi-day event with specific times
+      // Calculate duration from startTime on start date to endTime on end date
+      final startDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        startTime!.hour,
+        startTime!.minute,
+      );
+      final endDateTime = DateTime(
+        endDate.year,
+        endDate.month,
+        endDate.day,
+        endTime!.hour,
+        endTime!.minute,
+      );
+      return endDateTime.difference(startDateTime);
+    }
 
-    final end = now.copyFromMinutes(endTime!.getTotalMinutes);
-    final start = now.copyFromMinutes(startTime!.getTotalMinutes);
+    // Single-day event with specific times
+    final startMinutes = startTime!.getTotalMinutes;
+    final endMinutes = endTime!.getTotalMinutes;
 
-    if (end.isDayStart) {
-      final difference =
-          end.add(Duration(days: 1) - Duration(seconds: 1)).difference(start);
-
-      return difference + Duration(seconds: 1);
+    // If end time is at day start (00:00), treat it as end of day
+    if (endTime!.isDayStart) {
+      // Duration from start time to end of day (23:59:59)
+      final minutesUntilEndOfDay = (24 * 60) - startMinutes;
+      return Duration(minutes: minutesUntilEndOfDay);
+    } else if (endMinutes < startMinutes) {
+      // End time is on the next day
+      final minutesUntilMidnight = (24 * 60) - startMinutes;
+      return Duration(minutes: minutesUntilMidnight + endMinutes);
     } else {
-      return end.difference(start);
+      // Same day event
+      return Duration(minutes: endMinutes - startMinutes);
     }
   }
 
@@ -138,8 +335,8 @@ class CalendarEventData<T extends Object?> {
     String? description,
     T? event,
     Color? color,
-    DateTime? startTime,
-    DateTime? endTime,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
     TextStyle? titleStyle,
     TextStyle? descriptionStyle,
     DateTime? endDate,
@@ -148,7 +345,7 @@ class CalendarEventData<T extends Object?> {
   }) {
     return CalendarEventData(
       title: title ?? this.title,
-      date: date ?? this.date,
+      startDate: date ?? this.date,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       color: color ?? this.color,
@@ -174,11 +371,11 @@ class CalendarEventData<T extends Object?> {
         ((startTime == null && other.startTime == null) ||
             (startTime != null &&
                 other.startTime != null &&
-                startTime!.hasSameTimeAs(other.startTime!))) &&
+                startTime!.isSameAs(other.startTime!))) &&
         ((endTime == null && other.endTime == null) ||
             (endTime != null &&
                 other.endTime != null &&
-                endTime!.hasSameTimeAs(other.endTime!))) &&
+                endTime!.isSameAs(other.endTime!))) &&
         title == other.title &&
         color == other.color &&
         titleStyle == other.titleStyle &&
@@ -197,25 +394,19 @@ class CalendarEventData<T extends Object?> {
 }
 
 /// {@template calendar_event_data_doc}
-/// Stores all the events on [date].
+/// Stores the event data.
 ///
-/// If [startTime] and [endTime] both are 0 or either of them is null, then
-/// event will be considered a full day event.
+/// [date] and [endDate] define the date range of the event.
+/// [startTime] and [endTime] define the time of the event on the start and end dates respectively.
 ///
-/// - [date] and [endDate] are used to define dates only. So, If you
-/// are providing any time information with these two arguments,
-/// it will be ignored.
+/// If [startTime] and [endTime] are null, the event is considered a full day event.
 ///
-/// - [startTime] and [endTime] are used to define the time span of the event.
-/// So, If you are providing any day information (year, month, day), it will
-/// be ignored. It will also, consider only hour and minutes as time. So,
-/// seconds, milliseconds and microseconds will be ignored as well.
+/// - [date] and [endDate] are used to define dates only. Any time information
+///   provided with these arguments is ignored.
 ///
-/// - [startTime] and [endTime] can not span more then one day. For example,
-/// If start time is 11th Nov 11:30 PM and end time is 12th Nov 1:30 AM, it
-/// will not be considered as valid time. Because for [startTime] and [endTime],
-/// day will be ignored so, 11:30 PM ([startTime]) occurs after
-/// 1:30 AM ([endTime]). Events with invalid time will throw
-/// [AssertionError] in debug mode and will be ignored in release mode
-/// in [DayView] and [WeekView].
+/// - [startTime] and [endTime] are of type [TimeOfDay], considering only hours and minutes.
+///
+/// - For multi-day events, [date] defines the start date and [endDate] defines
+///   the end date. The [startTime] applies to the start date and
+///   [endTime] applies to the end date.
 /// {@endtemplate}

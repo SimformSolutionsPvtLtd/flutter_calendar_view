@@ -117,7 +117,12 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                     }
                   });
                 },
-                activeThumbColor: color.surface,
+                activeTrackColor: color.onSurface.accent,
+                inactiveTrackColor: color.surface,
+                inactiveThumbColor: color.onSurface,
+                activeThumbColor: _isRecurring
+                    ? color.onSurface
+                    : color.surface,
               ),
             ],
           ),
@@ -370,7 +375,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                       setState(() {
                         _selectedDays[index] = selected;
                         if (!_selectedDays.contains(true)) {
-                          _selectedDays[_startDate.weekday - 1] = true;
+                          _selectedDays[_startDate.weekDayEnum.index] = true;
                         }
                       });
                     },
@@ -583,10 +588,20 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
         : _endDate;
 
     final event = CalendarEventData(
-      date: _startDate,
+      startDate: _startDate,
       endDate: eventEndDate,
-      endTime: combinedEndTime,
-      startTime: combinedStartTime,
+      endTime: combinedEndTime?.hour != null
+          ? TimeOfDay(
+              hour: combinedEndTime!.hour,
+              minute: combinedEndTime.minute,
+            )
+          : null,
+      startTime: combinedStartTime?.hour != null
+          ? TimeOfDay(
+              hour: combinedStartTime!.hour,
+              minute: combinedStartTime.minute,
+            )
+          : null,
       color: _color,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
@@ -597,15 +612,15 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     _resetForm();
   }
 
-  /// Get list of weekdays in indices from the selected days
-  List<int> get _toWeekdayInIndices {
-    List<int> selectedIndexes = [];
+  /// Get list of weekdays from the selected days
+  List<WeekDays> get _toWeekdayInIndices {
+    List<WeekDays> selectedWeekdays = [];
     for (int i = 0; i < _selectedDays.length; i++) {
       if (_selectedDays[i] == true) {
-        selectedIndexes.add(i);
+        selectedWeekdays.add(WeekDays.values[i]);
       }
     }
-    return selectedIndexes;
+    return selectedWeekdays;
   }
 
   void updateWeekdaysSelection() {
@@ -615,14 +630,14 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     }
     DateTime current = _startDate;
     while (current.isBefore(_endDate) || current.isAtSameMomentAs(_endDate)) {
-      _selectedDays[current.weekday - 1] = true;
+      _selectedDays[current.weekDayEnum.index] = true;
       current = current.add(Duration(days: 1));
     }
   }
 
   /// Set initial selected week to start date
   void _setInitialWeekday() {
-    final currentWeekday = DateTime.now().weekday - 1;
+    final currentWeekday = DateTime.now().weekDayEnum.index;
     _selectedDays[currentWeekday] = true;
   }
 
@@ -636,8 +651,18 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
     _startDate = event.date;
     _endDate = event.endDate;
-    _startTime = event.startTime ?? _startTime;
-    _endTime = event.endTime ?? _endTime;
+    _startTime = event.startTime != null
+        ? _startDate.copyWith(
+            hour: event.startTime!.hour,
+            minute: event.startTime!.minute,
+          )
+        : _startDate;
+    _endTime = event.endTime != null
+        ? _endDate.copyWith(
+            hour: event.endTime!.hour,
+            minute: event.endTime!.minute,
+          )
+        : _endDate;
     _titleController.text = event.title;
     _descriptionController.text = event.description ?? '';
     _color = event.color; // Set the event color
@@ -659,7 +684,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       // Clear weekdays selection and then set the selected days
       _selectedDays = List.filled(7, false);
       event.recurrenceSettings!.weekdays.forEach(
-        (index) => _selectedDays[index] = true,
+        (week) => _selectedDays[week.index] = true,
       );
     } else {
       _isRecurring = false;

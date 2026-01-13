@@ -208,6 +208,42 @@ extension DateTimeExtensions on DateTime {
       "This extension is not being used in this package and will be removed "
       "in next major release. Please use withoutTime instead.")
   DateTime get dateYMD => DateTime(year, month, day);
+
+  /// Returns the corresponding [WeekDays] enum value for this DateTime's weekday.
+  ///
+  /// This provides an ergonomic way to convert DateTime.weekday (1-7, Monday-Sunday)
+  /// to the [WeekDays] enum (0-6, monday-sunday).
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15); // Monday
+  /// print(date.weekDayEnum); // WeekDays.monday
+  /// ```
+  WeekDays get weekDayEnum => WeekDays.values[weekday - 1];
+}
+
+extension TimeOfDayExtension on TimeOfDay {
+  /// Returns true if this time represents the start of day (00:00).
+  bool get isDayStart => hour == 0 && minute == 0;
+  int get getTotalMinutes => hour * 60 + minute;
+
+  /// Converts TimeOfDay to DateTime on the given date.
+  DateTime toDateTime(DateTime date) {
+    return DateTime(date.year, date.month, date.day, hour, minute);
+  }
+
+  /// Compares if two TimeOfDay objects represent the same time.
+  bool isSameAs(TimeOfDay other) {
+    return hour == other.hour && minute == other.minute;
+  }
+
+  /// Creates a TimeOfDay from total minutes since midnight
+  /// For example, 870 minutes = 14:30 (2:30 PM)
+  static TimeOfDay copyFromMinutes(int totalMinutes) {
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    return TimeOfDay(hour: hours % 24, minute: minutes);
+  }
 }
 
 extension ColorExtension on Color {
@@ -281,10 +317,6 @@ int defaultEventSorter<T extends Object?>(
       (b.startTime?.getTotalMinutes ?? 0);
 }
 
-extension TimerOfDayExtension on TimeOfDay {
-  int get getTotalMinutes => hour * 60 + minute;
-}
-
 extension IntExtension on int {
   String appendLeadingZero() {
     return toString().padLeft(2, '0');
@@ -297,8 +329,8 @@ void debugLog(String message) {
       debugPrint(message);
     } catch (e) {} //ignore: empty_catches Suppress exception...
 
-    return false;
-  }(), '');
+    return true;
+  }());
 }
 
 /// For callbacks with one argument

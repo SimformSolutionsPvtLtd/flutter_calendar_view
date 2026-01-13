@@ -71,5 +71,9 @@
   "done": "Done",
   "selectLanguage": "Select Language",
   "reachedTheEndPage": "You have reached the end of the page",
-  "reachedTheStartPage": "You have reached the start of the page"
+  "reachedTheStartPage": "You have reached the start of the page",
+  "annualTechConferenceTitle": "Annual Tech Conference",
+  "annualTechConferenceDesc": "Attend the annual tech conference.",
+  "extendedWorkshopTitle": "Extended Workshop",
+  "extendedWorkshopDesc": "Participate in the extended software development workshop."
 }

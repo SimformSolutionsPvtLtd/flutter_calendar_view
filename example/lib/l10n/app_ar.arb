@@ -71,5 +71,9 @@
   "done": "تم",
   "selectLanguage": "اختر اللغة",
   "reachedTheEndPage": "لقد وصلت إلى نهاية الصفحة",
-  "reachedTheStartPage": "لقد وصلت إلى بداية الصفحة"
+  "reachedTheStartPage": "لقد وصلت إلى بداية الصفحة",
+  "annualTechConferenceTitle": "المؤتمر التقني السنوي",
+  "annualTechConferenceDesc": "حضور المؤتمر التقني السنوي.",
+  "extendedWorkshopTitle": "ورشة عمل موسعة",
+  "extendedWorkshopDesc": "المشاركة في ورشة العمل الموسعة لتطوير البرمجيات."
 }
