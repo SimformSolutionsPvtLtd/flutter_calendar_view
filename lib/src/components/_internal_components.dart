@@ -466,16 +466,18 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
                     .any((element) => element == scrollNotifier.event)) {
               _scrollToEvent(context);
             }
-            return eventTileBuilder(
-              date,
-              events[index].events,
-              Rect.fromLTWH(
-                  events[index].left,
-                  events[index].top,
-                  width - events[index].right - events[index].left,
-                  height - events[index].bottom - events[index].top),
-              events[index].startDuration,
-              events[index].endDuration,
+            return ClipRect(
+              child: eventTileBuilder(
+                date,
+                events[index].events,
+                Rect.fromLTWH(
+                    events[index].left,
+                    events[index].top,
+                    width - events[index].right - events[index].left,
+                    height - events[index].bottom - events[index].top),
+                events[index].startDuration,
+                events[index].endDuration,
+              ),
             );
           }),
         ),

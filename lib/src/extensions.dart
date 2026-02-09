@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
+import 'constants.dart';
 
 T? ambiguate<T>(T? object) => object;
 
@@ -359,5 +360,58 @@ extension BuildContextMultiDayViewThemeExtension on BuildContext {
     return Theme.of(this).brightness == Brightness.dark
         ? MultiDayViewThemeData.dark()
         : MultiDayViewThemeData.light();
+  }
+}
+
+/// Extension on CalendarEventData to calculate visible time ranges
+/// for multi-day events on a specific calendar date.
+extension CalendarEventDataVisibility<T extends Object?>
+    on CalendarEventData<T> {
+  /// Gets the visible start minute of the event on the given calendar date.
+  /// For multi-day events, returns 0 for middle/end days, actual start time for start day.
+  int getVisibleStartMinutes(DateTime calendarDate) {
+    if (isRangingEvent) {
+      // For multi-day events, endDate is always after date (at least 1 day difference)
+      final eventStartDate = date.withoutTime;
+      final isStartDate = calendarDate.isAtSameMomentAs(eventStartDate);
+
+      if (isStartDate) {
+        // First day of multi-day event - use actual start time
+        return startTime!.getTotalMinutes;
+      } else {
+        // Middle or end day - starts at beginning of day (00:00)
+        return 0;
+      }
+    }
+    return startTime!.getTotalMinutes;
+  }
+
+  /// Gets the visible end minute of the event on the given calendar date.
+  /// For multi-day events, returns 1440 (end of day) for start/middle days, actual end time for end day.
+  /// Note: An endTime of 0 (midnight) is treated as end-of-day (1440) for timed events.
+  int getVisibleEndMinutes(DateTime calendarDate) {
+    if (isRangingEvent) {
+      // For multi-day events, endDate is always after date (at least 1 day difference)
+      final eventEndDate = endDate.withoutTime;
+      final isEndDate = calendarDate.isAtSameMomentAs(eventEndDate);
+
+      if (isEndDate) {
+        // Last day of multi-day event - check if endTime is 0 (treat as end-of-day)
+        final endMinutes = endTime!.getTotalMinutes;
+        return endMinutes == 0 ? Constants.minutesADay : endMinutes;
+      } else {
+        // Start or middle day - extends to end of day (23:59)
+        return Constants.minutesADay;
+      }
+    }
+    // Single day event - check if endTime is 0 (treat as end-of-day)
+    final endMinutes = endTime!.getTotalMinutes;
+    return endMinutes == 0 ? Constants.minutesADay : endMinutes;
+  }
+
+  /// Gets the visible duration (in minutes) of the event on the given calendar date.
+  int getVisibleDuration(DateTime calendarDate) {
+    return getVisibleEndMinutes(calendarDate) -
+        getVisibleStartMinutes(calendarDate);
   }
 }

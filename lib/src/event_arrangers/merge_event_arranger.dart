@@ -39,6 +39,7 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     //
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
     final startHourInMinutes = startHour * 60;
+    final calendarDate = calendarViewDate.withoutTime;
 
     //Checking if startTime and endTime are correct
     for (final event in events) {
@@ -70,55 +71,26 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       final startTime = event.startTime!;
       final endTime = event.endTime!;
 
-      int eventStart;
-      int eventEnd;
-
-      if (event.isRangingEvent) {
-        // Handle multi-day events differently based on which day is currently being viewed
-        final isStartDate =
-            calendarViewDate.isAtSameMomentAs(event.date.withoutTime);
-        final isEndDate =
-            calendarViewDate.isAtSameMomentAs(event.endDate.withoutTime);
-
-        if (isStartDate && isEndDate) {
-          // Single day event with start and end time
-          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-              ? Constants.minutesADay - (startHourInMinutes)
-              : endTime.getTotalMinutes - (startHourInMinutes);
-        } else if (isStartDate) {
-          // First day - show from start time to end of day
-          eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-          eventEnd = Constants.minutesADay;
-        } else if (isEndDate) {
-          // Last day - show from start of day to end time
-          eventStart = 0;
-          eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-              ? Constants.minutesADay - (startHourInMinutes)
-              : endTime.getTotalMinutes - (startHourInMinutes);
-        } else {
-          // Middle days - show full day
-          eventStart = 0;
-          eventEnd = Constants.minutesADay;
-        }
-      } else {
-        // Single day event - use normal start/end times
-        eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-        eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-            ? Constants.minutesADay - (startHourInMinutes)
-            : endTime.getTotalMinutes - (startHourInMinutes);
-      }
+      // Use visible time range for this calendar date
+      int eventStart =
+          event.getVisibleStartMinutes(calendarDate) - startHourInMinutes;
+      int eventEnd =
+          event.getVisibleEndMinutes(calendarDate) - startHourInMinutes;
 
       // Ensure values are within valid range
+      // Clamp to [0, minutesInView] where minutesInView = 1440 - startHourInMinutes
       eventStart = math.max(0, eventStart);
+      eventEnd = math.max(
+          0, eventEnd); // Prevent negative values from midnight handling
       eventEnd = math.min(
-        Constants.minutesADay - (startHourInMinutes),
+        Constants.minutesADay - startHourInMinutes,
         eventEnd,
       );
 
       final arrangeEventLen = arrangedEvents.length;
 
-      var eventIndex = -1;
+      // Find ALL overlapping arranged events and merge them together
+      final overlappingIndices = <int>[];
 
       for (var i = 0; i < arrangeEventLen; i++) {
         final arrangedEventStart =
@@ -131,12 +103,11 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
         if (_checkIsOverlapping(
             arrangedEventStart, arrangedEventEnd, eventStart, eventEnd)) {
-          eventIndex = i;
-          break;
+          overlappingIndices.add(i);
         }
       }
 
-      if (eventIndex == -1) {
+      if (overlappingIndices.isEmpty) {
         final top = eventStart * heightPerMinute;
 
         // Calculate visibleMinutes (the total minutes displayed in the view)
@@ -160,42 +131,56 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
         arrangedEvents.add(newEvent);
       } else {
-        final arrangedEventData = arrangedEvents[eventIndex];
+        // Merge with all overlapping events
+        // Start with the current event's range
+        var mergedStartDuration = eventStart;
+        var mergedEndDuration = eventEnd;
+        final mergedEvents = <CalendarEventData<T>>[event];
 
-        final arrangedEventStart =
-            arrangedEventData.startDuration.getTotalMinutes;
-        final arrangedEventEnd =
-            arrangedEventData.endDuration.getTotalMinutes == 0
-                ? Constants.minutesADay
-                : arrangedEventData.endDuration.getTotalMinutes;
+        // Collect all events from overlapping groups and expand the range
+        for (final idx in overlappingIndices) {
+          final arrangedEventData = arrangedEvents[idx];
+          final arrangedEventStart =
+              arrangedEventData.startDuration.getTotalMinutes;
+          final arrangedEventEnd =
+              arrangedEventData.endDuration.getTotalMinutes == 0
+                  ? Constants.minutesADay
+                  : arrangedEventData.endDuration.getTotalMinutes;
 
-        final startDuration = math.min(eventStart, arrangedEventStart);
-        final endDuration = math.max(eventEnd, arrangedEventEnd);
+          mergedStartDuration =
+              math.min(mergedStartDuration, arrangedEventStart);
+          mergedEndDuration = math.max(mergedEndDuration, arrangedEventEnd);
+          mergedEvents.addAll(arrangedEventData.events);
+        }
 
-        final top = startDuration * heightPerMinute;
+        final top = mergedStartDuration * heightPerMinute;
 
         // Calculate visibleMinutes (the total minutes displayed in the view)
-        final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
+        final visibleMinutes = Constants.minutesADay - startHourInMinutes;
 
         // Check if event ends at or beyond the visible area
-        final bottom = endDuration >= visibleMinutes
+        final bottom = mergedEndDuration >= visibleMinutes
             ? 0.0 // Event extends to bottom of view
-            : height - endDuration * heightPerMinute;
+            : height - mergedEndDuration * heightPerMinute;
 
-        final newEvent = OrganizedCalendarEventData<T>(
+        final newMergedEvent = OrganizedCalendarEventData<T>(
           top: top,
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration:
-              arrangedEventData.startDuration.copyFromMinutes(startDuration),
-          endDuration:
-              arrangedEventData.endDuration.copyFromMinutes(endDuration),
-          events: arrangedEventData.events..add(event),
+          startDuration: startTime.copyFromMinutes(mergedStartDuration),
+          endDuration: endTime.copyFromMinutes(mergedEndDuration),
+          events: mergedEvents,
           calendarViewDate: calendarViewDate,
         );
 
-        arrangedEvents[eventIndex] = newEvent;
+        // Remove all overlapping events (in reverse order to maintain indices)
+        for (var i = overlappingIndices.length - 1; i >= 0; i--) {
+          arrangedEvents.removeAt(overlappingIndices[i]);
+        }
+
+        // Add the merged event
+        arrangedEvents.add(newMergedEvent);
       }
     }
 

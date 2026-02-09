@@ -71,10 +71,13 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
           // So, we will extract all the events that can be fit in
           // Single column without overlapping and run the function
           // again for the rest of the events.
-
+          final endMinutes = event.endDuration.getTotalMinutes == 0
+              ? 1440
+              : event.endDuration.getTotalMinutes;
           final columnedEvents = _extractSingleColumnEvents(
             event.events,
-            event.endDuration.getTotalMinutes,
+            endMinutes,
+            calendarViewDate,
           );
 
           final sided = _categorizedColumnedEvents(
@@ -114,55 +117,26 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
             math.min(width / event.columns, maxWidth ?? double.maxFinite);
 
         if (event.event.isNotEmpty) {
-          // TODO(parth): Arrange events and add it in arranged.
-
           arranged.addAll(event.event.map((e) {
             final startTime = e.startTime!;
             final endTime = e.endTime!;
 
-            int eventStart;
-            int eventEnd;
+            // Use visible time calculation for multi-day event support
+            final visibleStart =
+                e.getVisibleStartMinutes(calendarViewDate.withoutTime);
+            final visibleEnd =
+                e.getVisibleEndMinutes(calendarViewDate.withoutTime);
 
-            if (e.isRangingEvent) {
-              // Handle multi-day events differently based on which day is currently being viewed
-              final isStartDate =
-                  calendarViewDate.isAtSameMomentAs(e.date.withoutTime);
-              final isEndDate =
-                  calendarViewDate.isAtSameMomentAs(e.endDate.withoutTime);
-
-              if (isStartDate && isEndDate) {
-                // Single day event with start and end time
-                eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-                eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-                    ? Constants.minutesADay - (startHourInMinutes)
-                    : endTime.getTotalMinutes - (startHourInMinutes);
-              } else if (isStartDate) {
-                // First day - show from start time to end of day
-                eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-                eventEnd = Constants.minutesADay - (startHourInMinutes);
-              } else if (isEndDate) {
-                // Last day - show from start of day to end time
-                eventStart = 0;
-                eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-                    ? Constants.minutesADay - (startHourInMinutes)
-                    : endTime.getTotalMinutes - (startHourInMinutes);
-              } else {
-                // Middle days - show full day
-                eventStart = 0;
-                eventEnd = Constants.minutesADay - (startHourInMinutes);
-              }
-            } else {
-              // Single day event - use normal start/end times
-              eventStart = startTime.getTotalMinutes - (startHourInMinutes);
-              eventEnd = endTime.getTotalMinutes - (startHourInMinutes) <= 0
-                  ? Constants.minutesADay - (startHourInMinutes)
-                  : endTime.getTotalMinutes - (startHourInMinutes);
-            }
+            // Calculate event times relative to startHour
+            int eventStart = visibleStart - startHourInMinutes;
+            int eventEnd = visibleEnd - startHourInMinutes;
 
             // Ensure values are within valid range
+            // Clamp to [0, minutesInView] where minutesInView = 1440 - startHourInMinutes
             eventStart = math.max(0, eventStart);
+            eventEnd = math.max(0, eventEnd); // Prevent negative values
             eventEnd = math.min(
-              Constants.minutesADay - (startHourInMinutes),
+              Constants.minutesADay - startHourInMinutes,
               eventEnd,
             );
 
@@ -209,25 +183,26 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   }
 
   List<CalendarEventData<T>> _extractSingleColumnEvents(
-      List<CalendarEventData<T>> events, int end) {
-    // Find the longest event from the list.
+      List<CalendarEventData<T>> events, int end, DateTime calendarViewDate) {
+    final calendarDate = calendarViewDate.withoutTime;
+
+    // Find the longest visible event on this calendar date
     final longestEvent = events.fold<CalendarEventData<T>>(
       events.first,
-      (e1, e2) => e1.duration > e2.duration ? e1 : e2,
+      (e1, e2) => e1.getVisibleDuration(calendarDate) >
+              e2.getVisibleDuration(calendarDate)
+          ? e1
+          : e2,
     );
 
     // Create a new list from events and remove the longest one from it.
     final searchEvents = [...events]..remove(longestEvent);
 
     // Create a new list for events in single column.
-    // Right now it has longest event,
-    // By the end of the function, this will have the list of the events,
-    // that are not intersecting with each other.
-    // and this will be returned from the function.
     final columnedEvents = [longestEvent];
 
     // Calculate effective end minute from latest columned event.
-    var endMinutes = longestEvent.endTime!.getTotalMinutes;
+    var endMinutes = longestEvent.getVisibleEndMinutes(calendarDate);
 
     // Run the loop while effective end minute of columned events are
     // less than end.
@@ -237,31 +212,46 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
       // Create a new list from searchEvents.
       for (final event in [...searchEvents]) {
-        // Need to add logic to include edges...
-        final start = event.startTime!.getTotalMinutes;
+        // Check if event overlaps with ANY event in columnedEvents
+        var hasOverlap = false;
 
-        // TODO(parth): Need to improve this.
-        // This does not handle the case where there is a event before the
-        // longest event which is not intersecting.
-        //
-        if (start < endMinutes || (includeEdges && start == endMinutes)) {
-          // Remove search event from list so, we do not iterate through it
-          // again.
+        // Get visible time range for event on this calendar date
+        final eventStart = event.getVisibleStartMinutes(calendarDate);
+        final eventEnd = event.getVisibleEndMinutes(calendarDate);
+
+        for (final columnedEvent in columnedEvents) {
+          // Get visible time range for columnedEvent on this calendar date
+          final columnedStart =
+              columnedEvent.getVisibleStartMinutes(calendarDate);
+          final columnedEnd = columnedEvent.getVisibleEndMinutes(calendarDate);
+
+          // Check for overlap
+          final overlaps =
+              (eventStart < columnedEnd && eventEnd > columnedStart) ||
+                  (includeEdges &&
+                      (eventStart == columnedEnd || eventEnd == columnedStart));
+
+          if (overlaps) {
+            hasOverlap = true;
+            break;
+          }
+        }
+
+        if (hasOverlap) {
           searchEvents.remove(event);
         } else {
-          // Add the event in mappings.
-          final diff = event.startTime!.getTotalMinutes - endMinutes;
-
+          final diff = eventStart - endMinutes;
           mappings.addAll({
             diff: event,
           });
         }
       }
 
-      // This can be any integer larger than 1440 as one day has 1440 minutes.
-      // so, different of 2 events end and start time will never be greater than
-      // 1440.
-      var min = 4000;
+      // Sentinel value for finding minimum time difference between events.
+      // Must be larger than any possible time difference in a day (max = 1440 minutes).
+      // Using 3x Constants.minutesADay to ensure it's always greater than max difference.
+      const maxPossibleMinuteDifference = Constants.minutesADay * 3;
+      var min = maxPossibleMinuteDifference;
 
       for (final mapping in mappings.entries) {
         if (mapping.key < min) {
@@ -270,13 +260,13 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
       }
 
       if (mappings[min] != null) {
-        // If mapping had min event, add it in columnedEvents,
-        // and remove it from searchEvents so, we do not iterate through it
-        // again.
         columnedEvents.add(mappings[min]!);
         searchEvents.remove(mappings[min]);
 
-        endMinutes = mappings[min]!.endTime!.getTotalMinutes;
+        endMinutes = mappings[min]!.getVisibleEndMinutes(calendarDate);
+      } else {
+        // No non-overlapping events found, break to avoid infinite loop
+        break;
       }
     }
 
