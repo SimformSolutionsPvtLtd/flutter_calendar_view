@@ -1,4 +1,4 @@
-# [2.0.0 - 25 Jun 2025](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
+# [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
 - Added clear method to `EventController`.
 - Added `onEventTapDetails`, `onEventDoubleTapDetails` & `onEventLongTapDetails` gesture recognizers
