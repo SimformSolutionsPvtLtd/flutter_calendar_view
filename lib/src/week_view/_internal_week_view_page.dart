@@ -592,6 +592,28 @@ class _InternalWeekViewPageState<T extends Object?>
                                       heightPerMinute: widget.heightPerMinute,
                                       endHour: widget.endHour,
                                     ),
+                                    if (widget.showLiveLine &&
+                                        widget.liveTimeIndicatorSettings
+                                                .height >
+                                            0 &&
+                                        widget.liveTimeIndicatorSettings
+                                            .onlyShowToday)
+                                      if (DateUtils.isSameDay(
+                                          filteredDates[index], DateTime.now()))
+                                        LiveTimeIndicator(
+                                          liveTimeIndicatorSettings:
+                                              widget.liveTimeIndicatorSettings,
+                                          width: widget.width,
+                                          height: widget.height,
+                                          heightPerMinute:
+                                              widget.heightPerMinute,
+                                          timeLineWidth: widget.timeLineWidth,
+                                          startHour: widget.startHour,
+                                          endHour: widget.endHour,
+                                          onlyShowToday: widget
+                                              .liveTimeIndicatorSettings
+                                              .onlyShowToday,
+                                        ),
                                   ],
                                 ),
                               ),
@@ -618,7 +640,8 @@ class _InternalWeekViewPageState<T extends Object?>
                       showMidnightHour: widget.showMidnightHour,
                     ),
                     if (widget.showLiveLine &&
-                        widget.liveTimeIndicatorSettings.height > 0)
+                        widget.liveTimeIndicatorSettings.height > 0 &&
+                        !widget.liveTimeIndicatorSettings.onlyShowToday)
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings:
                             widget.liveTimeIndicatorSettings,
