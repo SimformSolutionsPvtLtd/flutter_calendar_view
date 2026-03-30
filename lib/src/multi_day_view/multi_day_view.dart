@@ -93,6 +93,9 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Settings for quarter hour indicator settings.
   final HourIndicatorSettings? quarterHourIndicatorSettings;
 
+  /// Settings for divider between weekdays and full-day events.
+  final DividerSettings? dividerSettings;
+
   /// Settings for live time indicator settings.
   final LiveTimeIndicatorSettings? liveTimeIndicatorSettings;
 
@@ -266,6 +269,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.hourLinePainter,
     this.halfHourIndicatorSettings,
     this.quarterHourIndicatorSettings,
+    this.dividerSettings,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -361,6 +365,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   late HourIndicatorSettings _halfHourIndicatorSettings;
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
   late HourIndicatorSettings _quarterHourIndicatorSettings;
+  late DividerSettings _dividerSettings;
 
   late PageController _pageController;
 
@@ -559,6 +564,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
                                 _halfHourIndicatorSettings,
                             quarterHourIndicatorSettings:
                                 _quarterHourIndicatorSettings,
+                            dividerSettings: _dividerSettings,
                             dates: dates,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
                                 _showLiveTimeIndicator(dates),
@@ -682,6 +688,9 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
     assert(_quarterHourIndicatorSettings.height < _hourHeight,
         "quarterHourIndicator height must be less than minuteHeight * 60");
+
+    _dividerSettings =
+        widget.dividerSettings ?? DividerSettings(color: borderColor);
   }
 
   void _calculateHeights() {
