@@ -2,6 +2,7 @@
 
 - Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)
 - Added `DividerSerttings` to customize the dividers in `WeekView` and `MultiDayView`. [#374](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/374), [#430](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/430), [#498](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/498)
+- Added `timeSlotColorBuilder` in `DayView` and `WeekView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 

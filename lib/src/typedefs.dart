@@ -22,6 +22,19 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime endDuration,
 );
 
+/// Resolves a color for each visible time slot in day and week views.
+///
+/// This callback is used by an internal painter and is called for each
+/// rendered slot before events are drawn.
+///
+/// Slot granularity follows the view's `minuteSlotSize`.
+typedef TimeSlotColorBuilder = Color Function(
+  DateTime date,
+  DateTime slotStartTime,
+  DateTime slotEndTime,
+  int index,
+);
+
 typedef DetectorBuilder<T extends Object?> = Widget Function({
   required DateTime date,
   required double height,

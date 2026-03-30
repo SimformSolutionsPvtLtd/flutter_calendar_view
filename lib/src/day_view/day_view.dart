@@ -227,6 +227,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// A callback that resolves slot background color for each visible time slot.
+  /// Useful for highlighting unavailable hours, business hours, or blocked time.
+  final TimeSlotColorBuilder? timeSlotColorBuilder;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -278,6 +282,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
     this.onTimestampTap,
+    this.timeSlotColorBuilder,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -327,6 +332,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late CustomHourLinePainter _hourLinePainter;
 
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
+  late TimeSlotColorBuilder? _timeSlotColorBuilder;
 
   late PageController _pageController;
 
@@ -511,6 +517,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            timeSlotColorBuilder: _timeSlotColorBuilder,
                           ),
                         );
                       },
@@ -604,6 +611,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _dayDetectorBuilder =
         widget.dayDetectorBuilder ?? _defaultPressDetectorBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
+    _timeSlotColorBuilder = widget.timeSlotColorBuilder;
   }
 
   /// Sets the current date of this month.
