@@ -51,6 +51,22 @@ class DayViewWidget extends StatelessWidget {
       ),
       verticalLineOffset: 0,
       timeLineWidth: 65,
+      timeSlotColorBuilder: (_, slotStartTime, __, ___) {
+        final hour = slotStartTime.hour;
+        final isBusinessHours = hour >= 9 && hour < 17;
+        final isLunchBreak = hour == 12;
+        final isWeekend =
+            slotStartTime.weekday == DateTime.saturday ||
+            slotStartTime.weekday == DateTime.sunday;
+
+        return isWeekend
+            ? Colors.grey.shade100
+            : isLunchBreak
+            ? Colors.orange.shade100
+            : isBusinessHours
+            ? Colors.green.shade50
+            : Colors.grey.shade50;
+      },
       showLiveTimeLineInAllDays: true,
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,

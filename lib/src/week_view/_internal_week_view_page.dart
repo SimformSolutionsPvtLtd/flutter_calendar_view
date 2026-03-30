@@ -170,6 +170,9 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Use this to change background color of week view page
   final Color? backgroundColor;
 
+  /// A callback for rendering custom time slot background colors.
+  final TimeSlotColorBuilder? timeSlotColorBuilder;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -223,6 +226,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
     this.backgroundColor,
+    this.timeSlotColorBuilder,
   }) : super(key: key);
 
   @override
@@ -253,6 +257,87 @@ class _InternalWeekViewPageState<T extends Object?>
 
   void _scrollControllerListener() {
     widget.scrollListener(scrollController);
+  }
+
+  /// Builds background layers for time slots in the week view.
+  /// Uses [timeSlotColorBuilder] to determine each slot's color and paints
+  /// a grid of colored rectangles (one column per day, one row per slot).
+  ///
+  /// Parameter: [filteredDates] — visible dates for the page.
+  /// Returns a [Widget] that paints the slot backgrounds.
+  Widget _buildWeekTimeSlotBackgrounds(List<DateTime> filteredDates) {
+    // Extract the minute duration of each time slot (e.g., 15, 30, 60 minutes)
+    final slotMinutes = widget.minuteSlotSize.minutes;
+    // Calculate the pixel height occupied by one time slot
+    final heightPerSlot = widget.heightPerMinute * slotMinutes;
+    // Calculate the total number of time slots to display
+    // Formula: (number of hours × 60 minutes) ÷ slot size
+    final totalSlots =
+        ((widget.endHour - widget.startHour) * 60) ~/ slotMinutes;
+
+    return Align(
+      // Align the time slot backgrounds to the right (or left in RTL mode)
+      alignment: Directionality.of(context) == TextDirection.ltr
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      child: SizedBox(
+        // Width spans across all visible days
+        width: widget.weekTitleWidth * filteredDates.length,
+        height: widget.height,
+        child: Row(
+          children: [
+            // Generate a column for each visible day
+            ...List.generate(
+              filteredDates.length,
+              (dayIndex) {
+                final dayDate = filteredDates[dayIndex];
+                final dayStart = DateTime(
+                  dayDate.year,
+                  dayDate.month,
+                  dayDate.day,
+                  widget.startHour,
+                );
+
+                final slotDuration = Duration(minutes: slotMinutes);
+                // Generate a list of colors for each time slot of this day
+                final slotColors = List<Color>.generate(
+                  totalSlots,
+                  (slotIndex) {
+                    // Calculate the start time adn end time of this slot
+                    final slotStartTime =
+                        dayStart.add(slotDuration * slotIndex);
+                    final slotEndTime = slotStartTime.add(slotDuration);
+
+                    // Query the color builder to get the background color for this slot
+                    return widget.timeSlotColorBuilder!(
+                      dayDate,
+                      slotStartTime,
+                      slotEndTime,
+                      slotIndex,
+                    );
+                  },
+                );
+
+                return ClipRect(
+                  child: SizedBox(
+                    width: widget.weekTitleWidth,
+                    height: widget.height,
+                    child: RepaintBoundary(
+                      child: CustomPaint(
+                        painter: TimeSlotBackgroundPainter(
+                          heightPerSlot: heightPerSlot,
+                          slotColors: slotColors,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -371,6 +456,9 @@ class _InternalWeekViewPageState<T extends Object?>
                 width: widget.width,
                 child: Stack(
                   children: [
+                    // Render time slot backgrounds if color builder is provided
+                    if (widget.timeSlotColorBuilder != null)
+                      _buildWeekTimeSlotBackgrounds(filteredDates),
                     CustomPaint(
                       size: Size(widget.width, widget.height),
                       painter: widget.hourLinePainter(
