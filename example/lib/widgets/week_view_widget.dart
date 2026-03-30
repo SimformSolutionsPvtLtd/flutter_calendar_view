@@ -23,6 +23,11 @@ class WeekViewWidget extends StatelessWidget {
         color: Colors.redAccent,
         showTime: true,
       ),
+      dividerSettings: DividerSettings(
+        color: Colors.redAccent.withAlpha(40),
+        thickness: 0.5,
+        height: 0.5,
+      ),
       onTimestampTap: (date) {
         SnackBar snackBar = SnackBar(
           content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),

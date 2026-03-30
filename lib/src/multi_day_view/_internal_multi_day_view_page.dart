@@ -48,6 +48,9 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// Settings for quarter hour indicator lines.
   final HourIndicatorSettings quarterHourIndicatorSettings;
 
+  /// Settings for divider between weekdays and full-day events.
+  final DividerSettings dividerSettings;
+
   /// Flag to display live line.
   final bool showLiveLine;
 
@@ -186,6 +189,7 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
       required this.hourLinePainter,
       required this.halfHourIndicatorSettings,
       required this.quarterHourIndicatorSettings,
+      required this.dividerSettings,
       required this.showLiveLine,
       required this.liveTimeIndicatorSettings,
       required this.heightPerMinute,
@@ -297,9 +301,11 @@ class _InternalMultiDayViewPageState<T extends Object?>
           ),
           if (widget.showMutliDayBottomLine)
             Divider(
-              thickness: 1,
-              height: 1,
-              color: themeColor.borderColor,
+              thickness: widget.dividerSettings.thickness,
+              height: widget.dividerSettings.height,
+              color: widget.dividerSettings.color,
+              indent: widget.dividerSettings.indent,
+              endIndent: widget.dividerSettings.endIndent,
             ),
           SizedBox(
             width: widget.width,

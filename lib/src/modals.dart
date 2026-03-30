@@ -33,6 +33,43 @@ class HourIndicatorSettings {
       );
 }
 
+/// Settings for divider between FullDay events and weekdays header
+class DividerSettings {
+  /// Thickness of the divider line
+  final double thickness;
+
+  /// Height of the divider
+  final double height;
+
+  /// Color of the divider line
+  final Color color;
+
+  /// Empty space at the start of the divider line
+  final double indent;
+
+  /// Empty space at the end of the divider line
+  final double endIndent;
+
+  /// Settings for divider between FullDay events and weekdays header
+  const DividerSettings({
+    this.thickness = 1.0,
+    this.height = 1.0,
+    this.color = Colors.grey,
+    this.indent = 0.0,
+    this.endIndent = 0.0,
+  })  : assert(thickness >= 0, "Thickness must be greater than or equal to 0."),
+        assert(height >= 0, "Height must be greater than or equal to 0."),
+        assert(indent >= 0, "Indent must be greater than or equal to 0."),
+        assert(
+            endIndent >= 0, "End indent must be greater than or equal to 0.");
+
+  factory DividerSettings.none() => DividerSettings(
+        color: Colors.transparent,
+        thickness: 0.0,
+        height: 0.0,
+      );
+}
+
 /// Settings for live time line
 class LiveTimeIndicatorSettings {
   /// Color of time indicator.

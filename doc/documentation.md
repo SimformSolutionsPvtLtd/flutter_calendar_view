@@ -658,6 +658,7 @@ Default hour indicator settings.
     * To customise timeline use `timeLineBuilder`.
 * To change Hour lines color use `HourIndicatorSettings`.
 * To style hours, half hours & quarter hours use `HourIndicatorSettings`. Default color used is `surfaceContainerHighest`
+* To customise divider between weekdays and full-day events use `dividerSettings`.
 
 ```dart
   hourIndicatorSettings: HourIndicatorSettings(
@@ -669,6 +670,18 @@ Default hour indicator settings.
         color: Colors.redAccent,
         lineStyle: LineStyle.dashed,
       ),
+  dividerSettings: DividerSettings(
+        thickness: 2,
+        height: 2,
+        color: Colors.blueAccent,
+        indent: 10,
+        endIndent: 10,
+      ),
+```
+
+Hide divider in week view.
+```dart
+  dividerSettings: DividerSettings.none(),
 ```
 
 ### Month view
