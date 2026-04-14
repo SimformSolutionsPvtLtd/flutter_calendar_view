@@ -8,6 +8,19 @@ import '../../calendar_view.dart';
 import '../extensions.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
+  /// Main [Widget] to display month view.
+  const MonthView({
+    Key? key,
+    this.monthViewStyle = const MonthViewStyle(),
+    this.monthViewBuilders = const MonthViewBuilders(),
+    this.monthViewThemeSettings = const MonthViewThemeSettings(),
+    this.controller,
+    this.width,
+    this.selectedDate,
+    this.multiDateSelectionRange = const {},
+    this.multiDateSelectionColor,
+  }) : super(key: key);
+
   /// A required parameters that controls events for month view.
   ///
   /// This will auto update month view when user adds events in controller.
@@ -39,16 +52,11 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// caller and taps only trigger [MonthViewBuilders.onCellTap].
   final DateTime? selectedDate;
 
-  /// Main [Widget] to display month view.
-  const MonthView({
-    Key? key,
-    this.monthViewStyle = const MonthViewStyle(),
-    this.monthViewBuilders = const MonthViewBuilders(),
-    this.monthViewThemeSettings = const MonthViewThemeSettings(),
-    this.controller,
-    this.width,
-    this.selectedDate,
-  }) : super(key: key);
+  /// Set of dates that are selected via [MonthViewBuilders.onDateLongPressMoveUpdate]
+  final Set<DateTime> multiDateSelectionRange;
+
+  /// Color of the date cells selected via [MonthViewBuilders.onDateLongPressMoveUpdate]
+  final Color? multiDateSelectionColor;
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -64,6 +72,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   late int _currentIndex;
 
   int _totalMonths = 0;
+  bool _isMultiDateSelectionInProgress = false;
 
   late PageController _pageController;
 
@@ -229,6 +238,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     final textDirection = PackageStrings.currentLocale.isRTL
         ? TextDirection.rtl
         : TextDirection.ltr;
+    final columnCount = _monthViewStyle.showWeekends ? 7 : 5;
 
     return SafeAreaWrapper(
       option: _monthViewStyle.safeAreaOption,
@@ -237,14 +247,16 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: _width,
               child: _headerBuilder(_currentDate),
             ),
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
-                physics: _monthViewStyle.pageViewPhysics,
+                physics: _isMultiDateSelectionInProgress
+                    ? const NeverScrollableScrollPhysics()
+                    : _monthViewStyle.pageViewPhysics,
                 onPageChanged: _onPageChange,
                 itemBuilder: (_, index) {
                   final date = DateTime(_minDate.year, _minDate.month + index);
@@ -252,11 +264,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                     start: _monthViewStyle.startDay,
                     showWeekEnds: _monthViewStyle.showWeekends,
                   );
-                  Widget monthPageContent = Column(
+                  final Widget monthPageContent = Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: _width,
                         child: Row(
                           children: List.generate(
@@ -280,11 +292,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                                   _monthViewStyle.hideDaysNotInMonth,
                               showWeekends: _monthViewStyle.showWeekends,
                             );
+
                             final _cellAspectRatio =
                                 _monthViewStyle.useAvailableVerticalSpace
                                     ? calculateCellAspectRatio(
                                         height: constraints.maxHeight,
                                         daysInMonth: dates.length,
+                                        columnCount: columnCount,
                                       )
                                     : _monthViewStyle.cellAspectRatio;
 
@@ -296,6 +310,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                                 onCellTap: _handleCellTap,
                                 onDateLongPress:
                                     _monthViewBuilders.onDateLongPress,
+                                onDateLongPressMoveUpdate: _monthViewBuilders
+                                    .onDateLongPressMoveUpdate,
+                                onLongPressSelectionStateChange:
+                                    _handleLongPressSelectionStateChange,
                                 width: _width,
                                 height: _height,
                                 controller: controller,
@@ -321,8 +339,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
                   if (widget.monthViewBuilders.onHasReachedEnd != null ||
                       widget.monthViewBuilders.onHasReachedStart != null) {
-                    final bool isFirstPage = index == 0;
-                    final bool isLastPage = index == _totalMonths - 1;
+                    final isFirstPage = index == 0;
+                    final isLastPage = index == _totalMonths - 1;
                     if (isFirstPage || isLastPage) {
                       return GestureDetector(
                         onHorizontalDragEnd: (details) => onHorizontalDragEnd(
@@ -373,9 +391,17 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     }
   }
 
+  void _handleLongPressSelectionStateChange(bool isInProgress) {
+    if (_isMultiDateSelectionInProgress == isInProgress || !mounted) return;
+    setState(() {
+      _isMultiDateSelectionInProgress = isInProgress;
+    });
+  }
+
   void updateViewDimensions() {
     _width = widget.width ?? MediaQuery.of(context).size.width;
-    _cellWidth = _width / 7;
+    final columnCount = _monthViewStyle.showWeekends ? 7 : 5;
+    _cellWidth = _width / columnCount;
     _cellHeight = _cellWidth / _monthViewStyle.cellAspectRatio;
     _height = _cellHeight * 6;
   }
@@ -383,10 +409,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   double calculateCellAspectRatio({
     required double height,
     required int daysInMonth,
+    required int columnCount,
   }) {
-    final rows = daysInMonth / 7;
-    final _cellHeight = height / rows;
-    return _cellWidth / _cellHeight;
+    // Calculate no of rows (based on whether weekends are visible or not)
+    final rows = (daysInMonth / columnCount).ceilToDouble();
+    final cellHeight = height / rows;
+    return _cellWidth / cellHeight;
   }
 
   void _assignBuilders() {
@@ -437,8 +465,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     assert(
       _minDate.isBefore(_maxDate),
-      "Minimum date should be less than maximum date.\n"
-      "Provided minimum date: $_minDate, maximum date: $_maxDate",
+      'Minimum date should be less than maximum date.\n'
+      'Provided minimum date: $_minDate, maximum date: $_maxDate',
     );
 
     // Get number of months between _minDate and _maxDate.
@@ -467,7 +495,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       showNextIcon: date != _maxDate,
       onTitleTapped: () async {
         if (_monthViewBuilders.onHeaderTitleTap != null) {
-          _monthViewBuilders.onHeaderTitleTap!(date);
+          await _monthViewBuilders.onHeaderTitleTap!(date);
         } else {
           final selectedDate = await showDatePicker(
             context: context,
@@ -517,7 +545,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
-  /// Default cell builder. Used when [widget.cellBuilder] is null
+  /// Default cell builder. Used when [_cellBuilder] is null
   Widget _defaultCellBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -526,6 +554,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     bool isSelected,
     bool hideDaysNotInMonth,
   ) {
+    // Normalize both the input date and selected dates to date-only (midnight)
+    // This ensures selection works regardless of time component in selectedDates
+    final normalizedDate = date.withoutTime;
+    final isMultiSelected = widget.multiDateSelectionRange.any(
+      (selectedDate) => selectedDate.withoutTime == normalizedDate,
+    );
+    final color = isMultiSelected ? widget.multiDateSelectionColor : null;
     final themeColor = context.monthViewColors;
     final shouldHighlight = isSelected || isToday;
     final highlightedTitleColor = isSelected
@@ -566,6 +601,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         tileColor: themeColor.weekDayTileColor,
         highlightRadius: highlightRadius,
         highlightedTitleColor: highlightedTitleColor,
+        multipleDateSelectionColor: color,
       );
     }
     return FilledCell<T>(
@@ -590,6 +626,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       highlightRadius: highlightRadius,
       tileColor: _monthViewThemeSettings.cellsInMonthTileColor,
       highlightColor: highlightColor,
+      multipleDateSelectionColor: color,
     );
   }
 
@@ -610,8 +647,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Animate to next page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
-  /// respectively.
+  /// as [MonthViewStyle.pageTransitionDuration] and
+  /// [MonthViewStyle.pageTransitionCurve] respectively.
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? _monthViewStyle.pageTransitionDuration,
@@ -622,8 +659,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Animate to previous page
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
-  /// respectively.
+  /// as [MonthViewStyle.pageTransitionDuration] and
+  /// [MonthViewStyle.pageTransitionCurve] respectively.
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? _monthViewStyle.pageTransitionDuration,
@@ -639,13 +676,18 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Animate to page number [page].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
-  /// respectively.
-  Future<void> animateToPage(int page,
-      {Duration? duration, Curve? curve}) async {
-    await _pageController.animateToPage(page,
-        duration: duration ?? _monthViewStyle.pageTransitionDuration,
-        curve: curve ?? _monthViewStyle.pageTransitionCurve);
+  /// as [MonthViewStyle.pageTransitionDuration] and
+  /// [MonthViewStyle.pageTransitionCurve] respectively.
+  Future<void> animateToPage(
+    int page, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
+    await _pageController.animateToPage(
+      page,
+      duration: duration ?? _monthViewStyle.pageTransitionDuration,
+      curve: curve ?? _monthViewStyle.pageTransitionCurve,
+    );
   }
 
   /// Returns current page number.
@@ -662,10 +704,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Animate to page which gives month calendar for [month].
   ///
   /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthView.pageTransitionDuration] and [MonthView.pageTransitionCurve]
-  /// respectively.
-  Future<void> animateToMonth(DateTime month,
-      {Duration? duration, Curve? curve}) async {
+  /// as [MonthViewStyle.pageTransitionDuration] and
+  /// [MonthViewStyle.pageTransitionCurve] respectively.
+  Future<void> animateToMonth(
+    DateTime month, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
     if (month.isBefore(_minDate) || month.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
@@ -681,26 +726,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 }
 
 /// A single month page.
-class _MonthPageBuilder<T> extends StatelessWidget {
-  final double cellRatio;
-  final bool showBorder;
-  final double borderSize;
-  final Color? borderColor;
-  final CellBuilder<T> cellBuilder;
-  final DateTime? selectedDate;
-  final DateTime date;
-  final EventController<T> controller;
-  final double width;
-  final double height;
-  final CellTapCallback<T>? onCellTap;
-  final DatePressCallback? onDateLongPress;
-  final WeekDays startDay;
-  final ScrollPhysics physics;
-  final bool hideDaysNotInMonth;
-  final int weekDays;
-
+class _MonthPageBuilder<T> extends StatefulWidget {
   const _MonthPageBuilder({
-    Key? key,
     required this.cellRatio,
     required this.showBorder,
     required this.borderSize,
@@ -712,72 +739,241 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.height,
     required this.onCellTap,
     required this.onDateLongPress,
+    required this.onDateLongPressMoveUpdate,
+    required this.onLongPressSelectionStateChange,
     required this.startDay,
     required this.physics,
     required this.hideDaysNotInMonth,
     required this.weekDays,
+    Key? key,
     this.borderColor,
   }) : super(key: key);
 
+  final double cellRatio;
+  final bool showBorder;
+  final double borderSize;
+  final Color? borderColor;
+  final CellBuilder<T> cellBuilder;
+  final DateTime date;
+  final EventController<T> controller;
+  final double width;
+  final double height;
+  final CellTapCallback<T>? onCellTap;
+  final DatePressCallback? onDateLongPress;
+  final DateLongPressMoveUpdateCallback? onDateLongPressMoveUpdate;
+  final ValueChanged<bool>? onLongPressSelectionStateChange;
+  final WeekDays startDay;
+  final ScrollPhysics physics;
+  final bool hideDaysNotInMonth;
+  final int weekDays;
+  final DateTime? selectedDate;
+
+  @override
+  State<_MonthPageBuilder<T>> createState() => _MonthPageBuilderState<T>();
+}
+
+class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
+  DateTime? _lastReportedDate;
+  bool _isLongPressActive = false;
+
+  @override
+  void dispose() {
+    _cancelLongPressTracking();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final monthDays = date.datesOfMonths(
-      startDay: startDay,
-      hideDaysNotInMonth: hideDaysNotInMonth,
-      showWeekends: weekDays == 7,
+    final monthDays = widget.date.datesOfMonths(
+      startDay: widget.startDay,
+      hideDaysNotInMonth: widget.hideDaysNotInMonth,
+      showWeekends: widget.weekDays == 7,
     );
+    final rowCount = (monthDays.length / widget.weekDays).ceil();
 
     // Highlight tiles which is not in current month
-    return SizedBox(
-      width: width,
-      height: height,
+    final grid = SizedBox(
+      width: widget.width,
+      height: widget.height,
       child: GridView.builder(
         padding: EdgeInsets.zero,
-        physics: physics,
+        physics: widget.physics,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: weekDays,
-          childAspectRatio: cellRatio,
+          crossAxisCount: widget.weekDays,
+          childAspectRatio: widget.cellRatio,
         ),
         itemCount: monthDays.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           // Hide events if `hideDaysNotInMonth` true
-          final events =
-              hideDaysNotInMonth && (monthDays[index].month != date.month)
-                  ? <CalendarEventData<T>>[]
-                  : controller.getEventsOnDay(monthDays[index]);
+          final events = widget.hideDaysNotInMonth &&
+                  (monthDays[index].month != widget.date.month)
+              ? <CalendarEventData<T>>[]
+              : widget.controller.getEventsOnDay(monthDays[index]);
           final isSelected =
-              selectedDate?.compareWithoutTime(monthDays[index]) ?? false;
+              widget.selectedDate?.compareWithoutTime(monthDays[index]) ??
+                  false;
           return GestureDetector(
-            onTap: () => onCellTap?.call(events, monthDays[index]),
-            onLongPress: () => onDateLongPress?.call(monthDays[index]),
+            behavior: HitTestBehavior.opaque,
+            onTap: () => widget.onCellTap?.call(events, monthDays[index]),
             child: Container(
               decoration: BoxDecoration(
-                border: showBorder
+                border: widget.showBorder
                     ? Border.all(
-                        color: borderColor ??
+                        color: widget.borderColor ??
                             context.monthViewColors.cellBorderColor,
-                        width: borderSize,
+                        width: widget.borderSize,
                       )
                     : null,
               ),
-              child: cellBuilder(
+              child: widget.cellBuilder(
                 monthDays[index],
                 events,
                 monthDays[index].compareWithoutTime(DateTime.now()),
-                monthDays[index].month == date.month,
+                monthDays[index].month == widget.date.month,
                 isSelected,
-                hideDaysNotInMonth,
+                widget.hideDaysNotInMonth,
               ),
             ),
           );
         },
       ),
     );
+
+    if (!_hasLongPressCallbacks) {
+      return grid;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (details) => _handleLongPressStart(
+        details,
+        monthDays,
+        rowCount,
+      ),
+      onLongPressMoveUpdate: (details) => _handleLongPressMoveUpdate(
+        details,
+        monthDays,
+        rowCount,
+      ),
+      onLongPressEnd: (_) => _cancelLongPressTracking(),
+      onLongPressCancel: _cancelLongPressTracking,
+      child: grid,
+    );
+  }
+
+  bool get _hasLongPressCallbacks {
+    return widget.onDateLongPress != null ||
+        widget.onDateLongPressMoveUpdate != null;
+  }
+
+  void _handleLongPressStart(
+    LongPressStartDetails details,
+    List<DateTime> monthDays,
+    int rowCount,
+  ) {
+    if (!_hasLongPressCallbacks) return;
+
+    _isLongPressActive = true;
+    widget.onLongPressSelectionStateChange?.call(true);
+    _lastReportedDate = null;
+    _notifyLongPressDate(
+      localPosition: details.localPosition,
+      globalPosition: details.globalPosition,
+      monthDays: monthDays,
+      rowCount: rowCount,
+      isMoveUpdate: false,
+    );
+  }
+
+  void _handleLongPressMoveUpdate(
+    LongPressMoveUpdateDetails details,
+    List<DateTime> monthDays,
+    int rowCount,
+  ) {
+    if (!_isLongPressActive) return;
+
+    _notifyLongPressDate(
+      localPosition: details.localPosition,
+      globalPosition: details.globalPosition,
+      monthDays: monthDays,
+      rowCount: rowCount,
+      isMoveUpdate: true,
+      moveDetails: details,
+    );
+  }
+
+  void _notifyLongPressDate({
+    required Offset localPosition,
+    required Offset globalPosition,
+    required List<DateTime> monthDays,
+    required int rowCount,
+    required bool isMoveUpdate,
+    LongPressMoveUpdateDetails? moveDetails,
+  }) {
+    final date = _getDateFromPosition(
+      localPosition: localPosition,
+      monthDays: monthDays,
+      rowCount: rowCount,
+    );
+
+    if (date == null) return;
+
+    if (date == _lastReportedDate) return;
+
+    if (!isMoveUpdate) {
+      widget.onDateLongPress?.call(date);
+    } else if (widget.onDateLongPressMoveUpdate != null) {
+      widget.onDateLongPressMoveUpdate!(
+        date,
+        moveDetails ??
+            LongPressMoveUpdateDetails(
+              globalPosition: globalPosition,
+              localPosition: localPosition,
+              offsetFromOrigin: Offset.zero,
+              localOffsetFromOrigin: Offset.zero,
+            ),
+      );
+    }
+
+    _lastReportedDate = date;
+  }
+
+  DateTime? _getDateFromPosition({
+    required Offset localPosition,
+    required List<DateTime> monthDays,
+    required int rowCount,
+  }) {
+    final size = context.size;
+    if (size == null || size.width <= 0 || size.height <= 0) return null;
+    if (localPosition.dx < 0 ||
+        localPosition.dy < 0 ||
+        localPosition.dx >= size.width ||
+        localPosition.dy >= size.height) {
+      return null;
+    }
+
+    final columnWidth = size.width / widget.weekDays;
+    final rowHeight = size.height / rowCount;
+    final column = (localPosition.dx / columnWidth).floor();
+    final row = (localPosition.dy / rowHeight).floor();
+    final index = row * widget.weekDays + column;
+
+    if (index < 0 || index >= monthDays.length) return null;
+    return monthDays[index];
+  }
+
+  void _cancelLongPressTracking() {
+    final wasLongPressActive = _isLongPressActive;
+    _lastReportedDate = null;
+    _isLongPressActive = false;
+    if (wasLongPressActive) {
+      widget.onLongPressSelectionStateChange?.call(false);
+    }
   }
 }
 
 class MonthHeader {
   /// Hide Header Widget
-  static Widget hidden(DateTime date) => SizedBox.shrink();
+  static Widget hidden(DateTime date) => const SizedBox.shrink();
 }
