@@ -9,6 +9,18 @@ import '../constants.dart';
 import '../extensions.dart';
 
 class CircularCell extends StatelessWidget {
+  /// Defines how a cell will be displayed.
+  /// For a proper view, use [CircularCell] with a [MonthViewStyle.cellAspectRatio].
+  const CircularCell({
+    required this.date,
+    Key? key,
+    this.events = const [],
+    this.shouldHighlight = false,
+    this.backgroundColor = Colors.blue,
+    this.highlightedTitleColor = Constants.white,
+    this.titleColor = Constants.black,
+  }) : super(key: key);
+
   /// Date of cell.
   final DateTime date;
 
@@ -27,25 +39,13 @@ class CircularCell extends StatelessWidget {
   /// Color of cell title.
   final Color titleColor;
 
-  /// This class will defines how cell will be displayed.
-  /// To get proper view user [CircularCell] with 1 [MonthView.cellAspectRatio].
-  const CircularCell({
-    Key? key,
-    required this.date,
-    this.events = const [],
-    this.shouldHighlight = false,
-    this.backgroundColor = Colors.blue,
-    this.highlightedTitleColor = Constants.white,
-    this.titleColor = Constants.black,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Center(
       child: CircleAvatar(
         backgroundColor: shouldHighlight ? backgroundColor : Colors.transparent,
         child: Text(
-          "${date.day}",
+          '${date.day}',
           style: TextStyle(
             fontSize: 20,
             color: shouldHighlight ? highlightedTitleColor : titleColor,
@@ -57,6 +57,31 @@ class CircularCell extends StatelessWidget {
 }
 
 class FilledCell<T extends Object?> extends StatelessWidget {
+  /// This class will defines how cell will be displayed.
+  /// This widget will display all the events as tile below date title.
+  const FilledCell({
+    required this.date,
+    required this.events,
+    Key? key,
+    this.isInMonth = false,
+    this.hideDaysNotInMonth = true,
+    this.shouldHighlight = false,
+    this.backgroundColor = Colors.blue,
+    this.highlightColor = Colors.blue,
+    this.onTileTap,
+    this.onTileLongTap,
+    this.onTileTapDetails,
+    this.onTileDoubleTapDetails,
+    this.onTileLongTapDetails,
+    this.tileColor = Colors.blue,
+    this.highlightRadius = 11,
+    this.titleColor = Constants.black,
+    this.highlightedTitleColor = Constants.white,
+    this.dateStringBuilder,
+    this.onTileDoubleTap,
+    this.multipleDateSelectionColor,
+  }) : super(key: key);
+
   /// Date of current cell.
   final DateTime date;
 
@@ -113,122 +138,124 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   /// defines that show and hide cell not is in current month
   final bool hideDaysNotInMonth;
 
-  /// This class will defines how cell will be displayed.
-  /// This widget will display all the events as tile below date title.
-  const FilledCell({
-    Key? key,
-    required this.date,
-    required this.events,
-    this.isInMonth = false,
-    this.hideDaysNotInMonth = true,
-    this.shouldHighlight = false,
-    this.backgroundColor = Colors.blue,
-    this.highlightColor = Colors.blue,
-    this.onTileTap,
-    this.onTileLongTap,
-    this.onTileTapDetails,
-    this.onTileDoubleTapDetails,
-    this.onTileLongTapDetails,
-    this.tileColor = Colors.blue,
-    this.highlightRadius = 11,
-    this.titleColor = Constants.black,
-    this.highlightedTitleColor = Constants.white,
-    this.dateStringBuilder,
-    this.onTileDoubleTap,
-  }) : super(key: key);
+  /// Optional color overlay for multiple date selection.
+  final Color? multipleDateSelectionColor;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: Column(
+    return SizedBox.expand(
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          SizedBox(
-            height: 5.0,
-          ),
-          if (!(!isInMonth && hideDaysNotInMonth))
-            CircleAvatar(
-              radius: highlightRadius,
-              backgroundColor:
-                  shouldHighlight ? highlightColor : Colors.transparent,
-              child: Text(
-                dateStringBuilder?.call(date) ??
-                    PackageStrings.localizeNumber(date.day),
-                style: TextStyle(
-                  color: shouldHighlight ? highlightedTitleColor : titleColor,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          if (events.isNotEmpty)
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(top: 5.0),
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(),
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      events.length,
-                      (index) => GestureDetector(
-                        onTap: onTileTap.safeVoidCall(events[index], date),
-                        onLongPress:
-                            onTileLongTap.safeVoidCall(events[index], date),
-                        onDoubleTap:
-                            onTileDoubleTap.safeVoidCall(events[index], date),
-                        onTapUp: onTileTapDetails == null
-                            ? null
-                            : (details) => onTileTapDetails?.call(
-                                  events[index],
-                                  date,
-                                  details,
-                                ),
-                        onLongPressStart: onTileLongTapDetails == null
-                            ? null
-                            : (details) => onTileLongTapDetails?.call(
-                                  events[index],
-                                  date,
-                                  details,
-                                ),
-                        onDoubleTapDown: onTileDoubleTapDetails == null
-                            ? null
-                            : (details) => onTileDoubleTapDetails?.call(
-                                  events[index],
-                                  date,
-                                  details,
-                                ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: events[index].color,
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 2.0, horizontal: 3.0),
-                          padding: const EdgeInsets.all(2.0),
-                          alignment: Alignment.center,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  events[index].title,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                  style: events[index].titleStyle ??
-                                      TextStyle(
-                                        color: events[index].color.accent,
-                                        fontSize: 12,
+          ColoredBox(
+            color: backgroundColor,
+            child: Column(
+              children: [
+                const SizedBox(height: 5),
+                if (!(!isInMonth && hideDaysNotInMonth))
+                  CircleAvatar(
+                    radius: highlightRadius,
+                    backgroundColor:
+                        shouldHighlight ? highlightColor : Colors.transparent,
+                    child: Text(
+                      dateStringBuilder?.call(date) ??
+                          PackageStrings.localizeNumber(date.day),
+                      style: TextStyle(
+                        color: shouldHighlight
+                            ? highlightedTitleColor
+                            : titleColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                if (events.isNotEmpty)
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 5),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            events.length,
+                            (index) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: onTileTap.safeVoidCall(
+                                events[index],
+                                date,
+                              ),
+                              onLongPress: onTileLongTap.safeVoidCall(
+                                events[index],
+                                date,
+                              ),
+                              onDoubleTap: onTileDoubleTap.safeVoidCall(
+                                events[index],
+                                date,
+                              ),
+                              onTapUp: onTileTapDetails == null
+                                  ? null
+                                  : (details) => onTileTapDetails?.call(
+                                        events[index],
+                                        date,
+                                        details,
                                       ),
+                              onLongPressStart: onTileLongTapDetails == null
+                                  ? null
+                                  : (details) => onTileLongTapDetails?.call(
+                                        events[index],
+                                        date,
+                                        details,
+                                      ),
+                              onDoubleTapDown: onTileDoubleTapDetails == null
+                                  ? null
+                                  : (details) => onTileDoubleTapDetails?.call(
+                                        events[index],
+                                        date,
+                                        details,
+                                      ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: events[index].color,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 3,
+                                ),
+                                padding: const EdgeInsets.all(2),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        events[index].title,
+                                        overflow: TextOverflow.clip,
+                                        maxLines: 1,
+                                        style: events[index].titleStyle ??
+                                            TextStyle(
+                                              color: events[index].color.accent,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
+              ],
+            ),
+          ),
+          if (multipleDateSelectionColor != null)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: ColoredBox(color: multipleDateSelectionColor!),
               ),
             ),
         ],
@@ -238,6 +265,17 @@ class FilledCell<T extends Object?> extends StatelessWidget {
 }
 
 class WeekDayTile extends StatefulWidget {
+  /// Title for week day in month view.
+  const WeekDayTile({
+    required this.dayIndex,
+    Key? key,
+    this.backgroundColor,
+    this.borderColor,
+    this.displayBorder = true,
+    this.textStyle,
+    this.weekDayStringBuilder,
+  }) : super(key: key);
+
   /// Index of week day.
   final int dayIndex;
 
@@ -255,17 +293,6 @@ class WeekDayTile extends StatefulWidget {
   /// Style for week day string.
   final TextStyle? textStyle;
 
-  /// Title for week day in month view.
-  const WeekDayTile({
-    Key? key,
-    required this.dayIndex,
-    this.backgroundColor,
-    this.borderColor,
-    this.displayBorder = true,
-    this.textStyle,
-    this.weekDayStringBuilder,
-  }) : super(key: key);
-
   @override
   State<WeekDayTile> createState() => _WeekDayTileState();
 }
@@ -278,7 +305,7 @@ class _WeekDayTileState extends State<WeekDayTile> {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.zero,
-      padding: EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: widget.backgroundColor ?? themeColors.weekDayTileColor,
         border: widget.displayBorder

@@ -100,6 +100,11 @@ typedef CellTapCallback<T extends Object?> = void Function(
 
 typedef DatePressCallback = void Function(DateTime date);
 
+typedef DateLongPressMoveUpdateCallback = void Function(
+  DateTime date,
+  LongPressMoveUpdateDetails details,
+);
+
 typedef DateTapCallback = void Function(DateTime date);
 
 typedef TimestampCallback = void Function(DateTime date);

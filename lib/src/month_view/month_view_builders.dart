@@ -15,7 +15,8 @@ import '../../calendar_view.dart';
 /// * React to page changes using [onPageChange].
 /// * Handle taps and gestures on dates and events using callbacks such as
 ///   [onCellTap], [onDateLongPress], [onEventTap], [onEventLongTap],
-///   [onEventDoubleTap] and their corresponding `*Details` variants.
+///   [onEventDoubleTap], [onDateLongPressMoveUpdate] and their
+///   corresponding `*Details` variants.
 ///
 /// Note that [onHeaderTitleTap] and [headerBuilder] are mutually
 /// exclusive; providing both at the same time is not allowed and will
@@ -35,6 +36,7 @@ class MonthViewBuilders<T extends Object?> {
     this.onEventDoubleTap,
     this.weekDayBuilder,
     this.onDateLongPress,
+    this.onDateLongPressMoveUpdate,
     this.onHeaderTitleTap,
     this.onEventTapDetails,
     this.onEventLongTapDetails,
@@ -101,6 +103,10 @@ class MonthViewBuilders<T extends Object?> {
 
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
+
+  /// This method will be called when user moves after a long press
+  /// on a month cell.
+  final DateLongPressMoveUpdateCallback? onDateLongPressMoveUpdate;
 
   /// Callback for the Header title
   final HeaderTitleCallback? onHeaderTitleTap;
