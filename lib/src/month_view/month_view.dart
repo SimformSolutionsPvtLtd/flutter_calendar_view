@@ -22,7 +22,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   final MonthViewStyle monthViewStyle;
 
   /// Builders for month view.
-  final MonthViewBuilders monthViewBuilders;
+  final MonthViewBuilders<T> monthViewBuilders;
 
   /// Theme settings for month view.
   final MonthViewThemeSettings monthViewThemeSettings;
@@ -76,7 +76,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   late VoidCallback _reloadCallback;
 
   late MonthViewStyle _monthViewStyle = widget.monthViewStyle;
-  late MonthViewBuilders _monthViewBuilders = widget.monthViewBuilders;
+  late MonthViewBuilders<T> _monthViewBuilders = widget.monthViewBuilders;
   late MonthViewThemeSettings _monthViewThemeSettings =
       widget.monthViewThemeSettings;
 

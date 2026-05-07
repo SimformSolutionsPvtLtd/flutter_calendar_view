@@ -1,3 +1,7 @@
+# [Unreleased - 11 May 2026]
+
+- Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)
+
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
 - Added clear method to `EventController`.
