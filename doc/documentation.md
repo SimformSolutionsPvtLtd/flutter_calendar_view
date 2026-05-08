@@ -142,35 +142,41 @@ This guide covers more advanced features and customization options for the calen
 ```dart
 MonthView(
     controller: EventController(),
-    // Custom UI for month cells
-    cellBuilder: (date, events, isToday, isInMonth, hideDaysNotInMonth) {
+    selectedDate: DateTime(2021, 8, 10),
+    monthViewBuilders: MonthViewBuilders(
+      // Custom UI for month cells
+      cellBuilder: (date, events, isToday, isInMonth, isSelected, hideDaysNotInMonth) {
         // Return your widget to display as month cell.
         return Container();
-    },
-    minMonth: DateTime(1990),
-    maxMonth: DateTime(2050),
-    initialMonth: DateTime(2021),
-    cellAspectRatio: 1,
-    onPageChange: (date, pageIndex) => print("$date, $pageIndex"),
-    onCellTap: (events, date) {
+      },
+      onPageChange: (date, pageIndex) => print("$date, $pageIndex"),
+      onCellTap: (events, date) {
         // Implement callback when user taps on a cell.
+        // Update selectedDate here if you want controlled selection.
         print(events);
-    },
-    startDay: WeekDays.sunday, // To change the first day of the week.
-    // Event callbacks
-    onEventTap: (event, data) => print('on tap'),
-    onEventTapDetails: (event, data, details) => print('on tap details'),
-    onEventDoubleTap: (event, data) => print('on double tap'),
-    onEventDoubleTapDetails: (event, data, details) =>
-      print('on double details'),
-    onEventLongTap: (event, data) => print('on long tap'),
-    onEventLongTapDetails: (event, data, details) =>
-      print('on long tap details'),
-    onDateLongPress: (date) => print(date),
-    headerBuilder: MonthHeader.hidden, // To hide month header
-    showWeekTileBorder: false, // To show or hide header border
-    hideDaysNotInMonth: true, // To hide days or cell that are not in current month
-    showWeekends: false, // To hide weekends default value is true
+      },
+      // Event callbacks
+      onEventTap: (event, data) => print('on tap'),
+      onEventTapDetails: (event, data, details) => print('on tap details'),
+      onEventDoubleTap: (event, data) => print('on double tap'),
+      onEventDoubleTapDetails: (event, data, details) =>
+        print('on double details'),
+      onEventLongTap: (event, data) => print('on long tap'),
+      onEventLongTapDetails: (event, data, details) =>
+        print('on long tap details'),
+      onDateLongPress: (date) => print(date),
+      headerBuilder: MonthHeader.hidden, // To hide month header
+    ),
+    monthViewStyle: MonthViewStyle(
+      minMonth: DateTime(1990),
+      maxMonth: DateTime(2050),
+      initialMonth: DateTime(2021),
+      cellAspectRatio: 1,
+      startDay: WeekDays.sunday, // To change the first day of the week.
+      showWeekTileBorder: false, // To show or hide header border
+      hideDaysNotInMonth: true, // To hide days or cell that are not in current month
+      showWeekends: false, // To hide weekends default value is true
+    ),
 );
 ```
 
@@ -687,29 +693,33 @@ Hide divider in week view.
 ### Month view
 
 * Default date cell color in month is `colorScheme.surfaceContainerLowest` and `colorScheme.surfaceContainerLow` for days not in month.
-* Use `cellBuilder` to completely customize the cell appearance:
+* Use `monthViewBuilders.cellBuilder` to completely customize the cell appearance:
 
   ```dart
-  cellBuilder: (date, events, isToday, isInMonth, hideDaysNotInMonth) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isInMonth ? Colors.white : Colors.grey[200],
-        border: Border.all(color: Colors.blue),
-      ),
-      child: Center(
-        child: Text(
-          date.day.toString(),
-          style: TextStyle(
-            color: isToday ? Colors.red : Colors.black,
-            fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+  MonthView(
+    monthViewBuilders: MonthViewBuilders(
+      cellBuilder: (date, events, isToday, isInMonth, isSelected, hideDaysNotInMonth) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isInMonth ? Colors.white : Colors.grey[200],
+            border: Border.all(color: Colors.blue),
           ),
-        ),
-      ),
-    );
-  }
+          child: Center(
+            child: Text(
+              date.day.toString(),
+              style: TextStyle(
+                color: isSelected ? Colors.white : (isToday ? Colors.red : Colors.black),
+                fontWeight: (isToday || isSelected) ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  )
   ```
-* Use `showWeekTileBorder` to control week day title border visibility
-* Use `headerBuilder` to customize or completely replace the month header
+* Use `monthViewStyle.showWeekTileBorder` to control week day title border visibility
+* Use `monthViewBuilders.headerBuilder` to customize or completely replace the month header
 
 # Migration Guides
 

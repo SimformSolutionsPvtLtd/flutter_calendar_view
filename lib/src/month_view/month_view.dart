@@ -32,6 +32,13 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// If null is provided then It will take width of closest [MediaQuery].
   final double? width;
 
+  /// Controls the selected date in the month grid.
+  ///
+  /// When null, the view manages selection internally and updates it when a
+  /// visible cell is tapped. When non-null, selection is controlled by the
+  /// caller and taps only trigger [MonthViewBuilders.onCellTap].
+  final DateTime? selectedDate;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -40,6 +47,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.monthViewThemeSettings = const MonthViewThemeSettings(),
     this.controller,
     this.width,
+    this.selectedDate,
   }) : super(key: key);
 
   @override
@@ -64,6 +72,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late double _cellWidth;
   late double _cellHeight;
+
+  DateTime? _selectedDate;
 
   late CellBuilder<T> _cellBuilder;
 
@@ -92,6 +102,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _currentDate = (_monthViewStyle.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
+
+    _selectedDate = widget.selectedDate?.withoutTime;
 
     // Initialize page controller to control page actions.
 
@@ -150,6 +162,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     // Update builders and callbacks
     _assignBuilders();
+
+    if (widget.selectedDate != null) {
+      _selectedDate = widget.selectedDate?.withoutTime;
+    } else if (oldWidget.selectedDate != null) {
+      _selectedDate = oldWidget.selectedDate?.withoutTime;
+    }
 
     updateViewDimensions();
   }
@@ -275,7 +293,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               width: _width,
                               child: _MonthPageBuilder<T>(
                                 key: ValueKey(date.toIso8601String()),
-                                onCellTap: _monthViewBuilders.onCellTap,
+                                onCellTap: _handleCellTap,
                                 onDateLongPress:
                                     _monthViewBuilders.onDateLongPress,
                                 width: _width,
@@ -284,6 +302,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                                 borderColor: _monthViewStyle.borderColor,
                                 borderSize: _monthViewStyle.borderSize,
                                 cellBuilder: _cellBuilder,
+                                selectedDate: _selectedDate,
                                 cellRatio: _cellAspectRatio,
                                 date: date,
                                 showBorder: _monthViewStyle.showBorder,
@@ -338,6 +357,14 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     }
 
     return _controller!;
+  }
+
+  bool _isSameDate(DateTime? first, DateTime? second) {
+    if (first == null || second == null) {
+      return first == second;
+    }
+
+    return first.withoutTime.compareWithoutTime(second.withoutTime);
   }
 
   void _reload() {
@@ -496,14 +523,31 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     List<CalendarEventData<T>> events,
     bool isToday,
     bool isInMonth,
+    bool isSelected,
     bool hideDaysNotInMonth,
   ) {
     final themeColor = context.monthViewColors;
+    final shouldHighlight = isSelected || isToday;
+    final highlightedTitleColor = isSelected
+        ? _monthViewThemeSettings.selectedTitleColor
+        : hideDaysNotInMonth
+            ? _monthViewThemeSettings.cellsNotInMonthHighlightedTitleColor
+            : _monthViewThemeSettings.cellsInMonthHighlightedTitleColor;
+    final highlightColor = isSelected
+        ? _monthViewThemeSettings.selectedHighlightColor
+        : hideDaysNotInMonth
+            ? themeColor.cellHighlightColor
+            : _monthViewThemeSettings.cellsInMonthHighlightColor;
+    final highlightRadius = isSelected
+        ? _monthViewThemeSettings.selectedHighlightRadius
+        : hideDaysNotInMonth
+            ? _monthViewThemeSettings.cellsNotInMonthHighlightRadius
+            : _monthViewThemeSettings.cellsInMonthHighlightRadius;
 
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
         date: date,
-        shouldHighlight: isToday,
+        shouldHighlight: shouldHighlight,
         backgroundColor: isInMonth
             ? themeColor.cellInMonthColor
             : themeColor.cellNotInMonthColor,
@@ -518,16 +562,15 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         dateStringBuilder: _monthViewBuilders.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
         titleColor: themeColor.cellTextColor,
-        highlightColor: themeColor.cellHighlightColor,
+        highlightColor: highlightColor,
         tileColor: themeColor.weekDayTileColor,
-        highlightRadius: _monthViewThemeSettings.cellsNotInMonthHighlightRadius,
-        highlightedTitleColor:
-            _monthViewThemeSettings.cellsNotInMonthHighlightedTitleColor,
+        highlightRadius: highlightRadius,
+        highlightedTitleColor: highlightedTitleColor,
       );
     }
     return FilledCell<T>(
       date: date,
-      shouldHighlight: isToday,
+      shouldHighlight: shouldHighlight,
       backgroundColor: isInMonth
           ? themeColor.cellInMonthColor
           : themeColor.cellNotInMonthColor,
@@ -543,12 +586,25 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       titleColor: isInMonth
           ? themeColor.cellTextColor
           : themeColor.cellTextColor.withAlpha(150),
-      highlightedTitleColor:
-          _monthViewThemeSettings.cellsInMonthHighlightedTitleColor,
-      highlightRadius: _monthViewThemeSettings.cellsInMonthHighlightRadius,
+      highlightedTitleColor: highlightedTitleColor,
+      highlightRadius: highlightRadius,
       tileColor: _monthViewThemeSettings.cellsInMonthTileColor,
-      highlightColor: _monthViewThemeSettings.cellsInMonthHighlightColor,
+      highlightColor: highlightColor,
     );
+  }
+
+  /// Handles cell tap event. Updates selected date if [widget.selectedDate]
+  /// is null and calls [MonthViewBuilders.onCellTap] callback.
+  void _handleCellTap(List<CalendarEventData<T>> events, DateTime date) {
+    if (widget.selectedDate == null &&
+        !_isSameDate(_selectedDate, date.withoutTime) &&
+        mounted) {
+      setState(() {
+        _selectedDate = date.withoutTime;
+      });
+    }
+
+    _monthViewBuilders.onCellTap?.call(events, date);
   }
 
   /// Animate to next page
@@ -631,6 +687,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   final double borderSize;
   final Color? borderColor;
   final CellBuilder<T> cellBuilder;
+  final DateTime? selectedDate;
   final DateTime date;
   final EventController<T> controller;
   final double width;
@@ -648,6 +705,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
     required this.showBorder,
     required this.borderSize,
     required this.cellBuilder,
+    required this.selectedDate,
     required this.date,
     required this.controller,
     required this.width,
@@ -688,6 +746,8 @@ class _MonthPageBuilder<T> extends StatelessWidget {
               hideDaysNotInMonth && (monthDays[index].month != date.month)
                   ? <CalendarEventData<T>>[]
                   : controller.getEventsOnDay(monthDays[index]);
+          final isSelected =
+              selectedDate?.compareWithoutTime(monthDays[index]) ?? false;
           return GestureDetector(
             onTap: () => onCellTap?.call(events, monthDays[index]),
             onLongPress: () => onDateLongPress?.call(monthDays[index]),
@@ -706,6 +766,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
                 events,
                 monthDays[index].compareWithoutTime(DateTime.now()),
                 monthDays[index].month == date.month,
+                isSelected,
                 hideDaysNotInMonth,
               ),
             ),
