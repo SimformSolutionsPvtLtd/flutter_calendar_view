@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../../calendar_view.dart';
 import '../constants.dart';
 
-@immutable
-
 /// Month view theme settings.
+@immutable
 class MonthViewThemeSettings {
   /// Creates a default month view theme settings.
   const MonthViewThemeSettings({
@@ -20,6 +19,9 @@ class MonthViewThemeSettings {
     this.cellsInMonthHighlightRadius = 11,
     this.cellsInMonthTileColor = Colors.blue,
     this.cellsInMonthHighlightColor = Colors.blue,
+    this.selectedHighlightColor = Colors.blue,
+    this.selectedTitleColor = Constants.white,
+    this.selectedHighlightRadius = 11,
   });
 
   /// Default border color for week day cells.
@@ -55,6 +57,15 @@ class MonthViewThemeSettings {
   /// Highlight color for cells in the current month.
   final Color cellsInMonthHighlightColor;
 
+  /// Highlight color for the selected date.
+  final Color selectedHighlightColor;
+
+  /// Title color for the selected date.
+  final Color selectedTitleColor;
+
+  /// Highlight radius for the selected date.
+  final double selectedHighlightRadius;
+
   /// Creates a copy of this theme settings with the given fields replaced.
   MonthViewThemeSettings copyWith({
     Color? weekDayBorderColor,
@@ -68,6 +79,9 @@ class MonthViewThemeSettings {
     double? cellsInMonthHighlightRadius,
     Color? cellsInMonthTileColor,
     Color? cellsInMonthHighlightColor,
+    Color? selectedHighlightColor,
+    Color? selectedTitleColor,
+    double? selectedHighlightRadius,
   }) {
     return MonthViewThemeSettings(
       weekDayBorderColor: weekDayBorderColor ?? this.weekDayBorderColor,
@@ -89,6 +103,11 @@ class MonthViewThemeSettings {
           cellsInMonthTileColor ?? this.cellsInMonthTileColor,
       cellsInMonthHighlightColor:
           cellsInMonthHighlightColor ?? this.cellsInMonthHighlightColor,
+      selectedHighlightColor:
+          selectedHighlightColor ?? this.selectedHighlightColor,
+      selectedTitleColor: selectedTitleColor ?? this.selectedTitleColor,
+      selectedHighlightRadius:
+          selectedHighlightRadius ?? this.selectedHighlightRadius,
     );
   }
 
@@ -109,6 +128,9 @@ class MonthViewThemeSettings {
       cellsInMonthHighlightRadius: other.cellsInMonthHighlightRadius,
       cellsInMonthTileColor: other.cellsInMonthTileColor,
       cellsInMonthHighlightColor: other.cellsInMonthHighlightColor,
+      selectedHighlightColor: other.selectedHighlightColor,
+      selectedTitleColor: other.selectedTitleColor,
+      selectedHighlightRadius: other.selectedHighlightRadius,
     );
   }
 }

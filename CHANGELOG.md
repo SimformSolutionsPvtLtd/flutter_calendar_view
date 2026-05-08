@@ -4,6 +4,7 @@
 - Added `DividerSerttings` to customize the dividers in `WeekView` and `MultiDayView`. [#374](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/374), [#430](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/430), [#498](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/498)
 - Added `timeSlotColorBuilder` in `DayView` and `WeekView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470)
 - Added `pageDate` parameter for timeline label customization with current timestamp fallback. [#527](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/527)
+- [BREAKING] Added `selectedDate` control to `MonthView` for external date management. [#233](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/233)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
