@@ -403,6 +403,7 @@ class _InternalDayViewPageState<T extends Object?>
                       timeLineBuilder: widget.timeLineBuilder,
                       timeLineOffset: widget.timeLineOffset,
                       timeLineWidth: widget.timeLineWidth,
+                      pageDate: widget.date,
                       showHalfHours: widget.showHalfHours,
                       startHour: widget.startHour,
                       endHour: widget.endHour,

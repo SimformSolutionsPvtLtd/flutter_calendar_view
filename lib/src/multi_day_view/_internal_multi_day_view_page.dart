@@ -529,6 +529,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
                       height: widget.height,
                       timeLineOffset: widget.timeLineOffset,
                       timeLineBuilder: widget.timeLineBuilder,
+                      pageDate:
+                          widget.dates.isEmpty ? null : widget.dates.first,
                       startHour: widget.startHour,
                       showHalfHours: widget.showHalfHours,
                       showQuarterHours: widget.showQuarterHours,

@@ -599,6 +599,8 @@ class _InternalWeekViewPageState<T extends Object?>
                       height: widget.height,
                       timeLineOffset: widget.timeLineOffset,
                       timeLineBuilder: widget.timeLineBuilder,
+                      pageDate:
+                          filteredDates.isEmpty ? null : filteredDates.first,
                       startHour: widget.startHour,
                       showHalfHours: widget.showHalfHours,
                       showQuarterHours: widget.showQuarterHours,

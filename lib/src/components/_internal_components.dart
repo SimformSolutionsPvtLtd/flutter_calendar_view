@@ -200,6 +200,12 @@ class TimeLine extends StatefulWidget {
   /// This field will be used to set end hour for day and week view
   final int endHour;
 
+  /// Visible date used to build timeline labels and tap callbacks.
+  ///
+  /// When omitted, the current date from [LiveTimeIndicatorSettings]
+  /// is used for backward-compatible internal behavior.
+  final DateTime? pageDate;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -214,6 +220,7 @@ class TimeLine extends StatefulWidget {
     this.showQuarterHours = false,
     required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
+    this.pageDate,
   }) : super(key: key);
 
   @override
@@ -338,12 +345,12 @@ class _TimeLineState extends State<TimeLine> {
     required int hour,
     int minutes = 0,
   }) {
-    final currentDateTime = _getCurrentDateTime();
+    final labelDate = widget.pageDate ?? _getCurrentDateTime();
 
     final dateTime = DateTime(
-      currentDateTime.year,
-      currentDateTime.month,
-      currentDateTime.day,
+      labelDate.year,
+      labelDate.month,
+      labelDate.day,
       hour,
       minutes,
     );
