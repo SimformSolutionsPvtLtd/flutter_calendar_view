@@ -511,7 +511,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
                                         onlyShowToday: widget
                                             .liveTimeIndicatorSettings
                                             .onlyShowToday,
-                                        date: widget.dates[index],
+                                        date: filteredDates[index],
                                       ),
                                   ],
                                 ),
