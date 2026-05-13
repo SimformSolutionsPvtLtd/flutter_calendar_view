@@ -1089,8 +1089,11 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
   /// check if any dates contains current date or not.
   /// Returns true if it does else false.
-  bool _showLiveTimeIndicator(List<DateTime> dates) =>
-      dates.any((date) => date.compareWithoutTime(DateTime.now()));
+  bool _showLiveTimeIndicator(List<DateTime> dates) {
+    final now = _liveTimeIndicatorSettings.currentTimeProvider?.call() ??
+        DateTime.now();
+    return dates.any((date) => date.compareWithoutTime(now));
+  }
 
   /// Listener for every week page ScrollController
   void _scrollPageListener(ScrollController controller) {
