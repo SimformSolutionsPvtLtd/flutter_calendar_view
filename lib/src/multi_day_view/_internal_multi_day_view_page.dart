@@ -547,6 +547,20 @@ class _InternalMultiDayViewPageState<T extends Object?>
                           offset: widget.liveTimeIndicatorSettings.offset,
                           onlyShowToday:
                               widget.liveTimeIndicatorSettings.onlyShowToday,
+                          timeStringBuilder: widget
+                              .liveTimeIndicatorSettings.timeStringBuilder,
+                          showBullet:
+                              widget.liveTimeIndicatorSettings.showBullet,
+                          showTime: widget.liveTimeIndicatorSettings.showTime,
+                          showTimeBackgroundView: widget
+                              .liveTimeIndicatorSettings.showTimeBackgroundView,
+                          bulletRadius:
+                              widget.liveTimeIndicatorSettings.bulletRadius,
+                          timeBackgroundViewWidth: widget
+                              .liveTimeIndicatorSettings
+                              .timeBackgroundViewWidth,
+                          currentTimeProvider: widget
+                              .liveTimeIndicatorSettings.currentTimeProvider,
                         ),
                         width: widget.width,
                         height: widget.height,
