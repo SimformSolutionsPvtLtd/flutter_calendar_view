@@ -592,8 +592,7 @@ class _InternalWeekViewPageState<T extends Object?>
                                       heightPerMinute: widget.heightPerMinute,
                                       endHour: widget.endHour,
                                     ),
-                                    if (widget.showLiveLine &&
-                                        widget.liveTimeIndicatorSettings
+                                    if (widget.liveTimeIndicatorSettings
                                                 .height >
                                             0 &&
                                         widget.liveTimeIndicatorSettings
