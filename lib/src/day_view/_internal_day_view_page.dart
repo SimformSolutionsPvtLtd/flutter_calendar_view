@@ -142,6 +142,12 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// A callback for rendering custom time slot background colors.
   final TimeSlotColorBuilder? timeSlotColorBuilder;
 
+  /// Flag to display the 00:00 (midnight) hour in the timeline.
+  ///
+  /// When set to true, the 00:00 label will be shown on the timeline.
+  /// Default value is false.
+  final bool showMidnightHour;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
@@ -172,7 +178,6 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.dayViewScrollController,
     required this.scrollPhysics,
     required this.scrollListener,
-    this.lastScrollOffset = 0.0,
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.showQuarterHours,
@@ -183,8 +188,10 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.onTimestampTap,
-    this.keepScrollOffset = false,
     this.timeSlotColorBuilder,
+    this.lastScrollOffset = 0.0,
+    this.keepScrollOffset = false,
+    this.showMidnightHour = false,
   }) : super(key: key);
 
   @override
@@ -412,6 +419,7 @@ class _InternalDayViewPageState<T extends Object?>
                       liveTimeIndicatorSettings:
                           widget.liveTimeIndicatorSettings,
                       onTimestampTap: widget.onTimestampTap,
+                      showMidnightHour: widget.showMidnightHour,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)

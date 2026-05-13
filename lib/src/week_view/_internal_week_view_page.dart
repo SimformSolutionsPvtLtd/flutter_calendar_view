@@ -173,6 +173,12 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// A callback for rendering custom time slot background colors.
   final TimeSlotColorBuilder? timeSlotColorBuilder;
 
+  /// Flag to display the 00:00 (midnight) hour in the timeline.
+  ///
+  /// When set to true, the 00:00 label will be shown on the timeline.
+  /// Default value is false.
+  final bool showMidnightHour;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
@@ -218,15 +224,16 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.onTileDoubleTap,
     required this.endHour,
     required this.onTimestampTap,
-    this.fullDayHeaderTitle = '',
     required this.fullDayHeaderTextConfig,
     required this.scrollPhysics,
     required this.scrollListener,
     required this.weekViewScrollController,
-    this.lastScrollOffset = 0.0,
-    this.keepScrollOffset = false,
     this.backgroundColor,
     this.timeSlotColorBuilder,
+    this.fullDayHeaderTitle = '',
+    this.lastScrollOffset = 0.0,
+    this.keepScrollOffset = false,
+    this.showMidnightHour = false,
   }) : super(key: key);
 
   @override
@@ -608,6 +615,7 @@ class _InternalWeekViewPageState<T extends Object?>
                           widget.liveTimeIndicatorSettings,
                       endHour: widget.endHour,
                       onTimestampTap: widget.onTimestampTap,
+                      showMidnightHour: widget.showMidnightHour,
                     ),
                     if (widget.showLiveLine &&
                         widget.liveTimeIndicatorSettings.height > 0)
