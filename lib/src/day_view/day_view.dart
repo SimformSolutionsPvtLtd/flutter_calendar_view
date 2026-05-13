@@ -231,6 +231,9 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Useful for highlighting unavailable hours, business hours, or blocked time.
   final TimeSlotColorBuilder? timeSlotColorBuilder;
 
+  /// Flag to display the 00:00 (midnight) hour in the timeline.
+  final bool showMidnightHour;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
@@ -283,6 +286,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.keepScrollOffset = false,
     this.onTimestampTap,
     this.timeSlotColorBuilder,
+    this.showMidnightHour = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
         assert(timeLineOffset >= 0,
@@ -518,6 +522,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
                             timeSlotColorBuilder: _timeSlotColorBuilder,
+                            showMidnightHour: widget.showMidnightHour,
                           ),
                         );
                       },

@@ -23,6 +23,7 @@ class DayViewWidget extends StatelessWidget {
       scrollPhysics: const BouncingScrollPhysics(),
       eventArranger: SideEventArranger(),
       showQuarterHours: false,
+      showMidnightHour: true,
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),

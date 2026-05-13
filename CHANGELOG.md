@@ -5,6 +5,7 @@
 - Added `timeSlotColorBuilder` in `DayView` and `WeekView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470)
 - Added `pageDate` parameter for timeline label customization with current timestamp fallback. [#527](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/527)
 - [BREAKING] Added `selectedDate` control to `MonthView` for external date management. [#233](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/233)
+- Added `showMidnightHour` parameter in `DayView` and `WeekView` to control whether the `00:00` label is shown on the timeline. Default is `false`. [#492](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/492)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 

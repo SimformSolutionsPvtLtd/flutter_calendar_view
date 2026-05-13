@@ -206,6 +206,12 @@ class TimeLine extends StatefulWidget {
   /// is used for backward-compatible internal behavior.
   final DateTime? pageDate;
 
+  /// Flag to display the 00:00 (midnight) hour in the timeline.
+  ///
+  /// When set to true, the 00:00 label will be shown on the timeline.
+  /// Default value is false.
+  final bool showMidnightHour;
+
   /// Time line to display time at left side of day or week view.
   const TimeLine({
     Key? key,
@@ -215,12 +221,13 @@ class TimeLine extends StatefulWidget {
     required this.timeLineOffset,
     required this.timeLineBuilder,
     required this.onTimestampTap,
+    required this.liveTimeIndicatorSettings,
+    this.pageDate,
     this.startHour = 0,
     this.showHalfHours = false,
     this.showQuarterHours = false,
-    required this.liveTimeIndicatorSettings,
     this.endHour = Constants.hoursADay,
-    this.pageDate,
+    this.showMidnightHour = false,
   }) : super(key: key);
 
   @override
@@ -284,53 +291,56 @@ class _TimeLineState extends State<TimeLine> {
       ),
       child: Stack(
         children: [
-          for (int i = widget.startHour + 1; i < widget.endHour; i++)
-            _timelinePositioned(
-              topPosition: widget.hourHeight * (i - widget.startHour) -
-                  widget.timeLineOffset,
-              bottomPosition: widget.height -
-                  (widget.hourHeight * (i - widget.startHour + 1)) +
-                  widget.timeLineOffset,
-              hour: i,
-            ),
+          for (int i = widget.startHour; i < widget.endHour; i++)
+            if (widget.showMidnightHour || i != 0)
+              _timelinePositioned(
+                topPosition: widget.hourHeight * (i - widget.startHour) -
+                    widget.timeLineOffset,
+                bottomPosition: widget.height -
+                    (widget.hourHeight * (i - widget.startHour + 1)) +
+                    widget.timeLineOffset,
+                hour: i,
+              ),
           if (widget.showHalfHours)
             for (int i = widget.startHour; i < widget.endHour; i++)
-              _timelinePositioned(
-                topPosition: widget.hourHeight * (i - widget.startHour) -
-                    widget.timeLineOffset +
-                    widget._halfHourHeight,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i - widget.startHour + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 30,
-              ),
+              if (widget.showMidnightHour || i != 0)
+                _timelinePositioned(
+                  topPosition: widget.hourHeight * (i - widget.startHour) -
+                      widget.timeLineOffset +
+                      widget._halfHourHeight,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i - widget.startHour + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 30,
+                ),
           if (widget.showQuarterHours)
-            for (int i = widget.startHour; i < widget.endHour; i++) ...[
-              /// this is for 15 minutes
-              _timelinePositioned(
-                topPosition: widget.hourHeight * (i - widget.startHour) -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.25,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i - widget.startHour + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 15,
-              ),
+            for (int i = widget.startHour; i < widget.endHour; i++)
+              if (widget.showMidnightHour || i != 0) ...[
+                /// this is for 15 minutes
+                _timelinePositioned(
+                  topPosition: widget.hourHeight * (i - widget.startHour) -
+                      widget.timeLineOffset +
+                      widget.hourHeight * 0.25,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i - widget.startHour + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 15,
+                ),
 
-              /// this is for 45 minutes
-              _timelinePositioned(
-                topPosition: widget.hourHeight * (i - widget.startHour) -
-                    widget.timeLineOffset +
-                    widget.hourHeight * 0.75,
-                bottomPosition: widget.height -
-                    (widget.hourHeight * (i - widget.startHour + 1)) +
-                    widget.timeLineOffset,
-                hour: i,
-                minutes: 45,
-              ),
-            ],
+                /// this is for 45 minutes
+                _timelinePositioned(
+                  topPosition: widget.hourHeight * (i - widget.startHour) -
+                      widget.timeLineOffset +
+                      widget.hourHeight * 0.75,
+                  bottomPosition: widget.height -
+                      (widget.hourHeight * (i - widget.startHour + 1)) +
+                      widget.timeLineOffset,
+                  hour: i,
+                  minutes: 45,
+                ),
+              ],
         ],
       ),
     );

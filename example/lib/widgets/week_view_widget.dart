@@ -15,6 +15,7 @@ class WeekViewWidget extends StatelessWidget {
       key: state,
       width: width,
       showWeekends: true,
+      showMidnightHour: true,
       showLiveTimeLineInAllDays: true,
       timeSlotColorBuilder: (_, slotStartTime, __, ___) {
         final hour = slotStartTime.hour;

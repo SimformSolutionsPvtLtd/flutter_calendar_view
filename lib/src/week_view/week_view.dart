@@ -251,6 +251,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Useful for highlighting unavailable hours, business hours, or blocked time.
   final TimeSlotColorBuilder? timeSlotColorBuilder;
 
+  /// Flag to display the 00:00 (midnight) hour in the timeline.
+  final bool showMidnightHour;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -314,6 +317,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.keepScrollOffset = false,
     this.onTimestampTap,
     this.timeSlotColorBuilder,
+    this.showMidnightHour = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -590,6 +594,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           scrollListener: _scrollPageListener,
                           keepScrollOffset: widget.keepScrollOffset,
                           timeSlotColorBuilder: _timeSlotColorBuilder,
+                          showMidnightHour: widget.showMidnightHour,
                         ),
                       );
                     },
