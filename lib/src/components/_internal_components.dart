@@ -38,6 +38,14 @@ class LiveTimeIndicator extends StatefulWidget {
   /// Flag to show only today's events.
   final bool onlyShowToday;
 
+  /// The specific calendar date this indicator is rendered for (week/multi-day
+  /// column). When provided, the indicator hides itself whenever the current
+  /// time (from [LiveTimeIndicatorSettings.currentTimeProvider] or
+  /// [DateTime.now]) falls on a different day. This check runs inside the
+  /// widget's own timer so it responds to midnight rollovers and custom time
+  /// providers without requiring the parent to rebuild.
+  final DateTime? date;
+
   /// Widget to display tile line according to current time.
   const LiveTimeIndicator(
       {Key? key,
@@ -48,7 +56,8 @@ class LiveTimeIndicator extends StatefulWidget {
       required this.heightPerMinute,
       required this.startHour,
       this.endHour = Constants.hoursADay,
-      this.onlyShowToday = false})
+      this.onlyShowToday = false,
+      this.date})
       : super(key: key);
 
   @override
@@ -107,6 +116,15 @@ class _LiveTimeIndicatorState extends State<LiveTimeIndicator> {
         ? PackageStrings.currentLocale.am
         : PackageStrings.currentLocale.pm;
     final currentDateTime = _getCurrentDateTime();
+
+    // When a specific column date is provided, hide the indicator if the
+    // provider's current day no longer matches (handles custom timezones and
+    // midnight rollovers without requiring the parent to rebuild).
+    if (widget.date != null &&
+        !DateUtils.isSameDay(widget.date, currentDateTime)) {
+      return SizedBox.shrink();
+    }
+
     final localizedHour =
         PackageStrings.localizeNumber(int.tryParse(currentHour) ?? 0);
     final localizedMinute =

@@ -493,22 +493,20 @@ class _InternalMultiDayViewPageState<T extends Object?>
                                             0 &&
                                         widget.liveTimeIndicatorSettings
                                             .onlyShowToday)
-                                      if (DateUtils.isSameDay(
-                                          widget.dates[index], DateTime.now()))
-                                        LiveTimeIndicator(
-                                          liveTimeIndicatorSettings:
-                                              widget.liveTimeIndicatorSettings,
-                                          width: widget.width,
-                                          height: widget.height,
-                                          heightPerMinute:
-                                              widget.heightPerMinute,
-                                          timeLineWidth: widget.timeLineWidth,
-                                          startHour: widget.startHour,
-                                          endHour: widget.endHour,
-                                          onlyShowToday: widget
-                                              .liveTimeIndicatorSettings
-                                              .onlyShowToday,
-                                        ),
+                                      LiveTimeIndicator(
+                                        liveTimeIndicatorSettings:
+                                            widget.liveTimeIndicatorSettings,
+                                        width: widget.width,
+                                        height: widget.height,
+                                        heightPerMinute: widget.heightPerMinute,
+                                        timeLineWidth: widget.timeLineWidth,
+                                        startHour: widget.startHour,
+                                        endHour: widget.endHour,
+                                        onlyShowToday: widget
+                                            .liveTimeIndicatorSettings
+                                            .onlyShowToday,
+                                        date: widget.dates[index],
+                                      ),
                                   ],
                                 ),
                               ),
