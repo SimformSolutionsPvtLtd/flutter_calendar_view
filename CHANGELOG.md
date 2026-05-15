@@ -1,3 +1,6 @@
+# [Unreleased]
+- [BREAKING] Updated `SideEventArranger`: removed/renamed the public `includeEdges` parameter to `countAdjacentEventsAsOverlapping`, and optimized dynamic/fixed width allocation for overlapping events.
+
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
 - Added clear method to `EventController`.
