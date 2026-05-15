@@ -25,13 +25,10 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
   /// [WeekPageHeader] widgets provided by this package with your custom
   /// configurations.
-  ///
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
 
   /// Builds custom PressDetector widget
-  ///
   /// If null, internal PressDetector will be used to handle onDateLongPress()
-  ///
   final DetectorBuilder? weekDetectorBuilder;
 
   /// This function will generate dateString int the calendar header.
@@ -56,24 +53,13 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Called whenever user changes week.
   final CalendarPageChangeCallBack? onPageChange;
 
-  /// Minimum day to display in week view.
-  ///
-  /// In calendar first date of the week that contains this data will be
-  /// minimum date.
-  ///
-  /// ex, If minDay is 16th March, 2022 then week containing this date will have
-  /// dates from 14th to 20th (Monday to Sunday). adn 14th date will
-  /// be the actual minimum date.
+  /// Minimum day to display in multi-day view.
+  /// Defaults to [CalendarConstants.epochDate] if not provided.
+  /// Used as base date for page indexing calculation.
   final DateTime? minDay;
 
-  /// Maximum day to display in week view.
-  ///
-  /// In calendar last date of the week that contains this data will be
-  /// maximum date.
-  ///
-  /// ex, If maxDay is 16th March, 2022 then week containing this date will have
-  /// dates from 14th to 20th (Monday to Sunday). adn 20th date will
-  /// be the actual maximum date.
+  /// Maximum day to display in multi-day view.
+  /// Defaults to [CalendarConstants.maxDate] if not provided.
   final DateTime? maxDay;
 
   /// Initial week to display in week view.
@@ -82,8 +68,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
 
-  /// A funtion that returns a [CustomPainter].
-  ///
+  /// A function that returns a [CustomPainter].
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
 
@@ -155,27 +140,6 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Called when user double taps on any event tile.
   final CellTapCallback<T>? onEventDoubleTap;
 
-  /// Show weekends or not
-  ///
-  /// Default value is true.
-  ///
-  /// If it is false week view will remove weekends from week
-  /// even if weekends are added in [weekDays].
-  ///
-  /// ex, if [showWeekends] is false and [weekDays] are monday, tuesday,
-  /// saturday and sunday, only monday and tuesday will be visible in week view.
-  // final bool showWeekends;
-
-  /// Defines which days should be displayed in one week.
-  ///
-  /// By default all the days will be visible.
-  /// Sequence will be monday to sunday.
-  ///
-  /// Duplicate values will be removed from list.
-  ///
-  /// ex, if there are two mondays in list it will display only one.
-  // final List<WeekDays> weekDays;
-
   /// This method will be called when user long press on calendar.
   final DatePressCallback? onDateLongPress;
 
@@ -187,11 +151,6 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Ex, User Taps on Date page with date 11/01/2022 and time span is 1PM to 2PM.
   /// then DateTime object will be  DateTime(2022,01,11,1,0)
   final DateTapCallback? onDateTap;
-
-  /// Defines the day from which the week starts.
-  ///
-  /// Default value is [WeekDays.monday].
-  // final WeekDays startDay;
 
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
@@ -231,7 +190,6 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   final ScrollPhysics? scrollPhysics;
 
   /// Defines scroll physics for a page of a week view.
-  ///
   /// This can be used to disable the horizontal scroll of a page.
   final ScrollPhysics? pageViewPhysics;
 
@@ -286,9 +244,6 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.onEventLongTap,
     this.onDateLongPress,
     this.onDateTap,
-    // this.weekDays = WeekDays.values,
-    // this.showWeekends = true,
-    // this.startDay = WeekDays.monday,
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.weekDetectorBuilder,
     this.headerStringBuilder,
@@ -968,11 +923,11 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
   }
 
-  /// Animate to next page
+  /// Animate to next page (next multi-day period).
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  ///
+  /// See also: [previousPage], [jumpToWeek], [animateToWeek]
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -980,11 +935,11 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     );
   }
 
-  /// Animate to previous page
+  /// Animate to previous page (previous multi-day period).
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  ///
+  /// See also: [nextPage], [jumpToWeek], [animateToWeek]
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? widget.pageTransitionDuration,
@@ -992,16 +947,22 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     );
   }
 
-  /// Jumps to page number [page]
+  /// Jumps to page index without animation.
   ///
+  /// **Page Index Formula:** `periodIndex = (periodStartDate - minPeriodStartDate) / daysInView`
+  /// For calculation details, see [jumpToWeek].
   ///
+  /// **Prefer:** Use [jumpToWeek] instead of this method for date-based navigation.
   void jumpToPage(int page) => _pageController.jumpToPage(page);
 
-  /// Animate to page number [page].
+  /// Animates to page index with animation.
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Arguments [duration] and [curve] override default transition values.
+  ///
+  /// **Page Index Formula:** `periodIndex = (periodStartDate - minPeriodStartDate) / daysInView`
+  /// For calculation details, see [animateToWeek].
+  ///
+  /// **Prefer:** Use [animateToWeek] instead of this method for date-based navigation.
   Future<void> animateToPage(int page,
       {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
@@ -1009,7 +970,11 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         curve: curve ?? widget.pageTransitionCurve);
   }
 
-  /// Returns current page number.
+  /// Returns current page index (number of periods since [minDay]).
+  ///
+  /// Use [currentDate] to get the period's first date.
+  ///
+  /// See also: [currentDate], [jumpToWeek]
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives day calendar for [week]

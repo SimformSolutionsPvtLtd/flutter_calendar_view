@@ -7,6 +7,7 @@
 - [BREAKING] Added `selectedDate` control to `MonthView` for external date management. [#233](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/233)
 - Added `showMidnightHour` parameter in `DayView` and `WeekView` to control whether the `00:00` label is shown on the timeline. Default is `false`. [#492](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/492)
 - Added `onDateLongPressMoveUpdate` callback to `MonthView`, along with `MonthView.multiDateSelectionRange`, `MonthView.multiDateSelectionColor`, and `FilledCell.multipleDateSelectionColor` for multi-date selection customization.  [#401](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/401)
+- Updated documentation for `DayView`, `WeekView`, `MonthView` adn `MultidayView` to add more details about the parameters and their usage. [#448](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/448)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 

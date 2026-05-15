@@ -25,29 +25,22 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// [CalendarPageHeader] | [DayPageHeader] | [MonthPageHeader] |
   /// [WeekPageHeader] widgets provided by this package with your custom
   /// configurations.
-  ///
   final WeekPageHeaderBuilder? weekPageHeaderBuilder;
 
-  /// Builds custom PressDetector widget
-  ///
-  /// If null, internal PressDetector will be used to handle onDateLongPress()
-  ///
+  /// Builds custom PressDetector widget.
+  /// If null, internal PressDetector handles [onDateLongPress].
   final DetectorBuilder? weekDetectorBuilder;
 
-  /// This function will generate dateString int the calendar header.
-  /// Useful for I18n
+  /// Generates date string in the calendar header. Useful for I18n.
   final StringProvider? headerStringBuilder;
 
-  /// This function will generate the TimeString in the timeline.
-  /// Useful for I18n
+  /// Generates time string in the timeline. Useful for I18n.
   final StringProvider? timeLineStringBuilder;
 
-  /// This function will generate WeekDayString in the weekday.
-  /// Useful for I18n
+  /// Generates week day string. Useful for I18n.
   final String Function(int)? weekDayStringBuilder;
 
-  /// This function will generate WeekDayDateString in the weekday.
-  /// Useful for I18n
+  /// Generates week day date string. Useful for I18n.
   final String Function(int)? weekDayDateStringBuilder;
 
   /// Arrange events.
@@ -56,24 +49,17 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Called whenever user changes week.
   final CalendarPageChangeCallBack? onPageChange;
 
-  /// Minimum day to display in week view.
+  /// Minimum day to display (base date for page indexing).
   ///
-  /// In calendar first date of the week that contains this data will be
-  /// minimum date.
-  ///
-  /// ex, If minDay is 16th March, 2022 then week containing this date will have
-  /// dates from 14th to 20th (Monday to Sunday). adn 14th date will
-  /// be the actual minimum date.
+  /// The week containing this date will be the minimum week displayed.
+  /// If not provided, [CalendarConstants.epochDate] (1900-01-01) is used.
+  /// Use same [minDay] across all views when switching between them.
   final DateTime? minDay;
 
   /// Maximum day to display in week view.
   ///
-  /// In calendar last date of the week that contains this data will be
-  /// maximum date.
-  ///
-  /// ex, If maxDay is 16th March, 2022 then week containing this date will have
-  /// dates from 14th to 20th (Monday to Sunday). adn 20th date will
-  /// be the actual maximum date.
+  /// The last date of the week containing this date will be the maximum displayed.
+  /// If not provided, [CalendarConstants.maxDate] is used.
   final DateTime? maxDay;
 
   /// Initial week to display in week view.
@@ -82,7 +68,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for hour indicator settings.
   final HourIndicatorSettings? hourIndicatorSettings;
 
-  /// A funtion that returns a [CustomPainter].
+  /// A function that returns a [CustomPainter].
   ///
   /// Use this if you want to paint custom hour lines.
   final CustomHourLinePainter? hourLinePainter;
@@ -348,59 +334,134 @@ class WeekView<T extends Object?> extends StatefulWidget {
 }
 
 class WeekViewState<T extends Object?> extends State<WeekView<T>> {
+  /// Width of the Week View widget in pixels.
   late double _width;
+
+  /// Total height of the visible week view.
+  /// Calculated as: hourHeight * (endHour - startHour)
   late double _height;
+
+  /// Width allocated for the timeline/hour labels on the left side.
   late double _timeLineWidth;
+
+  /// Height occupied by a single hour in pixels.
+  /// Calculated as: heightPerMinute * 60
   late double _hourHeight;
+
+  /// Last recorded scroll offset position.
   late double _lastScrollOffset;
+
+  /// Start date of the currently displayed week.
   late DateTime _currentStartDate;
+
+  /// End date of the currently displayed week.
   late DateTime _currentEndDate;
+
+  /// Maximum date user can scroll to (aligned to week end).
   late DateTime _maxDate;
+
+  /// Minimum date user can scroll to (reference for page indexing).
+  /// Calculated as: weekIndex = (weekStartDate - minWeekStartDate) / 7
   late DateTime _minDate;
+
+  /// Reference week for page index calculations.
   late DateTime _currentWeek;
+
+  /// Total number of weeks available in the calendar range.
   late int _totalWeeks;
+
+  /// Current page index in the PageView controller.
   late int _currentIndex;
+
+  /// Title text for the full-day events section.
   late String _fullDayHeaderTitle;
 
+  /// Event arrangement strategy for positioning events.
   late EventArranger<T> _eventArranger;
 
+  /// Settings for full hour indicator lines.
   late HourIndicatorSettings _hourIndicatorSettings;
+
+  /// Custom painter for drawing hour lines.
   late CustomHourLinePainter _hourLinePainter;
 
+  /// Settings for half-hour indicator lines.
   late HourIndicatorSettings _halfHourIndicatorSettings;
+
+  /// Settings for the live time indicator.
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
+
+  /// Settings for quarter-hour indicator lines.
   late HourIndicatorSettings _quarterHourIndicatorSettings;
+
+  /// Settings for divider between FullDay events and weekdays header.
   late DividerSettings _dividerSettings;
 
+  /// Builder for adding custom colors to time slots in the day view.
   late TimeSlotColorBuilder? _timeSlotColorBuilder;
 
+  /// Controller for managing page transitions between weeks.
+  /// Used for navigating to different weeks.
   late PageController _pageController;
 
+  /// Builder function for creating timeline/hour labels.
   late DateWidgetBuilder _timeLineBuilder;
+
+  /// Builder function for creating event tiles.
   late EventTileBuilder<T> _eventTileBuilder;
+
+  /// Builder function for creating the week header.
   late WeekPageHeaderBuilder _weekHeaderBuilder;
+
+  /// Builder function for creating week day headers.
   late DateWidgetBuilder _weekDayBuilder;
+
+  /// Builder function for creating week number display.
   late WeekNumberBuilder _weekNumberBuilder;
+
+  /// Builder function for creating full-day event displays.
   late FullDayEventBuilder<T> _fullDayEventBuilder;
+
+  /// Builder function for creating the press detector overlay.
   late DetectorBuilder _weekDetectorBuilder;
+
+  /// Configuration for styling the full-day event header text.
   late FullDayHeaderTextConfig _fullDayHeaderTextConfig;
 
+  /// Width allocated for each day column.
+  /// Calculated as: (totalWidth - timelineWidth) / totalDaysInWeek
   late double _weekTitleWidth;
+
+  /// Number of days in a week (typically 7).
+  /// Used for layout calculations and iteration.
   late int _totalDaysInWeek;
 
+  /// Callback function triggered when events change or rebuild is needed.
   late VoidCallback _reloadCallback;
 
+  /// Event controller for managing calendar events.
+  /// Provides data for rendering events for the week.
   EventController<T>? _controller;
 
+  /// Scroll controller for managing vertical scrolling.
   late ScrollController _scrollController;
 
+  /// Public getter for accessing the scroll controller.
   ScrollController get scrollController => _scrollController;
 
+  /// List of days in a week with their properties (name, order, etc.).
+  /// Used for rendering day headers and determining week layout.
   late List<WeekDays> _weekDays;
 
+  /// First hour to display in the week view (0-23).
+  /// Controls the starting hour of the visible time range.
   late int _startHour;
+
+  /// Last hour to display in the week view (1-24).
+  /// Controls the ending hour of the visible time range.
   late int _endHour;
 
+  /// Configuration for handling scroll events when jumping/animating to specific events.
   final _scrollConfiguration = EventScrollConfiguration();
 
   @override
@@ -734,7 +795,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   ///
   /// If maximum and minimum dates are change then first call _setDateRange
   /// and then _regulateCurrentDate method.
-  ///
   void _regulateCurrentDate() {
     if (_currentWeek.isBefore(_minDate)) {
       _currentWeek = _minDate;
@@ -768,9 +828,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
   }
 
-  /// Default press detector builder. This builder will be used if
-  /// [widget.weekDetectorBuilder] is null.
-  ///
+  /// Default press detector builder (used if [widget.weekDetectorBuilder] is null).
   Widget _defaultPressDetectorBuilder({
     required DateTime date,
     required double height,
@@ -789,7 +847,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         startHour: _startHour,
       );
 
-  /// Default builder for week line.
+  /// Default builder for the week day header displaying day name and date.
   Widget _defaultWeekDayBuilder(DateTime date) {
     return Center(
       child: Column(
@@ -833,9 +891,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     );
   }
 
-  /// Default timeline builder this builder will be used if
-  /// [widget.eventTileBuilder] is null
-  ///
+  /// Default timeline builder (used if [widget.eventTileBuilder] is null).
   Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
         date: date,
         timeStringBuilder: widget.timeLineStringBuilder,
@@ -845,8 +901,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         ),
       );
 
-  /// Default timeline builder. This builder will be used if
-  /// [widget.eventTileBuilder] is null
+  /// Default event tile builder (used if [widget.eventTileBuilder] is null).
   Widget _defaultEventTileBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -862,8 +917,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         endDuration: endDuration,
       );
 
-  /// Default view header builder. This builder will be used if
-  /// [widget.dayTitleBuilder] is null.
+  /// Default week page header builder (used if [widget.dayTitleBuilder] is null).
   Widget _defaultWeekPageHeaderBuilder(
     DateTime startDate,
     DateTime endDate,
@@ -983,16 +1037,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     );
   }
 
-  /// Jumps to page number [page]
-  ///
-  ///
+  /// Jumps to page index without animation.
+  /// Page Index Calculation: weekIndex = (weekStartDate - minWeekStartDate) / 7
+  /// Prefer [jumpToWeek] instead for date-based navigation.
   void jumpToPage(int page) => _pageController.jumpToPage(page);
 
-  /// Animate to page number [page].
-  ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Animates to page index with animation.
+  /// Page Index Calculation: weekIndex = (weekStartDate - minWeekStartDate) / 7
+  /// Prefer [animateToWeek] instead for date-based navigation.
   Future<void> animateToPage(int page,
       {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
@@ -1000,7 +1052,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         curve: curve ?? widget.pageTransitionCurve);
   }
 
-  /// Returns current page number.
+  /// Returns current page index (number of weeks since [minDay]).
+  ///
+  /// Use [currentDate] to get the week's first date.
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives day calendar for [week]
@@ -1033,9 +1087,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   DateTime get currentDate => DateTime(
       _currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
 
-  /// Jumps to page which contains given events and make event
-  /// tile visible to user.
-  ///
+  /// Jumps to page which contains given event and makes tile visible.
   Future<void> jumpToEvent(CalendarEventData<T> event) async {
     jumpToWeek(event.date);
 
@@ -1046,20 +1098,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     );
   }
 
-  /// Animate to page which contains given events and make event
-  /// tile visible to user.
-  ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
-  ///
-  /// Actual duration will be 2 times the given duration.
+  /// Animate to page which contains given events and make event tile visible.
+  /// Actual duration will be 2 times the given duration (animate + scroll).
   ///
   /// Ex, If provided duration is 200 milliseconds then this function will take
   /// 200 milliseconds for animate to page then 200 milliseconds for
   /// scroll to event tile.
-  ///
-  ///
   Future<void> animateToEvent(CalendarEventData<T> event,
       {Duration? duration, Curve? curve}) async {
     await animateToWeek(event.date, duration: duration, curve: curve);
@@ -1083,8 +1127,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     );
   }
 
-  /// check if any dates contains current date or not.
-  /// Returns true if it does else false.
+  /// Check if any dates contain current date. Returns true if found.
   bool _showLiveTimeIndicator(List<DateTime> dates) {
     final now = _liveTimeIndicatorSettings.currentTimeProvider?.call() ??
         DateTime.now();

@@ -36,14 +36,15 @@ class MonthViewStyle {
   /// Default value is true.
   final bool showWeekends;
 
-  /// Determines the lower boundary user can scroll.
+  /// Determines the lower boundary user can scroll (base date for page indexing).
   ///
-  /// If not provided [CalendarConstants.epochDate] is default.
+  /// **Important:** Use same [minMonth] across all views (day/week/month) when
+  /// switching between them to ensure consistent date-to-page mapping.
   final DateTime? minMonth;
 
   /// Determines upper boundary user can scroll.
   ///
-  /// If not provided [CalendarConstants.maxDate] is default.
+  /// If not provided, [CalendarConstants.maxDate] is used.
   final DateTime? maxMonth;
 
   /// Defines initial display month.
