@@ -5,8 +5,8 @@
 part of 'event_arrangers.dart';
 
 /// Arranges overlapping calendar events side by side, ensuring no visual overlap and optimal use of space.
-/// Supports multi-day and full-day events, fixed or dynamic width allocation, and configurable edge overlap handling.
-///
+/// Supports multi-day and full-day events, fixed or dynamic width allocation, and configurable
+/// edge overlap handling via [countAdjacentEventsAsOverlapping].
 /// Events are grouped into columns to prevent overlaps, and each event is positioned and sized for best readability.
 /// Use [maxWidth] to constrain event width, and [countAdjacentEventsAsOverlapping] to control whether touching events are treated as overlapping.
 class SideEventArranger<T extends Object?> extends EventArranger<T> {
@@ -141,16 +141,22 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         if (isStartDate && isEndDate) {
           // Event starts and ends on the same day (single day spanning event)
+          // endTime of 0 (midnight) is treated as end-of-day (1440)
           effectiveStartTime = event.startTime!.getTotalMinutes;
-          effectiveEndTime = event.endTime!.getTotalMinutes;
+          final endMinutes = event.endTime!.getTotalMinutes;
+          effectiveEndTime =
+              endMinutes == 0 ? Constants.minutesADay : endMinutes;
         } else if (isStartDate) {
           // First day of multi-day event - start at event time, end at day end
           effectiveStartTime = event.startTime!.getTotalMinutes;
           effectiveEndTime = Constants.minutesADay;
         } else if (isEndDate) {
           // Last day of multi-day event - start at day start, end at event time
+          // endTime of 0 (midnight) is treated as end-of-day (1440)
           effectiveStartTime = 0;
-          effectiveEndTime = event.endTime!.getTotalMinutes;
+          final endMinutes = event.endTime!.getTotalMinutes;
+          effectiveEndTime =
+              endMinutes == 0 ? Constants.minutesADay : endMinutes;
         } else {
           // Middle day of multi-day event - full day
           effectiveStartTime = 0;
@@ -158,8 +164,10 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
         }
       } else {
         // Regular single-day event
+        // endTime of 0 (midnight) is treated as end-of-day (1440)
         effectiveStartTime = event.startTime!.getTotalMinutes;
-        effectiveEndTime = event.endTime!.getTotalMinutes;
+        final endMinutes = event.endTime!.getTotalMinutes;
+        effectiveEndTime = endMinutes == 0 ? Constants.minutesADay : endMinutes;
       }
 
       // Skip events that don't appear in the visible time range
@@ -175,8 +183,6 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
         originalEvent: event,
         effectiveStartTime: effectiveStartTime,
         effectiveEndTime: effectiveEndTime,
-        isMultiDay: event.isRangingEvent,
-        isFullDay: event.isFullDayEvent,
       ));
     }
 
@@ -304,8 +310,10 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     final columnCount = columns.length;
     if (columnCount == 0) return;
 
-    // Calculate actual widths for all events first to avoid gaps
-    final eventWidths = <int, double>{};
+    // Calculate actual widths for all events first to avoid gaps.
+    // Keyed on the _NormalizedEvent instance (identity equality) to avoid the
+    // hash collisions that would occur when using normalizedEvent.hashCode.
+    final eventWidths = <_NormalizedEvent<T>, double>{};
     for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
       final column = columns[columnIndex];
       for (final normalizedEvent in column) {
@@ -315,8 +323,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         // Take minimum of dynamic width and maxWidth (maxWidth is absolute pixels)
         final maxWidthPixels = maxWidth!;
-        eventWidths[normalizedEvent.hashCode] =
-            math.min(dynamicWidth, maxWidthPixels);
+        eventWidths[normalizedEvent] = math.min(dynamicWidth, maxWidthPixels);
       }
     }
 
@@ -326,11 +333,13 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
       final column = columns[columnIndex];
 
-      // Find the maximum width needed for this column
-      double maxColumnWidth = double.maxFinite;
+      // All events in the column must share the same width: the minimum of their
+      // individual available widths. This guarantees no event overflows into the
+      // rendered region of the next column.
+      double columnWidth = double.maxFinite;
       for (final normalizedEvent in column) {
-        final eventWidth = eventWidths[normalizedEvent.hashCode]!;
-        maxColumnWidth = math.min(maxColumnWidth, eventWidth);
+        final eventWidth = eventWidths[normalizedEvent]!;
+        columnWidth = math.min(columnWidth, eventWidth);
       }
 
       for (final normalizedEvent in column) {
@@ -342,8 +351,6 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
             Constants.minutesADay - startHourInMinutes,
             normalizedEvent.effectiveEndTime - startHourInMinutes);
 
-        final actualWidth = eventWidths[normalizedEvent.hashCode]!;
-
         final top = displayStartTime * heightPerMinute;
         final visibleMinutes = Constants.minutesADay - startHourInMinutes;
         final bottom = displayEndTime >= visibleMinutes
@@ -352,7 +359,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         result.add(OrganizedCalendarEventData<T>(
           left: currentLeftPosition,
-          right: math.max(0.0, totalWidth - currentLeftPosition - actualWidth),
+          right: math.max(0.0, totalWidth - currentLeftPosition - columnWidth),
           top: top,
           bottom: bottom,
           startDuration: event.startTime!.copyFromMinutes(displayStartTime),
@@ -362,8 +369,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
         ));
       }
 
-      // Move to next column position based on actual width used
-      currentLeftPosition += maxColumnWidth;
+      // Advance by the shared column width so subsequent columns don't overlap.
+      currentLeftPosition += columnWidth;
     }
   }
 
@@ -476,8 +483,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
 /// Internal event data structure for calendar layout.
 ///
-/// Stores normalized start/end times (minutes since midnight), multi-day/full-day flags, and a reference to the original event.
-/// Used for efficient overlap detection, layout calculations, and rendering in calendar views.
+/// Stores normalized start/end times (minutes since midnight) and a reference
+/// to the original event. Used for overlap detection and layout calculations.
 class _NormalizedEvent<T extends Object?> {
   /// Reference to the original calendar event data
   final CalendarEventData<T> originalEvent;
@@ -485,20 +492,12 @@ class _NormalizedEvent<T extends Object?> {
   /// Event start time in minutes since midnight (0-1439)
   final int effectiveStartTime;
 
-  /// Event end time in minutes since midnight (0-1440)
+  /// Event end time in minutes since midnight (1-1440)
   final int effectiveEndTime;
-
-  /// Whether this event spans multiple calendar days
-  final bool isMultiDay;
-
-  /// Whether this is a full-day event
-  final bool isFullDay;
 
   const _NormalizedEvent({
     required this.originalEvent,
     required this.effectiveStartTime,
     required this.effectiveEndTime,
-    required this.isMultiDay,
-    required this.isFullDay,
   });
 }
