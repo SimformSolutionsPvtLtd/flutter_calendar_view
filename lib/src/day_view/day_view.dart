@@ -12,6 +12,7 @@ import '../extensions.dart';
 import '../painters.dart';
 import '_internal_day_view_page.dart';
 
+/// Displays a single-day calendar view and renders events for that day.
 class DayView<T extends Object?> extends StatefulWidget {
   /// A function that returns a [Widget] that determines appearance of each
   /// cell in day calendar.
@@ -19,10 +20,14 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// A function to generate the DateString in the calendar title.
   /// Useful for I18n
+  ///
+  /// If not provided, a default date format will be used.
   final StringProvider? dateStringBuilder;
 
   /// A function to generate the TimeString in the timeline.
   /// Useful for I18n
+  ///
+  /// If not provided, a default time format will be used.
   final StringProvider? timeStringBuilder;
 
   /// A function that returns a [Widget] that will be displayed left side of
@@ -56,9 +61,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This callback will run whenever page will change.
   final CalendarPageChangeCallBack? onPageChange;
 
-  /// Determines the lower boundary user can scroll.
+  /// Determines the lower boundary user can scroll (base date for page indexing).
   ///
-  /// If not provided [CalendarConstants.epochDate] is default.
+  /// **Important:** Use same [minDay] across all views (day/week/month) when
+  /// switching between them to ensure consistent date-to-page mapping.
   final DateTime? minDay;
 
   /// Determines upper boundary user can scroll.
@@ -98,10 +104,14 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Page transition duration used when user try to change page using
   /// [DayViewState.nextPage] or [DayViewState.previousPage]
+  ///
+  /// Default value is 300 milliseconds.
   final Duration pageTransitionDuration;
 
   /// Page transition curve used when user try to change page using
   /// [DayViewState.nextPage] or [DayViewState.previousPage]
+  ///
+  /// Default value is [Curves.ease].
   final Curve pageTransitionCurve;
 
   /// A required parameters that controls events for day view.
@@ -113,6 +123,12 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Defines height occupied by one minute of interval.
   /// This will be used to calculate total height of day view.
+  ///
+  /// For example, if [heightPerMinute] is 0.7, then one hour (60 minutes)
+  /// will occupy 42 pixels of height (0.7 * 60).
+  ///
+  /// Default value is 0.7.
+  /// Must be greater than 0.
   final double heightPerMinute;
 
   /// Defines the width of timeline. If null then it will
@@ -155,11 +171,16 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Defines initial offset of first page that will be displayed when
   /// [DayView] is initialized.
   ///
-  /// If [scrollOffset] is null then [startDuration] will be considered for
-  /// initial offset.
+  /// This controls the scroll position within the day view. If [scrollOffset]
+  /// is null, then [startDuration] will be considered for initial offset.
+  ///
+  /// Use this when you want to start the view at a specific scroll position
+  /// rather than relying on the [startDuration] parameter.
   final double? scrollOffset;
 
   /// This method will be called when user taps on timestamp in timeline.
+  ///
+  /// Called when user taps on a time value in the timeline (left side of view).
   final TimestampCallback? onTimestampTap;
 
   /// This method will be called when user taps on event tile.
@@ -185,12 +206,23 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Defines size of the slots that provides long press callback on area
   /// where events are not there.
+  ///
+  /// This determines the granularity of time selections. For example,
+  /// [MinuteSlotSize.minutes60] means each slot represents 60 minutes (1 hour).
+  ///
+  /// Default value is [MinuteSlotSize.minutes60].
   final MinuteSlotSize minuteSlotSize;
 
   /// Use this field to disable the calendar scrolling
+  ///
+  /// If specified, this [ScrollPhysics] will be applied to the time axis scrolling.
+  /// Set to [NeverScrollableScrollPhysics] to disable scrolling within the day view.
   final ScrollPhysics? scrollPhysics;
 
   /// Use this field to disable the page view scrolling behavior
+  ///
+  /// If specified, this [ScrollPhysics] will be applied to the horizontal page transitions.
+  /// Set to [NeverScrollableScrollPhysics] to disable day-to-day page swiping.
   final ScrollPhysics? pageViewPhysics;
 
   /// Style for DayView header.
@@ -200,15 +232,30 @@ class DayView<T extends Object?> extends StatefulWidget {
   final SafeAreaOption safeAreaOption;
 
   /// Display full day event builder.
+  ///
+  /// A custom widget builder for displaying events that span the entire day.
+  /// If not provided, [FullDayEventView] will be used as default.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
   /// First hour displayed in the layout, goes from 0 to 24
+  ///
+  /// This determines the starting hour of the visible time range.
+  /// For example, if [startHour] is 6, the timeline will start from 6:00 AM.
+  ///
+  /// Default value is 0 (starts from midnight).
+  /// Must be less than or equal to [endHour].
   final int startHour;
 
   /// Show half hour indicator
+  ///
+  /// When true, displays horizontal lines at 30-minute intervals.
+  /// Default value is false.
   final bool showHalfHours;
 
   /// Show quarter hour indicator(15min & 45min).
+  ///
+  /// When true, displays horizontal lines at 15-minute intervals (15min & 45min).
+  /// Default value is false.
   final bool showQuarterHours;
 
   /// It define the starting duration from where day view page will be visible
@@ -216,15 +263,32 @@ class DayView<T extends Object?> extends StatefulWidget {
   final Duration startDuration;
 
   /// Callback for the Header title
+  ///
+  /// Called when user taps on the header title/date. If not provided,
+  /// a date picker dialog will be shown.
   final HeaderTitleCallback? onHeaderTitleTap;
 
   /// Emulate vertical line offset from hour line starts.
+  ///
+  /// This adjusts the vertical line position by the specified amount.
+  /// Default value is 0.
   final double emulateVerticalOffsetBy;
 
   /// This field will be used to set end hour for day view
+  ///
+  /// This determines the ending hour of the visible time range.
+  /// For example, if [endHour] is 24, the timeline will end at midnight.
+  ///
+  /// Default value is 24.
+  /// Must be greater than [startHour].
   final int endHour;
 
   /// Flag to keep scrollOffset of pages on page change
+  ///
+  /// When true, maintains the scroll position when navigating between days.
+  /// When false, resets to [startDuration] on each page change.
+  ///
+  /// Default value is false.
   final bool keepScrollOffset;
 
   /// A callback that resolves slot background color for each visible time slot.
@@ -317,47 +381,124 @@ class DayView<T extends Object?> extends StatefulWidget {
 }
 
 class DayViewState<T extends Object?> extends State<DayView<T>> {
+  /// Width of the Day View widget in pixels.
+  /// Calculated from widget width or device constraint width.
   late double _width;
+
+  /// Total height of the visible day view (calculated from hourHeight and hour range).
+  /// Formula: _hourHeight * (endHour - startHour)
   late double _height;
+
+  /// Width allocated for the timeline/hour labels on the left side.
+  /// Defaults to 13% of _width if not explicitly specified.
   late double _timeLineWidth;
+
+  /// Height occupied by a single hour in pixels.
+  /// Formula: heightPerMinute * 60
+  /// This is used to determine overall view height and scroll calculations.
   late double _hourHeight;
+
+  /// Last recorded scroll offset position for maintaining scroll state.
+  /// Used when navigating between pages if keepScrollOffset is enabled.
   late double _lastScrollOffset;
+
+  /// Currently displayed day in the Day View.
+  /// Updated when user navigates between days.
+  /// Always stored without time component (time is 00:00:00).
   late DateTime _currentDate;
+
+  /// Maximum date user can scroll to.
+  /// Derived from widget.maxDay parameter (defaults to CalendarConstants.maxDate).
+  /// Stored without time component.
   late DateTime _maxDate;
+
+  /// Minimum date user can scroll to.
+  /// This is the **reference date** for calculating page indices.
+  /// Derived from widget.minDay parameter (defaults to CalendarConstants.epochDate).
+  /// Stored without time component.
   late DateTime _minDate;
+
+  /// Total number of days available in the calendar.
+  /// Calculated as: (_maxDate - _minDate) + 1
   late int _totalDays;
+
+  /// Current page index in the PageView controller.
+  /// Represents the number of days since _minDate.
+  /// Central to relating page indices with dates.
+  /// Formula: currentDate.getDayDifference(_minDate)
   late int _currentIndex;
 
+  /// Event arrangement strategy for positioning events in the day view.
+  /// Determines how overlapping events are laid out (side-by-side, cascading, etc.).
+  /// Defaults to SideEventArranger if not provided.
   late EventArranger<T> _eventArranger;
 
+  /// Settings for full hour indicator lines (e.g., solid lines at each hour mark).
+  /// Controls color, height, offset, and line style for 1-hour interval indicators.
   late HourIndicatorSettings _hourIndicatorSettings;
+
+  /// Settings for half-hour indicator lines (at 30-minute marks).
+  /// Controls color, height, offset, and line style for half-hour interval indicators.
   late HourIndicatorSettings _halfHourIndicatorSettings;
+
+  /// Settings for quarter-hour indicator lines (at 15 and 45-minute marks).
+  /// Controls color, height, offset, and line style for quarter-hour interval indicators.
   late HourIndicatorSettings _quarterHourIndicatorSettings;
+
+  /// Custom painter for drawing hour lines in the day view.
+  /// Allows fine-grained control over line rendering appearance.
   late CustomHourLinePainter _hourLinePainter;
 
+  /// Settings for the live time indicator (current time line).
+  /// Controls color, height, and offset of the indicator showing current time.
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
+
+  /// Builder for adding custom colors to time slots in the day view.
   late TimeSlotColorBuilder? _timeSlotColorBuilder;
 
+  /// Controller for managing page transitions between days.
+  /// Used for jumpToPage(), animateToPage(), and nextPage/previousPage operations.
   late PageController _pageController;
 
+  /// Builder function for creating timeline/hour labels on the left side.
+  /// Receives the date and returns a Widget to display for that hour.
   late DateWidgetBuilder _timeLineBuilder;
 
+  /// Builder function for creating event tiles within the day view.
+  /// Customizes how individual events are rendered.
   late EventTileBuilder<T> _eventTileBuilder;
 
+  /// Builder function for creating the day title/header section.
+  /// Typically displays the current date and navigation controls.
   late DateWidgetBuilder _dayTitleBuilder;
 
+  /// Builder function for creating full-day event displays.
+  /// Handles rendering of events that span the entire day.
   late FullDayEventBuilder<T> _fullDayEventBuilder;
 
+  /// Builder function for creating the press detector overlay.
+  /// Handles tap, long-press detection for creating new events.
   late DetectorBuilder _dayDetectorBuilder;
 
+  /// Event controller for managing calendar events.
+  /// Can be null if event management is not needed.
+  /// Provides data for rendering events and tracks event changes.
   EventController<T>? _controller;
 
+  /// Scroll controller for managing vertical scrolling within the day view.
+  /// Controls scroll position for time axis (top-to-bottom).
   late ScrollController _scrollController;
 
+  /// Public getter for accessing the scroll controller.
+  /// Allows external code to control or listen to scroll events.
   ScrollController get scrollController => _scrollController;
 
+  /// Callback function triggered when the controller changes or events are modified.
+  /// Used to rebuild the view when event data changes.
   late VoidCallback _reloadCallback;
 
+  /// Configuration for handling scroll events when jumping/animating to specific events.
+  /// Manages ValueNotifier for reactive scroll updates.
   final _scrollConfiguration = EventScrollConfiguration<T>();
 
   @override
@@ -550,7 +691,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   }
 
   /// Reloads page.
-  ///
   void _reload() {
     if (mounted) {
       setState(() {});
@@ -626,7 +766,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ///
   /// If maximum and minimum dates are change then first call _setDateRange
   /// and then _regulateCurrentDate method.
-  ///
   void _regulateCurrentDate() {
     if (_currentDate.isBefore(_minDate)) {
       _currentDate = _minDate;
@@ -653,7 +792,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Default press detector builder. This builder will be used if
   /// [widget.weekDetectorBuilder] is null.
-  ///
   Widget _defaultPressDetectorBuilder({
     required DateTime date,
     required double height,
@@ -674,7 +812,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Default timeline builder this builder will be used if
   /// [widget.eventTileBuilder] is null
-  ///
   Widget _defaultTimeLineBuilder(DateTime date) => DefaultTimeLineMark(
         date: date,
         timeStringBuilder: widget.timeStringBuilder,
@@ -686,7 +823,6 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
-  ///
   Widget _defaultEventTileBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -810,56 +946,69 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     widget.onPageChange?.call(_currentDate, _currentIndex);
   }
 
-  /// Animate to next page
+  /// Animate to next page (next day).
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
   ///
-  ///
+  /// See also: [previousPage], [jumpToDate], [animateToDate]
   void nextPage({Duration? duration, Curve? curve}) => _pageController.nextPage(
         duration: duration ?? widget.pageTransitionDuration,
         curve: curve ?? widget.pageTransitionCurve,
       );
 
-  /// Animate to previous page
+  /// Animate to previous page (previous day).
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
   ///
-  ///
+  /// See also: [nextPage], [jumpToDate], [animateToDate]
   void previousPage({Duration? duration, Curve? curve}) =>
       _pageController.previousPage(
         duration: duration ?? widget.pageTransitionDuration,
         curve: curve ?? widget.pageTransitionCurve,
       );
 
-  /// Jumps to page number [page]
+  /// Jumps to page index without animation.
   ///
+  /// **Page Index Formula:** `pageIndex = date.getDayDifference(minDay)`
   ///
+  /// **Prefer:** Use [jumpToDate] instead of this method for date-based navigation.
+  ///
+  /// **Throws:** Exception if page index is invalid.
+  ///
+  /// See also: [jumpToDate], [animateToPage]
   void jumpToPage(int page) => _pageController.jumpToPage(page);
 
-  /// Animate to page number [page].
+  /// Animates to page index with animation.
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Arguments [duration] and [curve] override default transition values.
   ///
+  /// **Page Index Formula:** `pageIndex = date.getDayDifference(minDay)`
   ///
+  /// **Prefer:** Use [animateToDate] instead of this method for date-based navigation.
+  ///
+  /// See also: [animateToDate], [jumpToPage]
   Future<void> animateToPage(int page, {Duration? duration, Curve? curve}) =>
       _pageController.animateToPage(page,
           duration: duration ?? widget.pageTransitionDuration,
           curve: curve ?? widget.pageTransitionCurve);
 
-  /// Returns current page number.
-  ///
-  ///
+  /// Returns current page index (number of days since [minDay]).
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives day calendar for [date]
   ///
+  /// This is the preferred way to navigate to a specific date. It automatically
+  /// calculates the correct page index based on the [minDay] parameter.
   ///
+  /// **Example:**
+  /// ```dart
+  /// dayViewState.jumpToDate(DateTime(2024, 5, 15));
+  /// ```
+  ///
+  /// **Note:** The [date] must be within the range [minDay] to [maxDay],
+  /// otherwise an exception will be thrown.
+  ///
+  /// Throws an exception if [date] is outside the valid date range.
   void jumpToDate(DateTime date) {
     if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
       throw "Invalid date selected.";
@@ -869,11 +1018,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to page which gives day calendar for [date].
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
-  /// respectively.
+  /// Calculates the correct page index based on [minDay] and animates to it.
+  /// Arguments [duration] and [curve] override default transition values.
   ///
-  ///
+  /// Throws an exception if [date] is outside the [minDay] to [maxDay] range.
   Future<void> animateToDate(DateTime date,
       {Duration? duration, Curve? curve}) async {
     if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
@@ -889,6 +1037,14 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Jumps to page which contains given events and make event
   /// tile visible to user.
   ///
+  /// This method performs two operations:
+  /// 1. Jumps to the page (day) containing the event
+  /// 2. Scrolls to make the event tile visible
+  ///
+  /// **Example:**
+  /// ```dart
+  /// await dayViewState.jumpToEvent(myCalendarEvent);
+  /// ```
   Future<void> jumpToEvent(CalendarEventData<T> event) async {
     jumpToDate(event.date);
 
@@ -902,17 +1058,27 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Animate to page which contains given events and make event
   /// tile visible to user.
   ///
+  /// This method performs two operations with animation:
+  /// 1. Animates to the page (day) containing the event
+  /// 2. Scrolls with animation to make the event tile visible
+  ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
   /// respectively.
   ///
-  /// Actual duration will be 2 times the given duration.
+  /// **Actual duration:** The total animation time will be 2 times the given duration:
+  /// - First [duration]: animate to page
+  /// - Second [duration]: scroll to event tile
   ///
-  /// Ex, If provided duration is 200 milliseconds then this function will take
-  /// 200 milliseconds for animate to page then 200 milliseconds for
-  /// scroll to event tile.
+  /// **Example:**
+  /// If provided duration is 200 milliseconds, total animation time is 400 milliseconds.
   ///
-  ///
+  /// ```dart
+  /// await dayViewState.animateToEvent(
+  ///   myCalendarEvent,
+  ///   duration: Duration(milliseconds: 300),
+  /// );
+  /// ```
   Future<void> animateToEvent(CalendarEventData<T> event,
       {Duration? duration, Curve? curve}) async {
     await animateToDate(event.date, duration: duration, curve: curve);
@@ -924,6 +1090,24 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   }
 
   /// Animate to specific offset in a day view using the start duration
+  ///
+  /// This method scrolls to a specific time of day within the currently displayed page.
+  ///
+  /// **Parameters:**
+  /// - [startDuration]: The time to scroll to (e.g., Duration(hours: 10) for 10:00 AM)
+  /// - [duration]: Animation duration (default: 200ms)
+  /// - [curve]: Animation curve (default: Curves.linear)
+  ///
+  /// **Example:**
+  /// Scroll to 2:30 PM:
+  /// ```dart
+  /// await dayViewState.animateToDuration(
+  ///   Duration(hours: 14, minutes: 30),
+  ///   duration: Duration(milliseconds: 500),
+  /// );
+  /// ```
+  ///
+  /// **Note:** If the duration exceeds 24 hours, it will be capped at 24 hours.
   Future<void> animateToDuration(
     Duration startDuration, {
     Duration duration = const Duration(milliseconds: 200),
@@ -944,6 +1128,18 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   }
 
   /// Animate to specific scroll controller offset
+  ///
+  /// This method scrolls to a specific pixel offset within the current page.
+  ///
+  /// **Parameters:**
+  /// - [offset]: Target scroll offset in pixels
+  /// - [duration]: Animation duration (default: 200ms)
+  /// - [curve]: Animation curve (default: Curves.linear)
+  ///
+  /// **Example:**
+  /// ```dart
+  /// dayViewState.animateTo(500.0);
+  /// ```
   void animateTo(
     double offset, {
     Duration duration = const Duration(milliseconds: 200),

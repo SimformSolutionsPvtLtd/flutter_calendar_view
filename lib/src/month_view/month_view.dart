@@ -64,38 +64,68 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
 /// State of month view.
 class MonthViewState<T extends Object?> extends State<MonthView<T>> {
+  /// Minimum date user can scroll to. Reference date for page index calculation.
+  /// Stored without time component. See [_setDateRange] for calculation.
   late DateTime _minDate;
+
+  /// Maximum date user can scroll to. Aligned to month boundary.
+  /// Stored without time component. See [_setDateRange] for calculation.
   late DateTime _maxDate;
 
+  /// Currently displayed month. Updated when user navigates between months.
   late DateTime _currentDate;
 
+  /// Current page index in PageView. Calculated from date difference.
+  /// See [_regulateCurrentDate] for calculation: `pageIndex = minDate.getMonthDifference(currentDate) - 1`
   late int _currentIndex;
 
+  /// Total number of months available between _minDate and _maxDate.
+  /// See [_setDateRange] for calculation.
   int _totalMonths = 0;
+
+  /// Whether multi date selection is in progress.
   bool _isMultiDateSelectionInProgress = false;
 
+  /// Controls page transitions between months (horizontal paging).
   late PageController _pageController;
 
+  /// Total width of the month view widget in pixels.
   late double _width;
+
+  /// Total height available for displaying month cells.
   late double _height;
 
+  /// Width of each cell in the month grid. Calculated as: `_width / 7`
   late double _cellWidth;
+
+  /// Height of each cell in the month grid. Calculated based on cellAspectRatio.
   late double _cellHeight;
 
+  /// Current selected date (single date).
   DateTime? _selectedDate;
 
+  /// Builder function for rendering individual calendar cells.
   late CellBuilder<T> _cellBuilder;
 
+  /// Builder function for rendering week day headers (Mon, Tue, etc).
   late WeekDayBuilder _weekBuilder;
 
+  /// Builder function for rendering the month view header.
   late DateWidgetBuilder _headerBuilder;
 
+  /// Event controller for managing calendar events across the month.
   EventController<T>? _controller;
 
+  /// Callback triggered when events change or rebuild is needed.
   late VoidCallback _reloadCallback;
 
+  /// Current style configuration for the month view layout and appearance.
   late MonthViewStyle _monthViewStyle = widget.monthViewStyle;
+
+  /// Current custom builders for month view components.
   late MonthViewBuilders<T> _monthViewBuilders = widget.monthViewBuilders;
+
+  /// Current theme settings for month view colors and text styles.
   late MonthViewThemeSettings _monthViewThemeSettings =
       widget.monthViewThemeSettings;
 
@@ -107,7 +137,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _setDateRange();
 
     // Initialize current date.
-
     _currentDate = (_monthViewStyle.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
@@ -115,7 +144,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _selectedDate = widget.selectedDate?.withoutTime;
 
     // Initialize page controller to control page actions.
-
     _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
@@ -644,11 +672,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _monthViewBuilders.onCellTap?.call(events, date);
   }
 
-  /// Animate to next page
+  /// Animate to next page (next month).
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthViewStyle.pageTransitionDuration] and
   /// [MonthViewStyle.pageTransitionCurve] respectively.
+  ///
+  /// See also: [previousPage], [jumpToMonth], [animateToMonth]
   void nextPage({Duration? duration, Curve? curve}) {
     _pageController.nextPage(
       duration: duration ?? _monthViewStyle.pageTransitionDuration,
@@ -656,11 +686,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
-  /// Animate to previous page
+  /// Animate to previous page (previous month).
   ///
   /// Arguments [duration] and [curve] will override default values provided
   /// as [MonthViewStyle.pageTransitionDuration] and
   /// [MonthViewStyle.pageTransitionCurve] respectively.
+  ///
+  /// See also: [nextPage], [jumpToMonth], [animateToMonth]
   void previousPage({Duration? duration, Curve? curve}) {
     _pageController.previousPage(
       duration: duration ?? _monthViewStyle.pageTransitionDuration,
@@ -668,16 +700,32 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
-  /// Jumps to page number [page]
+  /// Jumps to page index without animation.
+  ///
+  /// **Page Index Formula:** `pageIndex = month.getMonthDifference(minMonth) - 1`
+  /// For calculation details, see [jumpToMonth].
+  ///
+  /// **Prefer:** Use [jumpToMonth] instead of this method for date-based navigation.
+  ///
+  /// See also: [jumpToMonth], [animateToPage]
   void jumpToPage(int page) {
     _pageController.jumpToPage(page);
   }
 
-  /// Animate to page number [page].
+  /// Animates to the specified page index with animation.
   ///
-  /// Arguments [duration] and [curve] will override default values provided
-  /// as [MonthViewStyle.pageTransitionDuration] and
-  /// [MonthViewStyle.pageTransitionCurve] respectively.
+  /// The [page] parameter represents the page index calculated as:
+  /// `pageIndex = minMonth.getMonthDifference(targetMonth) - 1`
+  ///
+  /// Optional [duration] and [curve] parameters override the default transition
+  /// values from [MonthViewStyle.pageTransitionDuration] and
+  /// [MonthViewStyle.pageTransitionCurve].
+  ///
+  /// **Recommendation:** For date-based navigation, prefer using [animateToMonth]
+  /// instead, as it accepts a [DateTime] and handles the page index calculation
+  /// automatically.
+  ///
+  /// See also: [animateToMonth], [jumpToPage], [jumpToMonth]
   Future<void> animateToPage(
     int page, {
     Duration? duration,
@@ -690,7 +738,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
-  /// Returns current page number.
+  /// Returns current page index (number of months since [minMonth]).
+  ///
+  /// Use [currentDate] to get the current month as a DateTime.
+  ///
+  /// See also: [currentDate], [jumpToMonth]
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives month calendar for [month]
