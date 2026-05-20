@@ -113,6 +113,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// be used to calculate total height of Week view.
   final double heightPerMinute;
 
+  /// Minimum rendered height in pixels for short timed events when using the
+  /// default [SideEventArranger].
+  final double minimumEventHeight;
+
   /// Width of time line.
   final double? timeLineWidth;
 
@@ -262,6 +266,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
     this.heightPerMinute = 1,
+    this.minimumEventHeight = 12,
     this.timeLineOffset = 0,
     this.showLiveTimeLineInAllDays = false,
     this.showVerticalLines = true,
@@ -328,6 +333,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
             "Time line width must be greater than 0."),
         assert(
             heightPerMinute > 0, "Height per minute must be greater than 0."),
+        assert(minimumEventHeight >= 0,
+            "Minimum event height must be greater than or equal to 0."),
         assert(
           weekDetectorBuilder == null || onDateLongPress == null,
           """If you use [weekPressDetectorBuilder] 
@@ -426,7 +433,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _calculateHeights();
 
     _pageController = PageController(initialPage: _currentIndex);
-    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _eventArranger = widget.eventArranger ??
+        SideEventArranger<T>(minimumEventHeight: widget.minimumEventHeight);
 
     _assignBuilders();
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
@@ -478,7 +486,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       _pageController.jumpToPage(_currentIndex);
     }
 
-    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _eventArranger = widget.eventArranger ??
+        SideEventArranger<T>(minimumEventHeight: widget.minimumEventHeight);
     _startHour = widget.startHour;
     _endHour = widget.endHour;
 

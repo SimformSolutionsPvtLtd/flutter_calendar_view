@@ -115,6 +115,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// This will be used to calculate total height of day view.
   final double heightPerMinute;
 
+  /// Minimum rendered height in pixels for short timed events when using the
+  /// default [SideEventArranger].
+  final double minimumEventHeight;
+
   /// Defines the width of timeline. If null then it will
   /// occupies 13% of [width].
   final double? timeLineWidth;
@@ -251,6 +255,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.hourIndicatorSettings,
     this.hourLinePainter,
     this.heightPerMinute = 0.7,
+    this.minimumEventHeight = 12,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.timeLineOffset = 0,
@@ -297,6 +302,8 @@ class DayView<T extends Object?> extends StatefulWidget {
             "Time line width must be greater than 0."),
         assert(
             heightPerMinute > 0, "Height per minute must be greater than 0."),
+        assert(minimumEventHeight >= 0,
+            "Minimum event height must be greater than or equal to 0."),
         assert(
           dayDetectorBuilder == null || onDateLongPress == null,
           """If you use [dayPressDetectorBuilder]
@@ -378,7 +385,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       initialScrollOffset: _lastScrollOffset,
     );
     _pageController = PageController(initialPage: _currentIndex);
-    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _eventArranger = widget.eventArranger ??
+        SideEventArranger<T>(minimumEventHeight: widget.minimumEventHeight);
     _assignBuilders();
   }
 
@@ -424,7 +432,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       _pageController.jumpToPage(_currentIndex);
     }
 
-    _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
+    _eventArranger = widget.eventArranger ??
+        SideEventArranger<T>(minimumEventHeight: widget.minimumEventHeight);
 
     // Update heights.
     _calculateHeights();

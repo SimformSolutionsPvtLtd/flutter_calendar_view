@@ -33,7 +33,7 @@ class WeekViewWidget extends StatelessWidget {
             ? Colors.green.shade50
             : Colors.grey.shade50;
       },
-      eventArranger: SideEventArranger(maxWidth: 30),
+      eventArranger: SideEventArranger(maxWidth: 30, minimumEventHeight: 12),
       timeLineWidth: 65,
       scrollPhysics: const BouncingScrollPhysics(),
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(

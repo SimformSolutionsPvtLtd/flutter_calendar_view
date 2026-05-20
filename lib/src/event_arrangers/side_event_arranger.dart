@@ -10,6 +10,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   const SideEventArranger({
     this.maxWidth,
     this.includeEdges = false,
+    this.minimumEventHeight = 0,
   });
 
   /// Decides whether events that are overlapping on edge
@@ -25,6 +26,13 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
   /// Otherwise, it will reduce to fit all events in the cell.
   /// If max width is not specified, slots will expand to fill the cell.
   final double? maxWidth;
+
+  /// Minimum rendered height in pixels for short timed events.
+  ///
+  /// This only affects visual layout bounds. Event start and end durations
+  /// exposed to tile builders continue to reflect the event's actual visible
+  /// time range.
+  final double minimumEventHeight;
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
@@ -146,9 +154,17 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
             final visibleMinutes = Constants.minutesADay - (startHourInMinutes);
 
             // Check if event ends at or beyond the visible area
-            final bottom = eventEnd >= visibleMinutes
+            double bottom = eventEnd >= visibleMinutes
                 ? 0.0 // Event extends to bottom of view
                 : height - eventEnd * heightPerMinute;
+
+            // Apply minimumEventHeight: expand bottom upward if visual height is too small
+            if (minimumEventHeight > 0 && bottom > 0) {
+              final visualHeight = height - top - bottom;
+              if (visualHeight < minimumEventHeight) {
+                bottom = math.max(0.0, bottom - (minimumEventHeight - visualHeight));
+              }
+            }
 
             return OrganizedCalendarEventData<T>(
               left: offset,
