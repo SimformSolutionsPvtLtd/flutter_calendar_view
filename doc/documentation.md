@@ -13,6 +13,7 @@ This package is a comprehensive Flutter solution that enables you to easily impl
   - Month View
   - Day View
   - Week View
+  - MultiDay View
 - Highly customisable UI components
 - Manage events (add, remove, update)
 - Manage reminders (add, remove, update)
@@ -100,14 +101,28 @@ Scaffold(
 );
 ```
 
+### MultiDay View
+
+```dart
+Scaffold(
+    body: MultiDayView(),
+);
+```
+
 ## Managing Events
 
 ### Adding an event
 
+To add an event, create a `CalendarEventData` object and call the `add` method of your `EventController`.
+
 ```dart
 final event = CalendarEventData(
     date: DateTime(2021, 8, 10),
-    event: "Event 1",
+    title: "Project Meeting",
+    description: "Discussing project progress",
+    startTime: DateTime(2021, 8, 10, 10, 0),
+    endTime: DateTime(2021, 8, 10, 11, 0),
+    color: Colors.blue,
 );
 
 CalendarControllerProvider.of(context).controller.add(event);
@@ -115,14 +130,28 @@ CalendarControllerProvider.of(context).controller.add(event);
 
 ### Adding events in a date range
 
+You can add events that span multiple days by providing an `endDate`.
+
 ```dart
 final event = CalendarEventData(
     date: DateTime(2021, 8, 10),
     endDate: DateTime(2021, 8, 15),
-    event: "Event 1",
+    title: "Vacation",
 );
 
 CalendarControllerProvider.of(context).controller.add(event);
+```
+
+### Updating an event
+
+To update an existing event, use the `update` method. You can use `copyWith` to create a new event object with updated values.
+
+```dart
+final updatedEvent = event.copyWith(
+    title: "Updated Project Meeting",
+);
+
+CalendarControllerProvider.of(context).controller.update(event, updatedEvent);
 ```
 
 ### Removing an event
@@ -131,7 +160,7 @@ CalendarControllerProvider.of(context).controller.add(event);
 CalendarControllerProvider.of(context).controller.remove(event);
 ```
 
-As soon as you add or remove events from the controller, it will automatically update the calendar view assigned to that controller.
+As soon as you add, update, or remove events from the controller, it will automatically update the calendar view assigned to that controller.
 
 # Advanced Usage
 
@@ -142,7 +171,11 @@ This guide covers more advanced features and customization options for the calen
 ```dart
 MonthView(
     controller: EventController(),
-    selectedDate: DateTime(2021, 8, 10),
+    width: 400, // Width of month view (if null, uses MediaQuery width)
+    selectedDate: DateTime(2021, 8, 10), // Controls selected date in month grid
+    // Set of dates that are selected via long press and drag
+    multiDateSelectionRange: {DateTime(2021, 8, 12), DateTime(2021, 8, 13)},
+    multiDateSelectionColor: Colors.blue.withOpacity(0.3), // Color of selected date cells
     monthViewBuilders: MonthViewBuilders(
       // Custom UI for month cells
       cellBuilder: (date, events, isToday, isInMonth, isSelected, hideDaysNotInMonth) {
@@ -156,10 +189,10 @@ MonthView(
         print(events);
       },
       // Event callbacks
-      onEventTap: (event, data) => print('on tap'),
-      onEventTapDetails: (event, data, details) => print('on tap details'),
-      onEventDoubleTap: (event, data) => print('on double tap'),
-      onEventDoubleTapDetails: (event, data, details) =>
+      onEventTap: (event, date) => print('on tap'),
+      onEventTapDetails: (event, date, details) => print('on tap details'),
+      onEventDoubleTap: (event, date) => print('on double tap'),
+      onEventDoubleTapDetails: (event, date, details) =>
         print('on double details'),
       onEventLongTap: (event, data) => print('on long tap'),
       onEventLongTapDetails: (event, data, details) =>
@@ -176,6 +209,13 @@ MonthView(
       showWeekTileBorder: false, // To show or hide header border
       hideDaysNotInMonth: true, // To hide days or cell that are not in current month
       showWeekends: false, // To hide weekends default value is true
+      useAvailableVerticalSpace: true, // To fill the available vertical space
+    ),
+    monthViewThemeSettings: MonthViewThemeSettings(
+      selectedHighlightColor: Colors.blue,
+      selectedTitleColor: Colors.white,
+      cellsInMonthHighlightColor: Colors.blue.shade100,
+      weekDayTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
     ),
 );
 ```
@@ -185,6 +225,16 @@ MonthView(
 ```dart
 DayView(
     controller: EventController(),
+    // Custom date string formatter for I18n
+    dateStringBuilder: (date) => '${date.day}/${date.month}/${date.year}',
+    // Custom time string formatter for I18n
+    timeStringBuilder: (date) => '${date.hour}:${date.minute}',
+    // Custom timeline widget builder
+    timeLineBuilder: (date) => Text(date.toString()),
+    // Custom day header builder
+    dayTitleBuilder: DayHeader.hidden,
+    // Custom press detector widget
+    dayDetectorBuilder: ({date, height, width, heightPerMinute, minuteSlotSize}) => Container(),
     eventTileBuilder: (date, events, boundry, start, end) {
         // Return your widget to display as event tile.
         return Container();
@@ -193,24 +243,70 @@ DayView(
         // Return your widget to display full day event view.
         return Container();
     },
-    showVerticalLine: true, // To display live time line in day view.
-    showLiveTimeLineInAllDays: true, // To display live time line in all pages in day view.
+    // Time and date boundaries
     minDay: DateTime(1990),
     maxDay: DateTime(2050),
     initialDay: DateTime(2021),
-    heightPerMinute: 1, // height occupied by 1 minute time span.
-    eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
+    heightPerMinute: 1, // Height occupied by 1 minute time span.
+    timeLineWidth: 60, // Width of the timeline
+    showVerticalLine: true, // Display vertical line in day view.
+    verticalLineOffset: 5, // Offset of vertical line from hour line
+    backgroundColor: Colors.white, // Background color of day view
+    showLiveTimeLineInAllDays: true, // Display live time line in all pages
+    scrollOffset: 0, // Initial scroll position
+    width: 400, // Width of day view page
+    timeLineOffset: 0, // Offset for timeline
+    // Event handling
+    eventArranger: SideEventArranger(), // Define how simultaneous events are arranged
     onEventTap: (events, date) => print(events),
     onEventDoubleTap: (events, date) => print(events),
     onEventLongTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
+    onDateTap: (date) => print('Tapped: $date'),
+    onTimestampTap: (date) => print('Timestamp tapped: $date'),
+    // Hour settings
     startHour: 5, // To set the first hour displayed (ex: 05:00)
     endHour: 20, // To set the end hour displayed
-    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
+    // Custom hour line painter
+    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset, lineStyle, dashWidth, dashSpaceWidth, emulateVerticalOffsetBy, startHour, endHour) {
         return // Your custom painter.
     },
-    dayTitleBuilder: DayHeader.hidden, // To Hide day header
-    keepScrollOffset: true, // To maintain scroll offset when the page changes
+    // Hour indicator settings
+    hourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.grey,
+      lineStyle: LineStyle.solid,
+    ),
+    halfHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.grey.shade300,
+      lineStyle: LineStyle.solid,
+    ),
+    quarterHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.grey.shade200,
+      lineStyle: LineStyle.solid,
+    ),
+    // Live time indicator
+    liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      color: Colors.red,
+      showTime: true,
+      // Support for different timezones - provide custom DateTime function
+      currentTimeProvider: () => DateTime.now(),
+    ),
+    // Page transition settings
+    pageTransitionDuration: Duration(milliseconds: 300),
+    pageTransitionCurve: Curves.ease,
+    // Minute slot size for long press callbacks
+    minuteSlotSize: MinuteSlotSize.minutes60,
+    // Scroll physics
+    scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
+    pageViewPhysics: ScrollPhysics(), // ScrollPhysics for horizontal page transitions
+    // Header and safe area
+    headerStyle: HeaderStyle(
+      headerTextStyle: TextStyle(fontSize: 18),
+      decoration: BoxDecoration(color: Colors.blue),
+    ),
+    safeAreaOption: SafeAreaOption.all(),
+    // Miscellaneous
+    keepScrollOffset: true, // Maintain scroll offset when the page changes
 );
 ```
 
@@ -219,39 +315,82 @@ DayView(
 ```dart
 WeekView(
     controller: EventController(),
+    // Custom builders
     eventTileBuilder: (date, events, boundry, start, end) {
       // Return your widget to display as event tile.
       return Container();
     },
+    timeLineBuilder: (date) => Text(date.toString()),
+    weekPageHeaderBuilder: WeekHeader.hidden, // To hide week header
+    weekDetectorBuilder: ({date, height, width, heightPerMinute, minuteSlotSize}) => Container(),    weekDayBuilder: (date) => Text(date.day.toString()),
+    weekNumberBuilder: (weekNumber) => Text('W$weekNumber'),
+    // Custom string builders for I18n
+    headerStringBuilder: (date, {secondaryDate}) => '${date.month}/${date.year}',
+    timeLineStringBuilder: (date) => '${date.hour}:${date.minute}',
+    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay],
+    weekDayDateStringBuilder: (date) => '${date.day}',
     fullDayEventBuilder: (events, date) {
       // Return your widget to display full day event view.
       return Container();
     },
-    showLiveTimeLineInAllDays: true, // To display live time line in all pages in week view.
-    width: 400, // width of week view.
+    // Time and date boundaries
     minDay: DateTime(1990),
     maxDay: DateTime(2050),
     initialDay: DateTime(2021),
-    heightPerMinute: 1, // height occupied by 1 minute time span.
-    eventArranger: SideEventArranger(), // To define how simultaneous events will be arranged.
+    heightPerMinute: 1, // Height occupied by 1 minute time span.
+    timeLineWidth: 60, // Width of time line
+    timeLineOffset: 0, // Offset of time line
+    width: 400, // Width of week view
+    // Week configuration
+    weekTitleHeight: 50, // Height of week day title
+    weekTitleBackgroundColor: Colors.grey.shade200, // Background color of week title
+    showVerticalLines: false, // Show the vertical line between days
+    showWeekends: true, // Show weekends or not
+    showWeekDayAtBottom: false, // Show week day at bottom position
+    showLiveTimeLineInAllDays: true, // Display live time line in all pages
+    showHalfHours: false, // Show half hour indicator
+    showQuarterHours: false, // Show quarter hour indicator
+    showMidnightHour: false, // Show 00:00 (midnight) hour in timeline
+    // Week days configuration
+    weekDays: [
+      WeekDays.monday,
+      WeekDays.tuesday,
+      WeekDays.wednesday,
+      WeekDays.thursday,
+      WeekDays.friday,
+    ],
+    startDay: WeekDays.sunday, // Change the first day of the week
+    // Event handling
+    eventArranger: SideEventArranger(), // Define how simultaneous events will be arranged
     onEventTap: (events, date) => print(events),
     onEventDoubleTap: (events, date) => print(events),
+    onEventLongTap: (events, date) => print(events),
     onDateLongPress: (date) => print(date),
-    startDay: WeekDays.sunday, // To change the first day of the week.
-    startHour: 5, // To set the first hour displayed
-    endHour: 20, // To set the end hour displayed
-    showVerticalLines: false, // Show the vertical line between days.
-    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset) {
-        return // Your custom painter.
+    onDateTap: (date) => print('Tapped: $date'),
+    onTimestampTap: (date) => print('Timestamp tapped: $date'),
+    onHeaderTitleTap: () => print('Header tapped'),
+    // Hour settings
+    startHour: 5, // Set the first hour displayed
+    endHour: 20, // Set the end hour displayed
+    emulateVerticalOffsetBy: 0, // Emulates offset of vertical line from hour line
+    // Hour indicator settings
+    hourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.greenAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    halfHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.redAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    quarterHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.blueAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    // Custom hour line painter
+    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset, lineStyle, dashWidth, dashSpaceWidth, emulateVerticalOffsetBy, startHour, endHour) {
+      return // Your custom painter.
     },
-    weekPageHeaderBuilder: WeekHeader.hidden, // To hide week header
-    fullDayHeaderTitle: 'All day', // To set full day events header title
-    fullDayHeaderTextConfig: FullDayHeaderTextConfig(
-      textAlign: TextAlign.center,
-      textOverflow: TextOverflow.ellipsis,
-      maxLines: 2,
-    ), // To set full day events header text config
-    keepScrollOffset: true, // To maintain scroll offset when the page changes
+    // Live time indicator
     liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
       color: Colors.red,
       showTime: true,
@@ -259,48 +398,224 @@ WeekView(
       currentTimeProvider: () {
         final utcNow = DateTime.now().toUtc();
         return utcNow.subtract(Duration(hours: 4));
-        },
+      },
     ),
+    // Divider settings
+    dividerSettings: DividerSettings(
+      thickness: 2,
+      height: 2,
+      color: Colors.blueAccent,
+      indent: 10,
+      endIndent: 10,
+    ),
+    // Page transition settings
+    pageTransitionDuration: Duration(milliseconds: 300),
+    pageTransitionCurve: Curves.ease,
+    // Minute slot size for long press callbacks
+    minuteSlotSize: MinuteSlotSize.minutes60,
+    // Background color
+    backgroundColor: Colors.white,
+    // Full day header configuration
+    fullDayHeaderTitle: 'All day',
+    fullDayHeaderTextConfig: FullDayHeaderTextConfig(
+      textAlign: TextAlign.center,
+      textOverflow: TextOverflow.ellipsis,
+      maxLines: 2,
+    ),
+    // Scroll configuration  
+    scrollOffset: 0.0,
+    scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
+    pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
+    keepScrollOffset: true, // Maintain scroll offset when the page changes
+    // Header and safe area
+    headerStyle: HeaderStyle(
+      headerTextStyle: TextStyle(fontSize: 18),
+      decoration: BoxDecoration(color: Colors.blue),
+    ),
+    safeAreaOption: SafeAreaOption.all(),
+    // Time slot color builder for highlighting unavailable hours
+    timeSlotColorBuilder: (date, slotStartTime, slotEndTime, index) => 
+        slotStartTime.hour >= 9 && slotStartTime.hour < 17 
+            ? Colors.transparent 
+            : Colors.grey.shade200,
+    onPageChange: (date, pageIndex) => print("$date, Page: $pageIndex"),
 );
 ```
 
-## Show Only Working Days in WeekView
+## MultiDay View Customization
 
-You can configure the week view to display only specific days:
+```dart
+MultiDayView(
+    controller: EventController(),
+    // Custom builders
+    eventTileBuilder: (date, events, boundry, start, end) {
+      // Return your widget to display as event tile.
+      return Container();
+    },
+    timeLineBuilder: (date) => Text(date.toString()),
+    weekPageHeaderBuilder: WeekHeader.hidden, // To hide week header
+    weekDetectorBuilder: ({date, height, width, heightPerMinute, minuteSlotSize}) => Container(),    weekDayBuilder: (date) => Text(date.day.toString()),
+    weekNumberBuilder: (weekNumber) => Text('W$weekNumber'),
+    // Custom string builders for I18n
+    headerStringBuilder: (date, {secondaryDate}) => '${date.month}/${date.year}',
+    timeLineStringBuilder: (date) => '${date.hour}:${date.minute}',
+    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay],
+    weekDayDateStringBuilder: (date) => '${date.day}',
+    fullDayEventBuilder: (events, date) {
+      // Return your widget to display full day event view.
+      return Container();
+    },
+    // Time and date boundaries
+    minDay: DateTime(1990),
+    maxDay: DateTime(2050),
+    initialDay: DateTime(2021),
+    heightPerMinute: 1, // Height occupied by 1 minute time span.
+    timeLineWidth: 60, // Width of time line
+    timeLineOffset: 0, // Offset of time line
+    width: 400, // Width of multi-day view
+    // Multi-day configuration
+    daysInView: 3, // Number of days to display (default is 3)
+    weekTitleHeight: 50, // Height of week day title
+    showVerticalLines: true, // Show the vertical line between days
+    showWeekDayAtBottom: false, // Show week day at bottom position
+    showLiveTimeLineInAllDays: true, // Display live time line in all pages
+    showHalfHours: false, // Show half hour indicator
+    showQuarterHours: false, // Show quarter hour indicator
+    showWeekDayBottomLine: true, // Display workday bottom line
+    // Event handling
+    eventArranger: SideEventArranger(), // Define how simultaneous events will be arranged
+    onEventTap: (events, date) => print(events),
+    onEventDoubleTap: (events, date) => print(events),
+    onEventLongTap: (events, date) => print(events),
+    onDateLongPress: (date) => print(date),
+    onDateTap: (date) => print('Tapped: $date'),
+    onTimestampTap: (date) => print('Timestamp tapped: $date'),
+    onHeaderTitleTap: () => print('Header tapped'),
+    // Hour settings
+    startHour: 5, // Set the first hour displayed
+    endHour: 20, // Set the end hour displayed
+    emulateVerticalOffsetBy: 0, // Emulates offset of vertical line from hour line
+    // Hour indicator settings
+    hourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.greenAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    halfHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.redAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    quarterHourIndicatorSettings: HourIndicatorSettings(
+      color: Colors.blueAccent,
+      lineStyle: LineStyle.dashed,
+    ),
+    // Custom hour line painter
+    hourLinePainter: (lineColor, lineHeight, offset, minuteHeight, showVerticalLine, verticalLineOffset, lineStyle, dashWidth, dashSpaceWidth, emulateVerticalOffsetBy, startHour, endHour) {
+      return // Your custom painter.
+    },
+    // Live time indicator
+    liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      color: Colors.red,
+      showTime: true,
+      // Support for different timezones - provide custom DateTime function
+      currentTimeProvider: () => DateTime.now(),
+    ),
+    // Divider settings
+    dividerSettings: DividerSettings(
+      thickness: 2,
+      height: 2,
+      color: Colors.blueAccent,
+      indent: 10,
+      endIndent: 10,
+    ),
+    // Page transition settings
+    pageTransitionDuration: Duration(milliseconds: 300),
+    pageTransitionCurve: Curves.ease,
+    // Minute slot size for long press callbacks
+    minuteSlotSize: MinuteSlotSize.minutes60,
+    // Background color
+    backgroundColor: Colors.white,
+    // Full day header configuration
+    fullDayHeaderTitle: 'All day',
+    fullDayHeaderTextConfig: FullDayHeaderTextConfig(
+      textAlign: TextAlign.center,
+      textOverflow: TextOverflow.ellipsis,
+      maxLines: 2,
+    ),
+    // Scroll configuration  
+    scrollOffset: 0.0,
+    scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
+    pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
+    keepScrollOffset: true, // Maintain scroll offset when the page changes
+    // Header and safe area
+    headerStyle: HeaderStyle(
+      headerTextStyle: TextStyle(fontSize: 18),
+      decoration: BoxDecoration(color: Colors.blue),
+    ),
+    safeAreaOption: SafeAreaOption.all(),
+    onPageChange: (date, pageIndex) => print("$date, Page: $pageIndex"),
+);
+```
+
+## Show Only Working Days in `WeekView`
+
+You can control visible weekdays using the `weekDays` parameter:
 
 ```dart
 WeekView(
-  weekDays: [
+  weekDays: const [
     WeekDays.monday,
     WeekDays.tuesday,
     WeekDays.wednesday,
     WeekDays.thursday,
     WeekDays.friday,
   ],
+  showWeekends: false,
 );
 ```
 
-The above code will create a `WeekView` with only five days, from Monday to Friday.
+This renders Monday-Friday only. Duplicate entries are ignored, and `showWeekends: false` removes weekend days even if they are included in `weekDays`.
 
 ## Synchronizing Events Between Calendar Views
 
-There are two ways to synchronize events between calendar views:
+To keep `DayView`, `WeekView`, `MonthView`, and `MultiDayView` in sync, use a single shared `EventController<T>`.
 
-1. Provide the same `controller` object to all calendar views used in the project.
-2. Wrap MaterialApp with `CalendarControllerProvider` and provide controller as an argument.
+### Option 1: Pass the same controller directly
+
+```dart
+final controller = EventController();
+
+MonthView(controller: controller);
+WeekView(controller: controller);
+DayView(controller: controller);
+MultiDayView(controller: controller);
+```
+
+### Option 2: Use `CalendarControllerProvider`
+
+```dart
+CalendarControllerProvider(
+  controller: EventController(),
+  child: MaterialApp(
+    home: const CalendarScreen(),
+  ),
+);
+```
+
+When a view does not receive `controller` directly, it reads the controller from `CalendarControllerProvider`.
 
 # Localization Guide
 
-This guide explains how to enable and configure localization in the `calendar_view` package to support multiple languages in your Flutter application.
+This guide covers localization support in `calendar_view` and how to keep localized strings aligned with the package API.
 
 ## Overview
 
-The package provides a flexible localization system that allows you to:
+`calendar_view` localization supports:
 
-- Display calendar strings (AM/PM, weekday names, etc.) in different languages
-- Support right-to-left (RTL) layouts for languages like Arabic and Hebrew
-- Customize number formatting for different locales
-- Dynamically switch between languages at runtime
+- AM/PM labels and the "more" text
+- Weekday abbreviations
+- Optional localized number mapping
+- RTL layout support (`isRTL`)
+- Runtime locale switching
 
 ## Built-in Language Support
 
@@ -340,91 +655,42 @@ void main() {
 }
 ```
 
-### Adding Custom Languages
-
-If you need a language that isn't built-in, you can easily add it:
+### Add or override locales
 
 ```dart
-import 'package:calendar_view/calendar_view.dart';
-
-void main() {
-  // Add Portuguese
-  PackageStrings.addLocaleObject(
-    'pt',
-    CalendarLocalizations(
-      am: 'AM',
-      pm: 'PM',
-      more: 'Mais',
-      weekdays: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-    ),
-  );
-
-  // Add Russian
-  PackageStrings.addLocaleObject(
-    'ru',
-    CalendarLocalizations(
-      am: 'ДП',
-      pm: 'ПП',
-      more: 'Ещё',
-      weekdays: ['П', 'В', 'С', 'Ч', 'П', 'С', 'В'],
-    ),
-  );
-
-  // Switch to custom language
-  PackageStrings.setLocale('pt');
-
-  runApp(MyApp());
-}
-```
-
-### Overriding Built-in Languages
-
-You can override any built-in language with custom values:
-
-```dart
-// Override the built-in Spanish with full weekday names
 PackageStrings.addLocaleObject(
-  'es',
-  CalendarLocalizations(
-    am: 'a. m.',
-    pm: 'p. m.',
-    more: 'Ver más',
-    weekdays: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+  'pt',
+  const CalendarLocalizations(
+    am: 'AM',
+    pm: 'PM',
+    more: 'Mais',
+    weekdays: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
   ),
 );
 
-PackageStrings.setLocale('es');
+PackageStrings.setLocale('pt');
 ```
 
-### Accessing Built-in Localizations
+`addLocaleObject` also overrides an existing locale when the same key is reused.
 
-You can access built-in localizations directly from `PackageStrings`:
+### Access built-in localization objects
 
 ```dart
-CalendarLocalizations spanish = PackageStrings.spanish;
-CalendarLocalizations arabic = PackageStrings.arabic;
-CalendarLocalizations french = PackageStrings.french;
-CalendarLocalizations german = PackageStrings.german;
+final spanish = PackageStrings.spanish;
+final arabic = PackageStrings.arabic;
+final french = PackageStrings.french;
+final german = PackageStrings.german;
+final hindi = PackageStrings.hindi;
+final chinese = PackageStrings.chinese;
+final japanese = PackageStrings.japanese;
 ```
-
-```dart
-// Set to Spanish
-PackageStrings.setLocale('es');
-
-// Set to Arabic
-PackageStrings.setLocale('ar');
-
-// Set back to English (default)
-PackageStrings.setLocale('en');
-```
+To set the current locale, use `PackageStrings.setLocale`.
 
 ## API Reference
 
-### CalendarLocalizations
+### `CalendarLocalizations`
 
 A class that holds all localizable strings for the calendar.
-
-#### Constructor
 
 ```dart
 const CalendarLocalizations({
@@ -437,25 +703,22 @@ const CalendarLocalizations({
 });
 ```
 
-**Note:** If you provide a `numbers` array, it must contain exactly **61 elements** (representing numbers 0 through 60) for calendar usage (dates, hours, minutes).
+- `numbers` defaults to `['0'...'9']` when omitted.
+- For full numeric localization via `PackageStrings.localizeNumber`, provide values for `0..60`.
 
-#### Factory Constructor
-
-You can also create localizations from a Map (useful for loading from JSON/ARB files):
+Factory constructor:
 
 ```dart
 factory CalendarLocalizations.fromMap(Map<String, dynamic> map)
 ```
 
-#### Built-in Locales
-
-The package includes a built-in English locale:
+Built-in English object:
 
 ```dart
 CalendarLocalizations.en // English (default)
 ```
 
-### PackageStrings
+### `PackageStrings`
 
 A static class for managing calendar localizations at runtime.
 
@@ -476,19 +739,18 @@ A static class for managing calendar localizations at runtime.
 
 ## Complete Integration Example
 
-Here's a complete example showing how to integrate localization with Flutter's built-in localization system:
-
 ```dart
-import 'dart:ui';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -499,33 +761,18 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Initialize calendar localizations
-    _initializeCalendarLocales();
+    _registerCustomLocales();
   }
 
-  void _initializeCalendarLocales() {
-    // Register Spanish
+  void _registerCustomLocales() {
     PackageStrings.addLocaleObject(
       'es',
-      CalendarLocalizations(
+      const CalendarLocalizations(
         am: 'a. m.',
         pm: 'p. m.',
         more: 'Más',
         weekdays: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
       ),
-    );
-
-    // Register Arabic with RTL
-    PackageStrings.addLocaleObject(
-      'ar',
-      CalendarLocalizations.fromMap({
-        'am': 'ص',
-        'pm': 'م',
-        'more': 'المزيد',
-        'weekdays': ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'],
-        'numbers': ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
-        'isRTL': true,
-      }),
     );
   }
 
@@ -542,23 +789,23 @@ class _MyAppState extends State<MyApp> {
       controller: EventController(),
       child: MaterialApp(
         locale: Locale(_currentLocale),
-        localizationsDelegates: [
+        supportedLocales: const [
+          Locale('en'),
+          Locale('es'),
+          Locale('ar'),
+        ],
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: [
-          Locale('en', ''),
-          Locale('es', ''),
-          Locale('ar', ''),
-        ],
         home: Scaffold(
           appBar: AppBar(
-            title: Text('Calendar Localization Demo'),
+            title: const Text('Calendar Localization Demo'),
             actions: [
               PopupMenuButton<String>(
                 onSelected: _changeLocale,
-                itemBuilder: (context) => [
+                itemBuilder: (context) => const [
                   PopupMenuItem(value: 'en', child: Text('English')),
                   PopupMenuItem(value: 'es', child: Text('Español')),
                   PopupMenuItem(value: 'ar', child: Text('العربية')),
@@ -566,7 +813,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
           ),
-          body: MonthView(),
+          body: const MonthView(),
         ),
       ),
     );
@@ -575,20 +822,86 @@ class _MyAppState extends State<MyApp> {
 ```
 
 # Customise theme
-The default theme supports dark mode. Refer this colors to override it.
+The package supports dark mode out of the box. Each calendar view has a dedicated theme data class with `.light()` and `.dark()` named constructors for quick setup.
 
-| Name                                          | Parameter              | Default color                       |
-|-----------------------------------------------|------------------------|-------------------------------------|
-| `MonthView` Border color                      | Color? borderColor     | colorScheme.surfaceContainerHigh    |
-| `WeekView` Background color of week view page | Color? backgroundColor | colorScheme.surfaceContainerLowest  |
-| `DayView` Default background color            | Color? backgroundColor | colorScheme.surfaceContainerLow     |
-| `FilledCell` Dates in month cell color        | Color? backgroundColor | colorScheme.surfaceContainerLowest  |
-| `FilledCell` Dates not in month cell color    | Color? backgroundColor | colorScheme.surfaceContainerLow     |
-| `WeekDayTile` Border color                    | Color? borderColor     | colorScheme.secondaryContainer      |
-| `WeekDayTile` Background color                | Color? backgroundColor | colorScheme.surfaceContainerHigh    |
-| `WeekDayTile` Text style color                | TextStyle? textStyle   | colorScheme.onSecondaryContainer    |
+## Theme data classes
 
-To customise `MonthView`, `DayView` & `WeekView` page header use `HeaderStyle`.
+| Class | View |
+|-------|------|
+| `MonthViewThemeData` | `MonthView` |
+| `DayViewThemeData` | `DayView` |
+| `WeekViewThemeData` | `WeekView` |
+| `MultiDayViewThemeData` | `MultiDayView` |
+
+## Default colours
+
+### MonthViewThemeData
+
+| Property | Default (light) |
+|----------|----------------|
+| `cellInMonthColor` | `surfaceContainerLowest` |
+| `cellNotInMonthColor` | `surfaceContainerLow` |
+| `cellTextColor` | `onSurface` |
+| `cellBorderColor` | `surfaceContainerHigh` |
+| `cellHighlightColor` | `primary` |
+| `weekDayTileColor` | `surfaceContainerHigh` |
+| `weekDayTextColor` | `onSurface` |
+| `weekDayBorderColor` | `outlineVariant` |
+| `headerIconColor` | `onPrimary` |
+| `headerTextColor` | `onPrimary` |
+| `headerBackgroundColor` | `primary` |
+
+### DayViewThemeData
+
+| Property | Default (light) |
+|----------|----------------|
+| `hourLineColor` | `surfaceContainerHighest` |
+| `halfHourLineColor` | `surfaceContainerHighest` |
+| `quarterHourLineColor` | `surfaceContainerHighest` |
+| `pageBackgroundColor` | `surfaceContainerLowest` |
+| `liveIndicatorColor` | `primary` |
+| `timelineTextColor` | `onSurface` |
+| `headerIconColor` | `onPrimary` |
+| `headerTextColor` | `onPrimary` |
+| `headerBackgroundColor` | `primary` |
+
+### WeekViewThemeData
+
+| Property | Default (light) |
+|----------|----------------|
+| `weekDayTileColor` | `surfaceContainerHigh` |
+| `weekDayTextColor` | `onSurface` |
+| `hourLineColor` | `surfaceContainerHighest` |
+| `halfHourLineColor` | `surfaceContainerHighest` |
+| `quarterHourLineColor` | `surfaceContainerHighest` |
+| `liveIndicatorColor` | `primary` |
+| `pageBackgroundColor` | `surfaceContainerLowest` |
+| `timelineTextColor` | `onSurface` |
+| `borderColor` | `surfaceContainerHighest` |
+| `verticalLinesColor` | `surfaceContainerHighest` |
+| `headerIconColor` | `onPrimary` |
+| `headerTextColor` | `onPrimary` |
+| `headerBackgroundColor` | `primary` |
+
+### MultiDayViewThemeData
+
+| Property | Default (light) |
+|----------|----------------|
+| `multiDayTileColor` | `surfaceContainerHigh` |
+| `multiDayTextColor` | `onSurface` |
+| `hourLineColor` | `surfaceContainerHighest` |
+| `halfHourLineColor` | `surfaceContainerHighest` |
+| `quarterHourLineColor` | `surfaceContainerHighest` |
+| `liveIndicatorColor` | `primary` |
+| `pageBackgroundColor` | `surfaceContainerLowest` |
+| `timelineTextColor` | `onSurface` |
+| `borderColor` | `surfaceContainerHighest` |
+| `verticalLinesColor` | `surfaceContainerHighest` |
+| `headerIconColor` | `onPrimary` |
+| `headerTextColor` | `onPrimary` |
+| `headerBackgroundColor` | `primary` |
+
+To customise `MonthView`, `DayView`, `WeekView` & `MultiDayView` page header use `HeaderStyle`.
 
 ```dart
   headerStyle: HeaderStyle(
@@ -604,45 +917,48 @@ To customise `MonthView`, `DayView` & `WeekView` page header use `HeaderStyle`.
 
 There are two main ways to customize the theme for calendar views:
 
-1. **Using ThemeData extensions**:
-   ```dart
-   // Create custom theme
-   final myMonthViewTheme = MonthViewTheme.light().copyWith(
-     cellInMonthColor: Colors.blue.shade50,
-     cellBorderColor: Colors.blue.shade300,
-   );
-   
-   // Apply to your app theme
-   final theme = ThemeData.light().copyWith(
-     extensions: [
-       myMonthViewTheme,
-       DayViewTheme.light(),
-       WeekViewTheme.light(),
-     ],
-   );
-   ```
-
-2. **Using CalendarThemeProvider**:
+1. **Using `CalendarThemeProvider`** (recommended):
    ```dart
    CalendarThemeProvider(
-     calendarTheme: CalendarTheme(
-       monthViewTheme: MonthViewTheme.light().copyWith(
+     calendarTheme: CalendarThemeData(
+       monthViewTheme: MonthViewThemeData.light().copyWith(
          cellInMonthColor: Colors.blue.shade50,
+         cellBorderColor: Colors.blue.shade300,
        ),
-       dayViewTheme: DayViewTheme.light(),
-       weekViewTheme: WeekViewTheme.light(),
+       dayViewTheme: DayViewThemeData.light(),
+       weekViewTheme: WeekViewThemeData.light(),
+       multiDayViewTheme: MultiDayViewThemeData.light(),
      ),
      child: YourApp(),
    )
    ```
 
+2. **Using ThemeData extensions** (since all theme data classes extend `ThemeExtension`):
+   ```dart
+   // Create custom theme
+   final myMonthViewTheme = MonthViewThemeData.light().copyWith(
+     cellInMonthColor: Colors.blue.shade50,
+     cellBorderColor: Colors.blue.shade300,
+   );
+
+   // Apply to your app theme
+   final theme = ThemeData.light().copyWith(
+     extensions: [
+       myMonthViewTheme,
+       DayViewThemeData.light(),
+       WeekViewThemeData.light(),
+       MultiDayViewThemeData.light(),
+     ],
+   );
+   ```
+
 ### Day view
-* Default timeline text color is `colorScheme.onSurface`.
+* Default timeline text color is `timelineTextColor` in `DayViewThemeData` (defaults to `onSurface`).
     * Use `markingStyle` in `DefaultTimeLineMark` to give text style.
-* Default `LiveTimeIndicatorSettings` color `colorScheme.primaryColorLight`.
-    * Use `liveTimeIndicatorSettings` to customise it.
-* Default hour, half hour & quarter color is `colorScheme.surfaceContainerHighest`.
-    * Use `hourIndicatorSettings` to customise it.
+* Default live time indicator color is `liveIndicatorColor` in `DayViewThemeData` (defaults to `primary`).
+    * Use `liveTimeIndicatorSettings` to customise it per-widget.
+* Default hour, half hour & quarter line color is `hourLineColor` / `halfHourLineColor` / `quarterHourLineColor` in `DayViewThemeData` (all default to `surfaceContainerHighest`).
+    * Use `hourIndicatorSettings` to customise it per-widget.
 
 Default hour indicator settings.
 ```dart
@@ -656,15 +972,16 @@ Default hour indicator settings.
 
 ### Week view
 * To customise week number & weekdays use `weekNumberBuilder` & `weekDayBuilder`.
-* Default week tile background color is `colorScheme.surfaceContainerHigh`.
-    * Use `weekTitleBackgroundColor` to change background color.
-* Default page background color is `colorScheme.surfaceContainerLowest`.
-    * Use `backgroundColor` to change background color.
-* Default timeline text color is `colorScheme.onSurface`. Use `markingStyle` in `DefaultTimeLineMark` to give text style.
-    * To customise timeline use `timeLineBuilder`.
-* To change Hour lines color use `HourIndicatorSettings`.
-* To style hours, half hours & quarter hours use `HourIndicatorSettings`. Default color used is `surfaceContainerHighest`
-* To customise divider between weekdays and full-day events use `dividerSettings`.
+* Default week day tile color is `weekDayTileColor` in `WeekViewThemeData` (defaults to `surfaceContainerHigh`).
+    * Use `weekTitleBackgroundColor` to override it per-widget.
+* Default page background color is `pageBackgroundColor` in `WeekViewThemeData` (defaults to `surfaceContainerLowest`).
+    * Use `backgroundColor` to override it per-widget.
+* Default timeline text color is `timelineTextColor` in `WeekViewThemeData` (defaults to `onSurface`).
+    * Use `markingStyle` in `DefaultTimeLineMark` to give text style, or `timeLineBuilder` to fully replace the timeline.
+* Default hour/half hour/quarter hour line color is `hourLineColor` / `halfHourLineColor` / `quarterHourLineColor` in `WeekViewThemeData` (all default to `surfaceContainerHighest`).
+    * Use `hourIndicatorSettings`, `halfHourIndicatorSettings`, and `quarterHourIndicatorSettings` to customise per-widget.
+* Default vertical line color between days is `verticalLinesColor` in `WeekViewThemeData`.
+* To customise the divider between weekdays and full-day events use `dividerSettings`.
 
 ```dart
   hourIndicatorSettings: HourIndicatorSettings(
@@ -692,7 +1009,20 @@ Hide divider in week view.
 
 ### Month view
 
-* Default date cell color in month is `colorScheme.surfaceContainerLowest` and `colorScheme.surfaceContainerLow` for days not in month.
+* Default date cell colors come from `MonthViewThemeData`: `cellInMonthColor` (`surfaceContainerLowest`) for days in the current month and `cellNotInMonthColor` (`surfaceContainerLow`) for days outside it.
+* Use `monthViewThemeSettings` to fine-tune highlight colors and text styles without a full theme override:
+
+```dart
+MonthView(
+  monthViewThemeSettings: MonthViewThemeSettings(
+    selectedHighlightColor: Colors.blue,
+    selectedTitleColor: Colors.white,
+    cellsInMonthHighlightColor: Colors.blue,
+    weekDayTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+  ),
+)
+```
+
 * Use `monthViewBuilders.cellBuilder` to completely customize the cell appearance:
 
   ```dart
@@ -736,7 +1066,7 @@ dependencies:
   calendar_view: 2.0.0
 ```
 
-1. Migrate `HeaderStyle`.
+### 1. Migrate `HeaderStyle`.
    ```dart
     // Old
     final style = HeaderStyle(
@@ -781,7 +1111,7 @@ dependencies:
       ),
     );
    ```
-2. Migrate `CalendarPageHeader` | `DayPageHeader` | `MonthPageHeader` | `WeekPageHeader`:
+### 2. Migrate `CalendarPageHeader` | `DayPageHeader` | `MonthPageHeader` | `WeekPageHeader`:
    ```dart
       // Old
       final header = MonthPageBuilder({
@@ -806,6 +1136,29 @@ dependencies:
         ),
       });
    ```
+### 3. Migrate `CellBuilder`
+
+   ```dart
+  //  **Previous Signature (2.0.0):**
+   typedef CellBuilder<T extends Object?> = Widget Function(
+     DateTime date,
+     List<CalendarEventData<T>> event,
+     bool isToday,
+     bool isInMonth,
+     bool hideDaysNotInMonth,
+   );
+   ```
+   ```dart
+   // **New Signature (Latest):**
+   typedef CellBuilder<T extends Object?> = Widget Function(
+     DateTime date,
+     List<CalendarEventData<T>> event,
+     bool isToday,
+     bool isInMonth,
+     bool isSelected,        // New parameter added
+     bool hideDaysNotInMonth,
+   );
+   ```
 
 # Contributors
 
@@ -819,9 +1172,9 @@ dependencies:
 |:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
 |         [Faiyaz Shaikh](https://github.com/faiyaz-shaikh)          |        [Dhaval Kansara](https://github.com/DhavalRKansara)         |         [Apurva Kanthraviya](https://github.com/apurva780)         |         [Shubham Jitiya](https://github.com/ShubhamJitiya)         |           [Sahil Totala](https://github.com/Flamingloon)           |
 
-| ![img](https://avatars.githubusercontent.com/u/97207242?v=4&s=200) |
-|:------------------------------------------------------------------:|
-|        [Kavan Trivedi](https://github.com/kavantrivedi)            |
+| ![img](https://avatars.githubusercontent.com/u/97207242?v=4&s=200) | ![img](https://avatars.githubusercontent.com/u/201776786?v=4&size=64?v=4&s=200) |
+|:------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+|        [Kavan Trivedi](https://github.com/kavantrivedi)            |              [Lavi Garg](https://github.com/lavigarg-dev)                    |
 
 ## Contributing
 
