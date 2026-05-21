@@ -31,7 +31,7 @@ class WeekViewWidget extends StatelessWidget {
             ? Colors.orange.shade100
             : isBusinessHours
             ? Colors.green.shade50
-            : Colors.grey.shade50;
+            : Colors.transparent;
       },
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,

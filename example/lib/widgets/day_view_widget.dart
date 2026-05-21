@@ -66,7 +66,7 @@ class DayViewWidget extends StatelessWidget {
             ? Colors.orange.shade100
             : isBusinessHours
             ? Colors.green.shade50
-            : Colors.grey.shade50;
+            : Colors.transparent;
       },
       showLiveTimeLineInAllDays: true,
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
