@@ -28,6 +28,17 @@ class MultiDayViewWidget extends StatelessWidget {
         thickness: 0.5,
         height: 0.5,
       ),
+      timeSlotColorBuilder: (_, slotStartTime, __, ___) {
+        final hour = slotStartTime.hour;
+        final isBusinessHours = hour >= 9 && hour < 17;
+        final isLunchBreak = hour == 12;
+
+        return isLunchBreak
+            ? Colors.orange.shade100
+            : isBusinessHours
+            ? Colors.green.shade50
+            : Colors.transparent;
+      },
       onTimestampTap: (date) {
         SnackBar snackBar = SnackBar(
           content: Text("On tap: ${date.hour} Hr : ${date.minute} Min"),
