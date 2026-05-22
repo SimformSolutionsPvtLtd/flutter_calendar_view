@@ -8,6 +8,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../zoom_scroll_controller.dart';
 import '_internal_week_view_page.dart';
 
 /// [Widget] to display week view.
@@ -444,7 +445,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   EventController<T>? _controller;
 
   /// Scroll controller for managing vertical scrolling.
-  late ScrollController _scrollController;
+  late ZoomScrollController _scrollController;
 
   /// Public getter for accessing the scroll controller.
   ScrollController get scrollController => _scrollController;
@@ -470,7 +471,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _lastScrollOffset = widget.scrollOffset;
 
     _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+        ZoomScrollController(initialScrollOffset: widget.scrollOffset);
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -549,10 +550,70 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     // Update builders and callbacks
     _assignBuilders();
 
+    if (widget.heightPerMinute != oldWidget.heightPerMinute) {
+      // Read the ACTUAL current scroll position from the shared controller
+      // (not _lastScrollOffset, which is only updated when keepScrollOffset=true).
+      // Scale it proportionally so the same time slot stays visible after zoom.
+      final currentOffset = _scrollController.hasClients
+          ? _scrollController.offset
+          : _lastScrollOffset;
+      final scaledOffset = currentOffset *
+          widget.heightPerMinute /
+          (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
+      _lastScrollOffset = scaledOffset;
+      // prepareZoomJump stores the target offset so ZoomScrollController can
+      // apply it inside applyContentDimensions (during layout, before paint),
+      // eliminating the one-frame flicker that addPostFrameCallback caused.
+      _scrollController.prepareZoomJump(scaledOffset);
+    }
+
     if (widget.scrollOffset != oldWidget.scrollOffset) {
       _lastScrollOffset = widget.scrollOffset;
-      _scrollController.jumpTo(widget.scrollOffset);
+      _jumpToOffsetAfterPageTransition(widget.scrollOffset);
     }
+  }
+
+  void _runAfterPageTransition(VoidCallback action) {
+    if (!_pageController.hasClients) {
+      action();
+      return;
+    }
+
+    final pagePosition = _pageController.position;
+
+    if (!pagePosition.isScrollingNotifier.value) {
+      action();
+      return;
+    }
+
+    late VoidCallback listener;
+    listener = () {
+      if (!mounted) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        return;
+      }
+
+      if (!pagePosition.isScrollingNotifier.value) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        action();
+      }
+    };
+
+    pagePosition.isScrollingNotifier.addListener(listener);
+  }
+
+  void _jumpToOffsetAfterPageTransition(double offset) {
+    _runAfterPageTransition(() {
+      if (!_scrollController.hasClients) return;
+
+      final clampedOffset = offset.clamp(
+        _scrollController.position.minScrollExtent,
+        _scrollController.position.maxScrollExtent,
+      );
+
+      _lastScrollOffset = clampedOffset.toDouble();
+      _scrollController.jumpTo(clampedOffset.toDouble());
+    });
   }
 
   @override
@@ -598,8 +659,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       return ValueListenableBuilder(
                         valueListenable: _scrollConfiguration,
                         builder: (_, __, ___) => InternalWeekViewPage<T>(
-                          key: ValueKey(
-                              _hourHeight.toString() + dates[0].toString()),
+                          key: ValueKey(dates[0].toString()),
                           height: _height,
                           width: _width,
                           weekTitleWidth: _weekTitleWidth,

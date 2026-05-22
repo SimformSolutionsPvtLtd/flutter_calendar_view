@@ -6,14 +6,21 @@ import '../pages/event_details_page.dart';
 class WeekViewWidget extends StatelessWidget {
   final GlobalKey<WeekViewState>? state;
   final double? width;
+  final double heightPerMinute;
 
-  const WeekViewWidget({super.key, this.state, this.width});
+  const WeekViewWidget({
+    super.key,
+    this.state,
+    this.width,
+    this.heightPerMinute = 1.0,
+  });
 
   @override
   Widget build(BuildContext context) {
     return WeekView(
       key: state,
       width: width,
+      heightPerMinute: heightPerMinute,
       showWeekends: true,
       showMidnightHour: true,
       showLiveTimeLineInAllDays: true,
