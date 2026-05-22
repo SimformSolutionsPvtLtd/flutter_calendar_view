@@ -6,6 +6,7 @@ import '../pages/event_details_page.dart';
 class WeekViewWidget extends StatelessWidget {
   final GlobalKey<WeekViewState>? state;
   final double? width;
+  final bool enableVerticalWeekMode;
   final double heightPerMinute;
 
   const WeekViewWidget({
@@ -13,6 +14,7 @@ class WeekViewWidget extends StatelessWidget {
     this.state,
     this.width,
     this.heightPerMinute = 1.0,
+    this.enableVerticalWeekMode = false,
   });
 
   @override
@@ -20,6 +22,14 @@ class WeekViewWidget extends StatelessWidget {
     return WeekView(
       key: state,
       width: width,
+
+      // Set this to WeekViewMode.verticalWeek to enable:
+      // 1) fixed days on the left,
+      // 2) horizontal hour scrolling,
+      // 3) vertical week paging.
+      weekViewMode: enableVerticalWeekMode
+          ? WeekViewMode.verticalWeek
+          : WeekViewMode.standard,
       heightPerMinute: heightPerMinute,
       showWeekends: true,
       showMidnightHour: true,
@@ -69,6 +79,7 @@ class WeekViewWidget extends StatelessWidget {
         SnackBar snackBar = SnackBar(content: Text("on LongTap"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
+      weekTitleHeight: 72,
     );
   }
 }

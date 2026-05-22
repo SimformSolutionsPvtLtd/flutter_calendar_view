@@ -8,8 +8,14 @@ import '../pages/event_details_page.dart';
 class MonthViewWidget extends StatefulWidget {
   final GlobalKey<MonthViewState>? state;
   final double? width;
+  final bool enableVerticalMonthMode;
 
-  const MonthViewWidget({super.key, this.state, this.width});
+  const MonthViewWidget({
+    super.key,
+    this.state,
+    this.width,
+    this.enableVerticalMonthMode = false,
+  });
 
   @override
   State<MonthViewWidget> createState() => _MonthViewWidgetState();
@@ -34,6 +40,9 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
         MonthView(
           key: widget.state,
           width: widget.width,
+          monthViewMode: widget.enableVerticalMonthMode
+              ? MonthViewMode.verticalMonth
+              : MonthViewMode.standard,
           selectedDate: _selectedDate,
           multiDateSelectionRange: _multiSelectedDateRange,
           multiDateSelectionColor: Colors.blue.withValues(alpha: 0.1),
