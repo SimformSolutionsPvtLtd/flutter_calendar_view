@@ -8,6 +8,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../zoom_scroll_controller.dart';
 import '_internal_multi_day_view_page.dart';
 
 /// [Widget] to display week view.
@@ -340,7 +341,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
   EventController<T>? _controller;
 
-  late ScrollController _scrollController;
+  late ZoomScrollController _scrollController;
 
   ScrollController get scrollController => _scrollController;
 
@@ -357,7 +358,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     _lastScrollOffset = widget.scrollOffset;
 
     _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+        ZoomScrollController(initialScrollOffset: widget.scrollOffset);
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -437,10 +438,64 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     // Update builders and callbacks
     _assignBuilders();
 
+    if (widget.heightPerMinute != oldWidget.heightPerMinute) {
+      final currentOffset = _scrollController.hasClients
+          ? _scrollController.offset
+          : _lastScrollOffset;
+      final scaledOffset = currentOffset *
+          widget.heightPerMinute /
+          (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
+      _lastScrollOffset = scaledOffset;
+      _scrollController.prepareZoomJump(scaledOffset);
+    }
+
     if (widget.scrollOffset != oldWidget.scrollOffset) {
       _lastScrollOffset = widget.scrollOffset;
-      _scrollController.jumpTo(widget.scrollOffset);
+      _jumpToOffsetAfterPageTransition(widget.scrollOffset);
     }
+  }
+
+  void _runAfterPageTransition(VoidCallback action) {
+    if (!_pageController.hasClients) {
+      action();
+      return;
+    }
+
+    final pagePosition = _pageController.position;
+
+    if (!pagePosition.isScrollingNotifier.value) {
+      action();
+      return;
+    }
+
+    late VoidCallback listener;
+    listener = () {
+      if (!mounted) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        return;
+      }
+
+      if (!pagePosition.isScrollingNotifier.value) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        action();
+      }
+    };
+
+    pagePosition.isScrollingNotifier.addListener(listener);
+  }
+
+  void _jumpToOffsetAfterPageTransition(double offset) {
+    _runAfterPageTransition(() {
+      if (!_scrollController.hasClients) return;
+
+      final clampedOffset = offset.clamp(
+        _scrollController.position.minScrollExtent,
+        _scrollController.position.maxScrollExtent,
+      );
+
+      _lastScrollOffset = clampedOffset.toDouble();
+      _scrollController.jumpTo(clampedOffset.toDouble());
+    });
   }
 
   @override
@@ -493,8 +548,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
                           builder: (_, __, ___) => InternalMultiDayViewPage<T>(
-                            key: ValueKey(
-                                _hourHeight.toString() + dates[0].toString()),
+                            key: ValueKey(dates[0].toString()),
                             height: _height,
                             width: _width,
                             weekTitleWidth: _weekTitleWidth,

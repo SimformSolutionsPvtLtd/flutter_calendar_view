@@ -10,6 +10,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../zoom_scroll_controller.dart';
 import '_internal_day_view_page.dart';
 
 /// Displays a single-day calendar view and renders events for that day.
@@ -487,7 +488,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Scroll controller for managing vertical scrolling within the day view.
   /// Controls scroll position for time axis (top-to-bottom).
-  late ScrollController _scrollController;
+  late ZoomScrollController _scrollController;
 
   /// Public getter for accessing the scroll controller.
   /// Allows external code to control or listen to scroll events.
@@ -515,7 +516,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _regulateCurrentDate();
 
     _calculateHeights();
-    _scrollController = ScrollController(
+    _scrollController = ZoomScrollController(
       initialScrollOffset: _lastScrollOffset,
     );
     _pageController = PageController(initialPage: _currentIndex);
@@ -572,6 +573,17 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     // Update builders and callbacks
     _assignBuilders();
+
+    if (widget.heightPerMinute != oldWidget.heightPerMinute) {
+      final currentOffset = _scrollController.hasClients
+          ? _scrollController.offset
+          : _lastScrollOffset;
+      final scaledOffset = currentOffset *
+          widget.heightPerMinute /
+          (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
+      _lastScrollOffset = scaledOffset;
+      _scrollController.prepareZoomJump(scaledOffset);
+    }
   }
 
   @override
@@ -616,8 +628,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
                           builder: (_, __, ___) => InternalDayViewPage<T>(
-                            key: ValueKey(
-                                _hourHeight.toString() + date.toString()),
+                            key: ValueKey(date.toString()),
                             width: _width,
                             liveTimeIndicatorSettings:
                                 _liveTimeIndicatorSettings,
@@ -941,9 +952,62 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       });
     }
     if (!widget.keepScrollOffset) {
-      animateToDuration(widget.startDuration);
+      _jumpToOffsetAfterPageTransition(
+        _offsetForDuration(widget.startDuration).toDouble(),
+      );
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
+  }
+
+  void _runAfterPageTransition(VoidCallback action) {
+    if (!_pageController.hasClients) {
+      action();
+      return;
+    }
+
+    final pagePosition = _pageController.position;
+
+    if (!pagePosition.isScrollingNotifier.value) {
+      action();
+      return;
+    }
+
+    late VoidCallback listener;
+    listener = () {
+      if (!mounted) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        return;
+      }
+
+      if (!pagePosition.isScrollingNotifier.value) {
+        pagePosition.isScrollingNotifier.removeListener(listener);
+        action();
+      }
+    };
+
+    pagePosition.isScrollingNotifier.addListener(listener);
+  }
+
+  void _jumpToOffsetAfterPageTransition(double offset) {
+    _runAfterPageTransition(() {
+      if (!_scrollController.hasClients) return;
+
+      final clampedOffset = offset.clamp(
+        _scrollController.position.minScrollExtent,
+        _scrollController.position.maxScrollExtent,
+      );
+
+      _lastScrollOffset = clampedOffset.toDouble();
+      _scrollController.jumpTo(clampedOffset.toDouble());
+    });
+  }
+
+  double _offsetForDuration(Duration startDuration) {
+    final offSetForSingleMinute = _height / 24 / 60;
+    final startDurationInMinutes = startDuration.inMinutes;
+    final minuteOffset =
+        startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes;
+    return offSetForSingleMinute * minuteOffset;
   }
 
   /// Animate to next page (next day).
@@ -1113,13 +1177,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     Duration duration = const Duration(milliseconds: 200),
     Curve curve = Curves.linear,
   }) async {
-    final offSetForSingleMinute = _height / 24 / 60;
-    final startDurationInMinutes = startDuration.inMinutes;
-
-    // Added ternary condition below to take care if user passing duration
-    // above 24 hrs then we take it max as 24 hours only
-    final offset = offSetForSingleMinute *
-        (startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes);
+    final offset = _offsetForDuration(startDuration);
     animateTo(
       offset.toDouble(),
       duration: duration,
