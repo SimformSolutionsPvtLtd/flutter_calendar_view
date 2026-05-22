@@ -1,1 +1,1 @@
-enum CalendarView { month, day, week, multiday }
+enum CalendarView { month, day, week, multiday, schedule }

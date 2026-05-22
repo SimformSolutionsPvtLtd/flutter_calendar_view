@@ -5,6 +5,7 @@ import '../../localization/locale_controller.dart';
 import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../multi_day_view_page.dart';
+import '../schedule_view_page.dart';
 import '../week_view_page.dart';
 
 class MobileHomePage extends StatefulWidget {
@@ -120,6 +121,11 @@ class _MobileHomePageState extends State<MobileHomePage> {
             ElevatedButton(
               onPressed: () => context.pushRoute(MultiDayViewDemo()),
               child: Text(translate.multidayView),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.pushRoute(ScheduleViewPageDemo()),
+              child: Text(translate.scheduleView),
             ),
           ],
         ),

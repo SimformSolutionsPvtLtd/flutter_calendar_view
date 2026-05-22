@@ -6,6 +6,7 @@
   "dayView": "Day View",
   "weekView": "Week View",
   "multidayView": "Multi-Day View",
+  "scheduleView": "Schedule View",
   "appTitle": "Flutter Calendar Page Demo",
   "projectMeetingTitle": "Project meeting",
   "projectMeetingDesc": "Today is project meeting.",

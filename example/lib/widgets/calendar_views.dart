@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import 'day_view_widget.dart';
 import 'month_view_widget.dart';
 import 'multi_day_view_widget.dart';
+import 'schedule_view_widget.dart';
 import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
@@ -32,7 +33,9 @@ class CalendarViews extends StatelessWidget {
             ? DayViewWidget(width: width)
             : view == CalendarView.week
             ? WeekViewWidget(width: width)
-            : MultiDayViewWidget(width: width),
+            : view == CalendarView.multiday
+            ? MultiDayViewWidget(width: width)
+            : ScheduleViewWidget(width: width),
       ),
     );
   }

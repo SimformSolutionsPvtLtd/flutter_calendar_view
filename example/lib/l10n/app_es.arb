@@ -6,6 +6,7 @@
   "dayView": "Vista Diaria",
   "weekView": "Vista Semanal",
   "multidayView": "Vista de Varios Días",
+  "scheduleView":"Vista de programación",
   "appTitle": "Demo de Página de Calendario Flutter",
   "projectMeetingTitle": "Reunión del proyecto",
   "projectMeetingDesc": "Hoy hay reunión del proyecto.",

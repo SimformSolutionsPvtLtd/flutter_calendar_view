@@ -6,6 +6,7 @@
   "dayView": "عرض يومي",
   "weekView": "عرض أسبوعي",
   "multidayView": "عرض متعدد الأيام",
+  "scheduleView": "عرض الجدول الزمني",
   "appTitle": "مثال صفحة تقويم فلاتر",
   "projectMeetingTitle": "اجتماع المشروع",
   "projectMeetingDesc": "اليوم هو اجتماع المشروع.",
