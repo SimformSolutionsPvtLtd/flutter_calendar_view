@@ -7,6 +7,15 @@ import 'package:flutter/material.dart';
 import '../../calendar_view.dart';
 import '../extensions.dart';
 
+/// Controls how [MonthView] pages are scrolled.
+enum MonthViewMode {
+  /// Existing behavior: month pages scroll horizontally.
+  standard,
+
+  /// Month pages scroll vertically.
+  verticalMonth,
+}
+
 class MonthView<T extends Object?> extends StatefulWidget {
   /// Main [Widget] to display month view.
   const MonthView({
@@ -19,6 +28,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.selectedDate,
     this.multiDateSelectionRange = const {},
     this.multiDateSelectionColor,
+    this.monthViewMode = MonthViewMode.standard,
   }) : super(key: key);
 
   /// A required parameters that controls events for month view.
@@ -57,6 +67,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
 
   /// Color of the date cells selected via [MonthViewBuilders.onDateLongPressMoveUpdate]
   final Color? multiDateSelectionColor;
+
+  final MonthViewMode monthViewMode;
 
   @override
   MonthViewState<T> createState() => MonthViewState<T>();
@@ -217,21 +229,25 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     super.dispose();
   }
 
-  void onHorizontalDragEnd(
+  void _onBoundaryDragEnd(
     DragEndDetails dragEndDetails, {
     required bool isFirstPage,
     required bool isLastPage,
+    required Axis scrollDirection,
     TextDirection textDirection = TextDirection.ltr,
   }) {
-    final velocity = dragEndDetails.primaryVelocity ?? 0;
+    final velocity = scrollDirection == Axis.horizontal
+        ? (dragEndDetails.primaryVelocity ?? 0)
+        : dragEndDetails.velocity.pixelsPerSecond.dy;
     if (velocity == 0) return;
 
     final isRtl = textDirection == TextDirection.rtl;
-
-    // In LTR: swipe right (velocity > 0) = previous, swipe left (velocity < 0) = next
-    // In RTL: swipe right (velocity > 0) = next, swipe left (velocity < 0) = previous
-    final isSwipingToPrevious = isRtl ? velocity < 0 : velocity > 0;
-    final isSwipingToNext = isRtl ? velocity > 0 : velocity < 0;
+    final isSwipingToPrevious = scrollDirection == Axis.horizontal
+        ? (isRtl ? velocity < 0 : velocity > 0)
+        : velocity > 0;
+    final isSwipingToNext = scrollDirection == Axis.horizontal
+        ? (isRtl ? velocity > 0 : velocity < 0)
+        : velocity < 0;
 
     if (isFirstPage && isLastPage) {
       // Only one page - trigger both callbacks based on swipe direction
@@ -281,6 +297,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
             ),
             Expanded(
               child: PageView.builder(
+                scrollDirection: widget.monthViewMode == MonthViewMode.standard
+                    ? Axis.horizontal
+                    : Axis.vertical,
                 controller: _pageController,
                 physics: _isMultiDateSelectionInProgress
                     ? const NeverScrollableScrollPhysics()
@@ -370,13 +389,29 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                     final isFirstPage = index == 0;
                     final isLastPage = index == _totalMonths - 1;
                     if (isFirstPage || isLastPage) {
+                      final axis =
+                          widget.monthViewMode == MonthViewMode.standard
+                              ? Axis.horizontal
+                              : Axis.vertical;
                       return GestureDetector(
-                        onHorizontalDragEnd: (details) => onHorizontalDragEnd(
-                          details,
-                          isFirstPage: isFirstPage,
-                          isLastPage: isLastPage,
-                          textDirection: textDirection,
-                        ),
+                        onHorizontalDragEnd: axis == Axis.horizontal
+                            ? (details) => _onBoundaryDragEnd(
+                                  details,
+                                  isFirstPage: isFirstPage,
+                                  isLastPage: isLastPage,
+                                  scrollDirection: axis,
+                                  textDirection: textDirection,
+                                )
+                            : null,
+                        onVerticalDragEnd: axis == Axis.vertical
+                            ? (details) => _onBoundaryDragEnd(
+                                  details,
+                                  isFirstPage: isFirstPage,
+                                  isLastPage: isLastPage,
+                                  scrollDirection: axis,
+                                  textDirection: textDirection,
+                                )
+                            : null,
                         child: monthPageContent,
                       );
                     }

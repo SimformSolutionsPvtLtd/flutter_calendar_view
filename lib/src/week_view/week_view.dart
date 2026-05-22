@@ -11,6 +11,16 @@ import '../painters.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_week_view_page.dart';
 
+/// Controls how [WeekView] lays out days and hours.
+enum WeekViewMode {
+  /// Existing behavior: days laid out horizontally and hours scroll vertically.
+  standard,
+
+  /// Days are fixed on the left, hours scroll horizontally,
+  /// and week pages scroll vertically.
+  verticalWeek,
+}
+
 /// [Widget] to display week view.
 class WeekView<T extends Object?> extends StatefulWidget {
   /// Builder to build tile for events.
@@ -241,6 +251,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to display the 00:00 (midnight) hour in the timeline.
   final bool showMidnightHour;
 
+  /// Controls WeekView orientation and axis behavior.
+  final WeekViewMode weekViewMode;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -305,6 +318,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.onTimestampTap,
     this.timeSlotColorBuilder,
     this.showMidnightHour = false,
+    this.weekViewMode = WeekViewMode.standard,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -642,9 +656,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
               ),
               Expanded(
                 child: SizedBox(
-                  height: _height,
+                  height: widget.weekViewMode == WeekViewMode.standard
+                      ? _height
+                      :widget.weekTitleHeight + (_hourHeight * _totalDaysInWeek),
                   width: _width,
                   child: PageView.builder(
+                    scrollDirection:
+                        widget.weekViewMode == WeekViewMode.standard
+                            ? Axis.horizontal
+                            : Axis.vertical,
                     itemCount: _totalWeeks,
                     controller: _pageController,
                     physics: widget.pageViewPhysics,
@@ -716,6 +736,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           keepScrollOffset: widget.keepScrollOffset,
                           timeSlotColorBuilder: _timeSlotColorBuilder,
                           showMidnightHour: widget.showMidnightHour,
+                          weekViewMode: widget.weekViewMode,
                         ),
                       );
                     },

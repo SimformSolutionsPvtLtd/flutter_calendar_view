@@ -132,6 +132,8 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
                   initialDateTime: _startDate,
                   onSelect: (date) {
+                    final previousStartDate = _startDate.withoutTime;
+
                     if (date.withoutTime.withoutTime.isAfter(
                       _endDate.withoutTime,
                     )) {
@@ -140,6 +142,18 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
                     _startDate = date.withoutTime;
                     if (_isRecurring) {
+                      _endDate = _startDate;
+
+                      if (mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {});
+                        });
+                      }
+                    } else if (_endDate.withoutTime.isAtSameMomentAs(
+                      previousStartDate,
+                    )) {
+                      // Keep single-day events aligned when the user changes
+                      // only start date and has not explicitly changed end date.
                       _endDate = _startDate;
 
                       if (mounted) {
@@ -520,6 +534,31 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     if (!(_form.currentState?.validate() ?? true)) return;
 
     _form.currentState?.save();
+
+    final hasOnlyOneTime =
+        (_startTime == null && _endTime != null) ||
+        (_startTime != null && _endTime == null);
+
+    if (hasOnlyOneTime) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select both start time and end time.'),
+        ),
+      );
+      return;
+    }
+
+    if (_startTime != null &&
+        _endTime != null &&
+        _startDate.withoutTime.isAtSameMomentAs(_endDate.withoutTime) &&
+        _endTime!.getTotalMinutes <= _startTime!.getTotalMinutes) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('End time must be after start time.'),
+        ),
+      );
+      return;
+    }
 
     DateTime? combinedStartTime;
     DateTime? combinedEndTime;

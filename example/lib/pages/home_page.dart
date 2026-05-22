@@ -366,6 +366,10 @@ class _HomePageState extends State<HomePage> {
             0,
           ),
           color: Colors.cyan,
+          titleStyle: TextStyle(
+            color: Colors.red,
+            fontSize: 10
+          )
         ),
 
         // ========== EDGE CASE 18: Very long title ==========

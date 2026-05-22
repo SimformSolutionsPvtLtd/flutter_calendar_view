@@ -30,7 +30,7 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
         ),
-        body: MonthViewWidget(),
+        body: MonthViewWidget(enableVerticalMonthMode: false),
       ),
     );
   }
