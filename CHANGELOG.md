@@ -10,6 +10,7 @@
 - Added `onDateLongPressMoveUpdate` callback to `MonthView`, along with `MonthView.multiDateSelectionRange`, `MonthView.multiDateSelectionColor`, and `FilledCell.multipleDateSelectionColor` for multi-date selection customization.  [#401](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/401)
 - Updated documentation for `DayView`, `WeekView`, `MonthView` and `MultiDayView` to add more details about the parameters and their usage. [#448](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/448)
 - Fixed `onlyShowToday` parameter in `WeekView` to update `liveTimeIndicator` properly. [#518](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/518)
+- Added `ZoomScrollController` to `DayView`, `WeekView` and `MultiDayView` for programmatic control of zoom level and scroll position. [#522](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/522)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
