@@ -42,7 +42,7 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
                           .clamp(_minHeight, _maxHeight),
                     )
                   : null,
-              child: const Icon(Icons.zoom_in),
+              child: Icon(Icons.zoom_in, color: themeColors.onPrimary),
             ),
             const SizedBox(height: 8),
             FloatingActionButton.small(
@@ -54,11 +54,11 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
                           .clamp(_minHeight, _maxHeight),
                     )
                   : null,
-              child: const Icon(Icons.zoom_out),
+              child: Icon(Icons.zoom_out, color: themeColors.onPrimary),
             ),
             const SizedBox(height: 8),
             FloatingActionButton(
-              heroTag: 'add_event',
+              heroTag: 'add_event_week_view',
               child: Icon(Icons.add, color: themeColors.onPrimary),
               elevation: 8,
               onPressed: () => context.pushRoute(CreateEventPage()),

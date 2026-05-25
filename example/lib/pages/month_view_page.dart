@@ -25,6 +25,7 @@ class _MonthViewPageDemoState extends State<MonthViewPageDemo> {
         primary: false,
         appBar: AppBar(leading: const SizedBox.shrink()),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'add_event_month_view',
           child: Icon(Icons.add, color: appColors.onPrimary),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),

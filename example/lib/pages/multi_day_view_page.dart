@@ -23,6 +23,7 @@ class _MultiDayViewDemoState extends State<MultiDayViewDemo> {
         primary: false,
         appBar: AppBar(leading: const SizedBox.shrink()),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'add_event_multiday_view',
           child: Icon(Icons.add, color: context.appColors.onPrimary),
           elevation: 8,
           onPressed: () => context.pushRoute(CreateEventPage()),
