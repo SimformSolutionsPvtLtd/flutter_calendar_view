@@ -128,6 +128,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
           child: Align(
             alignment: Alignment.centerRight,
             child: FloatingActionButton.small(
+              heroTag: 'clear_selection',
               onPressed: _clearSelection,
               child: Icon(Icons.close, color: context.appColors.onPrimary),
             ),
