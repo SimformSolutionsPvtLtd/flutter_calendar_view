@@ -147,7 +147,7 @@ class LiveTimeIndicatorSettings {
 ///
 /// [startDate]: Defines start date of repeating events.
 /// [endDate]: Defines end date of repeating events.
-/// [occurrence]: Defines repetition of an event for the given number of
+/// [occurrences]: Defines repetition of an event for the given number of
 /// occurrences.
 ///
 /// [frequency]: Defines mode of repetition like repeat daily, weekly, monthly

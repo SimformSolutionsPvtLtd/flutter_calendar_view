@@ -8,7 +8,7 @@ import '../calendar_view.dart';
 
 @immutable
 
-/// {@macro calendar_event_data_doc}
+/// Stores metadata for a calendar event and its date/time boundaries.
 class CalendarEventData<T extends Object?> {
   /// Specifies date on which all these events are.
   final DateTime date;
@@ -47,7 +47,7 @@ class CalendarEventData<T extends Object?> {
   /// Define reoccurrence settings
   final RecurrenceSettings? recurrenceSettings;
 
-  /// {@macro calendar_event_data_doc}
+  /// Creates an event model used by day, week, multi-day, and month views.
   CalendarEventData({
     required this.title,
     required DateTime date,

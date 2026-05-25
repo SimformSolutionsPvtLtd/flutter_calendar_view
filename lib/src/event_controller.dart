@@ -117,7 +117,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Adds a single event in [_events]
+  /// Adds a single event to this controller.
   void add(CalendarEventData<T> event) {
     _calendarData.addEvent(event);
     notifyListeners();

@@ -738,7 +738,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
   }
 
-  /// Returns current page index (number of months since [minMonth]).
+  /// Returns current page index (number of months since
+  /// [MonthViewStyle.minMonth]).
   ///
   /// Use [currentDate] to get the current month as a DateTime.
   ///
