@@ -26,7 +26,7 @@ abstract class EventArranger<T extends Object?> {
   ///
   /// There are three predefined class that implements of [EventArranger].
   ///
-  /// [_StackEventArranger], [SideEventArranger] and [MergeEventArranger].
+  /// [SideEventArranger], and [MergeEventArranger].
   ///
   const EventArranger();
 

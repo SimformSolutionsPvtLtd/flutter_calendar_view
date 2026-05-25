@@ -1112,7 +1112,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         curve: curve ?? widget.pageTransitionCurve);
   }
 
-  /// Returns current page index (number of weeks since [minDay]).
+  /// Returns current page index (number of weeks since [WeekView.minDay]).
   ///
   /// Use [currentDate] to get the week's first date.
   int get currentPage => _currentIndex;

@@ -69,7 +69,7 @@ extension DateTimeExtensions on DateTime {
   ///
   /// ex: if Current Date instance is 8th and day is wednesday then weekDates
   /// will return dates
-  /// [6,7,8,9,10,11,12]
+  /// 6, 7, 8, 9, 10, 11, 12.
   /// Where on 6th there will be monday and on 12th there will be Sunday
   List<DateTime> datesOfWeek({
     WeekDays start = WeekDays.monday,

@@ -979,7 +979,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
   /// Animate to next page (next multi-day period).
   ///
-  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  /// Transitions with animation using [MultiDayView.pageTransitionDuration]
+  /// and [MultiDayView.pageTransitionCurve].
   ///
   /// See also: [previousPage], [jumpToWeek], [animateToWeek]
   void nextPage({Duration? duration, Curve? curve}) {
@@ -991,7 +992,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
 
   /// Animate to previous page (previous multi-day period).
   ///
-  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  /// Transitions with animation using [MultiDayView.pageTransitionDuration]
+  /// and [MultiDayView.pageTransitionCurve].
   ///
   /// See also: [nextPage], [jumpToWeek], [animateToWeek]
   void previousPage({Duration? duration, Curve? curve}) {
@@ -1024,7 +1026,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
         curve: curve ?? widget.pageTransitionCurve);
   }
 
-  /// Returns current page index (number of periods since [minDay]).
+  /// Returns current page index (number of periods since
+  /// [MultiDayView.minDay]).
   ///
   /// Use [currentDate] to get the period's first date.
   ///

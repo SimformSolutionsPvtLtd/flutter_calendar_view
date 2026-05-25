@@ -71,11 +71,11 @@ class MonthViewStyle {
   final Color? borderColor;
 
   /// Page transition duration used when user try to change page using
-  /// [MonthView.nextPage] or [MonthView.previousPage]
+  /// [MonthViewState.nextPage] or [MonthViewState.previousPage].
   final Duration pageTransitionDuration;
 
   /// Page transition curve used when user try to change page using
-  /// [MonthView.nextPage] or [MonthView.previousPage]
+  /// [MonthViewState.nextPage] or [MonthViewState.previousPage].
   final Curve pageTransitionCurve;
 
   /// Defines width of default border

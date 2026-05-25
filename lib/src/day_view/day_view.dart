@@ -1012,7 +1012,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to next page (next day).
   ///
-  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  /// Transitions with animation using [DayView.pageTransitionDuration] and
+  /// [DayView.pageTransitionCurve].
   ///
   /// See also: [previousPage], [jumpToDate], [animateToDate]
   void nextPage({Duration? duration, Curve? curve}) => _pageController.nextPage(
@@ -1022,7 +1023,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to previous page (previous day).
   ///
-  /// Transitions with animation using [pageTransitionDuration] and [pageTransitionCurve].
+  /// Transitions with animation using [DayView.pageTransitionDuration] and
+  /// [DayView.pageTransitionCurve].
   ///
   /// See also: [nextPage], [jumpToDate], [animateToDate]
   void previousPage({Duration? duration, Curve? curve}) =>
@@ -1056,20 +1058,21 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
           duration: duration ?? widget.pageTransitionDuration,
           curve: curve ?? widget.pageTransitionCurve);
 
-  /// Returns current page index (number of days since [minDay]).
+  /// Returns current page index (number of days since [DayView.minDay]).
   int get currentPage => _currentIndex;
 
   /// Jumps to page which gives day calendar for [date]
   ///
   /// This is the preferred way to navigate to a specific date. It automatically
-  /// calculates the correct page index based on the [minDay] parameter.
+  /// calculates the correct page index based on [DayView.minDay].
   ///
   /// **Example:**
   /// ```dart
   /// dayViewState.jumpToDate(DateTime(2024, 5, 15));
   /// ```
   ///
-  /// **Note:** The [date] must be within the range [minDay] to [maxDay],
+  /// **Note:** The [date] must be within the range [DayView.minDay] to
+  /// [DayView.maxDay],
   /// otherwise an exception will be thrown.
   ///
   /// Throws an exception if [date] is outside the valid date range.
@@ -1082,10 +1085,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   /// Animate to page which gives day calendar for [date].
   ///
-  /// Calculates the correct page index based on [minDay] and animates to it.
+  /// Calculates the correct page index based on [DayView.minDay] and animates
+  /// to it.
   /// Arguments [duration] and [curve] override default transition values.
   ///
-  /// Throws an exception if [date] is outside the [minDay] to [maxDay] range.
+  /// Throws an exception if [date] is outside the [DayView.minDay] to
+  /// [DayView.maxDay] range.
   Future<void> animateToDate(DateTime date,
       {Duration? duration, Curve? curve}) async {
     if (date.isBefore(_minDate) || date.isAfter(_maxDate)) {
