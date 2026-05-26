@@ -476,6 +476,7 @@ MultiDayView(
     // Multi-day configuration
     daysInView: 3, // Number of days to display (default is 3)
     weekTitleHeight: 50, // Height of week day title
+    weekTitleBackgroundColor: Colors.grey.shade200, // Background color of week title
     showVerticalLines: true, // Show the vertical line between days
     showWeekDayAtBottom: false, // Show week day at bottom position
     showLiveTimeLineInAllDays: true, // Display live time line in all pages
@@ -1050,6 +1051,45 @@ MonthView(
   ```
 * Use `monthViewStyle.showWeekTileBorder` to control week day title border visibility
 * Use `monthViewBuilders.headerBuilder` to customize or completely replace the month header
+
+### MultiDay View
+* To customise week number & weekdays use `weekNumberBuilder` & `weekDayBuilder`.
+* Default week day tile color is `multiDayTileColor` in `MultiDayViewThemeData` (defaults to `surfaceContainerHigh`).
+    * Use `weekTitleBackgroundColor` to override it per-widget.
+* Default page background color is `pageBackgroundColor` in `MultiDayViewThemeData` (defaults to `surfaceContainerLowest`).
+    * Use `backgroundColor` to override it per-widget.
+* Default timeline text color is `timelineTextColor` in `MultiDayViewThemeData` (defaults to `onSurface`).
+    * Use `markingStyle` in `DefaultTimeLineMark` to give text style, or `timeLineBuilder` to fully replace the timeline.
+* Default live time indicator color is `liveIndicatorColor` in `MultiDayViewThemeData` (defaults to `primary`).
+    * Use `liveTimeIndicatorSettings` to customise it per-widget.
+* Default hour/half hour/quarter hour line color is `hourLineColor` / `halfHourLineColor` / `quarterHourLineColor` in `MultiDayViewThemeData` (all default to `surfaceContainerHighest`).
+    * Use `hourIndicatorSettings`, `halfHourIndicatorSettings`, and `quarterHourIndicatorSettings` to customise per-widget.
+* Default vertical line color between days is `verticalLinesColor` in `MultiDayViewThemeData`.
+* To customise the divider between weekdays and full-day events use `dividerSettings`.
+
+```dart
+  hourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.greenAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+      showHalfHours: true,
+  halfHourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.redAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+  dividerSettings: DividerSettings(
+        thickness: 2,
+        height: 2,
+        color: Colors.blueAccent,
+        indent: 10,
+        endIndent: 10,
+      ),
+```
+
+Hide divider in multiday view.
+```dart
+  dividerSettings: DividerSettings.none(),
+```
 
 # Migration Guides
 

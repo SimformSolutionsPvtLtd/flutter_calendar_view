@@ -18,7 +18,7 @@ class _MultiDayViewDemoState extends State<MultiDayViewDemo> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
-      webWidget: WebHomePage(selectedView: CalendarView.week),
+      webWidget: WebHomePage(selectedView: CalendarView.multiday),
       mobileWidget: Scaffold(
         primary: false,
         appBar: AppBar(leading: const SizedBox.shrink()),

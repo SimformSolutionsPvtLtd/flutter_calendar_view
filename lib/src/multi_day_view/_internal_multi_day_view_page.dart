@@ -91,6 +91,9 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// Height of week title.
   final double weekTitleHeight;
 
+  /// Background color of week title
+  final Color? weekTitleBackgroundColor;
+
   /// Width of week title.
   final double weekTitleWidth;
 
@@ -174,59 +177,64 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
+  /// Background color of the calendar page.
+  final Color? backgroundColor;
+
   /// A single page for week view.
-  const InternalMultiDayViewPage(
-      {Key? key,
-      required this.showVerticalLine,
-      required this.weekTitleHeight,
-      required this.weekDayBuilder,
-      required this.weekNumberBuilder,
-      required this.width,
-      required this.dates,
-      required this.eventTileBuilder,
-      required this.controller,
-      required this.timeLineBuilder,
-      required this.hourIndicatorSettings,
-      required this.hourLinePainter,
-      required this.halfHourIndicatorSettings,
-      required this.quarterHourIndicatorSettings,
-      required this.dividerSettings,
-      required this.showLiveLine,
-      required this.liveTimeIndicatorSettings,
-      required this.heightPerMinute,
-      required this.timeLineWidth,
-      required this.timeLineOffset,
-      required this.height,
-      required this.hourHeight,
-      required this.eventArranger,
-      required this.verticalLineOffset,
-      required this.weekTitleWidth,
-      required this.onTileTap,
-      required this.onTileLongTap,
-      required this.onDateLongPress,
-      required this.onDateTap,
-      required this.weekDays,
-      required this.minuteSlotSize,
-      required this.scrollConfiguration,
-      required this.startHour,
-      required this.fullDayEventBuilder,
-      required this.weekDetectorBuilder,
-      required this.showWeekDayAtBottom,
-      required this.showHalfHours,
-      required this.showQuarterHours,
-      required this.emulateVerticalOffsetBy,
-      required this.onTileDoubleTap,
-      required this.endHour,
-      required this.onTimestampTap,
-      this.fullDayHeaderTitle = '',
-      required this.fullDayHeaderTextConfig,
-      required this.scrollPhysics,
-      required this.scrollListener,
-      required this.multiDayViewScrollController,
-      this.lastScrollOffset = 0.0,
-      this.keepScrollOffset = false,
-      this.showMutliDayBottomLine = true})
-      : super(key: key);
+  const InternalMultiDayViewPage({
+    Key? key,
+    required this.showVerticalLine,
+    required this.weekTitleHeight,
+    required this.weekDayBuilder,
+    required this.weekNumberBuilder,
+    required this.width,
+    required this.dates,
+    required this.eventTileBuilder,
+    required this.controller,
+    required this.timeLineBuilder,
+    required this.hourIndicatorSettings,
+    required this.hourLinePainter,
+    required this.halfHourIndicatorSettings,
+    required this.quarterHourIndicatorSettings,
+    required this.dividerSettings,
+    required this.showLiveLine,
+    required this.liveTimeIndicatorSettings,
+    required this.heightPerMinute,
+    required this.timeLineWidth,
+    required this.timeLineOffset,
+    required this.height,
+    required this.hourHeight,
+    required this.eventArranger,
+    required this.verticalLineOffset,
+    required this.weekTitleWidth,
+    required this.weekTitleBackgroundColor,
+    required this.onTileTap,
+    required this.onTileLongTap,
+    required this.onDateLongPress,
+    required this.onDateTap,
+    required this.weekDays,
+    required this.minuteSlotSize,
+    required this.scrollConfiguration,
+    required this.startHour,
+    required this.fullDayEventBuilder,
+    required this.weekDetectorBuilder,
+    required this.showWeekDayAtBottom,
+    required this.showHalfHours,
+    required this.showQuarterHours,
+    required this.emulateVerticalOffsetBy,
+    required this.onTileDoubleTap,
+    required this.endHour,
+    required this.onTimestampTap,
+    required this.fullDayHeaderTextConfig,
+    required this.scrollPhysics,
+    required this.scrollListener,
+    required this.multiDayViewScrollController,
+    this.backgroundColor,
+    this.fullDayHeaderTitle = '',
+    this.lastScrollOffset = 0.0,
+    this.keepScrollOffset = false,
+    this.showMutliDayBottomLine = true,
+  }) : super(key: key);
 
   @override
   _InternalMultiDayViewPageState<T> createState() =>
@@ -280,6 +288,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
     final direction = Directionality.of(context);
 
     return Container(
+      color: widget.backgroundColor ?? themeColor.pageBackgroundColor,
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
       child: Column(
@@ -289,7 +298,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           ColoredBox(
-            color: themeColor.headerBackgroundColor,
+            color:
+                widget.weekTitleBackgroundColor ?? themeColor.multiDayTileColor,
             child: SizedBox(
               width: widget.width,
               child: Row(
