@@ -1,3 +1,7 @@
+# [Unreleased - 26 May 2026]
+
+- Added `weekTitleBackgroundColor` to `MultiDayView` to customize the week title background color.
+
 # [Unreleased - 11 May 2026]
 
 - Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)
