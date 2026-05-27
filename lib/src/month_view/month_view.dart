@@ -16,7 +16,6 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.monthViewThemeSettings = const MonthViewThemeSettings(),
     this.controller,
     this.width,
-    this.selectedDate,
     this.multiDateSelectionRange = const {},
     this.multiDateSelectionColor,
   }) : super(key: key);
@@ -44,13 +43,6 @@ class MonthView<T extends Object?> extends StatefulWidget {
   ///
   /// If null is provided then It will take width of closest [MediaQuery].
   final double? width;
-
-  /// Controls the selected date in the month grid.
-  ///
-  /// When null, the view manages selection internally and updates it when a
-  /// visible cell is tapped. When non-null, selection is controlled by the
-  /// caller and taps only trigger [MonthViewBuilders.onCellTap].
-  final DateTime? selectedDate;
 
   /// Set of dates that are selected via [MonthViewBuilders.onDateLongPressMoveUpdate]
   final Set<DateTime> multiDateSelectionRange;
@@ -101,9 +93,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Height of each cell in the month grid. Calculated based on cellAspectRatio.
   late double _cellHeight;
 
-  /// Current selected date (single date).
-  DateTime? _selectedDate;
-
   /// Builder function for rendering individual calendar cells.
   late CellBuilder<T> _cellBuilder;
 
@@ -140,8 +129,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _currentDate = (_monthViewStyle.initialMonth ?? DateTime.now()).withoutTime;
 
     _regulateCurrentDate();
-
-    _selectedDate = widget.selectedDate?.withoutTime;
 
     // Initialize page controller to control page actions.
     _pageController = PageController(initialPage: _currentIndex);
@@ -199,12 +186,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
     // Update builders and callbacks
     _assignBuilders();
-
-    if (widget.selectedDate != null) {
-      _selectedDate = widget.selectedDate?.withoutTime;
-    } else if (oldWidget.selectedDate != null) {
-      _selectedDate = oldWidget.selectedDate?.withoutTime;
-    }
 
     updateViewDimensions();
   }
@@ -335,7 +316,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               width: _width,
                               child: _MonthPageBuilder<T>(
                                 key: ValueKey(date.toIso8601String()),
-                                onCellTap: _handleCellTap,
+                                onCellTap: _monthViewBuilders.onCellTap,
                                 onDateLongPress:
                                     _monthViewBuilders.onDateLongPress,
                                 onDateLongPressMoveUpdate: _monthViewBuilders
@@ -348,7 +329,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                                 borderColor: _monthViewStyle.borderColor,
                                 borderSize: _monthViewStyle.borderSize,
                                 cellBuilder: _cellBuilder,
-                                selectedDate: _selectedDate,
                                 cellRatio: _cellAspectRatio,
                                 date: date,
                                 showBorder: _monthViewStyle.showBorder,
@@ -403,14 +383,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     }
 
     return _controller!;
-  }
-
-  bool _isSameDate(DateTime? first, DateTime? second) {
-    if (first == null || second == null) {
-      return first == second;
-    }
-
-    return first.withoutTime.compareWithoutTime(second.withoutTime);
   }
 
   void _reload() {
@@ -579,7 +551,6 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     List<CalendarEventData<T>> events,
     bool isToday,
     bool isInMonth,
-    bool isSelected,
     bool hideDaysNotInMonth,
   ) {
     // Normalize both the input date and selected dates to date-only (midnight)
@@ -590,27 +561,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     );
     final color = isMultiSelected ? widget.multiDateSelectionColor : null;
     final themeColor = context.monthViewColors;
-    final shouldHighlight = isSelected || isToday;
-    final highlightedTitleColor = isSelected
-        ? _monthViewThemeSettings.selectedTitleColor
-        : hideDaysNotInMonth
-            ? _monthViewThemeSettings.cellsNotInMonthHighlightedTitleColor
-            : _monthViewThemeSettings.cellsInMonthHighlightedTitleColor;
-    final highlightColor = isSelected
-        ? _monthViewThemeSettings.selectedHighlightColor
-        : hideDaysNotInMonth
-            ? themeColor.cellHighlightColor
-            : _monthViewThemeSettings.cellsInMonthHighlightColor;
-    final highlightRadius = isSelected
-        ? _monthViewThemeSettings.selectedHighlightRadius
-        : hideDaysNotInMonth
-            ? _monthViewThemeSettings.cellsNotInMonthHighlightRadius
-            : _monthViewThemeSettings.cellsInMonthHighlightRadius;
 
     if (hideDaysNotInMonth) {
       return FilledCell<T>(
         date: date,
-        shouldHighlight: shouldHighlight,
+        shouldHighlight: isToday,
         backgroundColor: isInMonth
             ? themeColor.cellInMonthColor
             : themeColor.cellNotInMonthColor,
@@ -625,16 +580,17 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         dateStringBuilder: _monthViewBuilders.dateStringBuilder,
         hideDaysNotInMonth: hideDaysNotInMonth,
         titleColor: themeColor.cellTextColor,
-        highlightColor: highlightColor,
+        highlightColor: themeColor.cellHighlightColor,
         tileColor: themeColor.weekDayTileColor,
-        highlightRadius: highlightRadius,
-        highlightedTitleColor: highlightedTitleColor,
+        highlightRadius: _monthViewThemeSettings.cellsNotInMonthHighlightRadius,
+        highlightedTitleColor:
+            _monthViewThemeSettings.cellsNotInMonthHighlightedTitleColor,
         multipleDateSelectionColor: color,
       );
     }
     return FilledCell<T>(
       date: date,
-      shouldHighlight: shouldHighlight,
+      shouldHighlight: isToday,
       backgroundColor: isInMonth
           ? themeColor.cellInMonthColor
           : themeColor.cellNotInMonthColor,
@@ -650,26 +606,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       titleColor: isInMonth
           ? themeColor.cellTextColor
           : themeColor.cellTextColor.withAlpha(150),
-      highlightedTitleColor: highlightedTitleColor,
-      highlightRadius: highlightRadius,
+      highlightedTitleColor:
+          _monthViewThemeSettings.cellsInMonthHighlightedTitleColor,
+      highlightRadius: _monthViewThemeSettings.cellsInMonthHighlightRadius,
       tileColor: _monthViewThemeSettings.cellsInMonthTileColor,
-      highlightColor: highlightColor,
+      highlightColor: _monthViewThemeSettings.cellsInMonthHighlightColor,
       multipleDateSelectionColor: color,
     );
-  }
-
-  /// Handles cell tap event. Updates selected date if [widget.selectedDate]
-  /// is null and calls [MonthViewBuilders.onCellTap] callback.
-  void _handleCellTap(List<CalendarEventData<T>> events, DateTime date) {
-    if (widget.selectedDate == null &&
-        !_isSameDate(_selectedDate, date.withoutTime) &&
-        mounted) {
-      setState(() {
-        _selectedDate = date.withoutTime;
-      });
-    }
-
-    _monthViewBuilders.onCellTap?.call(events, date);
   }
 
   /// Animate to next page (next month).
@@ -785,7 +728,6 @@ class _MonthPageBuilder<T> extends StatefulWidget {
     required this.showBorder,
     required this.borderSize,
     required this.cellBuilder,
-    required this.selectedDate,
     required this.date,
     required this.controller,
     required this.width,
@@ -819,7 +761,6 @@ class _MonthPageBuilder<T> extends StatefulWidget {
   final ScrollPhysics physics;
   final bool hideDaysNotInMonth;
   final int weekDays;
-  final DateTime? selectedDate;
 
   @override
   State<_MonthPageBuilder<T>> createState() => _MonthPageBuilderState<T>();
@@ -863,9 +804,7 @@ class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
                   (monthDays[index].month != widget.date.month)
               ? <CalendarEventData<T>>[]
               : widget.controller.getEventsOnDay(monthDays[index]);
-          final isSelected =
-              widget.selectedDate?.compareWithoutTime(monthDays[index]) ??
-                  false;
+
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => widget.onCellTap?.call(events, monthDays[index]),
@@ -884,7 +823,6 @@ class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
                 events,
                 monthDays[index].compareWithoutTime(DateTime.now()),
                 monthDays[index].month == widget.date.month,
-                isSelected,
                 widget.hideDaysNotInMonth,
               ),
             ),

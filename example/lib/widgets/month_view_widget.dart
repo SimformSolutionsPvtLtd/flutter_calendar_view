@@ -16,15 +16,8 @@ class MonthViewWidget extends StatefulWidget {
 }
 
 class _MonthViewWidgetState extends State<MonthViewWidget> {
-  late DateTime _selectedDate;
   DateTime? _multiSelectionStartDate;
   Set<DateTime> _multiSelectedDateRange = <DateTime>{};
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDate = DateTime.now().withoutTime;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +27,10 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
         MonthView(
           key: widget.state,
           width: widget.width,
-          selectedDate: _selectedDate,
           multiDateSelectionRange: _multiSelectedDateRange,
           multiDateSelectionColor: Colors.blue.withValues(alpha: 0.1),
           monthViewThemeSettings: MonthViewThemeSettings(
             cellsInMonthHighlightColor: Colors.blue,
-            selectedHighlightColor: Colors.deepOrange,
-            selectedTitleColor: Colors.white,
-            selectedHighlightRadius: 12,
           ),
           monthViewStyle: MonthViewStyle(
             startDay: WeekDays.friday,
@@ -78,7 +67,6 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
               _setSelectedRange(startDate, _normalizeDate(date));
             },
             onCellTap: (events, date) {
-              setState(() => _selectedDate = date.withoutTime);
               final normalizedDate = _normalizeDate(date);
               if (_multiSelectedDateRange.isNotEmpty) {
                 if (_multiSelectedDateRange.contains(normalizedDate)) {
