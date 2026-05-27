@@ -172,7 +172,6 @@ This guide covers more advanced features and customization options for the calen
 MonthView(
     controller: EventController(),
     width: 400, // Width of month view (if null, uses MediaQuery width)
-    selectedDate: DateTime(2021, 8, 10), // Controls selected date in month grid
     // Set of dates that are selected via long press and drag
     multiDateSelectionRange: {DateTime(2021, 8, 12), DateTime(2021, 8, 13)},
     multiDateSelectionColor: Colors.blue.withOpacity(0.3), // Color of selected date cells
@@ -185,7 +184,6 @@ MonthView(
       onPageChange: (date, pageIndex) => print("$date, $pageIndex"),
       onCellTap: (events, date) {
         // Implement callback when user taps on a cell.
-        // Update selectedDate here if you want controlled selection.
         print(events);
       },
       // Event callbacks
@@ -1028,7 +1026,7 @@ MonthView(
   ```dart
   MonthView(
     monthViewBuilders: MonthViewBuilders(
-      cellBuilder: (date, events, isToday, isInMonth, isSelected, hideDaysNotInMonth) {
+      cellBuilder: (date, events, isToday, isInMonth, hideDaysNotInMonth) {
         return Container(
           decoration: BoxDecoration(
             color: isInMonth ? Colors.white : Colors.grey[200],
@@ -1038,8 +1036,8 @@ MonthView(
             child: Text(
               date.day.toString(),
               style: TextStyle(
-                color: isSelected ? Colors.white : (isToday ? Colors.red : Colors.black),
-                fontWeight: (isToday || isSelected) ? FontWeight.bold : FontWeight.normal,
+                color: isToday ? Colors.red : Colors.black,
+                fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ),
@@ -1135,29 +1133,6 @@ dependencies:
           ),
         ),
       });
-   ```
-### 3. Migrate `CellBuilder`
-
-   ```dart
-  //  **Previous Signature (2.0.0):**
-   typedef CellBuilder<T extends Object?> = Widget Function(
-     DateTime date,
-     List<CalendarEventData<T>> event,
-     bool isToday,
-     bool isInMonth,
-     bool hideDaysNotInMonth,
-   );
-   ```
-   ```dart
-   // **New Signature (Latest):**
-   typedef CellBuilder<T extends Object?> = Widget Function(
-     DateTime date,
-     List<CalendarEventData<T>> event,
-     bool isToday,
-     bool isInMonth,
-     bool isSelected,        // New parameter added
-     bool hideDaysNotInMonth,
-   );
    ```
 
 # Contributors

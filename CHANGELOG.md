@@ -4,8 +4,6 @@
 - Added `DividerSettings` to customize the dividers in `WeekView` and `MultiDayView`. [#374](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/374), [#430](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/430), [#498](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/498)
 - Added `timeSlotColorBuilder` in `DayView` and `WeekView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470)
 - Added `pageDate` parameter for timeline label customization with current timestamp fallback. [#527](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/527)
-- Added `selectedDate` control to `MonthView` for external date management. [#233](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/233)
-- [BREAKING] Added `isSelected` parameter to `CellBuilder` typedef in `MonthView`. Custom cell builders must be updated to accept this new parameter.
 - Added `showMidnightHour` parameter in `DayView` and `WeekView` to control whether the `00:00` label is shown on the timeline. Default is `false`. [#492](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/492)
 - Added `onDateLongPressMoveUpdate` callback to `MonthView`, along with `MonthView.multiDateSelectionRange`, `MonthView.multiDateSelectionColor`, and `FilledCell.multipleDateSelectionColor` for multi-date selection customization.  [#401](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/401)
 - Updated documentation for `DayView`, `WeekView`, `MonthView` and `MultiDayView` to add more details about the parameters and their usage. [#448](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/448)
