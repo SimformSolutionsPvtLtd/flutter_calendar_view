@@ -444,11 +444,22 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Provides data for rendering events for the week.
   EventController<T>? _controller;
 
-  /// Scroll controller for managing vertical scrolling.
-  late ZoomScrollController _scrollController;
+  /// Per-page scroll offset cache keyed by page index.
+  final Map<int, double> _pageOffsets = <int, double>{};
+
+  /// Currently visible page scroll controller.
+  ZoomScrollController? _activeScrollController;
 
   /// Public getter for accessing the scroll controller.
-  ScrollController get scrollController => _scrollController;
+  ScrollController get scrollController {
+    final controller = _activeScrollController;
+    if (controller == null || !controller.hasClients) {
+      throw StateError(
+        "ScrollController is not attached to any scroll views yet.",
+      );
+    }
+    return controller;
+  }
 
   /// List of days in a week with their properties (name, order, etc.).
   /// Used for rendering day headers and determining week layout.
@@ -468,10 +479,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = widget.scrollOffset;
-
-    _scrollController =
-        ZoomScrollController(initialScrollOffset: widget.scrollOffset);
+    _lastScrollOffset = _defaultPageOffset;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -488,6 +496,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _calculateHeights();
 
     _pageController = PageController(initialPage: _currentIndex);
+    _pageOffsets[_currentIndex] = _lastScrollOffset;
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
 
     _assignBuilders();
@@ -536,6 +545,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         widget.maxDay != oldWidget.maxDay) {
       _setDateRange();
       _regulateCurrentDate();
+      _pageOffsets.clear();
+      _pageOffsets[_currentIndex] = _defaultPageOffset;
 
       _pageController.jumpToPage(_currentIndex);
     }
@@ -554,21 +565,27 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       // Read the ACTUAL current scroll position from the shared controller
       // (not _lastScrollOffset, which is only updated when keepScrollOffset=true).
       // Scale it proportionally so the same time slot stays visible after zoom.
-      final currentOffset = _scrollController.hasClients
-          ? _scrollController.offset
-          : _lastScrollOffset;
+      final activeController = _activeScrollController;
+      final currentOffset =
+          activeController != null && activeController.hasClients
+              ? activeController.offset
+              : _lastScrollOffset;
       final scaledOffset = currentOffset *
           widget.heightPerMinute /
           (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
       _lastScrollOffset = scaledOffset;
-      // prepareZoomJump stores the target offset so ZoomScrollController can
-      // apply it inside applyContentDimensions (during layout, before paint),
-      // eliminating the one-frame flicker that addPostFrameCallback caused.
-      _scrollController.prepareZoomJump(scaledOffset);
+      _pageOffsets[_currentIndex] = scaledOffset;
+      if (activeController != null && activeController.hasClients) {
+        // prepareZoomJump stores the target offset so ZoomScrollController can
+        // apply it inside applyContentDimensions (during layout, before paint),
+        // eliminating the one-frame flicker that addPostFrameCallback caused.
+        activeController.prepareZoomJump(scaledOffset);
+      }
     }
 
     if (widget.scrollOffset != oldWidget.scrollOffset) {
       _lastScrollOffset = widget.scrollOffset;
+      _pageOffsets[_currentIndex] = _lastScrollOffset;
       _jumpToOffsetAfterPageTransition(widget.scrollOffset);
     }
   }
@@ -604,17 +621,39 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _jumpToOffsetAfterPageTransition(double offset) {
     _runAfterPageTransition(() {
-      if (!_scrollController.hasClients) return;
+      _withAttachedScrollController((controller) {
+        final clampedOffset = offset.clamp(
+          controller.position.minScrollExtent,
+          controller.position.maxScrollExtent,
+        );
 
-      final clampedOffset = offset.clamp(
-        _scrollController.position.minScrollExtent,
-        _scrollController.position.maxScrollExtent,
-      );
-
-      _lastScrollOffset = clampedOffset.toDouble();
-      _scrollController.jumpTo(clampedOffset.toDouble());
+        _lastScrollOffset = clampedOffset.toDouble();
+        _pageOffsets[_currentIndex] = _lastScrollOffset;
+        controller.jumpTo(clampedOffset.toDouble());
+      });
     });
   }
+
+  void _withAttachedScrollController(
+    void Function(ZoomScrollController controller) action,
+  ) {
+    final controller = _activeScrollController;
+    if (controller != null && controller.hasClients) {
+      action(controller);
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final updatedController = _activeScrollController;
+      if (updatedController != null && updatedController.hasClients) {
+        action(updatedController);
+      }
+    });
+  }
+
+  double get _defaultPageOffset => widget.scrollOffset;
 
   @override
   void dispose() {
@@ -695,7 +734,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           showVerticalLine: widget.showVerticalLines,
                           controller: controller,
                           hourHeight: _hourHeight,
-                          weekViewScrollController: _scrollController,
                           eventArranger: _eventArranger,
                           weekDays: _weekDays,
                           minuteSlotSize: widget.minuteSlotSize,
@@ -710,8 +748,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           endHour: _endHour,
                           fullDayHeaderTitle: _fullDayHeaderTitle,
                           fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
-                          lastScrollOffset: _lastScrollOffset,
+                          lastScrollOffset: widget.keepScrollOffset
+                              ? (_pageOffsets[index] ?? _defaultPageOffset)
+                              : _defaultPageOffset,
                           scrollPhysics: widget.scrollPhysics,
+                          pageIndex: index,
+                          isCurrentPage: index == _currentIndex,
                           scrollListener: _scrollPageListener,
                           keepScrollOffset: widget.keepScrollOffset,
                           timeSlotColorBuilder: _timeSlotColorBuilder,
@@ -1070,6 +1112,16 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         _currentIndex = index;
       });
     }
+    _activeScrollController = null;
+
+    _lastScrollOffset = widget.keepScrollOffset
+        ? (_pageOffsets[index] ?? _defaultPageOffset)
+        : _defaultPageOffset;
+    if (!widget.keepScrollOffset) {
+      _pageOffsets[index] = _defaultPageOffset;
+      _jumpToOffsetAfterPageTransition(_defaultPageOffset);
+    }
+
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
   }
 
@@ -1180,11 +1232,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     Duration duration = const Duration(milliseconds: 200),
     Curve curve = Curves.linear,
   }) {
-    _scrollController.animateTo(
-      offset,
-      duration: duration,
-      curve: curve,
-    );
+    _withAttachedScrollController((controller) {
+      controller.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    });
   }
 
   /// Check if any dates contain current date. Returns true if found.
@@ -1195,8 +1249,18 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   /// Listener for every week page ScrollController
-  void _scrollPageListener(ScrollController controller) {
-    _lastScrollOffset = controller.offset;
+  void _scrollPageListener(
+    int pageIndex,
+    double offset,
+    ZoomScrollController controller,
+  ) {
+    _activeScrollController = controller;
+    if (!widget.keepScrollOffset) return;
+
+    _pageOffsets[pageIndex] = offset;
+    if (pageIndex == _currentIndex) {
+      _lastScrollOffset = offset;
+    }
   }
 }
 
