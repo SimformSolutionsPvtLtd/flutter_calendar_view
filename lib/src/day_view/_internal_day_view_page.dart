@@ -103,8 +103,6 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
-  final ScrollController dayViewScrollController;
-
   /// Flag to display half hours.
   final bool showHalfHours;
 
@@ -120,8 +118,18 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
   /// Settings for half hour indicator lines.
   final HourIndicatorSettings quarterHourIndicatorSettings;
 
-  /// Scroll listener to set every page's last offset
-  final void Function(ScrollController) scrollListener;
+  /// Scroll listener to set every page's last offset.
+  final void Function(
+    int pageIndex,
+    double offset,
+    ZoomScrollController controller,
+  ) scrollListener;
+
+  /// Page index in the parent [PageView].
+  final int pageIndex;
+
+  /// Whether this page is currently visible in parent [PageView].
+  final bool isCurrentPage;
 
   /// Last scroll offset of day view page.
   final double lastScrollOffset;
@@ -176,9 +184,10 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.minuteSlotSize,
     required this.scrollNotifier,
     required this.fullDayEventBuilder,
-    required this.dayViewScrollController,
     required this.scrollPhysics,
     required this.scrollListener,
+    required this.pageIndex,
+    required this.isCurrentPage,
     required this.dayDetectorBuilder,
     required this.showHalfHours,
     required this.showQuarterHours,
@@ -210,6 +219,17 @@ class _InternalDayViewPageState<T extends Object?>
       initialScrollOffset: widget.lastScrollOffset,
     );
     scrollController.addListener(_scrollControllerListener);
+
+    if (widget.isCurrentPage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        widget.scrollListener(
+          widget.pageIndex,
+          scrollController.offset,
+          scrollController,
+        );
+      });
+    }
   }
 
   @override
@@ -225,6 +245,23 @@ class _InternalDayViewPageState<T extends Object?>
           (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
       scrollController.prepareZoomJump(scaledOffset);
     }
+
+    if (!widget.keepScrollOffset &&
+        widget.isCurrentPage &&
+        !oldWidget.isCurrentPage &&
+        scrollController.hasClients) {
+      scrollController.jumpTo(widget.lastScrollOffset);
+    }
+
+    if (widget.isCurrentPage && !oldWidget.isCurrentPage) {
+      widget.scrollListener(
+        widget.pageIndex,
+        scrollController.hasClients
+            ? scrollController.offset
+            : widget.lastScrollOffset,
+        scrollController,
+      );
+    }
   }
 
   @override
@@ -236,7 +273,11 @@ class _InternalDayViewPageState<T extends Object?>
   }
 
   void _scrollControllerListener() {
-    widget.scrollListener(scrollController);
+    widget.scrollListener(
+      widget.pageIndex,
+      scrollController.offset,
+      scrollController,
+    );
   }
 
   /// Builds the background color layer for time slots in the day view.
@@ -325,9 +366,7 @@ class _InternalDayViewPageState<T extends Object?>
                 scrollbars: widget.keepScrollOffset,
               ),
               child: SingleChildScrollView(
-                controller: widget.keepScrollOffset
-                    ? scrollController
-                    : widget.dayViewScrollController,
+                controller: scrollController,
                 physics: widget.scrollPhysics,
                 child: SizedBox(
                   height: widget.height,

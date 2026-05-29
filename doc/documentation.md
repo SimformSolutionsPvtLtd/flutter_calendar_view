@@ -603,6 +603,64 @@ CalendarControllerProvider(
 
 When a view does not receive `controller` directly, it reads the controller from `CalendarControllerProvider`.
 
+## Advanced Internals: `ZoomScrollController` (Optional)
+
+`ZoomScrollController` is an internal utility used by `DayView`, `WeekView`, and
+`MultiDayView` to keep the same time range visible when `heightPerMinute`
+changes.
+
+> This is **not part of the stable public package API** exported by
+> `package:calendar_view/calendar_view.dart`.
+>
+> Use this only when building a custom calendar/scroll implementation and when
+> you are okay with potential breaking changes in internal files.
+
+## Why it exists
+
+When zoom changes (for example from `heightPerMinute: 1.0` to `1.4`), a normal
+`ScrollController` update done after build can produce a brief visual jump.
+`ZoomScrollController` avoids that by preparing the next offset before layout
+and applying it during content-dimension calculation.
+
+## Internal contract
+
+1. Read the current vertical offset.
+2. Compute scaled offset:
+   `scaledOffset = (currentOffset / oldHeightPerMinute) * newHeightPerMinute`
+3. Call `prepareZoomJump(scaledOffset)` before rebuild.
+4. Rebuild with new `heightPerMinute`.
+
+Because the correction is applied during layout, viewport size and scroll
+position update together in the same frame.
+
+## Minimal internal example
+
+```dart
+import 'package:calendar_view/src/zoom_scroll_controller.dart';
+
+class MyZoomState {
+  final controller = ZoomScrollController();
+  double heightPerMinute = 1.0;
+
+  void onZoomChange(double nextHeightPerMinute) {
+    final currentOffset = controller.hasClients ? controller.offset : 0.0;
+
+    final scaledOffset =
+        (currentOffset / heightPerMinute) * nextHeightPerMinute;
+
+    controller.prepareZoomJump(scaledOffset);
+    heightPerMinute = nextHeightPerMinute;
+  }
+}
+```
+
+## Recommendation
+
+Prefer the built-in `DayView`, `WeekView`, and `MultiDayView` behavior unless
+you are implementing a custom view layer that needs zoom-aware scroll
+correction.
+
+
 # Localization Guide
 
 This guide covers localization support in `calendar_view` and how to keep localized strings aligned with the package API.
@@ -1159,7 +1217,6 @@ dependencies:
      bool hideDaysNotInMonth,
    );
    ```
-
 # Contributors
 
 ## Main Contributors
