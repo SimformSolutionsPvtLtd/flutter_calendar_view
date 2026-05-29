@@ -456,7 +456,7 @@ class CalendarData<T extends Object?> {
     // Adjust weekday to zero-based indexing and
     // check if date’s weekday is in the recurrence weekdays
     final isMatchingWeekday =
-        recurrenceSettings.weekdays.contains(currentDate.weekday - 1);
+        recurrenceSettings.weekdays.contains(currentDate.weekDayEnum);
     final recurrenceEndDate = recurrenceSettings.endDate;
 
     if (!isMatchingWeekday) {
@@ -572,11 +572,16 @@ class CalendarData<T extends Object?> {
     events.addAll(recurringEvents);
 
     // Inside event arranger we require all the events to be sorted
-    // based on start time.
-    //If not sorted it will create overlapping events in the arranger.
-    events.sort((a, b) =>
-        (a.startTime?.getTotalMinutes ?? 0) -
-        (b.startTime?.getTotalMinutes ?? 0));
+    // based on start time. If a custom sorter is set, apply it first and fall
+    // back to start time when it returns 0 (tie).
+    events.sort((a, b) {
+      if (_eventSorter != null) {
+        final result = _eventSorter!(a, b);
+        if (result != 0) return result;
+      }
+      return (a.startTime?.getTotalMinutes ?? 0) -
+          (b.startTime?.getTotalMinutes ?? 0);
+    });
     return events;
   }
 

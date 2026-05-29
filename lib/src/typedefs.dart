@@ -19,8 +19,8 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime date,
   List<CalendarEventData<T>> events,
   Rect boundary,
-  DateTime startDuration,
-  DateTime endDuration,
+  TimeOfDay startDuration,
+  TimeOfDay endDuration,
 );
 
 /// Resolves a color for each visible time slot in day and week views.
@@ -44,9 +44,7 @@ typedef DetectorBuilder<T extends Object?> = Widget Function({
   required MinuteSlotSize minuteSlotSize,
 });
 
-typedef WeekDayBuilder = Widget Function(
-  int day,
-);
+typedef WeekDayBuilder = Widget Function(WeekDays weekDay);
 
 typedef DateWidgetBuilder = Widget Function(DateTime date);
 
