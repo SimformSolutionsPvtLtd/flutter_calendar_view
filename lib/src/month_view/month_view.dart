@@ -305,7 +305,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
                               child: SizedBox(
                                 width: _cellWidth,
                                 child:
-                                    _weekBuilder(weekDays[index].weekday - 1),
+                                    _weekBuilder(weekDays[index].weekDayEnum),
                               ),
                             ),
                           ),
@@ -561,10 +561,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   /// Default builder for week line.
-  Widget _defaultWeekDayBuilder(int index) {
+  Widget _defaultWeekDayBuilder(WeekDays weekDay) {
     final themeColors = context.monthViewColors;
     return WeekDayTile(
-      dayIndex: index,
+      weekDay: weekDay,
       weekDayStringBuilder: _monthViewBuilders.weekDayStringBuilder,
       displayBorder: _monthViewStyle.showWeekTileBorder,
       borderColor: themeColors.weekDayBorderColor,

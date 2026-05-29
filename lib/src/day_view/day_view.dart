@@ -922,8 +922,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     DateTime date,
     List<CalendarEventData<T>> events,
     Rect boundary,
-    DateTime startDuration,
-    DateTime endDuration,
+    TimeOfDay startDuration,
+    TimeOfDay endDuration,
   ) =>
       DefaultEventTile(
         date: date,

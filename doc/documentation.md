@@ -116,12 +116,12 @@ Scaffold(
 To add an event, create a `CalendarEventData` object and call the `add` method of your `EventController`.
 
 ```dart
-final event = CalendarEventData(
-    date: DateTime(2021, 8, 10),
+// Time-ranged event (recommended factory for events with specific start/end times)
+final event = CalendarEventData.timeRanged(
     title: "Project Meeting",
+    date: DateTime(2021, 8, 10, 10, 0),
+    endDate: DateTime(2021, 8, 10, 11, 0),
     description: "Discussing project progress",
-    startTime: DateTime(2021, 8, 10, 10, 0),
-    endTime: DateTime(2021, 8, 10, 11, 0),
     color: Colors.blue,
 );
 
@@ -130,13 +130,13 @@ CalendarControllerProvider.of(context).controller.add(event);
 
 ### Adding events in a date range
 
-You can add events that span multiple days by providing an `endDate`.
+You can add events that span multiple days by using `CalendarEventData.multiDay`.
 
 ```dart
-final event = CalendarEventData(
+final event = CalendarEventData.multiDay(
+    title: "Vacation",
     date: DateTime(2021, 8, 10),
     endDate: DateTime(2021, 8, 15),
-    title: "Vacation",
 );
 
 CalendarControllerProvider.of(context).controller.add(event);
@@ -327,7 +327,7 @@ WeekView(
     // Custom string builders for I18n
     headerStringBuilder: (date, {secondaryDate}) => '${date.month}/${date.year}',
     timeLineStringBuilder: (date) => '${date.hour}:${date.minute}',
-    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay],
+    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay.index],
     weekDayDateStringBuilder: (date) => '${date.day}',
     fullDayEventBuilder: (events, date) {
       // Return your widget to display full day event view.
@@ -457,7 +457,7 @@ MultiDayView(
     // Custom string builders for I18n
     headerStringBuilder: (date, {secondaryDate}) => '${date.month}/${date.year}',
     timeLineStringBuilder: (date) => '${date.hour}:${date.minute}',
-    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay],
+    weekDayStringBuilder: (weekDay) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][weekDay.index],
     weekDayDateStringBuilder: (date) => '${date.day}',
     fullDayEventBuilder: (events, date) {
       // Return your widget to display full day event view.
@@ -1207,6 +1207,200 @@ For programmatic scrolling, prefer `animateTo` on the state, which waits for a p
 ```dart
 dayViewKey.currentState?.animateTo(500);
 ```
+
+### 5. `CalendarEventData` — Removed `startTime` / `endTime` constructor parameters
+
+`startTime` and `endTime` are no longer accepted as constructor or `copyWith` parameters. Embed the time directly in `date` and `endDate` instead.
+
+**Before (≤ 2.x):**
+```dart
+CalendarEventData(
+  date: DateTime(2024, 3, 15),
+  startTime: DateTime(2024, 3, 15, 10, 0),
+  endTime:   DateTime(2024, 3, 15, 12, 0),
+  title: 'Meeting',
+);
+```
+
+**After (3.0.0+):**
+```dart
+// Preferred: use the dedicated factory
+CalendarEventData.timeRanged(
+  date:    DateTime(2024, 3, 15, 10, 0), // time component = start time
+  endDate: DateTime(2024, 3, 15, 12, 0), // time component = end time
+  title: 'Meeting',
+);
+
+// Or use the general factory
+CalendarEventData(
+  date:    DateTime(2024, 3, 15, 10, 0),
+  endDate: DateTime(2024, 3, 15, 12, 0),
+  title: 'Meeting',
+);
+```
+
+> **The time component of `date` is no longer ignored.** In 2.x, any time in
+> `date` / `endDate` was stripped. In 3.0 it becomes `startTime` / `endTime`.
+> If you previously passed a full `DateTime` (e.g. `DateTime.now()`) as `date`
+> for a whole-day event, use `CalendarEventData.wholeDay(...)` or pass
+> `date.withoutTime`. For timed multi-day events, an `endDate` at exactly
+> midnight is an exclusive boundary: the event does not appear on that day.
+
+### 6. `CalendarEventData` — `copyWith` parameter changes
+
+`copyWith` no longer accepts `startTime` or `endTime`. Pass an updated `date` or `endDate` that carries the desired time component.
+
+```dart
+// Before
+event.copyWith(startTime: DateTime(0, 0, 0, 14, 0));
+
+// After
+event.copyWith(
+  date: DateTime(event.date.year, event.date.month, event.date.day, 14, 0),
+);
+```
+
+> **Moving an event to another day:** because `date` now carries the start
+> time, passing a date-only value resets the start time to 00:00.
+> Carry the existing time over explicitly:
+>
+> ```dart
+> // ❌ Start time becomes 00:00
+> event.copyWith(date: DateTime(2024, 3, 16));
+>
+> // ✅ Keeps the original start time
+> final start = event.startTime!;
+> event.copyWith(
+>   date: DateTime(2024, 3, 16, start.hour, start.minute),
+> );
+> ```
+>
+> The same applies to `endDate` and `endTime`.
+
+### 7. `startTime` and `endTime` remain as read-only fields
+
+`startTime` and `endTime` are still available as public read-only fields, derived automatically from `date` and `endDate`. Their type changed from `DateTime?` to `TimeOfDay?`, so code that reads `hour` / `minute` keeps working, but code that uses them as a `DateTime` (e.g. `.day`, `.isBefore()`, `.difference()`) must be updated.
+
+```dart
+final event = CalendarEventData.timeRanged(
+  date:    DateTime(2024, 3, 15, 10, 0),
+  endDate: DateTime(2024, 3, 15, 12, 0),
+  title: 'Meeting',
+);
+
+print(event.startTime); // TimeOfDay(hour: 10, minute: 0)
+print(event.endTime);   // TimeOfDay(hour: 12, minute: 0)
+```
+
+### 8. New factory constructors
+
+Three purpose-specific factories were added to improve clarity:
+
+| Factory | Purpose |
+|---------|---------|
+| `CalendarEventData.timeRanged(...)` | Single-day event with explicit start/end times |
+| `CalendarEventData.wholeDay(...)` | All-day event for a single date |
+| `CalendarEventData.multiDay(...)` | Multi-day event (with or without specific times) |
+
+### 9. `RecurrenceSettings.weekdays` — `List<int>` → `List<WeekDays>`
+
+The `weekdays` field and both constructors now use `List<WeekDays>` instead of `List<int>`.
+
+**Before (≤ 2.x):**
+```dart
+RecurrenceSettings(
+  startDate: DateTime(2024, 3, 15),
+  frequency: RepeatFrequency.weekly,
+  weekdays: [DateTime.monday, DateTime.wednesday], // List<int>
+);
+```
+
+**After (3.0.0+):**
+```dart
+RecurrenceSettings(
+  startDate: DateTime(2024, 3, 15),
+  frequency: RepeatFrequency.weekly,
+  weekdays: [WeekDays.monday, WeekDays.wednesday], // List<WeekDays>
+);
+
+// Or use the new DateTime extension:
+RecurrenceSettings(
+  startDate: myDate,
+  frequency: RepeatFrequency.weekly,
+  weekdays: [myDate.weekDayEnum],
+);
+```
+
+### 10. `WeekDayBuilder` typedef — `int` → `WeekDays`
+
+```dart
+// Before
+WeekDayBuilder builder = (int day) => Text('$day');
+
+// After
+WeekDayBuilder builder = (WeekDays weekDay) => Text(weekDay.name);
+```
+
+The same change applies to `weekDayStringBuilder` on `MonthView`,
+`MonthViewBuilders`, `WeekView` and `MultiDayView`, which changed from
+`String Function(int)` to `String Function(WeekDays)`:
+
+```dart
+// Before
+weekDayStringBuilder: (int index) => ['M', 'T', 'W', 'T', 'F', 'S', 'S'][index],
+
+// After
+weekDayStringBuilder: (WeekDays weekDay) =>
+    ['M', 'T', 'W', 'T', 'F', 'S', 'S'][weekDay.index],
+```
+
+`WeekDayTile.dayIndex` (`int`) was renamed to `WeekDayTile.weekDay` (`WeekDays`):
+
+```dart
+// Before
+WeekDayTile(dayIndex: 0);
+
+// After
+WeekDayTile(weekDay: WeekDays.monday);
+```
+
+### 11. `EventTileBuilder` typedef — `DateTime` → `TimeOfDay`
+
+`startDuration` and `endDuration` parameters changed from `DateTime` to `TimeOfDay`.
+
+```dart
+// Before
+EventTileBuilder builder = (date, events, boundary, DateTime startDuration, DateTime endDuration) { ... };
+
+// After
+EventTileBuilder builder = (date, events, boundary, TimeOfDay startDuration, TimeOfDay endDuration) { ... };
+```
+
+### 12. `OrganizedCalendarEventData` field type changes
+
+`startDuration` and `endDuration` are now `TimeOfDay` instead of `DateTime`. The `empty()` factory constructor and `getWithUpdatedRight()` method have been removed.
+
+```dart
+// Before
+final start = organized.startDuration; // DateTime
+final end   = organized.endDuration;   // DateTime
+
+// After
+final start = organized.startDuration; // TimeOfDay
+final end   = organized.endDuration;   // TimeOfDay
+```
+
+### 13. Removed extensions and utilities
+
+| Removed                                      | Notes                                      |
+|----------------------------------------------|--------------------------------------------|
+| `DateTime.formatted`                         | No replacement in this package             |
+| `DateTime.copyFromMinutes()`                 | Use `TimeOfDayExtension.copyFromMinutes()` |
+| `DateTime.hasSameTimeAs()`                   | Use `TimeOfDay.isSameAs()`                 |
+| `DateTime.isDayStart`                        | Use `TimeOfDay.isDayStart`                 |
+| `TimerOfDayExtension.getTotalMinutes`        | Use `TimeOfDayExtension.getTotalMinutes`   |
+| `DateTime.dateYMD` (Deprecated)              | Use `DateTime.withoutTime` getter          |
+| `MaterialColorExtension.accent` (Deprecated) | No replacement                             |
 
 ## Migrate from `1.x.x` to latest
 ### ⚠ Note

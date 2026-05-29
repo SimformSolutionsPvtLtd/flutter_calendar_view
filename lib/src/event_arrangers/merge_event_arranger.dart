@@ -23,8 +23,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
-  /// Make sure that all the events that are passed in [events], must be in
-  /// ascending order of start time.
+  /// [events] can be passed in any order; they are sorted by start time
+  /// internally before being arranged.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -34,15 +34,30 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
     required int startHour,
     required DateTime calendarViewDate,
   }) {
-    // TODO: Right now all the events that are passed in this function must be
-    // sorted in ascending order of the start time.
-    //
     final arrangedEvents = <OrganizedCalendarEventData<T>>[];
     final startHourInMinutes = startHour * 60;
     final calendarDate = calendarViewDate.withoutTime;
 
+    // The merge logic requires events in ascending order of their visible
+    // start time on [calendarDate]. Callers may pass events in a custom order
+    // (e.g. from EventController.eventSorter), so sort a copy here. Ties keep
+    // the incoming order, so a custom sorter still decides between events
+    // that start at the same time.
+    final originalIndex = <CalendarEventData<T>, int>{
+      for (var i = events.length - 1; i >= 0; i--) events[i]: i,
+    };
+    final sortedEvents = events.toList()
+      ..sort((a, b) {
+        final result = a
+            .getVisibleStartMinutes(calendarDate)
+            .compareTo(b.getVisibleStartMinutes(calendarDate));
+        return result != 0
+            ? result
+            : originalIndex[a]!.compareTo(originalIndex[b]!);
+      });
+
     //Checking if startTime and endTime are correct
-    for (final event in events) {
+    for (final event in sortedEvents) {
       if (event.startTime == null || event.endTime == null) {
         debugLog('startTime or endTime is null for ${event.title}');
         continue;
@@ -68,10 +83,6 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
         }
       }
 
-      final startTime = event.startTime!;
-      final endTime = event.endTime!;
-
-      // Use visible time range for this calendar date
       int eventStart =
           event.getVisibleStartMinutes(calendarDate) - startHourInMinutes;
       int eventEnd =
@@ -80,8 +91,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
       // Ensure values are within valid range
       // Clamp to [0, minutesInView] where minutesInView = 1440 - startHourInMinutes
       eventStart = math.max(0, eventStart);
-      eventEnd = math.max(
-          0, eventEnd); // Prevent negative values from midnight handling
+      // Prevent negative values from midnight handling
+      eventEnd = math.max(0, eventEnd);
       eventEnd = math.min(
         Constants.minutesADay - startHourInMinutes,
         eventEnd,
@@ -123,8 +134,8 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration: startTime.copyFromMinutes(eventStart),
-          endDuration: endTime.copyFromMinutes(eventEnd),
+          startDuration: TimeOfDayExtension.copyFromMinutes(eventStart),
+          endDuration: TimeOfDayExtension.copyFromMinutes(eventEnd),
           events: [event],
           calendarViewDate: calendarViewDate,
         );
@@ -168,8 +179,9 @@ class MergeEventArranger<T extends Object?> extends EventArranger<T> {
           bottom: bottom,
           left: 0,
           right: 0,
-          startDuration: startTime.copyFromMinutes(mergedStartDuration),
-          endDuration: endTime.copyFromMinutes(mergedEndDuration),
+          startDuration:
+              TimeOfDayExtension.copyFromMinutes(mergedStartDuration),
+          endDuration: TimeOfDayExtension.copyFromMinutes(mergedEndDuration),
           events: mergedEvents,
           calendarViewDate: calendarViewDate,
         );

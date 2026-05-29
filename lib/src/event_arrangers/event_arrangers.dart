@@ -4,14 +4,13 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../extensions.dart';
 
 part 'merge_event_arranger.dart';
-
 part 'side_event_arranger.dart';
 
 /// {@template event_arranger_arrange_method_doc}
@@ -24,9 +23,9 @@ abstract class EventArranger<T extends Object?> {
   /// [EventArranger] defines how simultaneous events will be arranged.
   /// Implement [arrange] method to define how events will be arranged.
   ///
-  /// There are three predefined class that implements of [EventArranger].
+  /// There are two predefined class that implements of [EventArranger].
   ///
-  /// [SideEventArranger], and [MergeEventArranger].
+  /// [SideEventArranger] and [MergeEventArranger].
   ///
   const EventArranger();
 
@@ -59,10 +58,10 @@ class OrganizedCalendarEventData<T extends Object?> {
   final List<CalendarEventData<T>> events;
 
   /// Start duration of event/event list.
-  final DateTime startDuration;
+  final TimeOfDay startDuration;
 
   /// End duration of event/event list.
-  final DateTime endDuration;
+  final TimeOfDay endDuration;
 
   /// DateTime of the calendar view date.
   final DateTime calendarViewDate;
@@ -79,26 +78,4 @@ class OrganizedCalendarEventData<T extends Object?> {
     required this.events,
     required this.calendarViewDate,
   });
-
-  OrganizedCalendarEventData.empty()
-      : startDuration = DateTime.now(),
-        endDuration = DateTime.now(),
-        right = 0,
-        left = 0,
-        events = const [],
-        top = 0,
-        bottom = 0,
-        calendarViewDate = DateTime.now();
-
-  OrganizedCalendarEventData<T> getWithUpdatedRight(double right) =>
-      OrganizedCalendarEventData<T>(
-        top: top,
-        bottom: bottom,
-        endDuration: endDuration,
-        events: events,
-        left: left,
-        right: right,
-        startDuration: startDuration,
-        calendarViewDate: calendarViewDate,
-      );
 }

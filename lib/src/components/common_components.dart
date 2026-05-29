@@ -91,8 +91,8 @@ class DefaultEventTile<T> extends StatelessWidget {
   final DateTime date;
   final List<CalendarEventData<T>> events;
   final Rect boundary;
-  final DateTime startDuration;
-  final DateTime endDuration;
+  final TimeOfDay startDuration;
+  final TimeOfDay endDuration;
 
   @override
   Widget build(BuildContext context) {
