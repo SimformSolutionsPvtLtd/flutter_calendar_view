@@ -1,5 +1,20 @@
-# [Unreleased - 26 May 2026]
+# [Unreleased - 29 May 2026]
 
+- [BREAKING] Changed `RecurrenceSettings.weekdays` type from `List<int>` to `List<WeekDays>`. [#509](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/509)
+- [BREAKING] `WeekDayBuilder`'s parameter changed from `int day` to `WeekDays weekDay`.
+- [BREAKING] Removed `startTime` and `endTime` from `CalendarEventData` constructor and `copyWith` parameters. Time is now embedded in the `date` and `endDate` `DateTime` parameters. [#231](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/231)
+- [BREAKING] `startTime` / `endTime` remain as public read-only `TimeOfDay?` fields on `CalendarEventData`, derived automatically from `date` and `endDate`. [#293](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/293)
+- [BREAKING] `startDuration` and `endDuration` changed from `DateTime` to `TimeOfDay` in `EventTileBuilder` and `OrganizedCalendarEventData`.
+- Added factory constructors `CalendarEventData.timeRanged`, `CalendarEventData.wholeDay`, and `CalendarEventData.multiDay` to create events with different time configurations.
+- Fixed multi-day events not displaying in `DayView` and `WeekView`. [#511](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/511)
+- [REMOVED]`OrganizedCalendarEventData.empty()` factory and `getWithUpdatedRight()` method.
+- [REMOVED] Extensions: 
+  - `DateTimeExtensions`: `copyFromMinutes()`, `hasSameTimeAs()`, `formatted`,  `isDayStart`, and `dateYMD` were removed.
+  - `MaterialColorExtension`: `accent` getter removed.
+  - `TimerOfDayExtension`: `getTotalMinutes` getter removed.
+- Added new extension on `TimeOfDay` with `isDayStart`, `getTotalMinutes`, `isSameAs`, and `copyFromMinutes(int)`.
+- Added new getter on `DateTimeExtensions` to convert `DateTime.weekday` to a `WeekDays` enum value.
+- Fixed `duration` getter in `CalendarEventData` to correctly handle single-day, multi-day, and full-day events.
 - Added `weekTitleBackgroundColor` to `MultiDayView` to customize the week title background color.
 
 # [Unreleased - 11 May 2026]
