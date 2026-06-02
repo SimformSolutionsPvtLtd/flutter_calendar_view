@@ -65,7 +65,10 @@ class _WeekViewDemoState extends State<WeekViewDemo> {
             ),
           ],
         ),
-        body: WeekViewWidget(heightPerMinute: _heightPerMinute),
+        body: WeekViewWidget(
+          heightPerMinute: _heightPerMinute,
+          enableVerticalWeekMode: true,
+        ),
       ),
     );
   }
