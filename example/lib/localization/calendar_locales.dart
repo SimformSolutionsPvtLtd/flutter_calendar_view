@@ -12,6 +12,8 @@ class CalendarLocales {
     pm: PackageStrings.spanish.pm,
     more: 'Ver más',
     weekdays: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+    months: PackageStrings.spanish.months,
+    monthsAbbr: PackageStrings.spanish.monthsAbbr,
   );
 
   /// Initialize and register calendar localizations

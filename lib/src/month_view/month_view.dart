@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
-import '../extensions.dart';
 
 class MonthView<T extends Object?> extends StatefulWidget {
   /// Main [Widget] to display month view.

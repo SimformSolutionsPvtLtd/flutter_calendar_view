@@ -6,6 +6,7 @@
   "dayView": "Vista Diaria",
   "weekView": "Vista Semanal",
   "multidayView": "Vista de Varios Días",
+  "scheduleView":"Vista de programación",
   "appTitle": "Demo de Página de Calendario Flutter",
   "projectMeetingTitle": "Reunión del proyecto",
   "projectMeetingDesc": "Hoy hay reunión del proyecto.",
@@ -119,5 +120,19 @@
   "lateNightWorkTitle": "Trabajo Tarde en la Noche",
   "lateNightWorkDesc": "Prueba límite de fin de día",
   "companyRetreatTitle": "Retiro de Empresa",
-  "companyRetreatDesc": "Prueba evento de varios días de todo el día"
+  "companyRetreatDesc": "Prueba evento de varios días de todo el día",
+  "doctorsAppointmentTitle": "Cita con el médico",
+  "doctorsAppointmentDesc": "Revisión mensual regular",
+  "today":"Hoy",
+  "scheduleAllDay": "Todo el día",
+  "scheduleNoEvents": "Sin planes. ¡Toca para crear!",
+  "scheduleNoEventsThisMonth": "Sin eventos este mes",
+  "scheduleTodayNoEvents": "No hay eventos hoy.\n¡Disfruta tu día!",
+  "scheduleLongPressed": "Pulsado prolongadamente",
+  "scheduleSettings": "Configuración de agenda",
+  "scheduleShowDaysWithoutEvents": "Mostrar días sin eventos",
+  "scheduleShowEmptyMonths": "Mostrar meses vacíos",
+  "scheduleDateLayout": "Diseño de fecha",
+  "scheduleDateLayoutLeft": "Columna",
+  "scheduleDateLayoutTop": "Fila"
 }

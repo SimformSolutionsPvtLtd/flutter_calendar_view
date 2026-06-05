@@ -11,7 +11,7 @@ import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
-import '../modals.dart';
+import '../models.dart';
 import '../painters.dart';
 import '../typedefs.dart';
 import '../zoom_scroll_controller.dart';
@@ -284,7 +284,7 @@ class _InternalMultiDayViewPageState<T extends Object?>
   @override
   Widget build(BuildContext context) {
     final filteredDates = _filteredDate();
-    final themeColor = context.multiDayViewTheme;
+    final themeColor = context.multiDayViewColors;
     final direction = Directionality.of(context);
 
     return Container(

@@ -93,6 +93,22 @@ typedef TileDoubleTapDetailsCallback<T extends Object?> = void Function(
   TapDownDetails? doubleTapDetails,
 );
 
+typedef ScheduleDateWidgetBuilder = Widget Function(
+  DateTime date,
+  List<CalendarEventData> events,
+  ScheduleDateLayout layout,
+);
+
+typedef ScheduleMonthHeaderBuilder = Widget Function(DateTime date);
+
+typedef ScheduleFloatingHeaderBuilder = Widget Function(
+  BuildContext context,
+  DateTime visibleMonth,
+);
+
+typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
+    CalendarEventData<T> event, DateTime date);
+
 typedef CellTapCallback<T extends Object?> = void Function(
     List<CalendarEventData<T>> events, DateTime date);
 
