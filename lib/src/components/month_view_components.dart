@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
 import '../constants.dart';
-import '../extensions.dart';
 
 class CircularCell extends StatelessWidget {
   /// Defines how a cell will be displayed.

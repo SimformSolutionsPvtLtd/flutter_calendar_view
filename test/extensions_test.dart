@@ -49,6 +49,47 @@ void main() {
       testAllLastDayOfTheWeek(DateTime(2023, 10, 30));
     });
   });
+
+  group('Number & date localization', () {
+    // PackageStrings holds global state, restore the default after each test.
+    tearDown(() => PackageStrings.setLocale('en'));
+
+    test('localizeNumber localizes numbers larger than 60 (e.g. a year)', () {
+      PackageStrings.setLocale('ar');
+      // The bug: years (> 60) fell back to Western digits. They must now be
+      // localized digit-by-digit.
+      expect(PackageStrings.localizeNumber(2026), '٢٠٢٦');
+    });
+
+    test('localizeNumber stays consistent with the old 0-60 lookup', () {
+      PackageStrings.setLocale('ar');
+      expect(PackageStrings.localizeNumber(0), '٠');
+      expect(PackageStrings.localizeNumber(9), '٩');
+      expect(PackageStrings.localizeNumber(15), '١٥');
+      expect(PackageStrings.localizeNumber(60), '٦٠');
+    });
+
+    test('localizeNumberString preserves non-digit characters', () {
+      PackageStrings.setLocale('ar');
+      // Separators, slashes and spaces must survive untouched.
+      expect(PackageStrings.localizeNumberString('6/4/2026'), '٦/٤/٢٠٢٦');
+      expect(PackageStrings.localizeNumberString('12:05'), '١٢:٠٥');
+    });
+
+    test('getMonthYear localizes both the month name and the year', () {
+      PackageStrings.setLocale('ar');
+      expect(DateTime(2026, 6, 15).getMonthYear(), 'يونيو ٢٠٢٦');
+    });
+
+    test('Western-digit locales are returned unchanged', () {
+      PackageStrings.setLocale('en');
+      expect(PackageStrings.localizeNumber(2026), '2026');
+      expect(PackageStrings.localizeNumberString('6/4/2026'), '6/4/2026');
+      // Locales without a `numbers` set (e.g. German) keep Western digits.
+      PackageStrings.setLocale('de');
+      expect(PackageStrings.localizeNumber(2026), '2026');
+    });
+  });
 }
 
 /// Does datesOfWeek tests for this date with all 7 [WeekDays] as starts.

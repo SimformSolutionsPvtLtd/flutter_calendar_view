@@ -6,6 +6,31 @@ import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
 
+/// A single month section rendered by the ScheduleView, pairing a month's
+/// first day with the day to start rendering from.
+///
+/// [startDay] is the day-of-month to start iterating from (1 for most months).
+/// Each entry always renders through the end of its month; the only bounded
+/// range — the leading piece of a split anchor month — is built directly,
+/// not via a [ScheduleMonthSection].
+///
+/// [showHeader] controls whether the month header is rendered for this entry.
+/// The anchor month is split into two sections — a header-bearing piece for the
+/// days before the anchor date and a header-less piece starting at the anchor
+/// date — so this is set to `false` on the second piece to avoid a duplicate
+/// header.
+class ScheduleMonthSection {
+  final DateTime date;
+  final int startDay;
+  final bool showHeader;
+
+  const ScheduleMonthSection(
+    this.date,
+    this.startDay, {
+    this.showHeader = true,
+  });
+}
+
 /// Settings for hour lines
 class HourIndicatorSettings {
   final double height;

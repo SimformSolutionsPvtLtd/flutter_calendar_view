@@ -125,6 +125,8 @@ class _CalendarConfigState extends State<CalendarConfig> {
                         viewName = translate.weekView;
                       case CalendarView.multiday:
                         viewName = translate.multidayView;
+                      case CalendarView.schedule:
+                        viewName = translate.scheduleView;
                     }
                     return GestureDetector(
                       onTap: () => widget.onViewChange(view),

@@ -192,6 +192,50 @@ extension DateTimeExtensions on DateTime {
   /// print(date.weekDayEnum); // WeekDays.monday
   /// ```
   WeekDays get weekDayEnum => WeekDays.values[weekday - 1];
+
+  /// Returns the localized month name for this DateTime.
+  ///
+  /// Uses the current locale set in [PackageStrings] to retrieve the month name.
+  /// If abbreviated is true, returns the abbreviated month name if available.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 6, 15);
+  /// print(date.getMonthName()); // "June"
+  /// print(date.getMonthName(abbreviated: true)); // "Jun"
+  ///
+  /// PackageStrings.setLocale('es');
+  /// print(date.getMonthName()); // "Junio"
+  /// ```
+  String getMonthName({bool abbreviated = false}) {
+    final monthsList = abbreviated
+        ? (PackageStrings.currentLocale.monthsAbbr ??
+            PackageStrings.currentLocale.months)
+        : PackageStrings.currentLocale.months;
+    return monthsList[month - 1];
+  }
+
+  /// Returns a localized string representation of the month and year.
+  ///
+  /// Combines the localized month name with the localized year number.
+  /// Respects the current locale set in [PackageStrings].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 6, 15);
+  /// print(date.getMonthYear()); // "June 2024"
+  ///
+  /// PackageStrings.setLocale('es');
+  /// print(date.getMonthYear()); // "Junio 2024"
+  ///
+  /// PackageStrings.setLocale('ar');
+  /// print(date.getMonthYear()); // "يونيو ٢٠٢٤"
+  /// ```
+  String getMonthYear({bool abbreviatedMonth = false}) {
+    final monthName = getMonthName(abbreviated: abbreviatedMonth);
+    final yearStr = PackageStrings.localizeNumber(year);
+    return '$monthName $yearStr';
+  }
 }
 
 extension TimeOfDayExtension on TimeOfDay {
@@ -226,6 +270,11 @@ extension ColorExtension on Color {
         ? Color(0xff626262)
         : Color(0xfff0f0f0);
   }
+}
+
+extension WeekDaysExtension on WeekDays {
+  /// Returns the localized abbreviation for this weekday using the current locale.
+  String get abbreviation => PackageStrings.currentLocale.weekdays[index];
 }
 
 extension MinutesExtension on MinuteSlotSize {
@@ -335,12 +384,29 @@ extension BuildContextExtension on BuildContext {
       Theme.of(this).extension<WeekViewThemeData>() ??
       WeekViewThemeData.light();
 
-  /// Get [MultiDayViewThemeData] from theme, if null returns light theme.
+  /// Get [MultiDayViewThemeData] from theme, if null returns light or dark theme
+  /// based on the ambient [Theme]'s brightness.
   /// [MultiDayViewThemeData] needs to be added in [MaterialApp] theme extensions
   /// to get theme data with this type.
-  MultiDayViewThemeData get multiDayViewColors =>
-      Theme.of(this).extension<MultiDayViewThemeData>() ??
-      MultiDayViewThemeData.light();
+  MultiDayViewThemeData get multiDayViewColors {
+    final theme = Theme.of(this);
+    return theme.extension<MultiDayViewThemeData>() ??
+        (theme.brightness == Brightness.dark
+            ? MultiDayViewThemeData.dark()
+            : MultiDayViewThemeData.light());
+  }
+
+  /// Get [ScheduleViewThemeData] from theme, if null returns light or dark theme
+  /// based on the ambient [Theme]'s brightness.
+  /// [ScheduleViewThemeData] needs to be added in [MaterialApp] theme extensions
+  /// to get theme data with this type.
+  ScheduleViewThemeData get scheduleViewColors {
+    final theme = Theme.of(this);
+    return theme.extension<ScheduleViewThemeData>() ??
+        (theme.brightness == Brightness.dark
+            ? ScheduleViewThemeData.dark()
+            : ScheduleViewThemeData.light());
+  }
 }
 
 extension BuildContextMultiDayViewThemeExtension on BuildContext {

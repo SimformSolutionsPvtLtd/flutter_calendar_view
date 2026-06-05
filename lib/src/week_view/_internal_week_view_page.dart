@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
 import '../components/_internal_components.dart';
-import '../extensions.dart';
 import '../painters.dart';
 import '../zoom_scroll_controller.dart';
 

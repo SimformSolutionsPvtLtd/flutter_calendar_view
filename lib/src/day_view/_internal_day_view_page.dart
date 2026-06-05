@@ -10,7 +10,7 @@ import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
 import '../extensions.dart';
-import '../modals.dart';
+import '../models.dart';
 import '../painters.dart';
 import '../typedefs.dart';
 import '../zoom_scroll_controller.dart';
