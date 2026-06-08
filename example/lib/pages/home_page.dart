@@ -1,4 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/enumerations.dart';
+import 'package:example/event_types.dart';
 import 'package:example/extension.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
       final translate = context.translate;
       //#region Calendar Events
-      final events = [
+      final List<CalendarEventData<Object?>> events = [
         // ========== EDGE CASE 1: Midnight boundary events ==========
         // Event that spans across midnight (23:00 to 01:00 next day)
         CalendarEventData.timeRanged(
@@ -221,6 +223,7 @@ class _HomePageState extends State<HomePage> {
             recurrenceEndOn: RecurrenceEnd.never,
           ),
           color: Colors.lightGreen,
+          event: EventMetadata(EventType.reminder),
         ),
 
         // ========== EDGE CASE 12: Event with custom styles ==========
@@ -318,6 +321,7 @@ class _HomePageState extends State<HomePage> {
           date: _now.add(Duration(days: 7)),
           endDate: _now.add(Duration(days: 9)),
           color: Colors.green,
+          event: EventMetadata(EventType.outOfOffice),
         ),
 
         // ===== EDGE CASE 21: Multi-day event with end time before start time =====
@@ -342,6 +346,7 @@ class _HomePageState extends State<HomePage> {
           color: Colors.blue,
           date: shortDate(_now.subtract(Duration(days: 2)), 14, 0),
           endDate: shortDate(_now.subtract(Duration(days: 2)), 16, 0),
+          event: EventMetadata(EventType.meeting),
         ),
       ];
       //#endregion

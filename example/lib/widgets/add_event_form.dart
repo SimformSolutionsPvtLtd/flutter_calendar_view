@@ -1,11 +1,13 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:example/constants.dart';
+import 'package:example/enumerations.dart';
+import 'package:example/event_types.dart';
+import 'package:example/extension.dart';
+import 'package:example/l10n/app_localizations.dart';
+import 'package:example/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import '../constants.dart';
-import '../extension.dart';
-import '../l10n/app_localizations.dart';
-import '../theme/app_colors.dart';
 import 'custom_button.dart';
 import 'date_time_selector.dart';
 
@@ -32,6 +34,8 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   RecurrenceEnd? _selectedRecurrenceEnd = RecurrenceEnd.never;
   bool _isRecurring = false;
 
+  EventType _selectedEventType = EventType.event;
+
   Color _color = Colors.blue;
 
   final _form = GlobalKey<FormState>();
@@ -52,7 +56,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   void dispose() {
     _titleNode.dispose();
     _descriptionNode.dispose();
-
     _descriptionController.dispose();
     _titleController.dispose();
     _occurrenceController.dispose();
@@ -70,6 +73,27 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          DropdownButtonFormField<EventType>(
+            initialValue: _selectedEventType,
+            isExpanded: true,
+            decoration: InputDecoration(
+              labelText: translate.eventType,
+              labelStyle: TextStyle(color: color.onSurfaceVariant),
+            ).applyDefaults(Theme.of(context).inputDecorationTheme),
+            style: TextStyle(color: color.onSurface, fontSize: 16.0),
+            items: [
+              for (final type in EventType.values)
+                DropdownMenuItem(
+                  value: type,
+                  child: Text(type.label(translate)),
+                ),
+            ],
+            onChanged: (type) {
+              if (type == null) return;
+              setState(() => _applyEventType(type));
+            },
+          ),
+          SizedBox(height: 15),
           TextFormField(
             controller: _titleController,
             decoration: InputDecoration(
@@ -290,13 +314,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             minLines: 1,
             maxLines: 10,
             maxLength: 1000,
-            validator: (value) {
-              if (value == null || value.trim() == "") {
-                return translate.pleaseEnterEventDescription;
-              }
-
-              return null;
-            },
             decoration: InputDecoration(
               hintText: translate.eventDescription,
               counterStyle: TextStyle(color: color.onSurfaceVariant),
@@ -521,6 +538,47 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     );
   }
 
+  /// Applies the preset for the selected [EventType], seeding the form fields.
+  ///
+  /// [EventType.event] (the default) has no preset, so it resets the form to
+  /// its neutral defaults. Every seeded value stays editable by the user.
+  void _applyEventType(EventType type) {
+    _selectedEventType = type;
+
+    // Reset to neutral defaults first so switching types stays predictable.
+    _color = Colors.blue;
+    _startTime = null;
+    _endTime = null;
+    _isRecurring = false;
+    _endDate = _startDate;
+    _recurrenceEndDate = null;
+    _selectedFrequency = RepeatFrequency.doNotRepeat;
+    _selectedRecurrenceEnd = RecurrenceEnd.never;
+    // Prefill a realistic, localized description for the type (empty for the
+    // neutral EventType.event).
+    _descriptionController.text = type.description(translate) ?? '';
+
+    final config = kEventTypeConfigs[type];
+    if (config == null) return; // EventType.event -> no prefill.
+
+    _color = config.color;
+
+    if (!config.isWholeDay) {
+      // Default timed events to a 9 AM start on the chosen start date.
+      final start = _startDate.copyWith(hour: 9, minute: 0);
+      _startTime = start;
+      _endTime = start.add(config.defaultDuration);
+    }
+
+    if (config.recurrence != RepeatFrequency.doNotRepeat) {
+      _isRecurring = true;
+      _selectedFrequency = config.recurrence;
+      _selectedRecurrenceEnd = RecurrenceEnd.never;
+      // Match the recurring-toggle behaviour: end date follows start date.
+      _endDate = _startDate;
+    }
+  }
+
   void _createEvent() {
     if (!(_form.currentState?.validate() ?? true)) return;
 
@@ -589,6 +647,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       recurrenceSettings: recurrence,
+      event: EventMetadata(_selectedEventType),
     );
 
     widget.onEventAdd?.call(event);
@@ -632,6 +691,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 
     final event = widget.event!;
 
+    _selectedEventType = event.eventType ?? EventType.event;
     _startDate = event.date;
     _endDate = event.endDate;
     _startTime = event.startTime != null
@@ -687,6 +747,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     _endDate = DateTime.now().withoutTime;
     _startTime = null;
     _endTime = null;
+    _selectedEventType = EventType.event;
     _color = Colors.blue;
     _recurrenceEndDate = null;
     _selectedDays.fillRange(0, _selectedDays.length, true);

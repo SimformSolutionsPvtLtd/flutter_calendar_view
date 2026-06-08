@@ -5,3 +5,4 @@
 # Xcode-related
 **/xcuserdata/
 /DerivedData/
+/Podfile.lock
