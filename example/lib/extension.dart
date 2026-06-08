@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'enumerations.dart';
+import 'event_types.dart';
 import 'l10n/app_localizations.dart';
 import 'localization/locale_controller.dart';
 import 'theme/app_colors.dart';
@@ -24,6 +25,7 @@ extension NavigatorExtention on BuildContext {
     ..showSnackBar(SnackBar(content: Text(text), duration: duration));
 }
 
+// TODO(Lavi): Refactor this as a getter of [Months] after upgrading dart version
 extension MonthHeaderImageExtension on Months {
   /// Returns the asset path for this month's header image.
   String get imagePath {
@@ -42,6 +44,59 @@ extension MonthHeaderImageExtension on Months {
       'assets/images/december_header.jpg',
     ];
     return paths[index];
+  }
+}
+
+/// Reads the [EventType] back off an event's generic payload.
+///
+/// Returns `null` when the event carries no [EventMetadata] (e.g. events
+/// created before this feature, or seeded without a type).
+extension EventTypeAccess<T> on CalendarEventData<T> {
+  EventType? get eventType {
+    final payload = event;
+    return payload is EventMetadata ? payload.type : null;
+  }
+}
+
+// TODO(Lavi): Refactor this as a getter to [EventType] after upgrading dart version
+/// Localized display label for each type, mirroring the example's
+/// `context.translate.<key>` pattern.
+extension EventTypeLabel on EventType {
+  String label(AppLocalizations translate) {
+    switch (this) {
+      case EventType.event:
+        return translate.eventTypeEvent;
+      case EventType.birthday:
+        return translate.eventTypeBirthday;
+      case EventType.task:
+        return translate.eventTypeTask;
+      case EventType.outOfOffice:
+        return translate.eventTypeOutOfOffice;
+      case EventType.meeting:
+        return translate.eventTypeMeeting;
+      case EventType.reminder:
+        return translate.eventTypeReminder;
+    }
+  }
+
+  /// A realistic default description prefilled on the create-event form when
+  /// this type is selected. [EventType.event] carries no preset, so it returns
+  /// `null` and leaves the description field empty.
+  String? description(AppLocalizations translate) {
+    switch (this) {
+      case EventType.event:
+        return null;
+      case EventType.birthday:
+        return translate.eventTypeBirthdayDescription;
+      case EventType.task:
+        return translate.eventTypeTaskDescription;
+      case EventType.outOfOffice:
+        return translate.eventTypeOutOfOfficeDescription;
+      case EventType.meeting:
+        return translate.eventTypeMeetingDescription;
+      case EventType.reminder:
+        return translate.eventTypeReminderDescription;
+    }
   }
 }
 
