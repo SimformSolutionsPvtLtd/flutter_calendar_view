@@ -5,6 +5,7 @@ import '../../localization/locale_controller.dart';
 import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../multi_day_view_page.dart';
+import '../resizable_month_view_page.dart';
 import '../week_view_page.dart';
 
 class MobileHomePage extends StatefulWidget {
@@ -105,6 +106,11 @@ class _MobileHomePageState extends State<MobileHomePage> {
             ElevatedButton(
               onPressed: () => context.pushRoute(MonthViewPageDemo()),
               child: Text(translate.monthView),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.pushRoute(ResizableMonthViewPageDemo()),
+              child: Text(translate.resizableMonthView),
             ),
             SizedBox(height: 20),
             ElevatedButton(

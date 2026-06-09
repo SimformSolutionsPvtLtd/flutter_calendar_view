@@ -30,6 +30,7 @@ class AppTheme {
   static final _dayViewTheme = DayViewThemeData.light();
   static final _weekViewTheme = WeekViewThemeData.light();
   static final _multiDayViewTheme = MultiDayViewThemeData.light();
+  static final _resizableMonthViewTheme = ResizableMonthViewThemeData.light();
 
   // Dark colors
   static final _appDarkTheme = AppThemeExtension.dark();
@@ -37,6 +38,8 @@ class AppTheme {
   static final _dayViewDarkTheme = DayViewThemeData.dark();
   static final _weekViewDarkTheme = WeekViewThemeData.dark();
   static final _multiDayViewDarkTheme = MultiDayViewThemeData.dark();
+  static final _resizableMonthViewDarkTheme =
+      ResizableMonthViewThemeData.dark();
 
   // Light theme
   static final light = ThemeData.light().copyWith(
@@ -57,7 +60,12 @@ class AppTheme {
     radioTheme: RadioThemeData(
       fillColor: WidgetStateColor.resolveWith((_) => AppColors.primary),
     ),
-    extensions: [_dayViewTheme, _weekViewTheme, _multiDayViewTheme],
+    extensions: [
+      _dayViewTheme,
+      _weekViewTheme,
+      _multiDayViewTheme,
+      _resizableMonthViewTheme,
+    ],
   );
 
   // Dark theme
@@ -95,13 +103,13 @@ class AppTheme {
     radioTheme: RadioThemeData(
       fillColor: WidgetStateColor.resolveWith((_) => DarkAppColors.primary),
     ),
-    // TODO(Shubham): Test dark theme update
     extensions: [
       _appDarkTheme,
       _monthViewDarkTheme,
       _dayViewDarkTheme,
       _weekViewDarkTheme,
       _multiDayViewDarkTheme,
+      _resizableMonthViewDarkTheme,
     ],
   );
 }

@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../enumerations.dart';
-import '../theme/app_colors.dart';
 import 'day_view_widget.dart';
 import 'month_view_widget.dart';
+import 'resizable_month_view_widget.dart';
 import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
@@ -13,23 +13,25 @@ class CalendarViews extends StatelessWidget {
 
   const CalendarViews({super.key, this.view = CalendarView.month});
 
-  final _breakPoint = 490.0;
+  /// Maximum width for the calendar preview on web.
+  static const _maxCalendarWidth = 600.0;
 
   @override
   Widget build(BuildContext context) {
     final availableWidth = MediaQuery.of(context).size.width;
-    final width = min(_breakPoint, availableWidth);
+    final width = min(_maxCalendarWidth, availableWidth);
 
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: AppColors.grey,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Center(
-        child: view == CalendarView.month
-            ? MonthViewWidget(width: width)
-            : view == CalendarView.day
-            ? DayViewWidget(width: width)
-            : WeekViewWidget(width: width),
+        child: switch (view) {
+          CalendarView.month => MonthViewWidget(width: width),
+          CalendarView.day => DayViewWidget(width: width),
+          CalendarView.week => WeekViewWidget(width: width),
+          CalendarView.resizableMonth => ResizableMonthViewWidget(width: width),
+        },
       ),
     );
   }

@@ -126,6 +126,9 @@ class _CalendarConfigState extends State<CalendarConfig> {
                       case CalendarView.week:
                         viewName = translate.weekView;
                         break;
+                      case CalendarView.resizableMonth:
+                        viewName = translate.resizableMonthView;
+                        break;
                     }
                     return GestureDetector(
                       onTap: () => widget.onViewChange(view),
