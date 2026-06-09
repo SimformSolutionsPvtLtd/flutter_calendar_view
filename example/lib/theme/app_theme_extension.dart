@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
-import 'dark_app_colors.dart';
 
 class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   AppThemeExtension({
-    this.primary = AppColors.primary,
-    this.onPrimary = AppColors.onPrimary,
-    this.outlineVariant = AppColors.outlineVariant,
-    this.transparent = AppColors.transparent,
-    this.backgroundColor = AppColors.background,
-    this.surface = AppColors.surface,
-    this.onSurface = AppColors.onSurface,
-    this.onSurfaceVariant = AppColors.onSurfaceVariant,
+    required this.primary,
+    required this.onPrimary,
+    required this.outlineVariant,
+    required this.transparent,
+    required this.backgroundColor,
+    required this.surface,
+    required this.onSurface,
+    required this.onSurfaceVariant,
   });
 
   // Light theme constructor
   AppThemeExtension.light()
-    : primary = AppColors.primary,
-      onPrimary = AppColors.onPrimary,
-      outlineVariant = AppColors.outlineVariant,
+    : primary = AppColors.light.primary,
+      onPrimary = AppColors.light.onPrimary,
+      outlineVariant = AppColors.light.outlineVariant,
       transparent = AppColors.transparent,
-      backgroundColor = AppColors.background,
-      surface = AppColors.surface,
-      onSurface = AppColors.onSurface,
-      onSurfaceVariant = AppColors.onSurfaceVariant;
+      backgroundColor = AppColors.light.background,
+      surface = AppColors.light.surface,
+      onSurface = AppColors.light.onSurface,
+      onSurfaceVariant = AppColors.light.onSurfaceVariant;
 
   // Dark theme constructor
   AppThemeExtension.dark()
-    : primary = DarkAppColors.primary,
-      onPrimary = DarkAppColors.onPrimary,
-      outlineVariant = DarkAppColors.outlineVariant,
-      transparent = DarkAppColors.transparent,
-      backgroundColor = DarkAppColors.background,
-      surface = DarkAppColors.surface,
-      onSurface = DarkAppColors.onSurface,
-      onSurfaceVariant = DarkAppColors.onSurfaceVariant;
+    : primary = AppColors.dark.primary,
+      onPrimary = AppColors.dark.onPrimary,
+      outlineVariant = AppColors.dark.outlineVariant,
+      transparent = AppColors.transparent,
+      backgroundColor = AppColors.dark.background,
+      surface = AppColors.dark.surface,
+      onSurface = AppColors.dark.onSurface,
+      onSurfaceVariant = AppColors.dark.onSurfaceVariant;
 
   final Color primary;
   final Color onPrimary;

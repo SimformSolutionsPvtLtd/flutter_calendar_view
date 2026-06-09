@@ -113,9 +113,13 @@ extension TimeOfDayExtension on TimeOfDay {
 }
 
 extension BuildContextExtension on BuildContext {
-  AppThemeExtension get appColors =>
-      Theme.of(this).extension<AppThemeExtension>() ??
-      AppThemeExtension.light();
+  AppThemeExtension get appColors {
+    final theme = Theme.of(this);
+    return theme.extension<AppThemeExtension>() ??
+        (theme.brightness == Brightness.dark
+            ? AppThemeExtension.dark()
+            : AppThemeExtension.light());
+  }
 }
 
 extension LocalizedDateExtension on DateTime {

@@ -9,7 +9,7 @@ class AppConstants {
 
   static OutlineInputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(7),
-    borderSide: BorderSide(width: 2, color: AppColors.outlineVariant),
+    borderSide: BorderSide(width: 2, color: AppColors.light.outlineVariant),
   );
 
   static InputDecoration get inputDecoration => InputDecoration(

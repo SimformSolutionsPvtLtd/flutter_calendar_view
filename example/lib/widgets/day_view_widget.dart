@@ -45,9 +45,7 @@ class DayViewWidget extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
       halfHourIndicatorSettings: HourIndicatorSettings(
-        color: CalendarThemeProvider.of(
-          context,
-        ).calendarTheme.dayViewTheme.hourLineColor,
+        color: context.dayViewColors.halfHourLineColor,
         lineStyle: LineStyle.dashed,
       ),
       verticalLineOffset: 0,

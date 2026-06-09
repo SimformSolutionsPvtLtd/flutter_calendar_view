@@ -1,6 +1,9 @@
 # [Unreleased - 29 May 2026]
 
-- [BREAKING] Added `BuildContextExtension` to public API for theme access.
+- [BREAKING] Removed `CalendarThemeProvider` and `CalendarThemeData`. Themes are resolved exclusively from `ThemeData.extensions`.
+- [BREAKING] Added `BuildContextExtension` to public API for theme access; themes now fallback to system theme (brightness-aware) when no extension is registered.
+- [BREAKING] Removed `BuildContextMultiDayViewThemeExtension.multiDayViewTheme` in favor of `BuildContextExtension.multiDayViewColors`.
+- [BREAKING] `highlightColor` was renamed to `cellHighlightColor` in `MonthViewThemeData.copyWith` method for API consistency.
 - Added `ScheduleView`, a scrollable, agenda-style calendar that groups events by day and month. [#101](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/101)
 - Added localized `months` and `monthsAbbr` fields to `CalendarLocalizations`, with the `DateTime.getMonthName({abbreviated})` and `DateTime.getMonthYear({abbreviatedMonth})` extensions.
 - [BREAKING] Changed `RecurrenceSettings.weekdays` type from `List<int>` to `List<WeekDays>`. [#509](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/509)

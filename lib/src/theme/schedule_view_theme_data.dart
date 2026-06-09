@@ -2,8 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 'dark_app_colors.dart';
-import 'light_app_colors.dart';
+import 'calendar_view_colors.dart';
 
 /// Theme data for the default built-in widget builders of [ScheduleView].
 ///
@@ -102,40 +101,40 @@ class ScheduleViewThemeData extends ThemeExtension<ScheduleViewThemeData> {
   final Color monthHeaderTextShadowColor;
 
   /// Pre-defined colors for a light theme.
-  const ScheduleViewThemeData.light()
-      : todayHighlightColor = LightAppColors.primary,
-        todayTextColor = LightAppColors.onPrimary,
-        dateTextColor = LightAppColors.onSurface,
-        weekdayTextColor = LightAppColors.outlineVariant,
-        dateDividerColor = LightAppColors.outlineVariant,
-        emptyContentColor = LightAppColors.emptyContent,
-        eventTitleColor = LightAppColors.onSurface,
-        eventSecondaryTextColor = LightAppColors.outline,
+  ScheduleViewThemeData.light()
+      : todayHighlightColor = CalendarViewColors.light.primary,
+        todayTextColor = CalendarViewColors.light.onPrimary,
+        dateTextColor = CalendarViewColors.light.onSurface,
+        weekdayTextColor = CalendarViewColors.light.outlineVariant,
+        dateDividerColor = CalendarViewColors.light.outlineVariant,
+        emptyContentColor = CalendarViewColors.light.emptyContent,
+        eventTitleColor = CalendarViewColors.light.onSurface,
+        eventSecondaryTextColor = CalendarViewColors.light.outline,
         eventTileAlpha = 28,
         eventTimeColorLightnessAdjust = -0.1,
-        monthHeaderTextColor = LightAppColors.monthHeaderText,
-        transparent = LightAppColors.transparent,
-        monthHeaderGradientStartColor = LightAppColors.transparent,
-        monthHeaderGradientEndColor = LightAppColors.monthHeaderGradientEnd,
-        monthHeaderTextShadowColor = LightAppColors.monthHeaderTextShadow;
+        monthHeaderTextColor = CalendarViewColors.monthHeaderText,
+        transparent = CalendarViewColors.transparent,
+        monthHeaderGradientStartColor = CalendarViewColors.transparent,
+        monthHeaderGradientEndColor = CalendarViewColors.monthHeaderGradientEnd,
+        monthHeaderTextShadowColor = CalendarViewColors.monthHeaderTextShadow;
 
   /// Pre-defined colors for a dark theme.
-  const ScheduleViewThemeData.dark()
-      : todayHighlightColor = DarkAppColors.primary,
-        todayTextColor = DarkAppColors.onPrimary,
-        dateTextColor = DarkAppColors.onSurface,
-        weekdayTextColor = DarkAppColors.outlineVariant,
-        dateDividerColor = DarkAppColors.outlineVariant,
-        emptyContentColor = DarkAppColors.emptyContent,
-        eventTitleColor = DarkAppColors.onSurface,
-        eventSecondaryTextColor = DarkAppColors.outline,
+  ScheduleViewThemeData.dark()
+      : todayHighlightColor = CalendarViewColors.dark.primary,
+        todayTextColor = CalendarViewColors.dark.onPrimary,
+        dateTextColor = CalendarViewColors.dark.onSurface,
+        weekdayTextColor = CalendarViewColors.dark.outlineVariant,
+        dateDividerColor = CalendarViewColors.dark.outlineVariant,
+        emptyContentColor = CalendarViewColors.dark.emptyContent,
+        eventTitleColor = CalendarViewColors.dark.onSurface,
+        eventSecondaryTextColor = CalendarViewColors.dark.outline,
         eventTileAlpha = 45,
         eventTimeColorLightnessAdjust = 0.0,
-        monthHeaderTextColor = DarkAppColors.monthHeaderText,
-        transparent = LightAppColors.transparent,
-        monthHeaderGradientStartColor = LightAppColors.transparent,
-        monthHeaderGradientEndColor = DarkAppColors.monthHeaderGradientEnd,
-        monthHeaderTextShadowColor = DarkAppColors.monthHeaderTextShadow;
+        monthHeaderTextColor = CalendarViewColors.monthHeaderText,
+        transparent = CalendarViewColors.transparent,
+        monthHeaderGradientStartColor = CalendarViewColors.transparent,
+        monthHeaderGradientEndColor = CalendarViewColors.monthHeaderGradientEnd,
+        monthHeaderTextShadowColor = CalendarViewColors.monthHeaderTextShadow;
 
   @override
   ThemeExtension<ScheduleViewThemeData> copyWith({

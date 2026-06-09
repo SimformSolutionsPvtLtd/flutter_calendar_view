@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'dark_app_colors.dart';
-import 'light_app_colors.dart';
+import 'calendar_view_colors.dart';
 
 class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
   /// Define custom colors
@@ -41,31 +40,31 @@ class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
 
   /// Get pre-defined colors for light theme
   MonthViewThemeData.light()
-      : cellInMonthColor = LightAppColors.surfaceContainerLowest,
-        cellNotInMonthColor = LightAppColors.surfaceContainerLow,
-        cellTextColor = LightAppColors.onSurface,
-        cellBorderColor = LightAppColors.surfaceContainerHigh,
-        weekDayTileColor = LightAppColors.surfaceContainerHigh,
-        weekDayTextColor = LightAppColors.onSurface,
-        weekDayBorderColor = LightAppColors.outlineVariant,
-        headerIconColor = LightAppColors.onPrimary,
-        headerTextColor = LightAppColors.onPrimary,
-        headerBackgroundColor = LightAppColors.primary,
-        cellHighlightColor = LightAppColors.primary;
+      : cellInMonthColor = CalendarViewColors.light.surfaceContainerLowest,
+        cellNotInMonthColor = CalendarViewColors.light.surfaceContainerLow,
+        cellTextColor = CalendarViewColors.light.onSurface,
+        cellBorderColor = CalendarViewColors.light.surfaceContainerHigh,
+        weekDayTileColor = CalendarViewColors.light.surfaceContainerHigh,
+        weekDayTextColor = CalendarViewColors.light.onSurface,
+        weekDayBorderColor = CalendarViewColors.light.outlineVariant,
+        headerIconColor = CalendarViewColors.light.onPrimary,
+        headerTextColor = CalendarViewColors.light.onPrimary,
+        headerBackgroundColor = CalendarViewColors.light.primary,
+        cellHighlightColor = CalendarViewColors.light.primary;
 
   /// Get pre-defined colors for dark theme
   MonthViewThemeData.dark()
-      : cellInMonthColor = DarkAppColors.surfaceContainerLowest,
-        cellNotInMonthColor = DarkAppColors.surfaceContainerLow,
-        cellTextColor = DarkAppColors.onSurface,
-        cellBorderColor = DarkAppColors.surfaceContainerHigh,
-        weekDayTileColor = DarkAppColors.surfaceContainerHigh,
-        weekDayTextColor = DarkAppColors.onSurface,
-        weekDayBorderColor = DarkAppColors.outlineVariant,
-        headerIconColor = DarkAppColors.onPrimary,
-        headerTextColor = DarkAppColors.onPrimary,
-        headerBackgroundColor = DarkAppColors.primary,
-        cellHighlightColor = DarkAppColors.primary;
+      : cellInMonthColor = CalendarViewColors.dark.surfaceContainerLowest,
+        cellNotInMonthColor = CalendarViewColors.dark.surfaceContainerLow,
+        cellTextColor = CalendarViewColors.dark.onSurface,
+        cellBorderColor = CalendarViewColors.dark.surfaceContainerHigh,
+        weekDayTileColor = CalendarViewColors.dark.surfaceContainerHigh,
+        weekDayTextColor = CalendarViewColors.dark.onSurface,
+        weekDayBorderColor = CalendarViewColors.dark.outlineVariant,
+        headerIconColor = CalendarViewColors.dark.onPrimary,
+        headerTextColor = CalendarViewColors.dark.onPrimary,
+        headerBackgroundColor = CalendarViewColors.dark.primary,
+        cellHighlightColor = CalendarViewColors.dark.primary;
 
   @override
   ThemeExtension<MonthViewThemeData> copyWith({
@@ -79,7 +78,7 @@ class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
     Color? headerIconColor,
     Color? headerTextColor,
     Color? headerBackgroundColor,
-    Color? highlightColor,
+    Color? cellHighlightColor,
   }) {
     return MonthViewThemeData(
       cellInMonthColor: cellInMonthColor ?? this.cellInMonthColor,
@@ -93,7 +92,7 @@ class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
       headerTextColor: headerTextColor ?? this.headerTextColor,
       headerBackgroundColor:
           headerBackgroundColor ?? this.headerBackgroundColor,
-      cellHighlightColor: highlightColor ?? this.cellHighlightColor,
+      cellHighlightColor: cellHighlightColor ?? this.cellHighlightColor,
     );
   }
 
@@ -153,7 +152,7 @@ class MonthViewThemeData extends ThemeExtension<MonthViewThemeData> {
       headerIconColor: other.headerIconColor,
       headerTextColor: other.headerTextColor,
       headerBackgroundColor: other.headerBackgroundColor,
-      highlightColor: other.cellHighlightColor,
+      cellHighlightColor: other.cellHighlightColor,
     );
   }
 }
