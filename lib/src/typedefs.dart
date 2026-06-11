@@ -132,3 +132,17 @@ typedef CustomHourLinePainter = CustomPainter Function(
 );
 
 typedef TestPredicate<T> = bool Function(T element);
+
+typedef MonthTileBuilder = Widget Function(
+  BuildContext context,
+  DateTime month,
+  bool isCurrentMonth,
+);
+
+typedef MiniMonthBuilder<T extends Object?> = Widget Function(
+  BuildContext context,
+  DateTime month,
+  bool isCurrentMonth,
+);
+
+typedef MonthTapCallback = void Function(DateTime month);

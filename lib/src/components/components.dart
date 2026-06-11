@@ -9,6 +9,7 @@ export 'headers/calendar_page_header.dart';
 export 'headers/day_page_header.dart';
 export 'headers/month_page_header.dart';
 export 'headers/week_page_header.dart';
+export 'headers/year_page_header.dart';
 export 'month_view_components.dart';
 export 'safe_area_wrapper.dart';
 export 'week_view_components.dart';

@@ -6,6 +6,7 @@ import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../multi_day_view_page.dart';
 import '../week_view_page.dart';
+import '../year_view_page.dart';
 
 class MobileHomePage extends StatefulWidget {
   MobileHomePage({this.onChangeTheme, super.key});
@@ -118,8 +119,14 @@ class _MobileHomePageState extends State<MobileHomePage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => context.pushRoute(MultiDayViewDemo()),
+              onPressed: () =>
+                  context.pushRoute(const MultiDayViewDemo()),
               child: Text(translate.multidayView),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.pushRoute(const YearViewPageDemo()),
+              child: const Text('Year View'),
             ),
           ],
         ),

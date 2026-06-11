@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import 'day_view_widget.dart';
 import 'month_view_widget.dart';
 import 'week_view_widget.dart';
+import 'year_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
@@ -29,6 +30,8 @@ class CalendarViews extends StatelessWidget {
             ? MonthViewWidget(width: width)
             : view == CalendarView.day
             ? DayViewWidget(width: width)
+            : view == CalendarView.year
+            ? YearViewWidget(width: width)
             : WeekViewWidget(width: width),
       ),
     );

@@ -83,3 +83,12 @@ enum DeleteEvent {
   current,
   following,
 }
+
+/// Defines display modes for YearView
+enum YearViewDisplayMode {
+  /// Displays only the month titles in a grid format
+  titleGrid,
+
+  /// Displays compact mini-calendars for each month
+  miniCalendarGrid,
+}

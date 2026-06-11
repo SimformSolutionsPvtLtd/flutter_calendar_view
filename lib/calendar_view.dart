@@ -34,3 +34,7 @@ export './src/month_view/month_view_style.dart';
 export './src/month_view/month_view_theme_settings.dart';
 export './src/month_view/month_view_builders.dart';
 export './src/multi_day_view/multi_day_view.dart';
+export './src/year_view/year_view.dart';
+export './src/year_view/year_view_style.dart';
+export './src/year_view/year_view_theme_settings.dart';
+export './src/year_view/year_view_builders.dart';
