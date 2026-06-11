@@ -254,6 +254,7 @@ DayView(
     backgroundColor: Colors.white, // Background color of day view
     showLiveTimeLineInAllDays: true, // Display live time line in all pages
     scrollOffset: 0, // Initial scroll position
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     width: 400, // Width of day view page
     timeLineOffset: 0, // Offset for timeline
     // Event handling
@@ -424,6 +425,7 @@ WeekView(
     ),
     // Scroll configuration  
     scrollOffset: 0.0,
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
     pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
     keepScrollOffset: true, // Maintain scroll offset when the page changes
@@ -543,6 +545,7 @@ MultiDayView(
     ),
     // Scroll configuration  
     scrollOffset: 0.0,
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
     pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
     keepScrollOffset: true, // Maintain scroll offset when the page changes

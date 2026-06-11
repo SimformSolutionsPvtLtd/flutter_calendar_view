@@ -11,6 +11,7 @@
 - Updated documentation for `DayView`, `WeekView`, `MonthView` and `MultiDayView` to add more details about the parameters and their usage. [#448](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/448)
 - Fixed `onlyShowToday` parameter in `WeekView` to update `liveTimeIndicator` properly. [#518](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/518)
 - Added `ZoomScrollController` to `DayView`, `WeekView` and `MultiDayView` for programmatic control of zoom level and scroll position. [#522](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/522)
+- Added `scrollToCurrentTime` to `DayView`, `WeekView` and `MultiDayView` to auto-center the timeline on the current time, along with `animateToCurrentTime()` and `jumpToCurrentTime()` methods to trigger it imperatively. [#331](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/331)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
