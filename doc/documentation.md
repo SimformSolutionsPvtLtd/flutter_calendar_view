@@ -253,6 +253,7 @@ DayView(
     verticalLineOffset: 5, // Offset of vertical line from hour line
     showLiveTimeLineInAllDays: true, // Display live time line in all pages
     scrollOffset: 0, // Initial scroll position
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     width: 400, // Width of day view page
     timeLineOffset: 0, // Offset for timeline
     // Event handling
@@ -420,6 +421,7 @@ WeekView(
     ),
     // Scroll configuration  
     scrollOffset: 0.0,
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
     pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
     keepScrollOffset: true, // Maintain scroll offset when the page changes
@@ -537,6 +539,7 @@ MultiDayView(
     ),
     // Scroll configuration  
     scrollOffset: 0.0,
+    scrollToCurrentTime: true, // Auto-center the timeline on the current time
     scrollPhysics: ScrollPhysics(), // ScrollPhysics for vertical scrolling
     pageViewPhysics: ScrollPhysics(), // ScrollPhysics for page view
     keepScrollOffset: true, // Maintain scroll offset when the page changes
@@ -568,6 +571,34 @@ WeekView(
 ```
 
 This renders Monday-Friday only. Duplicate entries are ignored, and `showWeekends: false` removes weekend days even if they are included in `weekDays`.
+
+## Scroll to the Current Time
+
+Set `scrollToCurrentTime: true` on `DayView`, `WeekView` or `MultiDayView` to center the timeline on the current time when the view first loads:
+
+```dart
+DayView(
+  scrollToCurrentTime: true,
+);
+```
+
+This only sets the initial position. Pages you swipe to afterwards follow `keepScrollOffset`.
+
+To scroll to the current time on demand, for example from a "Now" button, call `animateToCurrentTime()` or `jumpToCurrentTime()` on the view's state:
+
+```dart
+final dayViewKey = GlobalKey<DayViewState>();
+
+DayView(key: dayViewKey);
+
+// In the "Now" button's onPressed:
+dayViewKey.currentState?.animateToCurrentTime();
+
+// Align the current time to the top instead of the center:
+dayViewKey.currentState?.jumpToCurrentTime(center: false);
+```
+
+The current time comes from `LiveTimeIndicatorSettings.currentTimeProvider` when set, otherwise `DateTime.now()`, and is clamped to the visible `startHour`/`endHour` range.
 
 ## Synchronizing Events Between Calendar Views
 

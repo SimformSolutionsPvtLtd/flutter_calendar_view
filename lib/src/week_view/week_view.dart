@@ -8,6 +8,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../current_time_scroller.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_week_view_page.dart';
 
@@ -126,6 +127,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// Scroll offset of week view page.
   final double scrollOffset;
+
+  /// {@macro scroll_to_current_time_doc}
+  final bool scrollToCurrentTime;
 
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
@@ -266,6 +270,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekNumberBuilder,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
+    this.scrollToCurrentTime = false,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
@@ -448,6 +453,38 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     return controller != null && controller.hasClients ? controller : null;
   }
 
+  /// Scrolls the timeline to the current time. Internal helper, kept private
+  /// so only [animateToCurrentTime] and [jumpToCurrentTime] are public.
+  late final _currentTimeScroller = CurrentTimeScroller(
+    isMounted: () => mounted,
+    currentTimeProvider: () =>
+        widget.liveTimeIndicatorSettings?.currentTimeProvider,
+    startHour: () => widget.startHour,
+    endHour: () => widget.endHour,
+    heightPerMinute: () => widget.heightPerMinute,
+    activeController: () => _activeScrollController,
+    onOffsetChanged: (offset) {
+      _lastScrollOffset = offset;
+      _pageOffsets[_currentIndex] = offset;
+    },
+  );
+
+  /// {@macro jump_to_current_time_doc}
+  void jumpToCurrentTime({bool center = true}) =>
+      _currentTimeScroller.jump(center: center);
+
+  /// {@macro animate_to_current_time_doc}
+  Future<void> animateToCurrentTime({
+    bool center = true,
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) =>
+      _currentTimeScroller.animate(
+        center: center,
+        duration: duration,
+        curve: curve,
+      );
+
   /// List of days in a week with their properties (name, order, etc.).
   /// Used for rendering day headers and determining week layout.
   late List<WeekDays> _weekDays;
@@ -466,7 +503,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = _defaultPageOffset;
+    _lastScrollOffset = widget.scrollToCurrentTime
+        ? _currentTimeScroller.currentTimeOffset
+        : _defaultPageOffset;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -490,6 +529,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
     _fullDayHeaderTextConfig =
         widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+
+    if (widget.scrollToCurrentTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _currentTimeScroller.scrollAfterLayout(),
+      );
+    }
   }
 
   @override
@@ -732,9 +777,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           endHour: _endHour,
                           fullDayHeaderTitle: _fullDayHeaderTitle,
                           fullDayHeaderTextConfig: _fullDayHeaderTextConfig,
-                          lastScrollOffset: widget.keepScrollOffset
-                              ? (_pageOffsets[index] ?? _defaultPageOffset)
-                              : _defaultPageOffset,
+                          lastScrollOffset:
+                              _pageOffsets[index] ?? _defaultPageOffset,
                           scrollPhysics: widget.scrollPhysics,
                           pageIndex: index,
                           isCurrentPage: index == _currentIndex,
@@ -1102,7 +1146,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         ? (_pageOffsets[index] ?? _defaultPageOffset)
         : _defaultPageOffset;
     if (!widget.keepScrollOffset) {
-      _pageOffsets[index] = _defaultPageOffset;
+      // Only the current page keeps an entry, so pages built mid-swipe
+      // fall back to the default offset instead of a stale one.
+      _pageOffsets
+        ..clear()
+        ..[index] = _defaultPageOffset;
       _jumpToOffsetAfterPageTransition(_defaultPageOffset);
     }
 

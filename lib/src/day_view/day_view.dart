@@ -10,6 +10,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../current_time_scroller.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_day_view_page.dart';
 
@@ -176,6 +177,13 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// rather than relying on the [startDuration] parameter.
   final double? scrollOffset;
 
+  /// {@template scroll_to_current_time_doc}
+  /// Whether to center the timeline on the current time when the view first
+  /// loads, instead of the initial scroll offset. Later pages follow
+  /// [keepScrollOffset]. Defaults to false.
+  /// {@endtemplate}
+  final bool scrollToCurrentTime;
+
   /// This method will be called when user taps on timestamp in timeline.
   ///
   /// Called when user taps on a time value in the timeline (left side of view).
@@ -323,6 +331,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.eventArranger,
     this.verticalLineOffset = 10,
     this.scrollOffset,
+    this.scrollToCurrentTime = false,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
@@ -504,6 +513,58 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     return controller != null && controller.hasClients ? controller : null;
   }
 
+  /// Scrolls the timeline to the current time. Internal helper, kept private
+  /// so only [animateToCurrentTime] and [jumpToCurrentTime] are public.
+  late final _currentTimeScroller = CurrentTimeScroller(
+    isMounted: () => mounted,
+    currentTimeProvider: () =>
+        widget.liveTimeIndicatorSettings?.currentTimeProvider,
+    startHour: () => widget.startHour,
+    endHour: () => widget.endHour,
+    heightPerMinute: () => widget.heightPerMinute,
+    activeController: () => _activeScrollController,
+    onOffsetChanged: (offset) {
+      _lastScrollOffset = offset;
+      _pageOffsets[_currentIndex] = offset;
+    },
+  );
+
+  /// {@template jump_to_current_time_doc}
+  /// Instantly scrolls the timeline so the current time is visible.
+  ///
+  /// When [center] is true (default) the current time is placed at the
+  /// vertical center of the viewport; otherwise it is aligned to the top. The
+  /// target is clamped to the scrollable range. Does nothing if no page is
+  /// attached yet.
+  ///
+  /// The current time honors [LiveTimeIndicatorSettings.currentTimeProvider]
+  /// when provided.
+  /// {@endtemplate}
+  void jumpToCurrentTime({bool center = true}) =>
+      _currentTimeScroller.jump(center: center);
+
+  /// {@template animate_to_current_time_doc}
+  /// Animates the timeline so the current time is visible.
+  ///
+  /// When [center] is true (default) the current time is placed at the
+  /// vertical center of the viewport; otherwise it is aligned to the top. The
+  /// target is clamped to the scrollable range. Does nothing if no page is
+  /// attached yet.
+  ///
+  /// The current time honors [LiveTimeIndicatorSettings.currentTimeProvider]
+  /// when provided.
+  /// {@endtemplate}
+  Future<void> animateToCurrentTime({
+    bool center = true,
+    Duration duration = const Duration(milliseconds: 200),
+    Curve curve = Curves.linear,
+  }) =>
+      _currentTimeScroller.animate(
+        center: center,
+        duration: duration,
+        curve: curve,
+      );
+
   /// Callback function triggered when the controller changes or events are modified.
   /// Used to rebuild the view when event data changes.
   late VoidCallback _reloadCallback;
@@ -515,7 +576,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = _defaultPageOffset;
+    _lastScrollOffset = widget.scrollToCurrentTime
+        ? _currentTimeScroller.currentTimeOffset
+        : _defaultPageOffset;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -529,6 +592,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _pageOffsets[_currentIndex] = _lastScrollOffset;
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _assignBuilders();
+
+    if (widget.scrollToCurrentTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _currentTimeScroller.scrollAfterLayout(),
+      );
+    }
   }
 
   @override
@@ -681,9 +750,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                 _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
-                            lastScrollOffset: widget.keepScrollOffset
-                                ? (_pageOffsets[index] ?? _defaultPageOffset)
-                                : _defaultPageOffset,
+                            lastScrollOffset:
+                                _pageOffsets[index] ?? _defaultPageOffset,
                             scrollPhysics: widget.scrollPhysics,
                             pageIndex: index,
                             isCurrentPage: index == _currentIndex,
@@ -973,7 +1041,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         : _defaultPageOffset;
 
     if (!widget.keepScrollOffset) {
-      _pageOffsets[index] = _defaultPageOffset;
+      // Only the current page keeps an entry, so pages built mid-swipe
+      // fall back to the default offset instead of a stale one.
+      _pageOffsets
+        ..clear()
+        ..[index] = _defaultPageOffset;
       _jumpToOffsetAfterPageTransition(
         _defaultPageOffset,
       );

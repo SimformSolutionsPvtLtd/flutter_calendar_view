@@ -23,19 +23,15 @@ class WeekViewWidget extends StatelessWidget {
       heightPerMinute: heightPerMinute,
       showWeekends: true,
       showMidnightHour: true,
+      scrollToCurrentTime: true,
       showLiveTimeLineInAllDays: true,
       keepScrollOffset: true,
       timeSlotColorBuilder: (_, slotStartTime, __, ___) {
         final hour = slotStartTime.hour;
         final isBusinessHours = hour >= 9 && hour < 17;
         final isLunchBreak = hour == 12;
-        final isWeekend =
-            slotStartTime.weekday == DateTime.saturday ||
-            slotStartTime.weekday == DateTime.sunday;
 
-        return isWeekend
-            ? Colors.grey.shade100
-            : isLunchBreak
+        return isLunchBreak
             ? Colors.orange.shade100
             : isBusinessHours
             ? Colors.green.shade50
