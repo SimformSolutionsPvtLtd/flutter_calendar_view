@@ -182,7 +182,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
 
   /// A single page for week view.
   const InternalWeekViewPage({
-    Key? key,
+    super.key,
     required this.showVerticalLine,
     required this.weekTitleHeight,
     required this.weekDayBuilder,
@@ -235,7 +235,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
     this.showMidnightHour = false,
-  }) : super(key: key);
+  });
 
   @override
   _InternalWeekViewPageState<T> createState() =>

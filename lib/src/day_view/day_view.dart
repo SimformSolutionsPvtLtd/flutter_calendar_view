@@ -301,7 +301,7 @@ class DayView<T extends Object?> extends StatefulWidget {
 
   /// Main widget for day view.
   const DayView({
-    Key? key,
+    super.key,
     this.eventTileBuilder,
     this.dateStringBuilder,
     this.timeStringBuilder,
@@ -374,8 +374,7 @@ class DayView<T extends Object?> extends StatefulWidget {
         assert(
           endHour <= Constants.hoursADay || endHour < startHour,
           "End hour must be less than 24 or startHour must be less than endHour",
-        ),
-        super(key: key);
+        );
 
   @override
   DayViewState<T> createState() => DayViewState<T>();

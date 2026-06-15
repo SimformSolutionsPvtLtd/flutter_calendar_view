@@ -1,3 +1,7 @@
+# [Unreleased - 15 Jun 2026]
+
+- [BREAKING] Updated minimum supported Flutter version to `>=3.10.0` and Dart SDK to `>=3.0.0 <4.0.0`.
+
 # [Unreleased - 11 May 2026]
 
 - Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)

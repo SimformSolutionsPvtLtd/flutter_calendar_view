@@ -39,7 +39,7 @@ class RoundedEventTile extends StatelessWidget {
 
   /// This is default tile to display in day view.
   const RoundedEventTile({
-    Key? key,
+    super.key,
     required this.title,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
@@ -49,7 +49,7 @@ class RoundedEventTile extends StatelessWidget {
     this.backgroundColor = Colors.blue,
     this.titleStyle,
     this.descriptionStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,11 +120,11 @@ class DefaultTimeLineMark extends StatelessWidget {
 
   /// Time marker for timeline used in week and day view.
   const DefaultTimeLineMark({
-    Key? key,
+    super.key,
     required this.date,
     this.markingStyle,
     this.timeStringBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +156,7 @@ class DefaultTimeLineMark extends StatelessWidget {
 /// This class is defined default view of full day event
 class FullDayEventView<T> extends StatelessWidget {
   const FullDayEventView({
-    Key? key,
+    super.key,
     this.boxConstraints = const BoxConstraints(maxHeight: 100),
     required this.events,
     this.padding,
@@ -166,7 +166,7 @@ class FullDayEventView<T> extends StatelessWidget {
     required this.date,
     this.onEventDoubleTap,
     this.onEventLongPress,
-  }) : super(key: key);
+  });
 
   /// Constraints for view
   final BoxConstraints boxConstraints;

@@ -13,13 +13,13 @@ class CircularCell extends StatelessWidget {
   /// For a proper view, use [CircularCell] with a [MonthViewStyle.cellAspectRatio].
   const CircularCell({
     required this.date,
-    Key? key,
+    super.key,
     this.events = const [],
     this.shouldHighlight = false,
     this.backgroundColor = Colors.blue,
     this.highlightedTitleColor = Constants.white,
     this.titleColor = Constants.black,
-  }) : super(key: key);
+  });
 
   /// Date of cell.
   final DateTime date;
@@ -62,7 +62,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
   const FilledCell({
     required this.date,
     required this.events,
-    Key? key,
+    super.key,
     this.isInMonth = false,
     this.hideDaysNotInMonth = true,
     this.shouldHighlight = false,
@@ -80,7 +80,7 @@ class FilledCell<T extends Object?> extends StatelessWidget {
     this.dateStringBuilder,
     this.onTileDoubleTap,
     this.multipleDateSelectionColor,
-  }) : super(key: key);
+  });
 
   /// Date of current cell.
   final DateTime date;
@@ -268,13 +268,13 @@ class WeekDayTile extends StatefulWidget {
   /// Title for week day in month view.
   const WeekDayTile({
     required this.dayIndex,
-    Key? key,
+    super.key,
     this.backgroundColor,
     this.borderColor,
     this.displayBorder = true,
     this.textStyle,
     this.weekDayStringBuilder,
-  }) : super(key: key);
+  });
 
   /// Index of week day.
   final int dayIndex;
