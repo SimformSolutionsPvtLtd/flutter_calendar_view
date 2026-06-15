@@ -2,8 +2,6 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use_from_same_package
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -54,24 +52,6 @@ class CalendarPageHeader extends StatelessWidget {
   ///
   final WidgetBuilder? titleBuilder;
 
-  // TODO: Need to remove after next major release
-  /// background color of header.
-  ///
-  /// NOTE: This property is deprecated.
-  /// Use [HeaderStyle.decoration] to provide colors to header.
-  @Deprecated("Use HeaderStyle.decoration to provide background")
-  final Color backgroundColor;
-
-  // TODO: Need to remove after next major release
-  /// Color of icons at both sides of header.
-  ///
-  /// NOTE: This property id deprecated. Use
-  /// [HeaderStyle.leftIconConfig] or [HeaderStyle.rightIconConfig]
-  /// to provide style to respective icons.
-  ///
-  @Deprecated("Use HeaderStyle to provide icon color")
-  final Color? iconColor;
-
   /// Style for Calendar's header
   final HeaderStyle headerStyle;
 
@@ -88,9 +68,6 @@ class CalendarPageHeader extends StatelessWidget {
     this.onPreviousDay,
     this.showPreviousIcon = true,
     this.secondaryDate,
-    @Deprecated("Use HeaderStyle.decoration to provide background")
-    this.backgroundColor = Constants.headerBackground,
-    @Deprecated("Use HeaderStyle to provide icon color") this.iconColor,
     this.headerStyle = const HeaderStyle(),
   })  : assert(
             titleBuilder != null || dateStringBuilder != null,
@@ -104,15 +81,15 @@ class CalendarPageHeader extends StatelessWidget {
       margin: headerStyle.headerMargin,
       padding: headerStyle.headerPadding,
       decoration: headerStyle.decoration ??
-          BoxDecoration(
-            color: backgroundColor,
+          const BoxDecoration(
+            color: Constants.headerBackground,
           ),
       clipBehavior: Clip.antiAlias,
       child: Row(
         mainAxisSize: headerStyle.mainAxisSize,
         mainAxisAlignment: headerStyle.mainAxisAlignment,
         children: [
-          if (headerStyle.leftIconVisible && headerStyle.leftIconConfig != null)
+          if (headerStyle.leftIconConfig != null)
             AbsorbPointer(
               absorbing: !showPreviousIcon,
               child: Opacity(
@@ -124,15 +101,12 @@ class CalendarPageHeader extends StatelessWidget {
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      padding: headerStyle.leftIconPadding ??
-                          headerStyle.leftIconConfig!.padding,
-                      icon: headerStyle.leftIcon ??
-                          Icon(
-                            Icons.chevron_left,
-                            size: headerStyle.leftIconConfig!.size,
-                            color:
-                                iconColor ?? headerStyle.leftIconConfig?.color,
-                          ),
+                      padding: headerStyle.leftIconConfig!.padding,
+                      icon: Icon(
+                        Icons.chevron_left,
+                        size: headerStyle.leftIconConfig!.size,
+                        color: headerStyle.leftIconConfig?.color,
+                      ),
                     ),
               ),
             ),
@@ -156,8 +130,7 @@ class CalendarPageHeader extends StatelessWidget {
                     ),
                   ),
           ),
-          if (headerStyle.rightIconVisible &&
-              headerStyle.rightIconConfig != null)
+          if (headerStyle.rightIconConfig != null)
             AbsorbPointer(
               absorbing: !showNextIcon,
               child: Opacity(
@@ -169,15 +142,12 @@ class CalendarPageHeader extends StatelessWidget {
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      padding: headerStyle.rightIconPadding ??
-                          headerStyle.rightIconConfig!.padding,
-                      icon: headerStyle.rightIcon ??
-                          Icon(
-                            Icons.chevron_right,
-                            size: headerStyle.rightIconConfig?.size,
-                            color:
-                                iconColor ?? headerStyle.rightIconConfig?.color,
-                          ),
+                      padding: headerStyle.rightIconConfig!.padding,
+                      icon: Icon(
+                        Icons.chevron_right,
+                        size: headerStyle.rightIconConfig?.size,
+                        color: headerStyle.rightIconConfig?.color,
+                      ),
                     ),
               ),
             ),

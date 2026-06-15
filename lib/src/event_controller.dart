@@ -39,21 +39,6 @@ class EventController<T extends Object?> extends ChangeNotifier {
 
   //#region Public Fields
 
-  // TODO: change the type from List<CalendarEventData>
-  //  to UnmodifiableListView provided in dart:collection.
-
-  // Note: Do not use this getter inside of EventController class.
-  // use _eventList instead.
-  /// Returns list of [CalendarEventData<T>] stored in this controller.
-  @Deprecated('This is deprecated and will be removed in next major release. '
-      'Use allEvents instead.')
-
-  /// Lists all the events that are added in the Controller.
-  ///
-  /// NOTE: This field is deprecated. use [allEvents] instead.
-  List<CalendarEventData<T>> get events =>
-      _calendarData.events.toList(growable: false);
-
   /// Lists all the events that are added in the Controller.
   UnmodifiableListView<CalendarEventData<T>> get allEvents =>
       _calendarData.events;
@@ -175,8 +160,9 @@ class EventController<T extends Object?> extends ChangeNotifier {
   ///
   List<CalendarEventData<T>> getEventsOnDay(DateTime date,
       {bool includeFullDayEvents = true}) {
-    //ignore: deprecated_member_use_from_same_package
-    if (_eventFilter != null) return _eventFilter!.call(date, this.events);
+    if (_eventFilter != null) {
+      return _eventFilter!.call(date, allEvents.toList(growable: false));
+    }
 
     return _calendarData.getEventsOnDay(date.withoutTime,
         includeFullDayEvents: includeFullDayEvents);
@@ -200,6 +186,7 @@ class EventController<T extends Object?> extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   //#endregion
 
 //#region Private Methods
@@ -279,6 +266,7 @@ class CalendarData<T extends Object?> {
   /// Events that occurs on multiple day from startDate to endDate.
   ///
   final _rangingEventList = <CalendarEventData<T>>[];
+
   UnmodifiableListView<CalendarEventData<T>> get rangingEventList =>
       UnmodifiableListView(_rangingEventList);
 
@@ -288,11 +276,13 @@ class CalendarData<T extends Object?> {
   ///
   ///
   final _fullDayEventList = <CalendarEventData<T>>[];
+
   UnmodifiableListView<CalendarEventData<T>> get fullDayEventList =>
       UnmodifiableListView(_fullDayEventList);
 
   /// Stores all recurring events
   final _recurringEventsList = <CalendarEventData<T>>[];
+
   //#endregion
 
   //#region Data Manipulation Methods
@@ -398,6 +388,7 @@ class CalendarData<T extends Object?> {
     removeEvent(oldEvent);
     addEvent(newEvent);
   }
+
   //#endregion
 
   //#region Helper Methods
@@ -637,5 +628,5 @@ class CalendarData<T extends Object?> {
     _eventList.clear();
     _recurringEventsList.clear();
   }
-  //#endregion
+//#endregion
 }
