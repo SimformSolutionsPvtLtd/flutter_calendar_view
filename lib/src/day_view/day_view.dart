@@ -10,6 +10,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../scroll_to_current_time_mixin.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_day_view_page.dart';
 
@@ -179,6 +180,20 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// rather than relying on the [startDuration] parameter.
   final double? scrollOffset;
 
+  /// When true, the timeline automatically scrolls so that the current time is
+  /// centered in the viewport on the first build.
+  ///
+  /// The current time honors [LiveTimeIndicatorSettings.currentTimeProvider]
+  /// when provided and is clamped to the visible [startHour]/[endHour] range.
+  /// This takes precedence over [scrollOffset] and [startDuration] for the
+  /// initial scroll position.
+  ///
+  /// To trigger this imperatively at any time (e.g. from a "Now" button) use
+  /// [DayViewState.animateToCurrentTime] or [DayViewState.jumpToCurrentTime].
+  ///
+  /// Default value is false.
+  final bool scrollToCurrentTime;
+
   /// This method will be called when user taps on timestamp in timeline.
   ///
   /// Called when user taps on a time value in the timeline (left side of view).
@@ -327,6 +342,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.verticalLineOffset = 10,
     this.backgroundColor,
     this.scrollOffset,
+    this.scrollToCurrentTime = false,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
@@ -381,7 +397,8 @@ class DayView<T extends Object?> extends StatefulWidget {
   DayViewState<T> createState() => DayViewState<T>();
 }
 
-class DayViewState<T extends Object?> extends State<DayView<T>> {
+class DayViewState<T extends Object?> extends State<DayView<T>>
+    with ScrollToCurrentTimeMixin<DayView<T>> {
   /// Width of the Day View widget in pixels.
   /// Calculated from widget width or device constraint width.
   late double _width;
@@ -504,6 +521,30 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     return controller;
   }
 
+  // --- ScrollToCurrentTimeMixin implementation ---
+
+  @override
+  DateTime Function()? get currentTimeProvider =>
+      widget.liveTimeIndicatorSettings?.currentTimeProvider;
+
+  @override
+  int get viewStartHour => widget.startHour;
+
+  @override
+  int get viewEndHour => widget.endHour;
+
+  @override
+  double get viewHeightPerMinute => widget.heightPerMinute;
+
+  @override
+  ZoomScrollController? get activeScrollController => _activeScrollController;
+
+  @override
+  void onCurrentTimeJumped(double offset) {
+    _lastScrollOffset = offset;
+    _pageOffsets[_currentIndex] = offset;
+  }
+
   /// Callback function triggered when the controller changes or events are modified.
   /// Used to rebuild the view when event data changes.
   late VoidCallback _reloadCallback;
@@ -515,7 +556,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = _defaultPageOffset;
+    _lastScrollOffset = widget.scrollToCurrentTime
+        ? offsetForTime(currentTime)
+        : _defaultPageOffset;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -529,6 +572,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _pageOffsets[_currentIndex] = _lastScrollOffset;
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _assignBuilders();
+
+    if (widget.scrollToCurrentTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => scrollToCurrentTimeAfterLayout(),
+      );
+    }
   }
 
   @override

@@ -8,6 +8,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../scroll_to_current_time_mixin.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_week_view_page.dart';
 
@@ -132,6 +133,19 @@ class WeekView<T extends Object?> extends StatefulWidget {
 
   /// Scroll offset of week view page.
   final double scrollOffset;
+
+  /// When true, the timeline automatically scrolls so that the current time is
+  /// centered in the viewport on the first build.
+  ///
+  /// The current time honors [LiveTimeIndicatorSettings.currentTimeProvider]
+  /// when provided and is clamped to the visible [startHour]/[endHour] range.
+  /// This takes precedence over [scrollOffset] for the initial scroll position.
+  ///
+  /// To trigger this imperatively at any time (e.g. from a "Now" button) use
+  /// [WeekViewState.animateToCurrentTime] or [WeekViewState.jumpToCurrentTime].
+  ///
+  /// Default value is false.
+  final bool scrollToCurrentTime;
 
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
@@ -274,6 +288,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.backgroundColor,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
+    this.scrollToCurrentTime = false,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
@@ -334,7 +349,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
   WeekViewState<T> createState() => WeekViewState<T>();
 }
 
-class WeekViewState<T extends Object?> extends State<WeekView<T>> {
+class WeekViewState<T extends Object?> extends State<WeekView<T>>
+    with ScrollToCurrentTimeMixin<WeekView<T>> {
   /// Width of the Week View widget in pixels.
   late double _width;
 
@@ -461,6 +477,30 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     return controller;
   }
 
+  // --- ScrollToCurrentTimeMixin implementation ---
+
+  @override
+  DateTime Function()? get currentTimeProvider =>
+      widget.liveTimeIndicatorSettings?.currentTimeProvider;
+
+  @override
+  int get viewStartHour => widget.startHour;
+
+  @override
+  int get viewEndHour => widget.endHour;
+
+  @override
+  double get viewHeightPerMinute => widget.heightPerMinute;
+
+  @override
+  ZoomScrollController? get activeScrollController => _activeScrollController;
+
+  @override
+  void onCurrentTimeJumped(double offset) {
+    _lastScrollOffset = offset;
+    _pageOffsets[_currentIndex] = offset;
+  }
+
   /// List of days in a week with their properties (name, order, etc.).
   /// Used for rendering day headers and determining week layout.
   late List<WeekDays> _weekDays;
@@ -479,7 +519,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = _defaultPageOffset;
+    _lastScrollOffset = widget.scrollToCurrentTime
+        ? offsetForTime(currentTime)
+        : _defaultPageOffset;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -503,6 +545,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
     _fullDayHeaderTextConfig =
         widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+
+    if (widget.scrollToCurrentTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => scrollToCurrentTimeAfterLayout(),
+      );
+    }
   }
 
   @override

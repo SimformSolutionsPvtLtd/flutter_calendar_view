@@ -8,6 +8,7 @@ import '../../calendar_view.dart';
 import '../constants.dart';
 import '../extensions.dart';
 import '../painters.dart';
+import '../scroll_to_current_time_mixin.dart';
 import '../zoom_scroll_controller.dart';
 import '_internal_multi_day_view_page.dart';
 
@@ -129,6 +130,20 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Scroll offset of week view page.
   final double scrollOffset;
 
+  /// When true, the timeline automatically scrolls so that the current time is
+  /// centered in the viewport on the first build.
+  ///
+  /// The current time honors [LiveTimeIndicatorSettings.currentTimeProvider]
+  /// when provided and is clamped to the visible [startHour]/[endHour] range.
+  /// This takes precedence over [scrollOffset] for the initial scroll position.
+  ///
+  /// To trigger this imperatively at any time (e.g. from a "Now" button) use
+  /// [MultiDayViewState.animateToCurrentTime] or
+  /// [MultiDayViewState.jumpToCurrentTime].
+  ///
+  /// Default value is false.
+  final bool scrollToCurrentTime;
+
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
@@ -241,6 +256,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.backgroundColor,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
+    this.scrollToCurrentTime = false,
     this.onEventTap,
     this.onEventLongTap,
     this.onDateLongPress,
@@ -298,7 +314,8 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   MultiDayViewState<T> createState() => MultiDayViewState<T>();
 }
 
-class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
+class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>>
+    with ScrollToCurrentTimeMixin<MultiDayView<T>> {
   late double _width;
   late double _height;
   late double _timeLineWidth;
@@ -355,6 +372,30 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     return controller;
   }
 
+  // --- ScrollToCurrentTimeMixin implementation ---
+
+  @override
+  DateTime Function()? get currentTimeProvider =>
+      widget.liveTimeIndicatorSettings?.currentTimeProvider;
+
+  @override
+  int get viewStartHour => widget.startHour;
+
+  @override
+  int get viewEndHour => widget.endHour;
+
+  @override
+  double get viewHeightPerMinute => widget.heightPerMinute;
+
+  @override
+  ZoomScrollController? get activeScrollController => _activeScrollController;
+
+  @override
+  void onCurrentTimeJumped(double offset) {
+    _lastScrollOffset = offset;
+    _pageOffsets[_currentIndex] = offset;
+  }
+
   late List<WeekDays> _weekDays;
 
   late int _startHour;
@@ -365,7 +406,9 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = _defaultPageOffset;
+    _lastScrollOffset = widget.scrollToCurrentTime
+        ? offsetForTime(currentTime)
+        : _defaultPageOffset;
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -389,6 +432,12 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
     _fullDayHeaderTextConfig =
         widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+
+    if (widget.scrollToCurrentTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => scrollToCurrentTimeAfterLayout(),
+      );
+    }
   }
 
   @override
