@@ -1,3 +1,12 @@
+# [Unreleased - 15 Jun 2026]
+
+- [BREAKING] Removed previously deprecated members:
+  - Removed `backgroundColor` and `iconColor` from `CalendarPageHeader`, `DayPageHeader`, `MonthPageHeader` and `WeekPageHeader`. Use `headerStyle` instead.
+  - Removed `leftIconVisible`, `rightIconVisible`, `leftIconPadding`, `rightIconPadding`, `leftIcon` and `rightIcon` from `HeaderStyle`. Use `leftIconConfig` and `rightIconConfig` instead (pass `null` to hide an icon).
+  - Removed `events` getter from `EventController`. Use `allEvents` instead.
+  - Removed `dateYMD` getter from `DateTimeExtensions`. Use `withoutTime` instead.
+  - Removed the unused `MaterialColorExtension` (`accent` getter).
+
 # [Unreleased - 11 May 2026]
 
 - Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)

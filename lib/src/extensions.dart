@@ -204,11 +204,6 @@ extension DateTimeExtensions on DateTime {
   }
 
   bool get isDayStart => hour == 0 && minute == 0;
-
-  @Deprecated(
-      "This extension is not being used in this package and will be removed "
-      "in next major release. Please use withoutTime instead.")
-  DateTime get dateYMD => DateTime(year, month, day);
 }
 
 extension ColorExtension on Color {
@@ -220,16 +215,6 @@ extension ColorExtension on Color {
         ? Color(0xff626262)
         : Color(0xfff0f0f0);
   }
-}
-
-extension MaterialColorExtension on MaterialColor {
-  @Deprecated(
-      "This extension is not being used in this package and will be removed "
-      "in next major release.")
-  Color get accent =>
-      (blue / 2 >= 255 / 2 || red / 2 >= 255 / 2 || green / 2 >= 255 / 2)
-          ? Colors.black
-          : Colors.white;
 }
 
 extension MinutesExtension on MinuteSlotSize {
