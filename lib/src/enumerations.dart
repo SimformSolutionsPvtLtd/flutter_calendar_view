@@ -83,3 +83,24 @@ enum DeleteEvent {
   current,
   following,
 }
+
+/// Display modes for [ResizableMonthView].
+///
+/// Controls how many calendar rows are visible at any given time.
+enum ResizableMonthViewMode {
+  /// Shows the entire month grid (up to 6 rows of weeks).
+  /// Events for the selected date appear in a scrollable list below.
+  monthly,
+
+  /// Shows exactly two rows (14 days) with navigation arrows to move
+  /// forward or backward by one week-pair within the month.
+  biWeekly,
+
+  /// Shows a single row (7 days – the current week) with navigation
+  /// arrows to advance or retreat week by week.
+  /// Events for the selected date appear below.
+  weekly,
+
+  /// Shows the entire month grid, and events within cells are scrollable.
+  monthlyScrollable,
+}

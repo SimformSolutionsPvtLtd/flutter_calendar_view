@@ -33,6 +33,7 @@ dependencies:
 
 - Multiple calendar view options:
     - Month View
+    - Resizable Month View
     - Day View
     - Week View
 - Highly customisable UI components

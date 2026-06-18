@@ -346,6 +346,13 @@ extension BuildContextExtension on BuildContext {
   MultiDayViewThemeData get multiDayViewColors =>
       Theme.of(this).extension<MultiDayViewThemeData>() ??
       MultiDayViewThemeData.light();
+
+  /// Get [ResizableMonthViewThemeData] from theme, if null returns light theme.
+  /// [ResizableMonthViewThemeData] needs to be added in [MaterialApp] theme
+  /// extensions to get theme data with this type.
+  ResizableMonthViewThemeData get resizableMonthViewColors =>
+      Theme.of(this).extension<ResizableMonthViewThemeData>() ??
+      ResizableMonthViewThemeData.light();
 }
 
 extension BuildContextMultiDayViewThemeExtension on BuildContext {
