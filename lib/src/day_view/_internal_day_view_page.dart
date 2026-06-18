@@ -151,7 +151,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
 
   /// Defines a single day page.
   const InternalDayViewPage({
-    Key? key,
+    super.key,
     required this.showVerticalLine,
     required this.width,
     required this.date,
@@ -193,7 +193,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
     this.showMidnightHour = false,
-  }) : super(key: key);
+  });
 
   @override
   _InternalDayViewPageState<T> createState() => _InternalDayViewPageState<T>();

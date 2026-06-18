@@ -13,10 +13,10 @@ class CalendarControllerProvider<T extends Object?> extends InheritedWidget {
   /// Use this widget to provide same controller object to all calendar
   /// view widgets and synchronize events between them.
   const CalendarControllerProvider({
-    Key? key,
+    super.key,
     required this.controller,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   static CalendarControllerProvider<T> of<T extends Object?>(
       BuildContext context) {

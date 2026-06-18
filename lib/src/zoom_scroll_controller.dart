@@ -17,14 +17,10 @@ import 'package:flutter/widgets.dart';
 /// zero flicker.
 class ZoomScrollController extends ScrollController {
   ZoomScrollController({
-    double initialScrollOffset = 0.0,
-    bool keepScrollOffset = true,
-    String? debugLabel,
-  }) : super(
-          initialScrollOffset: initialScrollOffset,
-          keepScrollOffset: keepScrollOffset,
-          debugLabel: debugLabel,
-        );
+    super.initialScrollOffset,
+    super.keepScrollOffset,
+    super.debugLabel,
+  });
 
   double? _pendingOffset;
 
@@ -54,21 +50,14 @@ class ZoomScrollController extends ScrollController {
 
 class _ZoomScrollPosition extends ScrollPositionWithSingleContext {
   _ZoomScrollPosition({
-    required ScrollPhysics physics,
-    required ScrollContext context,
-    double? initialPixels,
-    bool keepScrollOffset = true,
-    ScrollPosition? oldPosition,
-    String? debugLabel,
+    required super.physics,
+    required super.context,
+    super.initialPixels = null,
+    super.keepScrollOffset,
+    super.oldPosition,
+    super.debugLabel,
     required this.controller,
-  }) : super(
-          physics: physics,
-          context: context,
-          initialPixels: initialPixels,
-          keepScrollOffset: keepScrollOffset,
-          oldPosition: oldPosition,
-          debugLabel: debugLabel,
-        );
+  });
 
   final ZoomScrollController controller;
 

@@ -10,7 +10,7 @@ import '../extensions.dart';
 class MonthView<T extends Object?> extends StatefulWidget {
   /// Main [Widget] to display month view.
   const MonthView({
-    Key? key,
+    super.key,
     this.monthViewStyle = const MonthViewStyle(),
     this.monthViewBuilders = const MonthViewBuilders(),
     this.monthViewThemeSettings = const MonthViewThemeSettings(),
@@ -19,7 +19,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.selectedDate,
     this.multiDateSelectionRange = const {},
     this.multiDateSelectionColor,
-  }) : super(key: key);
+  });
 
   /// A required parameters that controls events for month view.
   ///
@@ -798,9 +798,9 @@ class _MonthPageBuilder<T> extends StatefulWidget {
     required this.physics,
     required this.hideDaysNotInMonth,
     required this.weekDays,
-    Key? key,
+    super.key,
     this.borderColor,
-  }) : super(key: key);
+  });
 
   final double cellRatio;
   final bool showBorder;

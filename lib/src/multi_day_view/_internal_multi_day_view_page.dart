@@ -176,7 +176,7 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
 
   /// A single page for week view.
   const InternalMultiDayViewPage(
-      {Key? key,
+      {super.key,
       required this.showVerticalLine,
       required this.weekTitleHeight,
       required this.weekDayBuilder,
@@ -225,8 +225,7 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
       required this.multiDayViewScrollController,
       this.lastScrollOffset = 0.0,
       this.keepScrollOffset = false,
-      this.showMutliDayBottomLine = true})
-      : super(key: key);
+      this.showMutliDayBottomLine = true});
 
   @override
   _InternalMultiDayViewPageState<T> createState() =>
