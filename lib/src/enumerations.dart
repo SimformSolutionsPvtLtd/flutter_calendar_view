@@ -83,3 +83,15 @@ enum DeleteEvent {
   current,
   following,
 }
+
+/// Controls where the date information is placed relative to the event list
+/// in each [ScheduleView] day row.
+enum ScheduleDateLayout {
+  /// Date column is fixed on the left; events are listed to its right.
+  ///
+  /// This is the default layout.
+  left,
+
+  /// Date header spans the full row width above the event list.
+  top,
+}

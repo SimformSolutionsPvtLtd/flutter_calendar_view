@@ -14,6 +14,7 @@ This package is a comprehensive Flutter solution that enables you to easily impl
   - Day View
   - Week View
   - MultiDay View
+  - Schedule View
 - Highly customisable UI components
 - Manage events (add, remove, update)
 - Manage reminders (add, remove, update)
@@ -106,6 +107,14 @@ Scaffold(
 ```dart
 Scaffold(
     body: MultiDayView(),
+);
+```
+
+### Schedule View
+
+```dart
+Scaffold(
+    body: ScheduleView(),
 );
 ```
 
@@ -557,6 +566,84 @@ MultiDayView(
 );
 ```
 
+## Schedule View Customization
+
+`ScheduleView` is a scrollable, agenda-style calendar that groups events by day and month. Months are built lazily as they scroll into view, and the list is anchored at `initialDay`.
+
+```dart
+ScheduleView(
+    controller: EventController(),
+    // Anchor and date boundaries
+    initialDay: DateTime.now(), // Date pinned to the top of the viewport
+    minDay: DateTime(2000),     // Earliest date the view will display
+    maxDay: DateTime(2050),     // Latest date the view will display
+    // Which days/months are rendered
+    showEmptyMonths: true,       // Render months that contain no events (default true)
+    showDaysWithoutEvents: false, // Render a row for every day, even empty ones (default false)
+    // Date placement
+    dateLayout: ScheduleDateLayout.left, // .left (date column) or .top (full-width date header)
+    // Custom builders
+    monthHeaderBuilder: (date) => Text(date.getMonthYear()),
+    dateHeaderBuilder: (date, events, layout) => Text('${date.day}'),
+    // dayDetectorBuilder takes full control of the date column, including gestures.
+    // When set, onDateTap / onDateLongPress are ignored.
+    dayDetectorBuilder: (date, events, layout) => Container(),
+    eventTileBuilder: (event, date) => ListTile(
+      leading: CircleAvatar(backgroundColor: event.color),
+      title: Text(event.title),
+    ),
+    emptyMonthBuilder: (date) => Text('No events this month'), // Replaces empty months (showEmptyMonths must be true)
+    emptyTextWidget: Text('No events'), // Empty-day placeholder (needs showDaysWithoutEvents: true)
+    todayEmptyWidget: Text('Nothing planned today'), // Takes precedence over emptyTextWidget for today
+    // Floating month header pinned above the scroll view
+    floatingMonthHeaderBuilder: (context, visibleMonth) => Padding(
+      padding: const EdgeInsets.all(12),
+      child: Text(visibleMonth.getMonthYear()),
+    ),
+    onVisibleMonthChanged: (month) => print('Visible month: $month'),
+    // Sentinels shown once the scroll limits are reached
+    pastSentinelBuilder: (context) => const Center(child: Text('Start of calendar')),
+    futureSentinelBuilder: (context) => const Center(child: Text('End of calendar')),
+    // I18n / formatting for the default renderers
+    dateStringBuilder: (date, {secondaryDate}) => date.getMonthYear(),
+    weekDayStringBuilder: (weekday) => ['M', 'T', 'W', 'T', 'F', 'S', 'S'][weekday - 1],
+    // Sort events within a single day (defaults to ascending start time)
+    eventSorter: (a, b) => a.title.compareTo(b.title),
+    // Divider beneath the default date header in ScheduleDateLayout.top
+    defaultDateHeaderDividerSettings: DividerSettings(thickness: 1, color: Colors.grey),
+    // Event callbacks (each receives a single-element list + the date)
+    onEventTap: (events, date) => print(events),
+    onEventDoubleTap: (events, date) => print(events),
+    onEventLongTap: (events, date) => print(events),
+    onDateTap: (date) => print('Tapped: $date'),
+    onDateLongPress: (date) => print('Long pressed: $date'),
+    // Boundary callbacks (fire once when each end of the range is reached)
+    onHasReachedStart: () => print('Reached earliest available month'),
+    onHasReachedEnd: () => print('Reached latest available month'),
+    // Appearance
+    backgroundColor: Colors.white,
+    width: 400, // Explicit width; null fills available space
+    scrollPhysics: const BouncingScrollPhysics(),
+);
+```
+
+### Navigating programmatically
+
+Use a `GlobalKey<ScheduleViewState>` to jump to a specific date. The target date is pinned to the top of the viewport, with earlier days reachable by scrolling up.
+
+```dart
+final key = GlobalKey<ScheduleViewState>();
+
+ScheduleView(key: key);
+
+key.currentState?.jumpToDate(DateTime(2026, 1, 1));
+```
+
+### Sparse vs. dense rendering
+
+- **Dense (default)** — `showEmptyMonths: true` always renders every month in range, and/or `showDaysWithoutEvents: true` renders a row for every day.
+- **Sparse** — set `showEmptyMonths: false` (with `showDaysWithoutEvents: false`) so only days with events (plus today) render, and the scrollable range is clamped to the actual extent of the controller's events. This keeps the view responsive even when `minDay`/`maxDay` span decades.
+
 ## Show Only Working Days in `WeekView`
 
 You can control visible weekdays using the `weekDays` parameter:
@@ -833,6 +920,7 @@ The package supports dark mode out of the box. Each calendar view has a dedicate
 | `DayViewThemeData` | `DayView` |
 | `WeekViewThemeData` | `WeekView` |
 | `MultiDayViewThemeData` | `MultiDayView` |
+| `ScheduleViewThemeData` | `ScheduleView` |
 
 ## Default colours
 
@@ -902,6 +990,25 @@ The package supports dark mode out of the box. Each calendar view has a dedicate
 | `headerTextColor` | `onPrimary` |
 | `headerBackgroundColor` | `primary` |
 
+### ScheduleViewThemeData
+
+| Property | Default (light) |
+|----------|----------------|
+| `todayHighlightColor` | `primary` |
+| `todayTextColor` | `onPrimary` |
+| `dateTextColor` | `onSurface` |
+| `weekdayTextColor` | `outlineVariant` |
+| `dateDividerColor` | `outlineVariant` |
+| `emptyContentColor` | `emptyContent` |
+| `eventTitleColor` | `onSurface` |
+| `eventSecondaryTextColor` | `outline` |
+| `eventTileAlpha` | `28` (light) / `45` (dark) |
+| `eventTimeColorLightnessAdjust` | `-0.1` (light) / `0.0` (dark) |
+| `monthHeaderTextColor` | `monthHeaderText` |
+| `monthHeaderGradientStartColor` | `transparent` |
+| `monthHeaderGradientEndColor` | `monthHeaderGradientEnd` |
+| `monthHeaderTextShadowColor` | `monthHeaderTextShadow` |
+
 To customise `MonthView`, `DayView`, `WeekView` & `MultiDayView` page header use `HeaderStyle`.
 
 ```dart
@@ -929,6 +1036,7 @@ There are two main ways to customize the theme for calendar views:
        dayViewTheme: DayViewThemeData.light(),
        weekViewTheme: WeekViewThemeData.light(),
        multiDayViewTheme: MultiDayViewThemeData.light(),
+       scheduleViewTheme: ScheduleViewThemeData.light(),
      ),
      child: YourApp(),
    )
@@ -949,6 +1057,7 @@ There are two main ways to customize the theme for calendar views:
        DayViewThemeData.light(),
        WeekViewThemeData.light(),
        MultiDayViewThemeData.light(),
+       ScheduleViewThemeData.light(),
      ],
    );
    ```
@@ -1089,6 +1198,30 @@ MonthView(
 Hide divider in multiday view.
 ```dart
   dividerSettings: DividerSettings.none(),
+```
+
+### Schedule View
+* All schedule colours resolve from `ScheduleViewThemeData` (`context.scheduleViewColors`), falling back to `.light()` / `.dark()` based on `Theme.of(context).brightness`.
+* Today's date badge uses `todayHighlightColor` (background) and `todayTextColor` (number). Other dates use `dateTextColor`, and weekday abbreviations use `weekdayTextColor`.
+* Event tiles tint the event's own colour by `eventTileAlpha`; the time label is adjusted by `eventTimeColorLightnessAdjust`. Title and secondary text use `eventTitleColor` and `eventSecondaryTextColor`.
+* Empty-state labels (per-day placeholder and the past/future sentinels) use `emptyContentColor`.
+* The month-header image overlay uses `monthHeaderGradientStartColor` → `monthHeaderGradientEndColor`, with `monthHeaderTextColor` and `monthHeaderTextShadowColor` for the title.
+* In `ScheduleDateLayout.top`, the divider beneath the default date header uses `dateDividerColor`; override it per-widget with `defaultDateHeaderDividerSettings` (use `DividerSettings.none()` to hide it).
+
+```dart
+CalendarThemeProvider(
+  calendarTheme: CalendarThemeData(
+    monthViewTheme: MonthViewThemeData.light(),
+    dayViewTheme: DayViewThemeData.light(),
+    weekViewTheme: WeekViewThemeData.light(),
+    multiDayViewTheme: MultiDayViewThemeData.light(),
+    scheduleViewTheme: ScheduleViewThemeData.light().copyWith(
+      todayHighlightColor: Colors.blue,
+      eventTileAlpha: 40,
+    ),
+  ),
+  child: YourApp(),
+)
 ```
 
 # Migration Guides

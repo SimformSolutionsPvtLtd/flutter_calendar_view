@@ -1,5 +1,8 @@
 # [Unreleased - 29 May 2026]
 
+- [BREAKING] Added `BuildContextExtension` to public API for theme access.
+- Added `ScheduleView`, a scrollable, agenda-style calendar that groups events by day and month. [#101](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/101)
+- Added localized `months` and `monthsAbbr` fields to `CalendarLocalizations`, with the `DateTime.getMonthName({abbreviated})` and `DateTime.getMonthYear({abbreviatedMonth})` extensions.
 - [BREAKING] Changed `RecurrenceSettings.weekdays` type from `List<int>` to `List<WeekDays>`. [#509](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/509)
 - [BREAKING] `WeekDayBuilder`'s parameter changed from `int day` to `WeekDays weekDay`.
 - [BREAKING] Removed `startTime` and `endTime` from `CalendarEventData` constructor and `copyWith` parameters. Time is now embedded in the `date` and `endDate` `DateTime` parameters. [#231](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/231)

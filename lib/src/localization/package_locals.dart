@@ -22,6 +22,34 @@ class PackageStrings {
         pm: 'p. m.',
         more: 'Más',
         weekdays: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
+        months: [
+          'Enero',
+          'Febrero',
+          'Marzo',
+          'Abril',
+          'Mayo',
+          'Junio',
+          'Julio',
+          'Agosto',
+          'Septiembre',
+          'Octubre',
+          'Noviembre',
+          'Diciembre',
+        ],
+        monthsAbbr: [
+          'Ene',
+          'Feb',
+          'Mar',
+          'Abr',
+          'May',
+          'Jun',
+          'Jul',
+          'Ago',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dic',
+        ],
       );
 
   /// Arabic (العربية) localizations with RTL support
@@ -30,6 +58,34 @@ class PackageStrings {
         pm: 'م',
         more: 'المزيد',
         weekdays: ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'],
+        months: [
+          'يناير',
+          'فبراير',
+          'مارس',
+          'أبريل',
+          'مايو',
+          'يونيو',
+          'يوليو',
+          'أغسطس',
+          'سبتمبر',
+          'أكتوبر',
+          'نوفمبر',
+          'ديسمبر',
+        ],
+        monthsAbbr: [
+          'يناير',
+          'فبراير',
+          'مارس',
+          'أبريل',
+          'مايو',
+          'يونيو',
+          'يوليو',
+          'أغسطس',
+          'سبتمبر',
+          'أكتوبر',
+          'نوفمبر',
+          'ديسمبر',
+        ],
         numbers: [
           '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', // 0-9
           '١٠', '١١', '١٢', '١٣', '١٤', '١٥', '١٦', '١٧', '١٨', '١٩', // 10-19
@@ -48,6 +104,34 @@ class PackageStrings {
         pm: 'PM',
         more: 'Plus',
         weekdays: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+        months: [
+          'Janvier',
+          'Février',
+          'Mars',
+          'Avril',
+          'Mai',
+          'Juin',
+          'Juillet',
+          'Août',
+          'Septembre',
+          'Octobre',
+          'Novembre',
+          'Décembre',
+        ],
+        monthsAbbr: [
+          'Jan',
+          'Fév',
+          'Mar',
+          'Avr',
+          'Mai',
+          'Jun',
+          'Jul',
+          'Aoû',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Déc',
+        ],
       );
 
   /// German (Deutsch) localizations
@@ -56,6 +140,34 @@ class PackageStrings {
         pm: 'PM',
         more: 'Mehr',
         weekdays: ['M', 'D', 'M', 'D', 'F', 'S', 'S'],
+        months: [
+          'Januar',
+          'Februar',
+          'März',
+          'April',
+          'Mai',
+          'Juni',
+          'Juli',
+          'August',
+          'September',
+          'Oktober',
+          'November',
+          'Dezember',
+        ],
+        monthsAbbr: [
+          'Jan',
+          'Feb',
+          'Mär',
+          'Apr',
+          'Mai',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Okt',
+          'Nov',
+          'Dez',
+        ],
       );
 
   /// Hindi (हिन्दी) localizations with Devanagari numbers
@@ -64,6 +176,34 @@ class PackageStrings {
         pm: 'अपराह्न',
         more: 'अधिक',
         weekdays: ['सो', 'मं', 'बु', 'गु', 'शु', 'श', 'र'],
+        months: [
+          'जनवरी',
+          'फरवरी',
+          'मार्च',
+          'अप्रैल',
+          'मई',
+          'जून',
+          'जुलाई',
+          'अगस्त',
+          'सितंबर',
+          'अक्टूबर',
+          'नवंबर',
+          'दिसंबर',
+        ],
+        monthsAbbr: [
+          'जन',
+          'फर',
+          'मार्च',
+          'अप्रै',
+          'मई',
+          'जून',
+          'जुला',
+          'अग',
+          'सित',
+          'अक्टू',
+          'नव',
+          'दिस',
+        ],
         numbers: [
           '०', '१', '२', '३', '४', '५', '६', '७', '८', '९', // 0-9
           '१०', '११', '१२', '१३', '१४', '१५', '१६', '१७', '१८', '१९', // 10-19
@@ -81,6 +221,34 @@ class PackageStrings {
         pm: '下午',
         more: '更多',
         weekdays: ['一', '二', '三', '四', '五', '六', '日'],
+        months: [
+          '一月',
+          '二月',
+          '三月',
+          '四月',
+          '五月',
+          '六月',
+          '七月',
+          '八月',
+          '九月',
+          '十月',
+          '十一月',
+          '十二月',
+        ],
+        monthsAbbr: [
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
+        ],
       );
 
   /// Japanese (日本語) localizations
@@ -89,6 +257,34 @@ class PackageStrings {
         pm: '午後',
         more: 'もっと',
         weekdays: ['月', '火', '水', '木', '金', '土', '日'],
+        months: [
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
+        ],
+        monthsAbbr: [
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
+        ],
       );
 
   /// Set the current locale for the package strings (e.g., 'en', 'es').
@@ -110,25 +306,38 @@ class PackageStrings {
 
   static String get selectedLocale => _currentLocale;
 
-  /// Converts any integer (0-60) to a localized string using current locale's numbers.
+  /// Converts [number] to a string using the current locale's localized
+  /// digits.
   ///
-  /// If the locale has a numbers array with at least 61 elements (0-60),
-  /// it will return the localized representation directly from the array.
-  /// Otherwise, it returns the number as a string.
-  static String localizeNumber(int number) {
+  /// Works for integers of any magnitude — days, months, hours and large
+  /// values such as years are all localized (e.g. `2026` -> `"٢٠٢٦"` for the
+  /// Arabic locale). Delegates to [localizeNumberString].
+  static String localizeNumber(int number) =>
+      localizeNumberString(number.toString());
+
+  /// Replaces every Western digit (`0`-`9`) in [input] with the current
+  /// locale's localized digit, taken from [CalendarLocalizations.numbers].
+  ///
+  /// All other characters — separators (`/`, `:`, `-`), directionality marks,
+  /// AM/PM markers and letters — are preserved untouched, so already-formatted
+  /// strings (e.g. the output of `intl`'s `DateFormat`) can be localized in
+  /// place. When the current locale does not define a digit set (i.e. it uses
+  /// Western digits, like English), [input] is returned unchanged.
+  ///
+  /// This is the single source of truth for digit localization across the
+  /// package and is unaffected by the magnitude of the number, unlike a fixed
+  /// lookup table.
+  static String localizeNumberString(String input) {
     final numbers = currentLocale.numbers;
 
-    // Check if numbers array is available and has enough elements
-    if (numbers == null || numbers.length < 61) {
-      return number.toString();
+    // Locale uses Western digits (or defines no digit set) — nothing to map.
+    if (numbers == null || numbers.length < 10) {
+      return input;
     }
 
-    // Validate range (0-60 for calendar usage)
-    if (number < 0 || number > 60) {
-      return number.toString();
-    }
-
-    // Return the localized number directly from the array
-    return numbers[number];
+    return input.replaceAllMapped(
+      RegExp(r'[0-9]'),
+      (match) => numbers[int.parse(match[0]!)],
+    );
   }
 }
