@@ -9,11 +9,7 @@ import 'web/web_home_page.dart';
 DateTime get _now => DateTime.now();
 
 class HomePage extends StatefulWidget {
-  const HomePage({this.onChangeTheme, super.key});
-
-  /// Return true for dark mode
-  /// false for light mode
-  final void Function(bool)? onChangeTheme;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -352,8 +348,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
-      mobileWidget: MobileHomePage(onChangeTheme: widget.onChangeTheme),
-      webWidget: WebHomePage(onThemeChange: widget.onChangeTheme),
+      mobileWidget: MobileHomePage(),
+      webWidget: WebHomePage(),
     );
   }
 }

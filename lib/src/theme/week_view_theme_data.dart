@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'dark_app_colors.dart';
-import 'light_app_colors.dart';
+import 'calendar_view_colors.dart';
 
 class WeekViewThemeData extends ThemeExtension<WeekViewThemeData> {
   /// Define custom colors
@@ -47,35 +46,35 @@ class WeekViewThemeData extends ThemeExtension<WeekViewThemeData> {
 
   /// Get pre-defined colors for light theme
   WeekViewThemeData.light()
-      : weekDayTileColor = LightAppColors.surfaceContainerHigh,
-        weekDayTextColor = LightAppColors.onSurface,
-        hourLineColor = LightAppColors.surfaceContainerHighest,
-        halfHourLineColor = LightAppColors.surfaceContainerHighest,
-        quarterHourLineColor = LightAppColors.surfaceContainerHighest,
-        liveIndicatorColor = LightAppColors.primary,
-        pageBackgroundColor = LightAppColors.surfaceContainerLowest,
-        headerIconColor = LightAppColors.onPrimary,
-        headerTextColor = LightAppColors.onPrimary,
-        headerBackgroundColor = LightAppColors.primary,
-        timelineTextColor = LightAppColors.onSurface,
-        borderColor = LightAppColors.surfaceContainerHighest,
-        verticalLinesColor = LightAppColors.surfaceContainerHighest;
+      : weekDayTileColor = CalendarViewColors.light.surfaceContainerHigh,
+        weekDayTextColor = CalendarViewColors.light.onSurface,
+        hourLineColor = CalendarViewColors.light.surfaceContainerHighest,
+        halfHourLineColor = CalendarViewColors.light.surfaceContainerHighest,
+        quarterHourLineColor = CalendarViewColors.light.surfaceContainerHighest,
+        liveIndicatorColor = CalendarViewColors.light.primary,
+        pageBackgroundColor = CalendarViewColors.light.surfaceContainerLowest,
+        headerIconColor = CalendarViewColors.light.onPrimary,
+        headerTextColor = CalendarViewColors.light.onPrimary,
+        headerBackgroundColor = CalendarViewColors.light.primary,
+        timelineTextColor = CalendarViewColors.light.onSurface,
+        borderColor = CalendarViewColors.light.surfaceContainerHighest,
+        verticalLinesColor = CalendarViewColors.light.surfaceContainerHighest;
 
   /// Get pre-defined colors for dark theme
   WeekViewThemeData.dark()
-      : weekDayTileColor = DarkAppColors.surfaceContainerHigh,
-        weekDayTextColor = DarkAppColors.onSurface,
-        hourLineColor = DarkAppColors.surfaceContainerHighest,
-        halfHourLineColor = DarkAppColors.surfaceContainerHighest,
-        quarterHourLineColor = DarkAppColors.surfaceContainerHighest,
-        liveIndicatorColor = DarkAppColors.primary,
-        pageBackgroundColor = DarkAppColors.surfaceContainerLowest,
-        headerIconColor = DarkAppColors.onPrimary,
-        headerTextColor = DarkAppColors.onPrimary,
-        headerBackgroundColor = DarkAppColors.primary,
-        timelineTextColor = DarkAppColors.onSurface,
-        borderColor = DarkAppColors.surfaceContainerHighest,
-        verticalLinesColor = DarkAppColors.surfaceContainerHighest;
+      : weekDayTileColor = CalendarViewColors.dark.surfaceContainerHigh,
+        weekDayTextColor = CalendarViewColors.dark.onSurface,
+        hourLineColor = CalendarViewColors.dark.surfaceContainerHighest,
+        halfHourLineColor = CalendarViewColors.dark.surfaceContainerHighest,
+        quarterHourLineColor = CalendarViewColors.dark.surfaceContainerHighest,
+        liveIndicatorColor = CalendarViewColors.dark.primary,
+        pageBackgroundColor = CalendarViewColors.dark.surfaceContainerLowest,
+        headerIconColor = CalendarViewColors.dark.onPrimary,
+        headerTextColor = CalendarViewColors.dark.onPrimary,
+        headerBackgroundColor = CalendarViewColors.dark.primary,
+        timelineTextColor = CalendarViewColors.dark.onSurface,
+        borderColor = CalendarViewColors.dark.surfaceContainerHighest,
+        verticalLinesColor = CalendarViewColors.dark.surfaceContainerHighest;
 
   @override
   ThemeExtension<WeekViewThemeData> copyWith({

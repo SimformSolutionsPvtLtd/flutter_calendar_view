@@ -364,25 +364,41 @@ extension NullableCallback3<A, B, C> on void Function(A, B, C)? {
 }
 
 extension BuildContextExtension on BuildContext {
-  /// Get [MonthViewThemeData] from theme, if null returns light theme.
+  /// Get [MonthViewThemeData] from theme, if null returns light or dark theme
+  /// based on the ambient [Theme]'s brightness.
   /// [MonthViewThemeData] needs to be added in [MaterialApp] theme extensions
   /// to get theme data with this type.
-  MonthViewThemeData get monthViewColors =>
-      Theme.of(this).extension<MonthViewThemeData>() ??
-      MonthViewThemeData.light();
+  MonthViewThemeData get monthViewColors {
+    final theme = Theme.of(this);
+    return theme.extension<MonthViewThemeData>() ??
+        (theme.brightness == Brightness.dark
+            ? MonthViewThemeData.dark()
+            : MonthViewThemeData.light());
+  }
 
-  /// Get [DayViewThemeData] from theme, if null returns light theme.
+  /// Get [DayViewThemeData] from theme, if null returns light or dark theme
+  /// based on the ambient [Theme]'s brightness.
   /// [DayViewThemeData] needs to be added in [MaterialApp] theme extensions
   /// to get theme data with this type.
-  DayViewThemeData get dayViewColors =>
-      Theme.of(this).extension<DayViewThemeData>() ?? DayViewThemeData.light();
+  DayViewThemeData get dayViewColors {
+    final theme = Theme.of(this);
+    return theme.extension<DayViewThemeData>() ??
+        (theme.brightness == Brightness.dark
+            ? DayViewThemeData.dark()
+            : DayViewThemeData.light());
+  }
 
-  /// Get [WeekViewThemeData] from theme, if null returns light theme.
+  /// Get [WeekViewThemeData] from theme, if null returns light or dark theme
+  /// based on the ambient [Theme]'s brightness.
   /// [WeekViewThemeData] needs to be added in [MaterialApp] theme extensions
   /// to get theme data with this type.
-  WeekViewThemeData get weekViewColors =>
-      Theme.of(this).extension<WeekViewThemeData>() ??
-      WeekViewThemeData.light();
+  WeekViewThemeData get weekViewColors {
+    final theme = Theme.of(this);
+    return theme.extension<WeekViewThemeData>() ??
+        (theme.brightness == Brightness.dark
+            ? WeekViewThemeData.dark()
+            : WeekViewThemeData.light());
+  }
 
   /// Get [MultiDayViewThemeData] from theme, if null returns light or dark theme
   /// based on the ambient [Theme]'s brightness.
@@ -406,21 +422,6 @@ extension BuildContextExtension on BuildContext {
         (theme.brightness == Brightness.dark
             ? ScheduleViewThemeData.dark()
             : ScheduleViewThemeData.light());
-  }
-}
-
-extension BuildContextMultiDayViewThemeExtension on BuildContext {
-  /// Get MultiDayViewTheme from Theme
-  MultiDayViewThemeData get multiDayViewTheme {
-    final theme = Theme.of(this).extension<MultiDayViewThemeData>();
-    if (theme != null) {
-      return theme;
-    }
-
-    // If no theme extension is available, return based on brightness
-    return Theme.of(this).brightness == Brightness.dark
-        ? MultiDayViewThemeData.dark()
-        : MultiDayViewThemeData.light();
   }
 }
 

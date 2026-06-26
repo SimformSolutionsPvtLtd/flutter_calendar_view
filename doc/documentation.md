@@ -1021,46 +1021,48 @@ To customise `MonthView`, `DayView`, `WeekView` & `MultiDayView` page header use
       ),
 ```
 
-### Theme implementation approaches
+### Theme implementation approach
 
-There are two main ways to customize the theme for calendar views:
+Every theme data class extends `ThemeExtension`, so themes are applied by
+registering them in `ThemeData.extensions`. Each calendar view reads its theme
+from the nearest `ThemeData` (via `context.dayViewColors`, `context.weekViewColors`,
+etc.), falling back to `.light()` / `.dark()` based on `Theme.of(context).brightness`.
 
-1. **Using `CalendarThemeProvider`** (recommended):
-   ```dart
-   CalendarThemeProvider(
-     calendarTheme: CalendarThemeData(
-       monthViewTheme: MonthViewThemeData.light().copyWith(
-         cellInMonthColor: Colors.blue.shade50,
-         cellBorderColor: Colors.blue.shade300,
-       ),
-       dayViewTheme: DayViewThemeData.light(),
-       weekViewTheme: WeekViewThemeData.light(),
-       multiDayViewTheme: MultiDayViewThemeData.light(),
-       scheduleViewTheme: ScheduleViewThemeData.light(),
-     ),
-     child: YourApp(),
-   )
-   ```
+```dart
+// Create custom theme
+final myMonthViewTheme = MonthViewThemeData.light().copyWith(
+  cellInMonthColor: Colors.blue.shade50,
+  cellBorderColor: Colors.blue.shade300,
+);
 
-2. **Using ThemeData extensions** (since all theme data classes extend `ThemeExtension`):
-   ```dart
-   // Create custom theme
-   final myMonthViewTheme = MonthViewThemeData.light().copyWith(
-     cellInMonthColor: Colors.blue.shade50,
-     cellBorderColor: Colors.blue.shade300,
-   );
+// Apply to your app theme — register extensions on BOTH theme and darkTheme
+// so customizations apply in all brightness modes.
+final lightTheme = ThemeData.light().copyWith(
+  extensions: [
+    myMonthViewTheme,
+    DayViewThemeData.light(),
+    WeekViewThemeData.light(),
+    MultiDayViewThemeData.light(),
+    ScheduleViewThemeData.light(),
+  ],
+);
 
-   // Apply to your app theme
-   final theme = ThemeData.light().copyWith(
-     extensions: [
-       myMonthViewTheme,
-       DayViewThemeData.light(),
-       WeekViewThemeData.light(),
-       MultiDayViewThemeData.light(),
-       ScheduleViewThemeData.light(),
-     ],
-   );
-   ```
+final darkTheme = ThemeData.dark().copyWith(
+  extensions: [
+    MonthViewThemeData.dark(),
+    DayViewThemeData.dark(),
+    WeekViewThemeData.dark(),
+    MultiDayViewThemeData.dark(),
+    ScheduleViewThemeData.dark(),
+  ],
+);
+
+MaterialApp(
+  theme: lightTheme,
+  darkTheme: darkTheme,
+  // ...
+);
+```
 
 ### Day view
 * Default timeline text color is `timelineTextColor` in `DayViewThemeData` (defaults to `onSurface`).
@@ -1209,19 +1211,19 @@ Hide divider in multiday view.
 * In `ScheduleDateLayout.top`, the divider beneath the default date header uses `dateDividerColor`; override it per-widget with `defaultDateHeaderDividerSettings` (use `DividerSettings.none()` to hide it).
 
 ```dart
-CalendarThemeProvider(
-  calendarTheme: CalendarThemeData(
-    monthViewTheme: MonthViewThemeData.light(),
-    dayViewTheme: DayViewThemeData.light(),
-    weekViewTheme: WeekViewThemeData.light(),
-    multiDayViewTheme: MultiDayViewThemeData.light(),
-    scheduleViewTheme: ScheduleViewThemeData.light().copyWith(
+final theme = ThemeData.light().copyWith(
+  extensions: [
+    ScheduleViewThemeData.light().copyWith(
       todayHighlightColor: Colors.blue,
       eventTileAlpha: 40,
     ),
-  ),
-  child: YourApp(),
-)
+  ],
+);
+
+MaterialApp(
+  theme: theme,
+  // ...
+);
 ```
 
 # Migration Guides
@@ -1381,6 +1383,56 @@ final end   = organized.endDuration;   // TimeOfDay
 | `TimerOfDayExtension.getTotalMinutes`        | Use `TimeOfDayExtension.getTotalMinutes`   |
 | `DateTime.dateYMD` (Deprecated)              | Use `DateTime.withoutTime` getter          |
 | `MaterialColorExtension.accent` (Deprecated) | No replacement                             |
+
+### 10. Removed `CalendarThemeProvider` and `CalendarThemeData`
+
+`CalendarThemeProvider` and its `CalendarThemeData` payload have been removed. The calendar views never read from them — themes resolve exclusively from `ThemeData.extensions` (via `context.dayViewColors`, `context.scheduleViewColors`, etc.). Register each view's `…ViewThemeData` in `ThemeData.extensions` instead.
+
+**Before (≤ 2.x):**
+```dart
+CalendarThemeProvider(
+  calendarTheme: CalendarThemeData(
+    monthViewTheme: MonthViewThemeData.light(),
+    dayViewTheme: DayViewThemeData.light().copyWith(hourLineColor: Colors.grey),
+    weekViewTheme: WeekViewThemeData.light(),
+    multiDayViewTheme: MultiDayViewThemeData.light(),
+    scheduleViewTheme: ScheduleViewThemeData.light(),
+  ),
+  child: MaterialApp(
+    // ...
+  ),
+);
+```
+
+**After (3.0.0+):**
+```dart
+MaterialApp(
+  theme: ThemeData.light().copyWith(
+    extensions: [
+      MonthViewThemeData.light(),
+      DayViewThemeData.light().copyWith(hourLineColor: Colors.grey),
+      WeekViewThemeData.light(),
+      MultiDayViewThemeData.light(),
+      ScheduleViewThemeData.light(),
+    ],
+  ),
+  // ...
+);
+```
+
+### 11. Removed `BuildContextMultiDayViewThemeExtension.multiDayViewTheme`
+
+The standalone `context.multiDayViewTheme` accessor (from the `BuildContextMultiDayViewThemeExtension` extension) has been removed. Use `context.multiDayViewColors` from `BuildContextExtension` instead — it returns the same `MultiDayViewThemeData`, resolving from `ThemeData.extensions` and falling back to `.light()` / `.dark()` based on the ambient `Theme` brightness.
+
+**Before (≤ 2.x):**
+```dart
+final theme = context.multiDayViewTheme;
+```
+
+**After (3.0.0+):**
+```dart
+final theme = context.multiDayViewColors;
+```
 
 
 ## Migrate from `1.x.x` to latest

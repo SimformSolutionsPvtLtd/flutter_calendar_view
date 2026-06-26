@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../extension.dart';
 import '../../localization/locale_controller.dart';
+import '../../theme/theme_controller.dart';
 import '../day_view_page.dart';
 import '../month_view_page.dart';
 import '../multi_day_view_page.dart';
@@ -9,85 +10,43 @@ import '../schedule_view_page.dart';
 import '../week_view_page.dart';
 
 class MobileHomePage extends StatefulWidget {
-  MobileHomePage({this.onChangeTheme, super.key});
-
-  final void Function(bool)? onChangeTheme;
+  const MobileHomePage({super.key});
 
   @override
   State<MobileHomePage> createState() => _MobileHomePageState();
 }
 
 class _MobileHomePageState extends State<MobileHomePage> {
-  bool isDarkMode = false;
-
+  /// Shows a dialog to select the current locale.
   void _showLocaleDialog(BuildContext context) {
     final localeController = LocaleController.of(context);
-    final currentLocale = localeController.currentLocale;
-    final translate = context.translate;
-    showDialog(
+    _showSelectionDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(translate.selectLanguage),
-        content: Container(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildLanguageOption(context, 'en', 'English', currentLocale),
-              Divider(),
-              _buildLanguageOption(context, 'es', 'Spanish', currentLocale),
-              Divider(),
-              _buildLanguageOption(context, 'ar', 'Arabic', currentLocale),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(translate.cancel),
-          ),
-        ],
-      ),
+      title: context.translate.selectLanguage,
+      currentValue: localeController.currentLocale,
+      options: const [
+        (value: 'en', label: 'English'),
+        (value: 'es', label: 'Spanish'),
+        (value: 'ar', label: 'Arabic'),
+      ],
+      onSelected: localeController.setLocale,
     );
   }
 
-  Widget _buildLanguageOption(
-    BuildContext context,
-    String locale,
-    String name,
-    String currentLocale,
-  ) {
-    final isSelected = locale == currentLocale;
-
-    return InkWell(
-      onTap: () {
-        LocaleController.of(context).setLocale(locale);
-        Navigator.of(context).pop();
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
-              : null,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-            if (isSelected)
-              Icon(Icons.check, color: Theme.of(context).primaryColor),
-          ],
-        ),
-      ),
+  /// Shows a dialog to select the current theme.
+  void _showThemeDialog(BuildContext context) {
+    final themeController = ThemeController.of(context);
+    final translate = context.translate;
+    _showSelectionDialog<ThemeMode>(
+      context: context,
+      title: translate.theme,
+      currentValue: themeController.themeMode,
+      options: [
+        (value: ThemeMode.system, label: translate.themeSystem),
+        (value: ThemeMode.light, label: translate.themeLight),
+        (value: ThemeMode.dark, label: translate.themeDark),
+      ],
+      onSelected: themeController.setThemeMode,
     );
   }
 
@@ -135,20 +94,99 @@ class _MobileHomePageState extends State<MobileHomePage> {
         children: [
           FloatingActionButton(
             heroTag: null,
-            child: Icon(Icons.dark_mode, color: context.appColors.onPrimary),
-            onPressed: () {
-              isDarkMode = !isDarkMode;
-              if (widget.onChangeTheme != null) {
-                widget.onChangeTheme!(isDarkMode);
-              }
-              setState(() {});
-            },
+            child: Icon(Icons.brightness_6, color: context.appColors.onPrimary),
+            onPressed: () => _showThemeDialog(context),
           ),
           SizedBox(width: 16),
           FloatingActionButton(
             heroTag: null,
             child: Icon(Icons.language, color: context.appColors.onPrimary),
             onPressed: () => _showLocaleDialog(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Shows a themed single-choice selection dialog. The active option is
+  /// highlighted with a tinted background and a primary-coloured check icon,
+  /// and every colour flows through `context.appColors` so the selection stays
+  /// legible in both light and dark themes.
+  Future<void> _showSelectionDialog<T>({
+    required BuildContext context,
+    required String title,
+    required T currentValue,
+    required List<({T value, String label})> options,
+    required ValueChanged<T> onSelected,
+  }) {
+    final colors = context.appColors;
+    final translate = context.translate;
+
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: colors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(title, style: TextStyle(color: colors.onSurface)),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: options.map((option) {
+              final isSelected = option.value == currentValue;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Material(
+                  color: isSelected
+                      ? colors.primary.withValues(alpha: 0.12)
+                      : colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      onSelected(option.value);
+                      Navigator.of(dialogContext).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              option.label,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: isSelected
+                                    ? colors.primary
+                                    : colors.onSurface,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(Icons.check, color: colors.primary),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(
+              translate.cancel,
+              style: TextStyle(color: colors.primary),
+            ),
           ),
         ],
       ),

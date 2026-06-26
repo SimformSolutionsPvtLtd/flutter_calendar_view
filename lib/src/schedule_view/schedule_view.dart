@@ -19,8 +19,8 @@ import '_internal_schedule_view_page.dart';
 /// navigate to a specific date.
 ///
 /// Visual styling is resolved from the nearest [ScheduleViewThemeData]
-/// extension on [ThemeData], typically provided by
-/// [CalendarThemeProvider].
+/// extension on [ThemeData], typically registered via
+/// [ThemeData.extensions].
 ///
 /// ## Scrolling model
 ///
@@ -38,7 +38,7 @@ import '_internal_schedule_view_page.dart';
 /// See also:
 /// - [ScheduleViewState] for navigation APIs.
 /// - [CalendarControllerProvider] for sharing an [EventController].
-/// - [CalendarThemeProvider] for providing [ScheduleViewThemeData].
+/// - [ScheduleViewThemeData] registered via [ThemeData.extensions] for styling.
 class ScheduleView<T extends Object?> extends StatefulWidget {
   /// The event controller that provides events to this view.
   ///
