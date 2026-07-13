@@ -59,7 +59,22 @@ class CalendarEventData<T extends Object?> {
   })  : _endDate = endDate?.withoutTime,
         date = date.withoutTime;
 
-  DateTime get endDate => _endDate ?? date;
+  DateTime get endDate {
+    final end = _endDate ?? date;
+
+    // An event whose [endTime] is exactly midnight contributes zero minutes
+    // to the end day, so the end date is exclusive. Full-day events
+    // (null times, or both times at day start) keep the inclusive semantics.
+    if (end.isAfter(date) &&
+        startTime != null &&
+        endTime != null &&
+        endTime!.isDayStart &&
+        !startTime!.isDayStart) {
+      return DateTime(end.year, end.month, end.day - 1);
+    }
+
+    return end;
+  }
 
   /// If this flag returns true that means event is occurring on multiple
   /// days and is not a full day event.
