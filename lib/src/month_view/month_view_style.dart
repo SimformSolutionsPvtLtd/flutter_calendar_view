@@ -30,7 +30,13 @@ class MonthViewStyle {
     this.pageViewPhysics,
     this.showWeekTileBorder = true,
     this.hideDaysNotInMonth = false,
-  });
+    this.shrinkWrap = false,
+  }) : assert(
+          !(shrinkWrap && useAvailableVerticalSpace),
+          'useAvailableVerticalSpace derives cellAspectRatio from the '
+          'available height, while shrinkWrap derives the height from '
+          'cellAspectRatio. Enable only one of them.',
+        );
 
   /// Show weekends or not.
   /// Default value is true.
@@ -118,6 +124,26 @@ class MonthViewStyle {
   /// Defines whether to show or hide cells that are not in the current month.
   final bool hideDaysNotInMonth;
 
+  /// Whether the month view occupies only the vertical space its content
+  /// needs instead of expanding to fill its parent.
+  ///
+  /// Default value is false, which requires the month view to be given a
+  /// bounded height. Enable this to place a month view inside an unbounded
+  /// parent such as a scroll view or a [Column] with
+  /// [MainAxisSize.min].
+  ///
+  /// The height is derived from the width, which comes from [MonthView.width]
+  /// or the closest [MediaQuery], and [cellAspectRatio]: a cell is
+  /// `width / columns` wide and `cellWidth / cellAspectRatio` tall, and the
+  /// grid is as tall as the rows the displayed month needs. Months requiring
+  /// a different number of rows therefore change the height of the view when
+  /// they become the displayed month, which is most noticeable together with
+  /// [hideDaysNotInMonth].
+  ///
+  /// Cannot be combined with [useAvailableVerticalSpace], which resolves
+  /// [cellAspectRatio] in the opposite direction.
+  final bool shrinkWrap;
+
   /// Creates a copy of this style with the given fields replaced.
   MonthViewStyle copyWith({
     bool? showBorder,
@@ -138,6 +164,7 @@ class MonthViewStyle {
     ScrollPhysics? pageViewPhysics,
     bool? showWeekTileBorder,
     bool? hideDaysNotInMonth,
+    bool? shrinkWrap,
   }) {
     return MonthViewStyle(
       showBorder: showBorder ?? this.showBorder,
@@ -160,6 +187,7 @@ class MonthViewStyle {
       pageViewPhysics: pageViewPhysics ?? this.pageViewPhysics,
       showWeekTileBorder: showWeekTileBorder ?? this.showWeekTileBorder,
       hideDaysNotInMonth: hideDaysNotInMonth ?? this.hideDaysNotInMonth,
+      shrinkWrap: shrinkWrap ?? this.shrinkWrap,
     );
   }
 
@@ -185,6 +213,7 @@ class MonthViewStyle {
       pageViewPhysics: other.pageViewPhysics,
       showWeekTileBorder: other.showWeekTileBorder,
       hideDaysNotInMonth: other.hideDaysNotInMonth,
+      shrinkWrap: other.shrinkWrap,
     );
   }
 }

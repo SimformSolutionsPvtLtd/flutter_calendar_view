@@ -12,6 +12,9 @@ import '../../calendar_view.dart';
 /// * Customize the month header using [headerBuilder] or by providing
 ///   only label builders such as [headerStringBuilder],
 ///   [dateStringBuilder], and [weekDayStringBuilder].
+/// * Mark individual dates as non-interactive using [isCellEnabled].
+/// * Load a month's data before its grid is shown using [beforePageLoad],
+///   and customize the indicator displayed meanwhile using [loadingBuilder].
 /// * React to page changes using [onPageChange].
 /// * Handle taps and gestures on dates and events using callbacks such as
 ///   [onCellTap], [onDateLongPress], [onEventTap], [onEventLongTap],
@@ -43,6 +46,9 @@ class MonthViewBuilders<T extends Object?> {
     this.onEventDoubleTapDetails,
     this.onHasReachedEnd,
     this.onHasReachedStart,
+    this.beforePageLoad,
+    this.isCellEnabled,
+    this.loadingBuilder,
   }) : assert(!(onHeaderTitleTap != null && headerBuilder != null),
             "can't use [onHeaderTitleTap] & [headerBuilder] simultaneously");
 
@@ -140,4 +146,43 @@ class MonthViewBuilders<T extends Object?> {
   ///
   /// Use this callback to implement reverse pagination with requests to the database.
   final CalendarPageChangeCallBack? onHasReachedStart;
+
+  /// Called before a month page is displayed, so its data can be loaded
+  /// ahead of render.
+  ///
+  /// It runs for the initially displayed month and again every time the
+  /// displayed month changes. While it is running, [loadingBuilder] is
+  /// stacked over that month's date grid and the grid stops responding to
+  /// gestures.
+  ///
+  /// The returned value decides whether the date grid is rebuilt once the
+  /// load completes: return true when the loaded data changes what the grid
+  /// renders (for example the dates [isCellEnabled] now rejects), and false
+  /// to leave the already rendered grid untouched.
+  ///
+  /// Results of a month that is no longer displayed are discarded, so quickly
+  /// paging through months never rebuilds the grid with stale data.
+  final BeforePageLoadCallback? beforePageLoad;
+
+  /// Determines whether the cell of a given date is enabled.
+  ///
+  /// Cells for which this returns false are disabled: they do not respond to
+  /// taps and are skipped by long press selection, including
+  /// [onDateLongPress] and [onDateLongPressMoveUpdate]. A long press that
+  /// begins on a disabled cell does not start a selection at all.
+  ///
+  /// The resolved value is forwarded to [cellBuilder] as its `isEnabled`
+  /// argument. The built-in cell does not change its appearance for disabled
+  /// dates, so provide a [cellBuilder] to render them differently.
+  ///
+  /// All dates are enabled if this is null.
+  final CellEnabledPredicate? isCellEnabled;
+
+  /// Builds the indicator stacked over the date grid while [beforePageLoad]
+  /// is running, receiving the month being loaded.
+  ///
+  /// The returned widget is sized to the date grid and absorbs pointer
+  /// events, so cells cannot be tapped mid-load. No indicator is displayed
+  /// if this is null.
+  final DateWidgetBuilder? loadingBuilder;
 }

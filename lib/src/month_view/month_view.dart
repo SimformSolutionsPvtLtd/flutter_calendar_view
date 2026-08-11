@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license
 // that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
@@ -86,6 +88,19 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Whether multi date selection is in progress.
   bool _isMultiDateSelectionInProgress = false;
 
+  /// Whether [MonthViewBuilders.beforePageLoad] is running for the currently
+  /// displayed month.
+  ///
+  /// Held in a notifier so that showing and hiding the loading indicator
+  /// repaints only the indicator itself and never the date grid below it.
+  final ValueNotifier<bool> _isPageLoading = ValueNotifier(false);
+
+  /// Identifies the most recent [MonthViewBuilders.beforePageLoad] request.
+  ///
+  /// Incremented on every request so that a result arriving for a month the
+  /// user has already paged away from can be discarded.
+  int _pageLoadToken = 0;
+
   /// Controls page transitions between months (horizontal paging).
   late PageController _pageController;
 
@@ -147,6 +162,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
+
+    // Load the data of the initially displayed month.
+    unawaited(_loadPage(_currentDate));
   }
 
   @override
@@ -213,6 +231,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   void dispose() {
     _controller?.removeListener(_reloadCallback);
 
+    _isPageLoading.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -267,129 +286,197 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
         ? TextDirection.rtl
         : TextDirection.ltr;
     final columnCount = _monthViewStyle.showWeekends ? 7 : 5;
+    final shrinkWrap = _monthViewStyle.shrinkWrap;
+
+    // When shrink wrapped, every page is laid out with the height the
+    // displayed month needs, so the week day row is hoisted out of the pages
+    // and the grid gets a fixed height instead of the remaining space.
+    final gridHeight =
+        shrinkWrap ? _shrinkWrappedGridHeight(columnCount) : _height;
+
+    final pageView = PageView.builder(
+      controller: _pageController,
+      physics: _isMultiDateSelectionInProgress
+          ? const NeverScrollableScrollPhysics()
+          : _monthViewStyle.pageViewPhysics,
+      onPageChanged: _onPageChange,
+      itemBuilder: (_, index) {
+        final date = DateTime(_minDate.year, _minDate.month + index);
+        final monthPageContent = shrinkWrap
+            ? _buildDateGrid(
+                date: date,
+                height: gridHeight,
+                cellAspectRatio: _monthViewStyle.cellAspectRatio,
+                columnCount: columnCount,
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildWeekDayRow(columnCount),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final dates = date.datesOfMonths(
+                          startDay: _monthViewStyle.startDay,
+                          hideDaysNotInMonth:
+                              _monthViewStyle.hideDaysNotInMonth,
+                          showWeekends: _monthViewStyle.showWeekends,
+                        );
+
+                        final cellAspectRatio =
+                            _monthViewStyle.useAvailableVerticalSpace
+                                ? calculateCellAspectRatio(
+                                    height: constraints.maxHeight,
+                                    daysInMonth: dates.length,
+                                    columnCount: columnCount,
+                                  )
+                                : _monthViewStyle.cellAspectRatio;
+
+                        return _buildDateGrid(
+                          date: date,
+                          height: gridHeight,
+                          cellAspectRatio: cellAspectRatio,
+                          columnCount: columnCount,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+
+        if (widget.monthViewBuilders.onHasReachedEnd != null ||
+            widget.monthViewBuilders.onHasReachedStart != null) {
+          final isFirstPage = index == 0;
+          final isLastPage = index == _totalMonths - 1;
+          if (isFirstPage || isLastPage) {
+            return GestureDetector(
+              onHorizontalDragEnd: (details) => onHorizontalDragEnd(
+                details,
+                isFirstPage: isFirstPage,
+                isLastPage: isLastPage,
+                textDirection: textDirection,
+              ),
+              child: monthPageContent,
+            );
+          }
+        }
+
+        return monthPageContent;
+      },
+      itemCount: _totalMonths,
+    );
 
     return SafeAreaWrapper(
       option: _monthViewStyle.safeAreaOption,
       child: SizedBox(
         width: _width,
         child: Column(
+          mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               width: _width,
               child: _headerBuilder(_currentDate),
             ),
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                physics: _isMultiDateSelectionInProgress
-                    ? const NeverScrollableScrollPhysics()
-                    : _monthViewStyle.pageViewPhysics,
-                onPageChanged: _onPageChange,
-                itemBuilder: (_, index) {
-                  final date = DateTime(_minDate.year, _minDate.month + index);
-                  final weekDays = date.datesOfWeek(
-                    start: _monthViewStyle.startDay,
-                    showWeekEnds: _monthViewStyle.showWeekends,
-                  );
-                  final Widget monthPageContent = Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _width,
-                        child: Row(
-                          children: List.generate(
-                            _monthViewStyle.showWeekends ? 7 : 5,
-                            (index) => Expanded(
-                              child: SizedBox(
-                                width: _cellWidth,
-                                child:
-                                    _weekBuilder(weekDays[index].weekday - 1),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final dates = date.datesOfMonths(
-                              startDay: _monthViewStyle.startDay,
-                              hideDaysNotInMonth:
-                                  _monthViewStyle.hideDaysNotInMonth,
-                              showWeekends: _monthViewStyle.showWeekends,
-                            );
-
-                            final _cellAspectRatio =
-                                _monthViewStyle.useAvailableVerticalSpace
-                                    ? calculateCellAspectRatio(
-                                        height: constraints.maxHeight,
-                                        daysInMonth: dates.length,
-                                        columnCount: columnCount,
-                                      )
-                                    : _monthViewStyle.cellAspectRatio;
-
-                            return SizedBox(
-                              height: _height,
-                              width: _width,
-                              child: _MonthPageBuilder<T>(
-                                key: ValueKey(date.toIso8601String()),
-                                onCellTap: _handleCellTap,
-                                onDateLongPress:
-                                    _monthViewBuilders.onDateLongPress,
-                                onDateLongPressMoveUpdate: _monthViewBuilders
-                                    .onDateLongPressMoveUpdate,
-                                onLongPressSelectionStateChange:
-                                    _handleLongPressSelectionStateChange,
-                                width: _width,
-                                height: _height,
-                                controller: controller,
-                                borderColor: _monthViewStyle.borderColor,
-                                borderSize: _monthViewStyle.borderSize,
-                                cellBuilder: _cellBuilder,
-                                selectedDate: _selectedDate,
-                                cellRatio: _cellAspectRatio,
-                                date: date,
-                                showBorder: _monthViewStyle.showBorder,
-                                startDay: _monthViewStyle.startDay,
-                                physics: _monthViewStyle.pagePhysics,
-                                hideDaysNotInMonth:
-                                    _monthViewStyle.hideDaysNotInMonth,
-                                weekDays: _monthViewStyle.showWeekends ? 7 : 5,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-
-                  if (widget.monthViewBuilders.onHasReachedEnd != null ||
-                      widget.monthViewBuilders.onHasReachedStart != null) {
-                    final isFirstPage = index == 0;
-                    final isLastPage = index == _totalMonths - 1;
-                    if (isFirstPage || isLastPage) {
-                      return GestureDetector(
-                        onHorizontalDragEnd: (details) => onHorizontalDragEnd(
-                          details,
-                          isFirstPage: isFirstPage,
-                          isLastPage: isLastPage,
-                          textDirection: textDirection,
-                        ),
-                        child: monthPageContent,
-                      );
-                    }
-                  }
-
-                  return monthPageContent;
-                },
-                itemCount: _totalMonths,
-              ),
-            ),
+            if (shrinkWrap) ...[
+              _buildWeekDayRow(columnCount),
+              SizedBox(height: gridHeight, child: pageView),
+            ] else
+              Expanded(child: pageView),
           ],
         ),
       ),
+    );
+  }
+
+  /// Builds the row of week day labels displayed above the date grid.
+  ///
+  /// The labels only depend on [MonthViewStyle.startDay], so the same row is
+  /// valid for every month page.
+  Widget _buildWeekDayRow(int columnCount) {
+    final weekDays = _currentDate.datesOfWeek(
+      start: _monthViewStyle.startDay,
+      showWeekEnds: _monthViewStyle.showWeekends,
+    );
+
+    return SizedBox(
+      width: _width,
+      child: Row(
+        children: List.generate(
+          columnCount,
+          (index) => Expanded(
+            child: SizedBox(
+              width: _cellWidth,
+              child: _weekBuilder(weekDays[index].weekday - 1),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the date grid of the month page for [date].
+  ///
+  /// While [MonthViewBuilders.beforePageLoad] is running for the displayed
+  /// month, [MonthViewBuilders.loadingBuilder] is stacked over the grid and
+  /// absorbs pointer events so no cell can be tapped mid-load.
+  Widget _buildDateGrid({
+    required DateTime date,
+    required double height,
+    required double cellAspectRatio,
+    required int columnCount,
+  }) {
+    final grid = SizedBox(
+      height: height,
+      width: _width,
+      child: _MonthPageBuilder<T>(
+        key: ValueKey(date.toIso8601String()),
+        onCellTap: _handleCellTap,
+        onDateLongPress: _monthViewBuilders.onDateLongPress,
+        onDateLongPressMoveUpdate: _monthViewBuilders.onDateLongPressMoveUpdate,
+        onLongPressSelectionStateChange: _handleLongPressSelectionStateChange,
+        isCellEnabled: _monthViewBuilders.isCellEnabled,
+        width: _width,
+        height: height,
+        controller: controller,
+        borderColor: _monthViewStyle.borderColor,
+        borderSize: _monthViewStyle.borderSize,
+        cellBuilder: _cellBuilder,
+        selectedDate: _selectedDate,
+        cellRatio: cellAspectRatio,
+        date: date,
+        showBorder: _monthViewStyle.showBorder,
+        startDay: _monthViewStyle.startDay,
+        physics: _monthViewStyle.pagePhysics,
+        hideDaysNotInMonth: _monthViewStyle.hideDaysNotInMonth,
+        weekDays: columnCount,
+      ),
+    );
+
+    final loadingBuilder = _monthViewBuilders.loadingBuilder;
+
+    // Only the displayed month is ever loaded, so pages the page view keeps
+    // alive around it must not show the indicator.
+    if (loadingBuilder == null || !_isSameMonth(date, _currentDate)) {
+      return grid;
+    }
+
+    return Stack(
+      // Hands the page's constraints to the grid unchanged, so stacking the
+      // indicator never changes how the grid is sized.
+      fit: StackFit.passthrough,
+      children: [
+        grid,
+        Positioned.fill(
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isPageLoading,
+            builder: (_, isLoading, _) => isLoading
+                ? AbsorbPointer(child: loadingBuilder(date))
+                : const SizedBox.shrink(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -405,12 +492,62 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     return _controller!;
   }
 
+  /// Currently selected date of the month grid, without a time component.
+  ///
+  /// Mirrors [MonthView.selectedDate] when selection is controlled by the
+  /// caller, and otherwise reflects the date the user last tapped. Null until
+  /// a date is selected.
+  DateTime? get selectedDate => _selectedDate;
+
   bool _isSameDate(DateTime? first, DateTime? second) {
     if (first == null || second == null) {
       return first == second;
     }
 
     return first.withoutTime.compareWithoutTime(second.withoutTime);
+  }
+
+  bool _isSameMonth(DateTime first, DateTime second) {
+    return first.year == second.year && first.month == second.month;
+  }
+
+  /// Runs [MonthViewBuilders.beforePageLoad] for [date] while displaying
+  /// [MonthViewBuilders.loadingBuilder] over the date grid.
+  ///
+  /// The date grid is rebuilt once loading completes only if the callback
+  /// resolves to true. Results are discarded when a newer request has started
+  /// meanwhile, so paging quickly through months never applies stale data.
+  ///
+  /// Errors thrown by the callback are rethrown to the caller after the
+  /// loading indicator is removed.
+  Future<void> _loadPage(DateTime date) async {
+    final beforePageLoad = _monthViewBuilders.beforePageLoad;
+    if (beforePageLoad == null || !mounted) return;
+
+    final token = ++_pageLoadToken;
+    _isPageLoading.value = true;
+
+    try {
+      final shouldRebuild = await beforePageLoad(date);
+
+      if (!mounted || token != _pageLoadToken) return;
+
+      if (shouldRebuild) setState(() {});
+    } finally {
+      if (mounted && token == _pageLoadToken) _isPageLoading.value = false;
+    }
+  }
+
+  /// Height required to render every date row of the displayed month when
+  /// [MonthViewStyle.shrinkWrap] is enabled.
+  double _shrinkWrappedGridHeight(int columnCount) {
+    final dates = _currentDate.datesOfMonths(
+      startDay: _monthViewStyle.startDay,
+      hideDaysNotInMonth: _monthViewStyle.hideDaysNotInMonth,
+      showWeekends: _monthViewStyle.showWeekends,
+    );
+
+    return (dates.length / columnCount).ceil() * _cellHeight;
   }
 
   void _reload() {
@@ -514,6 +651,9 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
       });
     }
     _monthViewBuilders.onPageChange?.call(_currentDate, _currentIndex);
+
+    // Load the data of the month that just became visible.
+    unawaited(_loadPage(_currentDate));
   }
 
   /// Default month view header builder
@@ -574,6 +714,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   /// Default cell builder. Used when [_cellBuilder] is null
+  ///
+  /// [isEnabled] is accepted to satisfy [CellBuilder] but does not change how
+  /// the cell looks. Disabled dates already ignore every gesture, so provide
+  /// [MonthViewBuilders.cellBuilder] to render them differently.
   Widget _defaultCellBuilder(
     DateTime date,
     List<CalendarEventData<T>> events,
@@ -581,6 +725,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     bool isInMonth,
     bool isSelected,
     bool hideDaysNotInMonth,
+    bool isEnabled,
   ) {
     // Normalize both the input date and selected dates to date-only (midnight)
     // This ensures selection works regardless of time component in selectedDates
@@ -794,6 +939,7 @@ class _MonthPageBuilder<T> extends StatefulWidget {
     required this.onDateLongPress,
     required this.onDateLongPressMoveUpdate,
     required this.onLongPressSelectionStateChange,
+    required this.isCellEnabled,
     required this.startDay,
     required this.physics,
     required this.hideDaysNotInMonth,
@@ -815,6 +961,10 @@ class _MonthPageBuilder<T> extends StatefulWidget {
   final DatePressCallback? onDateLongPress;
   final DateLongPressMoveUpdateCallback? onDateLongPressMoveUpdate;
   final ValueChanged<bool>? onLongPressSelectionStateChange;
+
+  /// Resolves whether a date cell is interactive. All cells are enabled when
+  /// this is null.
+  final CellEnabledPredicate? isCellEnabled;
   final WeekDays startDay;
   final ScrollPhysics physics;
   final bool hideDaysNotInMonth;
@@ -866,28 +1016,37 @@ class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
           final isSelected =
               widget.selectedDate?.compareWithoutTime(monthDays[index]) ??
                   false;
+          final isEnabled = _isDateEnabled(monthDays[index]);
+
+          final cell = DecoratedBox(
+            decoration: BoxDecoration(
+              border: widget.showBorder
+                  ? Border.all(
+                      color: widget.borderColor ??
+                          context.monthViewColors.cellBorderColor,
+                      width: widget.borderSize,
+                    )
+                  : null,
+            ),
+            child: widget.cellBuilder(
+              monthDays[index],
+              events,
+              monthDays[index].compareWithoutTime(DateTime.now()),
+              monthDays[index].month == widget.date.month,
+              isSelected,
+              widget.hideDaysNotInMonth,
+              isEnabled,
+            ),
+          );
+
+          // Disabled cells are rendered without a detector so that they
+          // capture no gestures at all.
+          if (!isEnabled) return cell;
+
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => widget.onCellTap?.call(events, monthDays[index]),
-            child: Container(
-              decoration: BoxDecoration(
-                border: widget.showBorder
-                    ? Border.all(
-                        color: widget.borderColor ??
-                            context.monthViewColors.cellBorderColor,
-                        width: widget.borderSize,
-                      )
-                    : null,
-              ),
-              child: widget.cellBuilder(
-                monthDays[index],
-                events,
-                monthDays[index].compareWithoutTime(DateTime.now()),
-                monthDays[index].month == widget.date.month,
-                isSelected,
-                widget.hideDaysNotInMonth,
-              ),
-            ),
+            child: cell,
           );
         },
       ),
@@ -920,12 +1079,26 @@ class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
         widget.onDateLongPressMoveUpdate != null;
   }
 
+  /// Whether the cell of [date] is interactive.
+  bool _isDateEnabled(DateTime date) {
+    return widget.isCellEnabled?.call(date) ?? true;
+  }
+
   void _handleLongPressStart(
     LongPressStartDetails details,
     List<DateTime> monthDays,
     int rowCount,
   ) {
     if (!_hasLongPressCallbacks) return;
+
+    final date = _getDateFromPosition(
+      localPosition: details.localPosition,
+      monthDays: monthDays,
+      rowCount: rowCount,
+    );
+
+    // A long press starting on a disabled cell must not begin a selection.
+    if (date == null || !_isDateEnabled(date)) return;
 
     _isLongPressActive = true;
     widget.onLongPressSelectionStateChange?.call(true);
@@ -971,6 +1144,10 @@ class _MonthPageBuilderState<T> extends State<_MonthPageBuilder<T>> {
     );
 
     if (date == null) return;
+
+    // Disabled cells are skipped without ending the ongoing selection, so a
+    // drag can continue across them onto the next enabled date.
+    if (!_isDateEnabled(date)) return;
 
     if (date == _lastReportedDate) return;
 

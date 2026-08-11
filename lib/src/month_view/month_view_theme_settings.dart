@@ -24,6 +24,43 @@ class MonthViewThemeSettings {
     this.selectedHighlightRadius = 11,
   });
 
+  /// Creates theme settings whose colors are derived from a Material 3
+  /// [ColorScheme].
+  ///
+  /// Highlights for today and for the selected date use
+  /// [ColorScheme.primary] with [ColorScheme.onPrimary] titles, event tiles
+  /// use [ColorScheme.primaryContainer], and the header and week day row
+  /// follow the scheme's surface roles. Highlight radii keep their defaults.
+  ///
+  /// Use [copyWith] on the result to override any individual value.
+  factory MonthViewThemeSettings.fromColorScheme(ColorScheme colorScheme) {
+    return MonthViewThemeSettings(
+      weekDayBorderColor: colorScheme.outlineVariant,
+      weekDayBackgroundColor: colorScheme.surfaceContainerHigh,
+      weekDayTextStyle: TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      textStyle: TextStyle(color: colorScheme.onSurface),
+      headerStyle: HeaderStyle(
+        decoration: BoxDecoration(color: colorScheme.surface),
+        headerTextStyle: TextStyle(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w500,
+        ),
+        leftIconConfig: IconDataConfig(color: colorScheme.onSurface),
+        rightIconConfig: IconDataConfig(color: colorScheme.onSurface),
+      ),
+      cellsNotInMonthHighlightedTitleColor: colorScheme.onPrimary,
+      cellsInMonthHighlightedTitleColor: colorScheme.onPrimary,
+      cellsInMonthTileColor: colorScheme.primaryContainer,
+      cellsInMonthHighlightColor: colorScheme.primary,
+      selectedHighlightColor: colorScheme.primary,
+      selectedTitleColor: colorScheme.onPrimary,
+    );
+  }
+
   /// Default border color for week day cells.
   final Color? weekDayBorderColor;
 

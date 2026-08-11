@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
 
+/// Builds a single date cell of the month grid.
+///
+/// [isEnabled] is resolved by [MonthViewBuilders.isCellEnabled]. A disabled
+/// cell is excluded from every gesture handled by the month grid, so use this
+/// flag to render the date as non-interactive.
 typedef CellBuilder<T extends Object?> = Widget Function(
   DateTime date,
   List<CalendarEventData<T>> event,
@@ -13,7 +18,22 @@ typedef CellBuilder<T extends Object?> = Widget Function(
   bool isInMonth,
   bool isSelected,
   bool hideDaysNotInMonth,
+  bool isEnabled,
 );
+
+/// Determines whether the month view cell for [date] is enabled.
+///
+/// Returning false marks the cell as disabled: it stops responding to taps
+/// and long presses, and is passed to [CellBuilder] with `isEnabled` set to
+/// false so it can be rendered accordingly.
+typedef CellEnabledPredicate = bool Function(DateTime date);
+
+/// Loads the data a month page needs before its date grid is displayed.
+///
+/// [date] is the month that is about to be shown. The returned [Future]
+/// resolves to whether the date grid should be rebuilt once loading finishes,
+/// which lets callers skip a rebuild when nothing the grid renders changed.
+typedef BeforePageLoadCallback = Future<bool> Function(DateTime date);
 
 typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime date,
