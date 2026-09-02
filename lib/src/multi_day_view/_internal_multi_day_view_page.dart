@@ -568,28 +568,8 @@ class _InternalMultiDayViewPageState<T extends Object?>
                           widget.liveTimeIndicatorSettings.height > 0 &&
                           !widget.liveTimeIndicatorSettings.onlyShowToday)
                         LiveTimeIndicator(
-                          liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
-                            color: themeColor.liveIndicatorColor,
-                            height: widget.liveTimeIndicatorSettings.height,
-                            offset: widget.liveTimeIndicatorSettings.offset,
-                            onlyShowToday:
-                                widget.liveTimeIndicatorSettings.onlyShowToday,
-                            timeStringBuilder: widget
-                                .liveTimeIndicatorSettings.timeStringBuilder,
-                            showBullet:
-                                widget.liveTimeIndicatorSettings.showBullet,
-                            showTime: widget.liveTimeIndicatorSettings.showTime,
-                            showTimeBackgroundView: widget
-                                .liveTimeIndicatorSettings
-                                .showTimeBackgroundView,
-                            bulletRadius:
-                                widget.liveTimeIndicatorSettings.bulletRadius,
-                            timeBackgroundViewWidth: widget
-                                .liveTimeIndicatorSettings
-                                .timeBackgroundViewWidth,
-                            currentTimeProvider: widget
-                                .liveTimeIndicatorSettings.currentTimeProvider,
-                          ),
+                          liveTimeIndicatorSettings:
+                              widget.liveTimeIndicatorSettings,
                           width: widget.width,
                           height: widget.height,
                           heightPerMinute: widget.heightPerMinute,
