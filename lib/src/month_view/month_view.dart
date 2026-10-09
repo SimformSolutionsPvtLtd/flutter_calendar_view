@@ -72,6 +72,13 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Stored without time component. See [_setDateRange] for calculation.
   late DateTime _maxDate;
 
+  /// Notifies the header when the page changes.
+  ///
+  /// Only the header depends on the current page. Rebuilding the whole view
+  /// would rebuild every page of the [PageView] along with it, all of their
+  /// event tiles included, which drops frames while swiping.
+  final _pageChangeNotifier = ValueNotifier<int>(0);
+
   /// Currently displayed month. Updated when user navigates between months.
   late DateTime _currentDate;
 
@@ -214,6 +221,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _controller?.removeListener(_reloadCallback);
 
     _pageController.dispose();
+    _pageChangeNotifier.dispose();
     super.dispose();
   }
 
@@ -277,7 +285,10 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           children: [
             SizedBox(
               width: _width,
-              child: _headerBuilder(_currentDate),
+              child: ValueListenableBuilder<int>(
+                valueListenable: _pageChangeNotifier,
+                builder: (_, __, ___) => _headerBuilder(_currentDate),
+              ),
             ),
             Expanded(
               child: PageView.builder(
@@ -505,13 +516,12 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   /// Calls when user changes page using gesture or inbuilt methods.
   void _onPageChange(int value) {
     if (mounted) {
-      setState(() {
-        _currentDate = DateTime(
-          _currentDate.year,
-          _currentDate.month + (value - _currentIndex),
-        );
-        _currentIndex = value;
-      });
+      _currentDate = DateTime(
+        _currentDate.year,
+        _currentDate.month + (value - _currentIndex),
+      );
+      _currentIndex = value;
+      _pageChangeNotifier.value++;
     }
     _monthViewBuilders.onPageChange?.call(_currentDate, _currentIndex);
   }

@@ -403,6 +403,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Used when navigating between pages if keepScrollOffset is enabled.
   late double _lastScrollOffset;
 
+  /// Notifies the header when the page changes.
+  ///
+  /// Only the header depends on the current page. Rebuilding the whole view
+  /// would rebuild every page of the [PageView] along with it, all of their
+  /// event tiles included, which drops frames while swiping.
+  final _pageChangeNotifier = ValueNotifier<int>(0);
+
   /// Currently displayed day in the Day View.
   /// Updated when user navigates between days.
   /// Always stored without time component (time is 00:00:00).
@@ -590,6 +597,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   void dispose() {
     _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
+    _pageChangeNotifier.dispose();
     super.dispose();
   }
 
@@ -608,7 +616,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _dayTitleBuilder(_currentDate),
+              ValueListenableBuilder<int>(
+                valueListenable: _pageChangeNotifier,
+                builder: (_, __, ___) => _dayTitleBuilder(_currentDate),
+              ),
               Expanded(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -942,14 +953,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ///
   void _onPageChange(int index) {
     if (mounted) {
-      setState(() {
-        _currentDate = DateTime(
-          _currentDate.year,
-          _currentDate.month,
-          _currentDate.day + (index - _currentIndex),
-        );
-        _currentIndex = index;
-      });
+      _currentDate = DateTime(
+        _currentDate.year,
+        _currentDate.month,
+        _currentDate.day + (index - _currentIndex),
+      );
+      _currentIndex = index;
+      _pageChangeNotifier.value++;
     }
     if (!widget.keepScrollOffset) {
       _jumpToOffsetAfterPageTransition(

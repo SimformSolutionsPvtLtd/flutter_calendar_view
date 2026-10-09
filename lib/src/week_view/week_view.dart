@@ -352,6 +352,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Last recorded scroll offset position.
   late double _lastScrollOffset;
 
+  /// Notifies the header when the page changes.
+  ///
+  /// Only the header depends on the current page. Rebuilding the whole view
+  /// would rebuild every page of the [PageView] along with it, all of their
+  /// event tiles included, which drops frames while swiping.
+  final _pageChangeNotifier = ValueNotifier<int>(0);
+
   /// Start date of the currently displayed week.
   late DateTime _currentStartDate;
 
@@ -620,6 +627,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void dispose() {
     _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
+    _pageChangeNotifier.dispose();
     super.dispose();
   }
 
@@ -636,9 +644,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(
-                _currentStartDate,
-                _currentEndDate,
+              ValueListenableBuilder<int>(
+                valueListenable: _pageChangeNotifier,
+                builder: (_, __, ___) => _weekHeaderBuilder(
+                  _currentStartDate,
+                  _currentEndDate,
+                ),
               ),
               Expanded(
                 child: SizedBox(
@@ -1060,15 +1071,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Called when user change page using any gesture or inbuilt functions.
   void _onPageChange(int index) {
     if (mounted) {
-      setState(() {
-        _currentStartDate = DateTime(
-          _currentStartDate.year,
-          _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
-        );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
-        _currentIndex = index;
-      });
+      _currentStartDate = DateTime(
+        _currentStartDate.year,
+        _currentStartDate.month,
+        _currentStartDate.day + (index - _currentIndex) * 7,
+      );
+      _currentEndDate = _currentStartDate.add(Duration(days: 6));
+      _currentIndex = index;
+      _pageChangeNotifier.value++;
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
   }

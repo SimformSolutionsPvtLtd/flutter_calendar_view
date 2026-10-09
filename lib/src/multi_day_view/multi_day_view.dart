@@ -304,6 +304,14 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   late double _timeLineWidth;
   late double _hourHeight;
   late double _lastScrollOffset;
+
+  /// Notifies the header when the page changes.
+  ///
+  /// Only the header depends on the current page. Rebuilding the whole view
+  /// would rebuild every page of the [PageView] along with it, all of their
+  /// event tiles included, which drops frames while swiping.
+  final _pageChangeNotifier = ValueNotifier<int>(0);
+
   late DateTime _currentStartDate;
   late DateTime _currentEndDate;
   late DateTime _maxDate;
@@ -502,6 +510,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   void dispose() {
     _controller?.removeListener(_reloadCallback);
     _pageController.dispose();
+    _pageChangeNotifier.dispose();
     super.dispose();
   }
 
@@ -518,9 +527,12 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _weekHeaderBuilder(
-                _currentStartDate,
-                _currentEndDate,
+              ValueListenableBuilder<int>(
+                valueListenable: _pageChangeNotifier,
+                builder: (_, __, ___) => _weekHeaderBuilder(
+                  _currentStartDate,
+                  _currentEndDate,
+                ),
               ),
               Expanded(
                 child: DecoratedBox(
@@ -963,16 +975,15 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   /// Called when user change page using any gesture or inbuilt functions.
   void _onPageChange(int index) {
     if (mounted) {
-      setState(() {
-        _currentStartDate = DateTime(
-          _currentStartDate.year,
-          _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * widget.daysInView,
-        );
-        _currentEndDate =
-            _currentStartDate.add(Duration(days: (widget.daysInView - 1)));
-        _currentIndex = index;
-      });
+      _currentStartDate = DateTime(
+        _currentStartDate.year,
+        _currentStartDate.month,
+        _currentStartDate.day + (index - _currentIndex) * widget.daysInView,
+      );
+      _currentEndDate =
+          _currentStartDate.add(Duration(days: (widget.daysInView - 1)));
+      _currentIndex = index;
+      _pageChangeNotifier.value++;
     }
     widget.onPageChange?.call(_currentStartDate, _currentIndex);
   }
