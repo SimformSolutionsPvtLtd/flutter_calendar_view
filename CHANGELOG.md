@@ -11,6 +11,7 @@
 - Updated documentation for `DayView`, `WeekView`, `MonthView` and `MultiDayView` to add more details about the parameters and their usage. [#448](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/448)
 - Fixed `onlyShowToday` parameter in `WeekView` to update `liveTimeIndicator` properly. [#518](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/518)
 - Added `ZoomScrollController` to `DayView`, `WeekView` and `MultiDayView` for programmatic control of zoom level and scroll position. [#522](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/522)
+- Added `calendar_view-expert` skill (`skills/calendar_view-expert/SKILL.md`) to guide AI coding assistants in using the package. [#562](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/pull/562)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
