@@ -12,6 +12,11 @@
 - Fixed `onlyShowToday` parameter in `WeekView` to update `liveTimeIndicator` properly. [#518](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/518)
 - Added `ZoomScrollController` to `DayView`, `WeekView` and `MultiDayView` for programmatic control of zoom level and scroll position. [#522](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/522)
 - Fixed `CalendarEventData.occursOnDate` to ignore the time component.
+- [BREAKING] Removed `backgroundColor` from `DayView`, `WeekView` and `MultiDayView`. Use `pageBackgroundColor` in the respective view theme data instead.
+- [BREAKING] Removed `weekTitleBackgroundColor` from `WeekView`. Use `weekDayTileColor` in `WeekViewThemeData` instead.
+- [BREAKING] Renamed `multiDayTileColor` and `multiDayTextColor` to `weekDayTileColor` and `weekDayTextColor` in `MultiDayViewThemeData`.
+- `MultiDayView` week day title background now uses `weekDayTileColor` from `MultiDayViewThemeData` instead of `headerBackgroundColor`, matching `WeekView`.
+- Fixed `MultiDayView` not applying `pageBackgroundColor` from `MultiDayViewThemeData`.
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 

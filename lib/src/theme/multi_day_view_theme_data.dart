@@ -5,8 +5,8 @@ import 'light_app_colors.dart';
 
 class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
   MultiDayViewThemeData({
-    required this.multiDayTileColor,
-    required this.multiDayTextColor,
+    required this.weekDayTileColor,
+    required this.weekDayTextColor,
     required this.hourLineColor,
     required this.halfHourLineColor,
     required this.quarterHourLineColor,
@@ -20,9 +20,9 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
     required this.verticalLinesColor,
   });
 
-  // Multi day tile properties
-  final Color multiDayTileColor;
-  final Color multiDayTextColor;
+  // Week day tile properties
+  final Color weekDayTileColor;
+  final Color weekDayTextColor;
 
   // Hour line properties
   final Color hourLineColor;
@@ -45,8 +45,8 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
 
   /// Get pre-defined colors for light theme
   MultiDayViewThemeData.light()
-      : multiDayTileColor = LightAppColors.surfaceContainerHigh,
-        multiDayTextColor = LightAppColors.onSurface,
+      : weekDayTileColor = LightAppColors.surfaceContainerHigh,
+        weekDayTextColor = LightAppColors.onSurface,
         hourLineColor = LightAppColors.surfaceContainerHighest,
         halfHourLineColor = LightAppColors.surfaceContainerHighest,
         quarterHourLineColor = LightAppColors.surfaceContainerHighest,
@@ -61,8 +61,8 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
 
   /// Get pre-defined colors for dark theme
   MultiDayViewThemeData.dark()
-      : multiDayTileColor = DarkAppColors.surfaceContainerHigh,
-        multiDayTextColor = DarkAppColors.onSurface,
+      : weekDayTileColor = DarkAppColors.surfaceContainerHigh,
+        weekDayTextColor = DarkAppColors.onSurface,
         hourLineColor = DarkAppColors.surfaceContainerHighest,
         halfHourLineColor = DarkAppColors.surfaceContainerHighest,
         quarterHourLineColor = DarkAppColors.surfaceContainerHighest,
@@ -77,8 +77,8 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
 
   @override
   ThemeExtension<MultiDayViewThemeData> copyWith({
-    Color? multiDayTileColor,
-    Color? multiDayTextColor,
+    Color? weekDayTileColor,
+    Color? weekDayTextColor,
     Color? hourLineColor,
     Color? halfHourLineColor,
     Color? quarterHourLineColor,
@@ -92,8 +92,8 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
     Color? verticalLinesColor,
   }) {
     return MultiDayViewThemeData(
-      multiDayTileColor: multiDayTileColor ?? this.multiDayTileColor,
-      multiDayTextColor: multiDayTextColor ?? this.multiDayTextColor,
+      weekDayTileColor: weekDayTileColor ?? this.weekDayTileColor,
+      weekDayTextColor: weekDayTextColor ?? this.weekDayTextColor,
       hourLineColor: hourLineColor ?? this.hourLineColor,
       halfHourLineColor: halfHourLineColor ?? this.halfHourLineColor,
       quarterHourLineColor: quarterHourLineColor ?? this.quarterHourLineColor,
@@ -118,12 +118,12 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
       return this;
     }
     return MultiDayViewThemeData(
-      multiDayTileColor:
-          Color.lerp(multiDayTileColor, other.multiDayTileColor, t) ??
-              multiDayTileColor,
-      multiDayTextColor:
-          Color.lerp(multiDayTextColor, other.multiDayTextColor, t) ??
-              multiDayTextColor,
+      weekDayTileColor:
+          Color.lerp(weekDayTileColor, other.weekDayTileColor, t) ??
+              weekDayTileColor,
+      weekDayTextColor:
+          Color.lerp(weekDayTextColor, other.weekDayTextColor, t) ??
+              weekDayTextColor,
       hourLineColor:
           Color.lerp(hourLineColor, other.hourLineColor, t) ?? hourLineColor,
       halfHourLineColor:
@@ -160,8 +160,8 @@ class MultiDayViewThemeData extends ThemeExtension<MultiDayViewThemeData> {
     if (other == null) return this;
 
     return copyWith(
-      multiDayTileColor: other.multiDayTileColor,
-      multiDayTextColor: other.multiDayTextColor,
+      weekDayTileColor: other.weekDayTileColor,
+      weekDayTextColor: other.weekDayTextColor,
       hourLineColor: other.hourLineColor,
       halfHourLineColor: other.halfHourLineColor,
       quarterHourLineColor: other.quarterHourLineColor,
