@@ -31,3 +31,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.pbxuser
 !default.perspectivev3
 /Flutter/ephemeral
+
+# CocoaPods lockfile: the example has no native pods, so it only churns with Flutter/CocoaPods versions
+Podfile.lock
