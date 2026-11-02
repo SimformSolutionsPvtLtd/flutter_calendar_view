@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/common_components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../components/week_view_components.dart';
 import '../enumerations.dart';
@@ -174,6 +175,9 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
+  /// A callback for rendering custom time slot background colors.
+  final TimeSlotColorBuilder? timeSlotColorBuilder;
+
   /// A single page for week view.
   const InternalMultiDayViewPage(
       {Key? key,
@@ -225,7 +229,8 @@ class InternalMultiDayViewPage<T extends Object?> extends StatefulWidget {
       required this.multiDayViewScrollController,
       this.lastScrollOffset = 0.0,
       this.keepScrollOffset = false,
-      this.showMutliDayBottomLine = true})
+      this.showMutliDayBottomLine = true,
+      this.timeSlotColorBuilder})
       : super(key: key);
 
   @override
@@ -271,6 +276,25 @@ class _InternalMultiDayViewPageState<T extends Object?>
 
   void _scrollControllerListener() {
     widget.scrollListener(scrollController);
+  }
+
+  /// Builds background layers for time slots in the multi-day view.
+  /// Uses [timeSlotColorBuilder] to determine each slot's color and paints
+  /// a grid of colored rectangles (one column per day, one row per slot).
+  ///
+  /// Parameter: [filteredDates] — visible dates for the page.
+  /// Returns a [Widget] that paints the slot backgrounds.
+  Widget _buildMultiDayTimeSlotBackgrounds(List<DateTime> filteredDates) {
+    return TimeSlotBackgrounds(
+      dates: filteredDates,
+      columnWidth: widget.weekTitleWidth,
+      height: widget.height,
+      heightPerMinute: widget.heightPerMinute,
+      minuteSlotSize: widget.minuteSlotSize,
+      startHour: widget.startHour,
+      endHour: widget.endHour,
+      timeSlotColorBuilder: widget.timeSlotColorBuilder!,
+    );
   }
 
   @override
@@ -393,6 +417,9 @@ class _InternalMultiDayViewPageState<T extends Object?>
                   width: widget.width,
                   child: Stack(
                     children: [
+                      // Render time slot backgrounds if color builder is provided
+                      if (widget.timeSlotColorBuilder != null)
+                        _buildMultiDayTimeSlotBackgrounds(filteredDates),
                       CustomPaint(
                         size: Size(widget.width, widget.height),
                         painter: widget.hourLinePainter(

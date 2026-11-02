@@ -5,11 +5,11 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
+import '../components/common_components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
 import '../event_controller.dart';
-import '../extensions.dart';
 import '../modals.dart';
 import '../painters.dart';
 import '../typedefs.dart';
@@ -246,59 +246,21 @@ class _InternalDayViewPageState<T extends Object?>
   ///
   /// Returns a [Widget] rendering the colored background for all time slots.
   Widget _buildTimeSlotBackground() {
-    // Extract the minute duration of each time slot (e.g., 15, 30, 60 minutes)
-    final slotMinutes = widget.minuteSlotSize.minutes;
-    // Calculate the pixel height occupied by one time slot
-    final heightPerSlot = widget.heightPerMinute * slotMinutes;
-    // Calculate the total number of time slots in the day view
-    // based on start and end hours
-    final totalSlots =
-        ((widget.endHour - widget.startHour) * 60) ~/ slotMinutes;
-    final startDateTime = DateTime(
-      widget.date.year,
-      widget.date.month,
-      widget.date.day,
-      widget.startHour,
-    );
-    final slotDuration = Duration(minutes: slotMinutes);
-    // Generate a list of colors for each time slot of the day
-    final slotColors = List<Color>.generate(
-      totalSlots,
-      (slotIndex) {
-        final slotStartTime = startDateTime.add(slotDuration * slotIndex);
-        final slotEndTime = slotStartTime.add(slotDuration);
-        return widget.timeSlotColorBuilder!(
-          widget.date,
-          slotStartTime,
-          slotEndTime,
-          slotIndex,
-        );
-      },
-    );
-    final direction = Directionality.of(context);
     // Calculate the width of the content area, excluding the time line and
     // hour indicator lines
     final contentWidth = widget.width -
         widget.timeLineWidth -
         widget.hourIndicatorSettings.offset -
         widget.verticalLineOffset;
-
-    return Align(
-      alignment: direction == TextDirection.rtl
-          ? Alignment.centerLeft
-          : Alignment.centerRight,
-      child: SizedBox(
-        width: contentWidth,
-        height: widget.height,
-        child: RepaintBoundary(
-          child: CustomPaint(
-            painter: TimeSlotBackgroundPainter(
-              heightPerSlot: heightPerSlot,
-              slotColors: slotColors,
-            ),
-          ),
-        ),
-      ),
+    return TimeSlotBackgrounds(
+      dates: [widget.date],
+      columnWidth: contentWidth,
+      height: widget.height,
+      heightPerMinute: widget.heightPerMinute,
+      minuteSlotSize: widget.minuteSlotSize,
+      startHour: widget.startHour,
+      endHour: widget.endHour,
+      timeSlotColorBuilder: widget.timeSlotColorBuilder!,
     );
   }
 

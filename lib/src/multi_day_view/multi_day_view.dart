@@ -209,6 +209,10 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   /// Display workday bottom line
   final bool showWeekDayBottomLine;
 
+  /// A callback that resolves slot background color for each visible time slot.
+  /// Useful for highlighting unavailable hours, business hours, or blocked time.
+  final TimeSlotColorBuilder? timeSlotColorBuilder;
+
   /// Main widget for week view.
   const MultiDayView({
     Key? key,
@@ -269,6 +273,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
     this.onTimestampTap,
     this.daysInView = 3,
     this.showWeekDayBottomLine = true,
+    this.timeSlotColorBuilder,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
         assert((timeLineOffset) >= 0,
@@ -322,6 +327,8 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
   late HourIndicatorSettings _quarterHourIndicatorSettings;
   late DividerSettings _dividerSettings;
+
+  late TimeSlotColorBuilder? _timeSlotColorBuilder;
 
   late PageController _pageController;
 
@@ -604,6 +611,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
                             scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
+                            timeSlotColorBuilder: _timeSlotColorBuilder,
                           ),
                         );
                       },
@@ -719,6 +727,7 @@ class MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
+    _timeSlotColorBuilder = widget.timeSlotColorBuilder;
   }
 
   Widget _defaultFullDayEventBuilder(
