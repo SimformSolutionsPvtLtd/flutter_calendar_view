@@ -118,17 +118,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Height of week day title,
   final double weekTitleHeight;
 
-  /// Background color of week title
-  final Color? weekTitleBackgroundColor;
-
   /// Builder to build week day.
   final DateWidgetBuilder? weekDayBuilder;
 
   /// Builder to build week number.
   final WeekNumberBuilder? weekNumberBuilder;
-
-  /// Background color of week view page.
-  final Color? backgroundColor;
 
   /// Scroll offset of week view page.
   final double scrollOffset;
@@ -268,10 +262,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.weekPageHeaderBuilder,
     this.eventArranger,
     this.weekTitleHeight = 50,
-    this.weekTitleBackgroundColor,
     this.weekDayBuilder,
     this.weekNumberBuilder,
-    this.backgroundColor,
     this.scrollPhysics,
     this.scrollOffset = 0.0,
     this.onEventTap,
@@ -664,8 +656,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           width: _width,
                           weekTitleWidth: _weekTitleWidth,
                           weekTitleHeight: widget.weekTitleHeight,
-                          weekTitleBackgroundColor:
-                              widget.weekTitleBackgroundColor,
                           weekDayBuilder: _weekDayBuilder,
                           weekNumberBuilder: _weekNumberBuilder,
                           weekDetectorBuilder: _weekDetectorBuilder,
@@ -679,7 +669,6 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           onTileDoubleTap: widget.onEventDoubleTap,
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
-                          backgroundColor: widget.backgroundColor,
                           hourIndicatorSettings: _hourIndicatorSettings,
                           hourLinePainter: _hourLinePainter,
                           halfHourIndicatorSettings: _halfHourIndicatorSettings,

@@ -88,9 +88,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Width of week title.
   final double weekTitleWidth;
 
-  /// Background color of week title
-  final Color? weekTitleBackgroundColor;
-
   /// Called when user taps on event tile.
   final CellTapCallback<T>? onTileTap;
 
@@ -168,9 +165,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
-  /// Use this to change background color of week view page
-  final Color? backgroundColor;
-
   /// A callback for rendering custom time slot background colors.
   final TimeSlotColorBuilder? timeSlotColorBuilder;
 
@@ -207,7 +201,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.eventArranger,
     required this.verticalLineOffset,
     required this.weekTitleWidth,
-    required this.weekTitleBackgroundColor,
     required this.onTileTap,
     required this.onTileLongTap,
     required this.onDateLongPress,
@@ -229,7 +222,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.scrollPhysics,
     required this.scrollListener,
     required this.weekViewScrollController,
-    this.backgroundColor,
     this.timeSlotColorBuilder,
     this.fullDayHeaderTitle = '',
     this.lastScrollOffset = 0.0,
@@ -373,7 +365,7 @@ class _InternalWeekViewPageState<T extends Object?>
     final direction = Directionality.of(context);
 
     return Container(
-      color: widget.backgroundColor ?? themeColor.pageBackgroundColor,
+      color: themeColor.pageBackgroundColor,
       height: widget.height + widget.weekTitleHeight,
       width: widget.width,
       child: Column(
@@ -385,8 +377,7 @@ class _InternalWeekViewPageState<T extends Object?>
           SizedBox(
             width: widget.width,
             child: ColoredBox(
-              color: widget.weekTitleBackgroundColor ??
-                  themeColor.weekDayTileColor,
+              color: themeColor.weekDayTileColor,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

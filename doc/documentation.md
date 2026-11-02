@@ -251,7 +251,6 @@ DayView(
     timeLineWidth: 60, // Width of the timeline
     showVerticalLine: true, // Display vertical line in day view.
     verticalLineOffset: 5, // Offset of vertical line from hour line
-    backgroundColor: Colors.white, // Background color of day view
     showLiveTimeLineInAllDays: true, // Display live time line in all pages
     scrollOffset: 0, // Initial scroll position
     width: 400, // Width of day view page
@@ -343,7 +342,6 @@ WeekView(
     width: 400, // Width of week view
     // Week configuration
     weekTitleHeight: 50, // Height of week day title
-    weekTitleBackgroundColor: Colors.grey.shade200, // Background color of week title
     showVerticalLines: false, // Show the vertical line between days
     showWeekends: true, // Show weekends or not
     showWeekDayAtBottom: false, // Show week day at bottom position
@@ -413,8 +411,6 @@ WeekView(
     pageTransitionCurve: Curves.ease,
     // Minute slot size for long press callbacks
     minuteSlotSize: MinuteSlotSize.minutes60,
-    // Background color
-    backgroundColor: Colors.white,
     // Full day header configuration
     fullDayHeaderTitle: 'All day',
     fullDayHeaderTextConfig: FullDayHeaderTextConfig(
@@ -532,8 +528,6 @@ MultiDayView(
     pageTransitionCurve: Curves.ease,
     // Minute slot size for long press callbacks
     minuteSlotSize: MinuteSlotSize.minutes60,
-    // Background color
-    backgroundColor: Colors.white,
     // Full day header configuration
     fullDayHeaderTitle: 'All day',
     fullDayHeaderTextConfig: FullDayHeaderTextConfig(
@@ -887,8 +881,8 @@ The package supports dark mode out of the box. Each calendar view has a dedicate
 
 | Property | Default (light) |
 |----------|----------------|
-| `multiDayTileColor` | `surfaceContainerHigh` |
-| `multiDayTextColor` | `onSurface` |
+| `weekDayTileColor` | `surfaceContainerHigh` |
+| `weekDayTextColor` | `onSurface` |
 | `hourLineColor` | `surfaceContainerHighest` |
 | `halfHourLineColor` | `surfaceContainerHighest` |
 | `quarterHourLineColor` | `surfaceContainerHighest` |
@@ -953,6 +947,7 @@ There are two main ways to customize the theme for calendar views:
    ```
 
 ### Day view
+* Page background color is `pageBackgroundColor` in `DayViewThemeData` (defaults to `surfaceContainerLowest`).
 * Default timeline text color is `timelineTextColor` in `DayViewThemeData` (defaults to `onSurface`).
     * Use `markingStyle` in `DefaultTimeLineMark` to give text style.
 * Default live time indicator color is `liveIndicatorColor` in `DayViewThemeData` (defaults to `primary`).
@@ -972,10 +967,8 @@ Default hour indicator settings.
 
 ### Week view
 * To customise week number & weekdays use `weekNumberBuilder` & `weekDayBuilder`.
-* Default week day tile color is `weekDayTileColor` in `WeekViewThemeData` (defaults to `surfaceContainerHigh`).
-    * Use `weekTitleBackgroundColor` to override it per-widget.
-* Default page background color is `pageBackgroundColor` in `WeekViewThemeData` (defaults to `surfaceContainerLowest`).
-    * Use `backgroundColor` to override it per-widget.
+* Week day title background color is `weekDayTileColor` in `WeekViewThemeData` (defaults to `surfaceContainerHigh`).
+* Page background color is `pageBackgroundColor` in `WeekViewThemeData` (defaults to `surfaceContainerLowest`).
 * Default timeline text color is `timelineTextColor` in `WeekViewThemeData` (defaults to `onSurface`).
     * Use `markingStyle` in `DefaultTimeLineMark` to give text style, or `timeLineBuilder` to fully replace the timeline.
 * Default hour/half hour/quarter hour line color is `hourLineColor` / `halfHourLineColor` / `quarterHourLineColor` in `WeekViewThemeData` (all default to `surfaceContainerHighest`).
@@ -1051,7 +1044,119 @@ MonthView(
 * Use `monthViewStyle.showWeekTileBorder` to control week day title border visibility
 * Use `monthViewBuilders.headerBuilder` to customize or completely replace the month header
 
+### MultiDay View
+* To customise week number & weekdays use `weekNumberBuilder` & `weekDayBuilder`.
+* Week day title background color is `weekDayTileColor` in `MultiDayViewThemeData` (defaults to `surfaceContainerHigh`).
+* Page background color is `pageBackgroundColor` in `MultiDayViewThemeData` (defaults to `surfaceContainerLowest`).
+* Default timeline text color is `timelineTextColor` in `MultiDayViewThemeData` (defaults to `onSurface`).
+    * Use `markingStyle` in `DefaultTimeLineMark` to give text style, or `timeLineBuilder` to fully replace the timeline.
+* Default live time indicator color is `liveIndicatorColor` in `MultiDayViewThemeData` (defaults to `primary`).
+    * Use `liveTimeIndicatorSettings` to customise it per-widget.
+* Default hour/half hour/quarter hour line color is `hourLineColor` / `halfHourLineColor` / `quarterHourLineColor` in `MultiDayViewThemeData` (all default to `surfaceContainerHighest`).
+    * Use `hourIndicatorSettings`, `halfHourIndicatorSettings`, and `quarterHourIndicatorSettings` to customise per-widget.
+* Default vertical line color between days is `verticalLinesColor` in `MultiDayViewThemeData`.
+* To customise the divider between weekdays and full-day events use `dividerSettings`.
+
+```dart
+  hourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.greenAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+      showHalfHours: true,
+  halfHourIndicatorSettings: HourIndicatorSettings(
+        color: Colors.redAccent,
+        lineStyle: LineStyle.dashed,
+      ),
+  dividerSettings: DividerSettings(
+        thickness: 2,
+        height: 2,
+        color: Colors.blueAccent,
+        indent: 10,
+        endIndent: 10,
+      ),
+```
+
+Hide divider in multiday view.
+```dart
+  dividerSettings: DividerSettings.none(),
+```
+
 # Migration Guides
+
+## Migrating from 2.x.x to latest
+
+Example:
+
+```yaml
+dependencies:
+  calendar_view: ^3.0.0
+```
+
+### 1. `DayView` | `WeekView` | `MultiDayView` — Removed `backgroundColor`
+
+The per-widget `backgroundColor` parameter has been removed. The page background now comes only from `pageBackgroundColor` in the view's theme data (`DayViewThemeData`, `WeekViewThemeData`, `MultiDayViewThemeData`).
+
+**Before (≤ 2.x):**
+```dart
+WeekView(
+  backgroundColor: Colors.white,
+);
+```
+
+**After (3.0.0+):**
+```dart
+MaterialApp(
+  theme: ThemeData.light().copyWith(
+    extensions: [
+      WeekViewThemeData.light().copyWith(pageBackgroundColor: Colors.white),
+    ],
+  ),
+  // ...
+);
+```
+
+### 2. `WeekView` — Removed `weekTitleBackgroundColor`
+
+The per-widget `weekTitleBackgroundColor` parameter has been removed. Set `weekDayTileColor` in `WeekViewThemeData` instead.
+
+**Before (≤ 2.x):**
+```dart
+WeekView(
+  weekTitleBackgroundColor: Colors.grey.shade200,
+);
+```
+
+**After (3.0.0+):**
+```dart
+MaterialApp(
+  theme: ThemeData.light().copyWith(
+    extensions: [
+      WeekViewThemeData.light().copyWith(weekDayTileColor: Colors.grey.shade200),
+    ],
+  ),
+  // ...
+);
+```
+
+### 3. `MultiDayViewThemeData` — Renamed `multiDayTileColor` and `multiDayTextColor`
+
+`multiDayTileColor` and `multiDayTextColor` were renamed to `weekDayTileColor` and `weekDayTextColor` to match `WeekViewThemeData`. `MultiDayView` now uses `weekDayTileColor` as its week day title background, which previously used `headerBackgroundColor`.
+
+**Before (≤ 2.x):**
+```dart
+MultiDayViewThemeData.light().copyWith(
+  multiDayTileColor: Colors.grey.shade200,
+  multiDayTextColor: Colors.black,
+);
+```
+
+**After (3.0.0+):**
+```dart
+MultiDayViewThemeData.light().copyWith(
+  weekDayTileColor: Colors.grey.shade200,
+  weekDayTextColor: Colors.black,
+);
+```
 
 ## Migrate from `1.x.x` to latest
 ### ⚠ Note

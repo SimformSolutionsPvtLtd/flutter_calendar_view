@@ -166,9 +166,6 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Defines offset of vertical line from hour line starts.
   final double verticalLineOffset;
 
-  /// Background colour of day view page.
-  final Color? backgroundColor;
-
   /// Defines initial offset of first page that will be displayed when
   /// [DayView] is initialized.
   ///
@@ -325,7 +322,6 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.dayTitleBuilder,
     this.eventArranger,
     this.verticalLineOffset = 10,
-    this.backgroundColor,
     this.scrollOffset,
     this.onEventTap,
     this.onEventLongTap,
@@ -612,8 +608,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
               Expanded(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: widget.backgroundColor ??
-                        themeColor.pageBackgroundColor,
+                    color: themeColor.pageBackgroundColor,
                   ),
                   child: SizedBox(
                     height: _height,
