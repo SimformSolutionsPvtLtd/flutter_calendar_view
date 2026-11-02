@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../calendar_view.dart';
 
-@immutable
-
 /// Stores metadata for a calendar event and its date/time boundaries.
+@immutable
 class CalendarEventData<T extends Object?> {
   /// Specifies date on which all these events are.
   final DateTime date;
@@ -112,10 +111,10 @@ class CalendarEventData<T extends Object?> {
   /// [currentDate] or not.
   ///
   bool occursOnDate(DateTime currentDate) {
-    return currentDate == date ||
-        currentDate == endDate ||
-        (currentDate.isBefore(endDate.withoutTime) &&
-            currentDate.isAfter(date.withoutTime));
+    return currentDate.compareWithoutTime(date) ||
+        currentDate.compareWithoutTime(endDate) ||
+        (currentDate.withoutTime.isBefore(endDate) &&
+            currentDate.withoutTime.isAfter(date));
   }
 
   /// Returns event data in [Map<String, dynamic>] format.
