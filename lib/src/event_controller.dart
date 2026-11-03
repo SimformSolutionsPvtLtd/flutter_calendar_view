@@ -389,6 +389,7 @@ class CalendarData<T extends Object?> {
 
     _rangingEventList.removeWhere(wrappedPredicate);
     _fullDayEventList.removeWhere(wrappedPredicate);
+    _recurringEventsList.removeWhere(wrappedPredicate);
 
     _eventList.removeWhere((event) => _predicates[event] ?? false);
   }
