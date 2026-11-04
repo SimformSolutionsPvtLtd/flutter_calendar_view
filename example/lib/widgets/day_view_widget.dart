@@ -16,7 +16,7 @@ class DayViewWidget extends StatelessWidget {
     return DayView(
       key: state,
       width: width,
-      startDuration: Duration(hours: 8),
+      scrollToCurrentTime: true,
       showHalfHours: true,
       heightPerMinute: 3,
       timeLineBuilder: (date) => _timeLineBuilder(date, isLtr),

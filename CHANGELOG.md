@@ -18,6 +18,7 @@
 - [BREAKING] `scrollController` on `DayViewState`, `WeekViewState` and `MultiDayViewState` is now nullable (`ScrollController?`) and returns the controller of the currently visible page, or `null` while no page is attached.
 - `MultiDayView` week day title background now uses `weekDayTileColor` from `MultiDayViewThemeData` instead of `headerBackgroundColor`, matching `WeekView`.
 - Fixed `MultiDayView` not applying `pageBackgroundColor` from `MultiDayViewThemeData`.
+- Added `scrollToCurrentTime` to `DayView`, `WeekView` and `MultiDayView` to auto-center the timeline on the current time, along with `animateToCurrentTime()` and `jumpToCurrentTime()` methods to trigger it imperatively. [#331](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/331)
 
 # [2.0.0 - 17 Mar 2026](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/tree/2.0.0)
 
