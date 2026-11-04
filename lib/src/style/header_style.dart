@@ -5,33 +5,11 @@ class HeaderStyle {
   /// Provide text style for calendar's header.
   final TextStyle? headerTextStyle;
 
-  /// Determines left icon visibility.
-
-  @Deprecated(
-      'This flag is deprecated and will be removed in next major version. Instead of this pass null in leftIconConfig to hide the icon.')
-  final bool leftIconVisible;
-
-  /// Determines right icon visibility.
-  @Deprecated(
-      'This flag is deprecated and will be removed in next major version. Instead of this pass null in rightIconConfig to hide the icon.')
-  final bool rightIconVisible;
-
   /// Internal padding of the whole header.
   final EdgeInsets headerPadding;
 
   /// External margin of the whole header.
   final EdgeInsets headerMargin;
-
-  /// Internal padding of left icon.
-
-  @Deprecated(
-      'This is deprecated and will be removed in next major version. Use rightIconConfig to add the padding to default icon.')
-  final EdgeInsets? leftIconPadding;
-
-  /// Internal padding of right icon.
-  @Deprecated(
-      'This is deprecated and will be removed in next major version. Use leftIconConfig to add the padding to default icon.')
-  final EdgeInsets? rightIconPadding;
 
   /// Define Alignment of header text.
   final TextAlign titleAlign;
@@ -49,18 +27,6 @@ class HeaderStyle {
   ///
   /// Defaults to [MainAxisSize.max]
   final MainAxisSize mainAxisSize;
-
-  /// Widget used for left icon.
-  ///
-  @Deprecated(
-      'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-  final Widget? leftIcon;
-
-  /// Widget used for right icon.
-  ///
-  @Deprecated(
-      'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-  final Widget? rightIcon;
 
   /// Provides icon style for default left Icon.
   ///
@@ -81,24 +47,6 @@ class HeaderStyle {
     this.leftIconConfig = const IconDataConfig(),
     this.rightIconConfig = const IconDataConfig(),
     this.mainAxisSize = MainAxisSize.max,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-    this.leftIcon,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-    this.rightIcon,
-    @Deprecated(
-        'This flag is deprecated and will be removed in next major version. Instead of this pass null in leftIconConfig to hide the icon.')
-    this.leftIconVisible = true,
-    @Deprecated(
-        'This flag is deprecated and will be removed in next major version. Instead of this pass null in rightIconConfig to hide the icon.')
-    this.rightIconVisible = true,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use rightIconConfig to add the padding to default icon.')
-    this.leftIconPadding,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add the padding to default icon.')
-    this.rightIconPadding,
   });
 
   /// Create a `HeaderStyle` of calendar view
@@ -113,24 +61,6 @@ class HeaderStyle {
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
     IconDataConfig iconConfig = const IconDataConfig(),
     this.mainAxisSize = MainAxisSize.max,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-    this.leftIcon,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add custom icon')
-    this.rightIcon,
-    @Deprecated(
-        'This flag is deprecated and will be removed in next major version. Instead of this pass null in leftIconConfig to hide the icon.')
-    this.leftIconVisible = true,
-    @Deprecated(
-        'This flag is deprecated and will be removed in next major version. Instead of this pass null in rightIconConfig to hide the icon.')
-    this.rightIconVisible = true,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use rightIconConfig to add the padding to default icon.')
-    this.leftIconPadding,
-    @Deprecated(
-        'This is deprecated and will be removed in next major version. Use leftIconConfig to add the padding to default icon.')
-    this.rightIconPadding,
   })  : leftIconConfig = iconConfig,
         rightIconConfig = iconConfig;
 }

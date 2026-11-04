@@ -3,10 +3,8 @@
 // that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../../../calendar_view.dart';
-import '../../constants.dart';
 
 class WeekPageHeader extends CalendarPageHeader {
   /// A header widget to display on week view.
@@ -19,9 +17,6 @@ class WeekPageHeader extends CalendarPageHeader {
     bool showPreviousIcon = true,
     required DateTime startDate,
     required DateTime endDate,
-    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
-    @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
     StringProvider? headerStringBuilder,
     HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
@@ -33,9 +28,6 @@ class WeekPageHeader extends CalendarPageHeader {
           onPreviousDay: onPreviousDay,
           showPreviousIcon: showPreviousIcon,
           onTitleTapped: onTitleTapped,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          iconColor: iconColor,
-          backgroundColor: backgroundColor,
           dateStringBuilder:
               headerStringBuilder ?? WeekPageHeader._weekStringBuilder,
           headerStyle: headerStyle,

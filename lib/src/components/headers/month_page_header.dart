@@ -3,10 +3,8 @@
 // that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../../../calendar_view.dart';
-import '../../constants.dart';
 
 class MonthPageHeader extends CalendarPageHeader {
   /// A header widget to display on month view.
@@ -17,9 +15,6 @@ class MonthPageHeader extends CalendarPageHeader {
     AsyncCallback? onTitleTapped,
     VoidCallback? onPreviousMonth,
     bool showPreviousIcon = true,
-    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
-    @Deprecated("Use HeaderStyle to provide background color")
-    Color backgroundColor = Constants.headerBackground,
     StringProvider? dateStringBuilder,
     required DateTime date,
     HeaderStyle headerStyle = const HeaderStyle(),
@@ -31,9 +26,6 @@ class MonthPageHeader extends CalendarPageHeader {
           onPreviousDay: onPreviousMonth,
           showPreviousIcon: showPreviousIcon,
           onTitleTapped: onTitleTapped,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           dateStringBuilder:
               dateStringBuilder ?? MonthPageHeader._monthStringBuilder,
           headerStyle: headerStyle,

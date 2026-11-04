@@ -3,10 +3,8 @@
 // that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../../../calendar_view.dart';
-import '../../constants.dart';
 
 /// A header widget to display on day view.
 class DayPageHeader extends CalendarPageHeader {
@@ -20,16 +18,10 @@ class DayPageHeader extends CalendarPageHeader {
     bool showPreviousIcon = true,
     StringProvider? dateStringBuilder,
     required DateTime date,
-    @Deprecated("Use HeaderStyle to provide icon color") Color? iconColor,
-    @Deprecated("Use HeaderStyle to provide background")
-    Color backgroundColor = Constants.headerBackground,
     HeaderStyle headerStyle = const HeaderStyle(),
   }) : super(
           key: key,
           date: date,
-          // ignore_for_file: deprecated_member_use_from_same_package
-          backgroundColor: backgroundColor,
-          iconColor: iconColor,
           onNextDay: onNextDay,
           showNextIcon: showNextIcon,
           onPreviousDay: onPreviousDay,
