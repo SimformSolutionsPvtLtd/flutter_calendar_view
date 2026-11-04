@@ -124,8 +124,6 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Display full day events.
   final FullDayEventBuilder<T> fullDayEventBuilder;
 
-  final ScrollController weekViewScrollController;
-
   /// First hour displayed in the layout
   final int startHour;
 
@@ -150,8 +148,14 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// Defines full day events header text config
   final FullDayHeaderTextConfig fullDayHeaderTextConfig;
 
-  /// Scroll listener to set every page's last offset
-  final void Function(ScrollController) scrollListener;
+  /// Scroll listener to set every page's last offset.
+  final PageScrollListener scrollListener;
+
+  /// Page index in the parent [PageView].
+  final int pageIndex;
+
+  /// Whether this page is currently visible in parent [PageView].
+  final bool isCurrentPage;
 
   /// Last scroll offset of week view page.
   final double lastScrollOffset;
@@ -221,7 +225,8 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.fullDayHeaderTextConfig,
     required this.scrollPhysics,
     required this.scrollListener,
-    required this.weekViewScrollController,
+    required this.pageIndex,
+    required this.isCurrentPage,
     this.timeSlotColorBuilder,
     this.fullDayHeaderTitle = '',
     this.lastScrollOffset = 0.0,
@@ -245,6 +250,17 @@ class _InternalWeekViewPageState<T extends Object?>
       initialScrollOffset: widget.lastScrollOffset,
     );
     scrollController.addListener(_scrollControllerListener);
+
+    if (widget.isCurrentPage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        widget.scrollListener(
+          widget.pageIndex,
+          scrollController.offset,
+          scrollController,
+        );
+      });
+    }
   }
 
   @override
@@ -263,6 +279,23 @@ class _InternalWeekViewPageState<T extends Object?>
           (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
       scrollController.prepareZoomJump(scaledOffset);
     }
+
+    if (!widget.keepScrollOffset &&
+        widget.isCurrentPage &&
+        !oldWidget.isCurrentPage &&
+        scrollController.hasClients) {
+      scrollController.jumpTo(widget.lastScrollOffset);
+    }
+
+    if (widget.isCurrentPage && !oldWidget.isCurrentPage) {
+      widget.scrollListener(
+        widget.pageIndex,
+        scrollController.hasClients
+            ? scrollController.offset
+            : widget.lastScrollOffset,
+        scrollController,
+      );
+    }
   }
 
   @override
@@ -274,7 +307,11 @@ class _InternalWeekViewPageState<T extends Object?>
   }
 
   void _scrollControllerListener() {
-    widget.scrollListener(scrollController);
+    widget.scrollListener(
+      widget.pageIndex,
+      scrollController.offset,
+      scrollController,
+    );
   }
 
   /// Builds background layers for time slots in the week view.
@@ -469,9 +506,7 @@ class _InternalWeekViewPageState<T extends Object?>
                 scrollbars: widget.keepScrollOffset,
               ),
               child: SingleChildScrollView(
-                controller: widget.keepScrollOffset
-                    ? scrollController
-                    : widget.weekViewScrollController,
+                controller: scrollController,
                 physics: widget.scrollPhysics,
                 child: SizedBox(
                   height: widget.height,

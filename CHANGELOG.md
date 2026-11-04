@@ -15,6 +15,7 @@
 - [BREAKING] Removed `backgroundColor` from `DayView`, `WeekView` and `MultiDayView`. Use `pageBackgroundColor` in the respective view theme data instead.
 - [BREAKING] Removed `weekTitleBackgroundColor` from `WeekView`. Use `weekDayTileColor` in `WeekViewThemeData` instead.
 - [BREAKING] Renamed `multiDayTileColor` and `multiDayTextColor` to `weekDayTileColor` and `weekDayTextColor` in `MultiDayViewThemeData`.
+- [BREAKING] `scrollController` on `DayViewState`, `WeekViewState` and `MultiDayViewState` is now nullable (`ScrollController?`) and returns the controller of the currently visible page, or `null` while no page is attached.
 - `MultiDayView` week day title background now uses `weekDayTileColor` from `MultiDayViewThemeData` instead of `headerBackgroundColor`, matching `WeekView`.
 - Fixed `MultiDayView` not applying `pageBackgroundColor` from `MultiDayViewThemeData`.
 
