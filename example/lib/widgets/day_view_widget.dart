@@ -22,6 +22,7 @@ class DayViewWidget extends StatelessWidget {
       timeLineBuilder: (date) => _timeLineBuilder(date, isLtr),
       scrollPhysics: const BouncingScrollPhysics(),
       eventArranger: SideEventArranger(),
+      keepScrollOffset: true,
       showQuarterHours: false,
       showMidnightHour: true,
       hourIndicatorSettings: HourIndicatorSettings(

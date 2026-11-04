@@ -482,13 +482,27 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Provides data for rendering events and tracks event changes.
   EventController<T>? _controller;
 
-  /// Scroll controller for managing vertical scrolling within the day view.
-  /// Controls scroll position for time axis (top-to-bottom).
-  late ZoomScrollController _scrollController;
+  /// Per-page scroll offset cache keyed by page index.
+  final Map<int, double> _pageOffsets = <int, double>{};
 
-  /// Public getter for accessing the scroll controller.
-  /// Allows external code to control or listen to scroll events.
-  ScrollController get scrollController => _scrollController;
+  /// Currently visible page scroll controller.
+  ZoomScrollController? _activeScrollController;
+
+  /// {@template view_scroll_controller_doc}
+  /// Scroll controller of the currently visible page.
+  ///
+  /// Use it to read or listen to the vertical scroll position of the page
+  /// that is on screen. Each page owns its own controller, so the returned
+  /// instance changes when the page changes.
+  ///
+  /// Returns `null` while no page is attached, for example before the first
+  /// frame or while a page transition settles. For programmatic scrolling
+  /// prefer [animateTo], which waits for a page to attach.
+  /// {@endtemplate}
+  ScrollController? get scrollController {
+    final controller = _activeScrollController;
+    return controller != null && controller.hasClients ? controller : null;
+  }
 
   /// Callback function triggered when the controller changes or events are modified.
   /// Used to rebuild the view when event data changes.
@@ -501,8 +515,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   @override
   void initState() {
     super.initState();
-    _lastScrollOffset = widget.scrollOffset ??
-        widget.startDuration.inMinutes * widget.heightPerMinute;
+    _lastScrollOffset = _defaultPageOffset;
 
     _reloadCallback = _reload;
     _setDateRange();
@@ -512,10 +525,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _regulateCurrentDate();
 
     _calculateHeights();
-    _scrollController = ZoomScrollController(
-      initialScrollOffset: _lastScrollOffset,
-    );
     _pageController = PageController(initialPage: _currentIndex);
+    _pageOffsets[_currentIndex] = _lastScrollOffset;
     _eventArranger = widget.eventArranger ?? SideEventArranger<T>();
     _assignBuilders();
   }
@@ -558,6 +569,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         widget.maxDay != oldWidget.maxDay) {
       _setDateRange();
       _regulateCurrentDate();
+      _pageOffsets.clear();
+      _pageOffsets[_currentIndex] = _defaultPageOffset;
 
       _pageController.jumpToPage(_currentIndex);
     }
@@ -571,14 +584,19 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _assignBuilders();
 
     if (widget.heightPerMinute != oldWidget.heightPerMinute) {
-      final currentOffset = _scrollController.hasClients
-          ? _scrollController.offset
-          : _lastScrollOffset;
+      final activeController = _activeScrollController;
+      final currentOffset =
+          activeController != null && activeController.hasClients
+              ? activeController.offset
+              : _lastScrollOffset;
       final scaledOffset = currentOffset *
           widget.heightPerMinute /
           (oldWidget.heightPerMinute > 0 ? oldWidget.heightPerMinute : 1.0);
       _lastScrollOffset = scaledOffset;
-      _scrollController.prepareZoomJump(scaledOffset);
+      _pageOffsets[_currentIndex] = scaledOffset;
+      if (activeController != null && activeController.hasClients) {
+        activeController.prepareZoomJump(scaledOffset);
+      }
     }
   }
 
@@ -663,9 +681,12 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                                 _quarterHourIndicatorSettings,
                             emulateVerticalOffsetBy:
                                 widget.emulateVerticalOffsetBy,
-                            lastScrollOffset: _lastScrollOffset,
-                            dayViewScrollController: _scrollController,
+                            lastScrollOffset: widget.keepScrollOffset
+                                ? (_pageOffsets[index] ?? _defaultPageOffset)
+                                : _defaultPageOffset,
                             scrollPhysics: widget.scrollPhysics,
+                            pageIndex: index,
+                            isCurrentPage: index == _currentIndex,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
                             timeSlotColorBuilder: _timeSlotColorBuilder,
@@ -946,9 +967,15 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         _currentIndex = index;
       });
     }
+    _activeScrollController = null;
+    _lastScrollOffset = widget.keepScrollOffset
+        ? (_pageOffsets[index] ?? _defaultPageOffset)
+        : _defaultPageOffset;
+
     if (!widget.keepScrollOffset) {
+      _pageOffsets[index] = _defaultPageOffset;
       _jumpToOffsetAfterPageTransition(
-        _offsetForDuration(widget.startDuration).toDouble(),
+        _defaultPageOffset,
       );
     }
     widget.onPageChange?.call(_currentDate, _currentIndex);
@@ -985,24 +1012,46 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   void _jumpToOffsetAfterPageTransition(double offset) {
     _runAfterPageTransition(() {
-      if (!_scrollController.hasClients) return;
+      _withAttachedScrollController((controller) {
+        final clampedOffset = offset.clamp(
+          controller.position.minScrollExtent,
+          controller.position.maxScrollExtent,
+        );
 
-      final clampedOffset = offset.clamp(
-        _scrollController.position.minScrollExtent,
-        _scrollController.position.maxScrollExtent,
-      );
-
-      _lastScrollOffset = clampedOffset.toDouble();
-      _scrollController.jumpTo(clampedOffset.toDouble());
+        _lastScrollOffset = clampedOffset.toDouble();
+        _pageOffsets[_currentIndex] = _lastScrollOffset;
+        controller.jumpTo(clampedOffset.toDouble());
+      });
     });
   }
 
+  void _withAttachedScrollController(
+    void Function(ZoomScrollController controller) action,
+  ) {
+    final controller = _activeScrollController;
+    if (controller != null && controller.hasClients) {
+      action(controller);
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final updatedController = _activeScrollController;
+      if (updatedController != null && updatedController.hasClients) {
+        action(updatedController);
+      }
+    });
+  }
+
+  double get _defaultPageOffset =>
+      widget.scrollOffset ?? _offsetForDuration(widget.startDuration);
+
   double _offsetForDuration(Duration startDuration) {
-    final offSetForSingleMinute = _height / 24 / 60;
     final startDurationInMinutes = startDuration.inMinutes;
     final minuteOffset =
         startDurationInMinutes > 3600 ? 3600 : startDurationInMinutes;
-    return offSetForSingleMinute * minuteOffset;
+    return widget.heightPerMinute * minuteOffset;
   }
 
   /// Animate to next page (next day).
@@ -1203,11 +1252,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     Duration duration = const Duration(milliseconds: 200),
     Curve curve = Curves.linear,
   }) {
-    _scrollController.animateTo(
-      offset,
-      duration: duration,
-      curve: curve,
-    );
+    _withAttachedScrollController((controller) {
+      controller.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    });
   }
 
   /// Returns the current visible date in day view.
@@ -1215,8 +1266,22 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
       DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
 
   /// Listener for every day page ScrollController
-  void _scrollPageListener(ScrollController controller) {
-    _lastScrollOffset = controller.offset;
+  void _scrollPageListener(
+    int pageIndex,
+    double offset,
+    ZoomScrollController controller,
+  ) {
+    // Only the visible page may become the active controller; an
+    // off-screen page reporting during a swipe must not take over.
+    if (pageIndex == _currentIndex) {
+      _activeScrollController = controller;
+    }
+    if (!widget.keepScrollOffset) return;
+
+    _pageOffsets[pageIndex] = offset;
+    if (pageIndex == _currentIndex) {
+      _lastScrollOffset = offset;
+    }
   }
 }
 

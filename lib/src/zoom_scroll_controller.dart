@@ -4,6 +4,17 @@
 
 import 'package:flutter/widgets.dart';
 
+/// Called by an internal view page whenever its scroll position changes or
+/// it becomes the current page, so the parent view can track per-page
+/// offsets and the active [ZoomScrollController].
+///
+/// Internal only: this file is not exported from the package.
+typedef PageScrollListener = void Function(
+  int pageIndex,
+  double offset,
+  ZoomScrollController controller,
+);
+
 /// A [ScrollController] that eliminates zoom-flicker by applying a
 /// pre-calculated scroll offset **during layout** rather than in a
 /// post-frame callback.

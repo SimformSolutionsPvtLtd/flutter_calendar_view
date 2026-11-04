@@ -1158,6 +1158,25 @@ MultiDayViewThemeData.light().copyWith(
 );
 ```
 
+### 4. `DayViewState` | `WeekViewState` | `MultiDayViewState` — `scrollController` is now nullable
+
+Each page now owns its own scroll controller, and `scrollController` returns the controller of the currently visible page. It returns `null` while no page is attached, for example before the first frame or while a page transition settles. The returned instance also changes when the page changes, so don't cache it.
+
+**Before (≤ 2.x):**
+```dart
+final offset = dayViewKey.currentState!.scrollController.offset;
+```
+
+**After (3.0.0+):**
+```dart
+final offset = dayViewKey.currentState?.scrollController?.offset;
+```
+
+For programmatic scrolling, prefer `animateTo` on the state, which waits for a page to attach:
+```dart
+dayViewKey.currentState?.animateTo(500);
+```
+
 ## Migrate from `1.x.x` to latest
 ### ⚠ Note
 
