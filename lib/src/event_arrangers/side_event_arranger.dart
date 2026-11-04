@@ -28,9 +28,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
   /// {@macro event_arranger_arrange_method_doc}
   ///
-  /// Make sure that all the events that are passed in [events], must be in
-  /// ascending order of start time.
-
+  /// [events] can be passed in any order; they are sorted by start time
+  /// internally before being arranged.
   @override
   List<OrganizedCalendarEventData<T>> arrange({
     required List<CalendarEventData<T>> events,
@@ -72,8 +71,9 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
           // Single column without overlapping and run the function
           // again for the rest of the events.
           final endMinutes = event.endDuration.getTotalMinutes == 0
-              ? 1440
+              ? Constants.minutesADay
               : event.endDuration.getTotalMinutes;
+
           final columnedEvents = _extractSingleColumnEvents(
             event.events,
             endMinutes,
@@ -118,18 +118,10 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
 
         if (event.event.isNotEmpty) {
           arranged.addAll(event.event.map((e) {
-            final startTime = e.startTime!;
-            final endTime = e.endTime!;
-
-            // Use visible time calculation for multi-day event support
-            final visibleStart =
-                e.getVisibleStartMinutes(calendarViewDate.withoutTime);
-            final visibleEnd =
-                e.getVisibleEndMinutes(calendarViewDate.withoutTime);
-
-            // Calculate event times relative to startHour
-            int eventStart = visibleStart - startHourInMinutes;
-            int eventEnd = visibleEnd - startHourInMinutes;
+            int eventStart =
+                e.getVisibleStartMinutes(calendarViewDate) - startHourInMinutes;
+            int eventEnd =
+                e.getVisibleEndMinutes(calendarViewDate) - startHourInMinutes;
 
             // Ensure values are within valid range
             // Clamp to [0, minutesInView] where minutesInView = 1440 - startHourInMinutes
@@ -155,8 +147,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
               right: totalWidth - (offset + slotWidth),
               top: top,
               bottom: bottom,
-              startDuration: startTime.copyFromMinutes(eventStart),
-              endDuration: endTime.copyFromMinutes(eventEnd),
+              startDuration: TimeOfDayExtension.copyFromMinutes(eventStart),
+              endDuration: TimeOfDayExtension.copyFromMinutes(eventEnd),
               events: [e],
               calendarViewDate: calendarViewDate,
             );

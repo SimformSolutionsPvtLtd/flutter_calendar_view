@@ -90,7 +90,7 @@ void testAllFirstDayOfTheWeek(DateTime date) {
 }
 
 void testFirstDayOfTheWeekForAllWeekDays(DateTime firstDayOfTheWeek) {
-  final weekDays = getWeekDays(firstDayOfTheWeek);
+  final weekDays = firstDayOfTheWeek.weekDayEnum;
   for (var i = 0; i < 7; i++) {
     final date = DateTime(
       firstDayOfTheWeek.year,
@@ -119,7 +119,7 @@ void testAllLastDayOfTheWeek(DateTime date) {
 }
 
 void testLastDayOfTheWeekForAllWeekDays(DateTime lastDayOfTheWeek) {
-  final weekDays = nextWeekDays(getWeekDays(lastDayOfTheWeek));
+  final weekDays = nextWeekDays(lastDayOfTheWeek.weekDayEnum);
   for (var i = 0; i < 7; i++) {
     final date = DateTime(
       lastDayOfTheWeek.year,
@@ -138,27 +138,7 @@ DateTime getWeekStartDay(DateTime date, WeekDays start) {
 }
 
 WeekDays getWeekDays(DateTime date) {
-  switch (date.weekday) {
-    case 1:
-      return WeekDays.monday;
-    case 2:
-      return WeekDays.tuesday;
-    case 3:
-      return WeekDays.wednesday;
-    case 4:
-      return WeekDays.thursday;
-    case 5:
-      return WeekDays.friday;
-    case 6:
-      return WeekDays.saturday;
-    case 7:
-      return WeekDays.sunday;
-    default:
-      throw Exception("""
-        Date $date has unrecognisable weekday expencted [1-7], 
-        but ${date.weekday} was provided.
-          """);
-  }
+  return date.weekDayEnum;
 }
 
 WeekDays nextWeekDays(WeekDays current) {

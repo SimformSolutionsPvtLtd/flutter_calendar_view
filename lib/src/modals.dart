@@ -96,7 +96,7 @@ class LiveTimeIndicatorSettings {
   /// Radius of bullet.
   final double bulletRadius;
 
-  /// Width of time backgroud view.
+  /// Width of time background view.
   final double timeBackgroundViewWidth;
 
   /// Function that provides the DateTime to be used for the live time indicator.
@@ -153,8 +153,9 @@ class LiveTimeIndicatorSettings {
 /// [frequency]: Defines mode of repetition like repeat daily, weekly, monthly
 /// or yearly.
 ///
-/// [weekdays]: Contains list of weekdays to repeat starting from 0 index.
-/// By default selected weekday is the start date of an event.
+/// [weekdays]: List of [WeekDays] values on which the event repeats.
+/// Defaults to the weekday of [startDate] when not provided.
+/// Use [DateTime.weekDayEnum] to convert a [DateTime] to a [WeekDays] value.
 ///
 /// Note: Use constructor .withCalculatedEndDate to calculate
 /// end date of recurring event automatically.
@@ -166,8 +167,8 @@ class RecurrenceSettings {
     this.frequency = RepeatFrequency.doNotRepeat,
     this.recurrenceEndOn = RecurrenceEnd.never,
     this.excludeDates,
-    List<int>? weekdays,
-  }) : weekdays = weekdays ?? [startDate.weekday];
+    List<WeekDays>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekDayEnum];
 
   /// If recurrence event does not have an end date it will calculate end date
   /// from the start date.
@@ -188,8 +189,8 @@ class RecurrenceSettings {
     this.frequency = RepeatFrequency.doNotRepeat,
     this.recurrenceEndOn = RecurrenceEnd.never,
     this.excludeDates,
-    List<int>? weekdays,
-  }) : weekdays = weekdays ?? [startDate.weekday] {
+    List<WeekDays>? weekdays,
+  }) : weekdays = weekdays ?? [startDate.weekDayEnum] {
     this.endDate = endDate ?? _getEndDate(startDate);
   }
 
@@ -198,7 +199,7 @@ class RecurrenceSettings {
   final int? occurrences;
   final RepeatFrequency frequency;
   final RecurrenceEnd recurrenceEndOn;
-  final List<int> weekdays;
+  final List<WeekDays> weekdays;
   final List<DateTime>? excludeDates;
 
   // For recurrence patterns other than weekly, where the event may not repeat
@@ -263,24 +264,26 @@ class RecurrenceSettings {
     }
 
     // Contains the recurring weekdays in sorted order
-    final sortedWeekdays = weekdays..sort();
+    final sortedWeekdays = weekdays.toList()
+      ..sort((a, b) => a.index.compareTo(b.index));
     var remainingOccurrences = occurrences ?? 1;
     var currentDate = startDate;
 
     // Check if the start date is one of the recurring weekdays
-    if (sortedWeekdays.contains(startDate.weekday - 1)) {
+    if (sortedWeekdays.contains(startDate.weekDayEnum)) {
       remainingOccurrences--;
     }
 
     while (remainingOccurrences > 0) {
       // Find the next valid weekday
       final nextWeekday = sortedWeekdays.firstWhere(
-        (day) => day > currentDate.weekday - 1,
+        (day) => day.index > currentDate.weekDayEnum.index,
         orElse: () => sortedWeekdays.first,
       );
 
       // Calculate the days to the next occurrence
-      final daysToAdd = (nextWeekday - (currentDate.weekday - 1) + 7) % 7;
+      final daysToAdd =
+          (nextWeekday.index - currentDate.weekDayEnum.index + 7) % 7;
 
       // Move the current date to the next occurrence
       currentDate = currentDate.add(Duration(days: daysToAdd));
@@ -385,7 +388,7 @@ class RecurrenceSettings {
     int? occurrences,
     RepeatFrequency? frequency,
     RecurrenceEnd? recurrenceEndOn,
-    List<int>? weekdays,
+    List<WeekDays>? weekdays,
     List<DateTime>? excludeDates,
   }) {
     return RecurrenceSettings(
