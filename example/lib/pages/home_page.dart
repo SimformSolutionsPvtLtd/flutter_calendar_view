@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
           DateTime(base.year, base.month, base.day, hour, minute);
 
       final translate = context.translate;
+      //#region Calendar Events
       final events = [
         // ========== EDGE CASE 1: Midnight boundary events ==========
         // Event that spans across midnight (23:00 to 01:00 next day)
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage> {
           color: Colors.deepPurple,
         ),
 
-        // ========== EDGE CASE 11: Monthly recurring event ==========
+        // ========== EDGE CASE 11: Monthly recurring events ==========
         CalendarEventData.timeRanged(
           title: translate.monthlyReviewTitle,
           description: translate.monthlyReviewDesc,
@@ -207,6 +208,19 @@ class _HomePageState extends State<HomePage> {
             occurrences: 6,
           ),
           color: Colors.pink,
+        ),
+
+        CalendarEventData.timeRanged(
+          title: translate.doctorsAppointmentTitle,
+          description: translate.doctorsAppointmentDesc,
+          date: shortDate(_now, 12, 0),
+          endDate: shortDate(_now, 13, 0),
+          recurrenceSettings: RecurrenceSettings.withCalculatedEndDate(
+            startDate: _now,
+            frequency: RepeatFrequency.monthly,
+            recurrenceEndOn: RecurrenceEnd.never,
+          ),
+          color: Colors.lightGreen,
         ),
 
         // ========== EDGE CASE 12: Event with custom styles ==========
@@ -330,6 +344,7 @@ class _HomePageState extends State<HomePage> {
           endDate: shortDate(_now.subtract(Duration(days: 2)), 16, 0),
         ),
       ];
+      //#endregion
       _controller!.addAll(events);
     }
   }

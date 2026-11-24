@@ -55,6 +55,9 @@ class _MyAppState extends State<MyApp> {
               multiDayViewTheme: isDarkMode
                   ? MultiDayViewThemeData.dark()
                   : MultiDayViewThemeData.light(),
+              scheduleViewTheme: isDarkMode
+                  ? ScheduleViewThemeData.dark()
+                  : ScheduleViewThemeData.light(),
             ),
             child: CalendarControllerProvider(
               controller: EventController(),

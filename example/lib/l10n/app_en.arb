@@ -6,6 +6,7 @@
   "dayView": "Day View",
   "weekView": "Week View",
   "multidayView": "Multi-Day View",
+  "scheduleView": "Schedule View",
   "appTitle": "Flutter Calendar Page Demo",
   "projectMeetingTitle": "Project meeting",
   "projectMeetingDesc": "Today is project meeting.",
@@ -119,5 +120,19 @@
   "lateNightWorkTitle": "Late Night Work",
   "lateNightWorkDesc": "Tests end of day boundary",
   "companyRetreatTitle": "Company Retreat",
-  "companyRetreatDesc": "Tests multi-day all-day event"
+  "companyRetreatDesc": "Tests multi-day all-day event",
+  "doctorsAppointmentTitle": "Doctor's appointment",
+  "doctorsAppointmentDesc": "Regular monthly checkup",
+  "today": "Today",
+  "scheduleAllDay": "All day",
+  "scheduleNoEvents": "Nothing planned. Tap to create!",
+  "scheduleNoEventsThisMonth": "No events this month",
+  "scheduleTodayNoEvents": "No events planned today.\nEnjoy your day!",
+  "scheduleLongPressed": "Long pressed",
+  "scheduleSettings": "Schedule settings",
+  "scheduleShowDaysWithoutEvents": "Show days without events",
+  "scheduleShowEmptyMonths": "Show empty months",
+  "scheduleDateLayout": "Date layout",
+  "scheduleDateLayoutLeft": "Column",
+  "scheduleDateLayoutTop": "Row"
 }

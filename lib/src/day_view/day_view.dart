@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 import '../../calendar_view.dart';
 import '../constants.dart';
-import '../extensions.dart';
 import '../painters.dart';
 import '../current_time_scroller.dart';
 import '../zoom_scroll_controller.dart';
