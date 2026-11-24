@@ -40,6 +40,12 @@ class DetailsPage extends StatelessWidget {
             "${translate.date} ${event.date.dateToStringWithFormat(format: "dd/MM/yyyy")}",
           ),
           SizedBox(height: 15.0),
+          if (event.eventType != null) ...[
+            Text(
+              "${translate.eventType}: ${event.eventType!.label(translate)}",
+            ),
+            SizedBox(height: 15.0),
+          ],
           if (event.startTime != null && event.endTime != null) ...[
             Row(
               children: [
