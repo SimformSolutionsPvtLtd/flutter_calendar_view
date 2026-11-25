@@ -56,6 +56,28 @@ dependencies:
   calendar_view: <latest-version>
 ```
 
+## AI agent skills
+
+This package ships [agent skills](https://dart.dev/tools/pub/package-skills) for coding agents
+(Claude Code, Cursor, Copilot, Codex, …):
+
+| Skill                       | Use it to                                                                        |
+|-----------------------------|----------------------------------------------------------------------------------|
+| `calendar-view-events`      | Create, update, filter and recur events with `EventController`                   |
+| `calendar-view-views`       | Add and control `MonthView`, `DayView`, `WeekView`, `MultiDayView`, `ScheduleView` |
+| `calendar-view-theming`     | Theme, style headers and translate the calendar                                  |
+| `calendar-view-migration`   | Migrate an app from `calendar_view` 2.0.0 to 3.x                                 |
+
+Install them from your app's root directory (the `skills` tool needs a recent Dart SDK, which may be
+newer than the minimum SDK this package supports):
+
+```bash
+dart run skills@ get
+```
+
+Only packages that are direct dependencies of your app are scanned. Run the command again after
+upgrading `calendar_view` to update the skills.
+
 ## Support
 
 For questions, issues, or feature
