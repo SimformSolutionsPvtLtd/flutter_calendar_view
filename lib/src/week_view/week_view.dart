@@ -228,9 +228,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
-  /// A callback that resolves slot background color for each visible time slot.
-  /// Useful for highlighting unavailable hours, business hours, or blocked time.
-  final TimeSlotColorBuilder? timeSlotColorBuilder;
+  /// {@macro calendar_view.time_slot_builder_doc}
+  final TimeSlotBuilder? timeSlotBuilder;
 
   /// Flag to display the 00:00 (midnight) hour in the timeline.
   final bool showMidnightHour;
@@ -295,7 +294,7 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
     this.onTimestampTap,
-    this.timeSlotColorBuilder,
+    this.timeSlotBuilder,
     this.showMidnightHour = false,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
@@ -390,8 +389,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Settings for divider between FullDay events and weekdays header.
   late DividerSettings _dividerSettings;
 
-  /// Builder for adding custom colors to time slots in the day view.
-  late TimeSlotColorBuilder? _timeSlotColorBuilder;
+  /// Builder for the background widget of each time slot.
+  late TimeSlotBuilder? _timeSlotBuilder;
 
   /// Controller for managing page transitions between weeks.
   /// Used for navigating to different weeks.
@@ -703,7 +702,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           scrollPhysics: widget.scrollPhysics,
                           scrollListener: _scrollPageListener,
                           keepScrollOffset: widget.keepScrollOffset,
-                          timeSlotColorBuilder: _timeSlotColorBuilder,
+                          timeSlotBuilder: _timeSlotBuilder,
                           showMidnightHour: widget.showMidnightHour,
                         ),
                       );
@@ -822,7 +821,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
-    _timeSlotColorBuilder = widget.timeSlotColorBuilder;
+    _timeSlotBuilder = widget.timeSlotBuilder;
   }
 
   Widget _defaultFullDayEventBuilder(

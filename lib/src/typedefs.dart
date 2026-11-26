@@ -23,13 +23,23 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   DateTime endDuration,
 );
 
-/// Resolves a color for each visible time slot in day and week views.
+/// {@template calendar_view.time_slot_builder_doc}
+/// Builds the background widget for each visible time slot.
 ///
-/// This callback is used by an internal painter and is called for each
-/// rendered slot before events are drawn.
+/// Useful for highlighting unavailable hours, business hours or blocked time,
+/// or for showing an image or an illustration in a slot.
 ///
-/// Slot granularity follows the view's `minuteSlotSize`.
-typedef TimeSlotColorBuilder = Color Function(
+/// The returned widget fills the slot (the width of one day column and the
+/// height of one slot) and is drawn behind the events. To paint a plain color,
+/// return `ColoredBox(color: color)`. Return `null` to leave a slot empty; no
+/// widget is built for it.
+///
+/// Slot granularity follows the view's `minuteSlotSize`. The builder is called
+/// for every visible slot whenever the page builds, so keep it cheap. Slots
+/// are not interactive: they sit behind the events and the tap detectors and
+/// never receive gestures.
+/// {@endtemplate}
+typedef TimeSlotBuilder = Widget? Function(
   DateTime date,
   DateTime slotStartTime,
   DateTime slotEndTime,

@@ -165,8 +165,8 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
   /// This method will be called when user taps on timestamp in timeline.
   final TimestampCallback? onTimestampTap;
 
-  /// A callback for rendering custom time slot background colors.
-  final TimeSlotColorBuilder? timeSlotColorBuilder;
+  /// {@macro calendar_view.time_slot_builder_doc}
+  final TimeSlotBuilder? timeSlotBuilder;
 
   /// Flag to display the 00:00 (midnight) hour in the timeline.
   ///
@@ -222,7 +222,7 @@ class InternalWeekViewPage<T extends Object?> extends StatefulWidget {
     required this.scrollPhysics,
     required this.scrollListener,
     required this.weekViewScrollController,
-    this.timeSlotColorBuilder,
+    this.timeSlotBuilder,
     this.fullDayHeaderTitle = '',
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
@@ -278,11 +278,11 @@ class _InternalWeekViewPageState<T extends Object?>
   }
 
   /// Builds background layers for time slots in the week view.
-  /// Uses [timeSlotColorBuilder] to determine each slot's color and paints
-  /// a grid of colored rectangles (one column per day, one row per slot).
+  /// Uses [timeSlotBuilder] to build each slot's widget, laid out as a grid
+  /// (one column per day, one row per slot).
   ///
   /// Parameter: [filteredDates] — visible dates for the page.
-  /// Returns a [Widget] that paints the slot backgrounds.
+  /// Returns a [Widget] that renders the slot backgrounds.
   Widget _buildWeekTimeSlotBackgrounds(List<DateTime> filteredDates) {
     return TimeSlotBackgrounds(
       dates: filteredDates,
@@ -292,7 +292,7 @@ class _InternalWeekViewPageState<T extends Object?>
       minuteSlotSize: widget.minuteSlotSize,
       startHour: widget.startHour,
       endHour: widget.endHour,
-      timeSlotColorBuilder: widget.timeSlotColorBuilder!,
+      timeSlotBuilder: widget.timeSlotBuilder!,
     );
   }
 
@@ -416,8 +416,8 @@ class _InternalWeekViewPageState<T extends Object?>
                   width: widget.width,
                   child: Stack(
                     children: [
-                      // Render time slot backgrounds if color builder is provided
-                      if (widget.timeSlotColorBuilder != null)
+                      // Render time slot backgrounds if a slot builder is provided
+                      if (widget.timeSlotBuilder != null)
                         _buildWeekTimeSlotBackgrounds(filteredDates),
                       CustomPaint(
                         size: Size(widget.width, widget.height),

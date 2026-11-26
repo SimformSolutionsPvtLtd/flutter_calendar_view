@@ -4,7 +4,6 @@
 
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -321,74 +320,6 @@ class QuarterHourLinePainter extends CustomPainter {
             oldDelegate.offset != offset ||
             lineHeight != oldDelegate.lineHeight ||
             minuteHeight != oldDelegate.minuteHeight);
-  }
-}
-
-/// Paints colored backgrounds for time slots.
-class TimeSlotBackgroundPainter extends CustomPainter {
-  /// Height of each slot.
-  final double heightPerSlot;
-
-  /// Precomputed color for each slot.
-  final List<Color> slotColors;
-
-  /// Paints colored backgrounds for time slots.
-  const TimeSlotBackgroundPainter({
-    required this.heightPerSlot,
-    required this.slotColors,
-  });
-
-  // TODO(Lavi): Remove fallback method once dart and flutter versions are upgraded
-  bool _isFullyTransparent(Color color) {
-    final dynamic dynamicColor = color;
-
-    try {
-      final alphaRatio = dynamicColor.a;
-      if (alphaRatio is num) {
-        return alphaRatio <= 0;
-      }
-    } catch (_) {
-      // Fallback handled below for older Flutter versions.
-    }
-
-    try {
-      final alphaChannel = dynamicColor.alpha;
-      if (alphaChannel is num) {
-        return alphaChannel <= 0;
-      }
-    } catch (_) {
-      // Keep painting if alpha channel access is unavailable.
-    }
-
-    return false;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    var top = 0.0;
-
-    for (var i = 0; i < slotColors.length; i++) {
-      final color = slotColors[i];
-
-      if (_isFullyTransparent(color)) {
-        top += heightPerSlot;
-        continue;
-      }
-
-      paint.color = color;
-      canvas.drawRect(
-        Rect.fromLTWH(0, top, size.width, heightPerSlot),
-        paint,
-      );
-      top += heightPerSlot;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant TimeSlotBackgroundPainter oldDelegate) {
-    return oldDelegate.heightPerSlot != heightPerSlot ||
-        !listEquals(oldDelegate.slotColors, slotColors);
   }
 }
 

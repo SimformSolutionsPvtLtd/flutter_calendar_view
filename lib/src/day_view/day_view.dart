@@ -289,9 +289,8 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Default value is false.
   final bool keepScrollOffset;
 
-  /// A callback that resolves slot background color for each visible time slot.
-  /// Useful for highlighting unavailable hours, business hours, or blocked time.
-  final TimeSlotColorBuilder? timeSlotColorBuilder;
+  /// {@macro calendar_view.time_slot_builder_doc}
+  final TimeSlotBuilder? timeSlotBuilder;
 
   /// Flag to display the 00:00 (midnight) hour in the timeline.
   final bool showMidnightHour;
@@ -346,7 +345,7 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.endHour = Constants.hoursADay,
     this.keepScrollOffset = false,
     this.onTimestampTap,
-    this.timeSlotColorBuilder,
+    this.timeSlotBuilder,
     this.showMidnightHour = false,
   })  : assert(!(onHeaderTitleTap != null && dayTitleBuilder != null),
             "can't use [onHeaderTitleTap] & [dayTitleBuilder] simultaneously"),
@@ -450,8 +449,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   /// Controls color, height, and offset of the indicator showing current time.
   late LiveTimeIndicatorSettings _liveTimeIndicatorSettings;
 
-  /// Builder for adding custom colors to time slots in the day view.
-  late TimeSlotColorBuilder? _timeSlotColorBuilder;
+  /// Builder for the background widget of each time slot.
+  late TimeSlotBuilder? _timeSlotBuilder;
 
   /// Controller for managing page transitions between days.
   /// Used for jumpToPage(), animateToPage(), and nextPage/previousPage operations.
@@ -668,7 +667,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             scrollPhysics: widget.scrollPhysics,
                             scrollListener: _scrollPageListener,
                             keepScrollOffset: widget.keepScrollOffset,
-                            timeSlotColorBuilder: _timeSlotColorBuilder,
+                            timeSlotBuilder: _timeSlotBuilder,
                             showMidnightHour: widget.showMidnightHour,
                           ),
                         );
@@ -762,7 +761,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     _dayDetectorBuilder =
         widget.dayDetectorBuilder ?? _defaultPressDetectorBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
-    _timeSlotColorBuilder = widget.timeSlotColorBuilder;
+    _timeSlotBuilder = widget.timeSlotBuilder;
   }
 
   /// Sets the current date of this month.

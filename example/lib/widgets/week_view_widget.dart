@@ -24,7 +24,7 @@ class WeekViewWidget extends StatelessWidget {
       showWeekends: true,
       showMidnightHour: true,
       showLiveTimeLineInAllDays: true,
-      timeSlotColorBuilder: (_, slotStartTime, __, ___) {
+      timeSlotBuilder: (_, slotStartTime, __, ___) {
         final hour = slotStartTime.hour;
         final isBusinessHours = hour >= 9 && hour < 17;
         final isLunchBreak = hour == 12;
@@ -32,13 +32,15 @@ class WeekViewWidget extends StatelessWidget {
             slotStartTime.weekday == DateTime.saturday ||
             slotStartTime.weekday == DateTime.sunday;
 
-        return isWeekend
+        final color = isWeekend
             ? Colors.grey.shade100
             : isLunchBreak
             ? Colors.orange.shade100
             : isBusinessHours
             ? Colors.green.shade50
-            : Colors.transparent;
+            : null;
+
+        return color == null ? null : ColoredBox(color: color);
       },
       eventArranger: SideEventArranger(maxWidth: 30),
       timeLineWidth: 65,

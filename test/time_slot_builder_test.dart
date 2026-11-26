@@ -1,12 +1,13 @@
 import 'package:calendar_view/calendar_view.dart';
-import 'package:calendar_view/src/painters.dart';
+import 'package:calendar_view/src/components/_internal_components.dart'
+    show TimeSlotBackgrounds;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('TimeSlotColorBuilder', () {
+  group('TimeSlotBuilder', () {
     testWidgets(
-      'DayView uses minuteSlotSize for slot generation and paints within bounds',
+      'DayView uses minuteSlotSize for slot generation and sizes slots within bounds',
       (tester) async {
         final slotStarts = <DateTime>[];
         final slotEnds = <DateTime>[];
@@ -28,7 +29,7 @@ void main() {
                   heightPerMinute: 1,
                   timeLineWidth: 60,
                   verticalLineOffset: 0,
-                  timeSlotColorBuilder: (
+                  timeSlotBuilder: (
                     _,
                     slotStartTime,
                     slotEndTime,
@@ -37,8 +38,8 @@ void main() {
                     slotStarts.add(slotStartTime);
                     slotEnds.add(slotEndTime);
                     return index.isEven
-                        ? Colors.green.shade50
-                        : const Color.fromARGB(0, 255, 0, 0);
+                        ? ColoredBox(color: Colors.green.shade50)
+                        : null;
                   },
                 ),
               ),
@@ -57,17 +58,71 @@ void main() {
         expect(uniqueSlotStarts.contains(DateTime(2026, 3, 30, 10, 30)), true);
         expect(uniqueSlotEnds.contains(DateTime(2026, 3, 30, 11)), true);
 
-        final dayPainter = find.byWidgetPredicate(
-          (widget) =>
-              widget is CustomPaint &&
-              widget.painter is TimeSlotBackgroundPainter,
+        final background = find.byType(TimeSlotBackgrounds);
+        expect(background, findsOneWidget);
+        expect(tester.getSize(background).height, 120);
+
+        // Slots 0 and 2 return a ColoredBox, each filling one 30 minute slot
+        // across the content area (excluding the time line).
+        final coloredSlots = find.descendant(
+          of: background,
+          matching: find.byType(ColoredBox),
+        );
+        expect(coloredSlots, findsNWidgets(2));
+        for (var i = 0; i < 2; i++) {
+          final size = tester.getSize(coloredSlots.at(i));
+          expect(size.height, 30);
+          expect(size.width, greaterThan(0));
+          expect(size.width, lessThan(300));
+        }
+
+        // Slots 1 and 3 return null, so no widget is built for them.
+        expect(
+          find.descendant(of: background, matching: find.byType(Positioned)),
+          findsNWidgets(2),
+        );
+      },
+    );
+
+    testWidgets(
+      'DayView renders any widget returned by the builder in each slot',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 300,
+                height: 600,
+                child: DayView(
+                  controller: EventController(),
+                  initialDay: DateTime(2026, 3, 30),
+                  minDay: DateTime(2026, 3, 30),
+                  maxDay: DateTime(2026, 3, 30),
+                  startHour: 9,
+                  endHour: 11,
+                  minuteSlotSize: MinuteSlotSize.minutes30,
+                  heightPerMinute: 1,
+                  timeLineWidth: 60,
+                  verticalLineOffset: 0,
+                  timeSlotBuilder: (_, __, ___, index) =>
+                      Icon(Icons.restaurant, key: ValueKey('slot-$index')),
+                ),
+              ),
+            ),
+          ),
         );
 
-        expect(dayPainter, findsOneWidget);
-        final paintSize = tester.getSize(dayPainter);
-        expect(paintSize.width, greaterThan(0));
-        expect(paintSize.width, lessThan(300));
-        expect(paintSize.height, 120);
+        // 2 hours / 30 minutes = 4 slots, each with its own widget.
+        for (var i = 0; i < 4; i++) {
+          expect(find.byKey(ValueKey('slot-$i')), findsOneWidget);
+        }
+        expect(
+          find.descendant(
+            of: find.byType(TimeSlotBackgrounds),
+            matching: find.byType(Icon),
+          ),
+          findsNWidgets(4),
+        );
       },
     );
 
@@ -96,7 +151,7 @@ void main() {
                   timeLineWidth: 60,
                   weekTitleHeight: 0,
                   fullDayHeaderTitle: '',
-                  timeSlotColorBuilder: (
+                  timeSlotBuilder: (
                     _,
                     slotStartTime,
                     slotEndTime,
@@ -105,8 +160,8 @@ void main() {
                     slotStarts.add(slotStartTime);
                     slotEnds.add(slotEndTime);
                     return index == 0
-                        ? Colors.orange.shade100
-                        : Colors.transparent;
+                        ? ColoredBox(color: Colors.orange.shade100)
+                        : null;
                   },
                 ),
               ),
@@ -150,7 +205,7 @@ void main() {
                   minuteSlotSize: MinuteSlotSize.minutes30,
                   heightPerMinute: 1,
                   timeLineWidth: 60,
-                  timeSlotColorBuilder: (
+                  timeSlotBuilder: (
                     _,
                     slotStartTime,
                     slotEndTime,
@@ -159,8 +214,8 @@ void main() {
                     slotStarts.add(slotStartTime);
                     slotEnds.add(slotEndTime);
                     return index == 0
-                        ? Colors.blue.shade50
-                        : Colors.transparent;
+                        ? ColoredBox(color: Colors.blue.shade50)
+                        : null;
                   },
                 ),
               ),
@@ -196,13 +251,14 @@ void main() {
           3,
         );
 
-        final painters = find.byWidgetPredicate(
-          (widget) =>
-              widget is CustomPaint &&
-              widget.painter is TimeSlotBackgroundPainter,
+        // Slot 0 of each visible day column returns a ColoredBox.
+        expect(
+          find.descendant(
+            of: find.byType(TimeSlotBackgrounds),
+            matching: find.byType(ColoredBox),
+          ),
+          findsNWidgets(3),
         );
-        // One painter per visible day column.
-        expect(painters, findsNWidgets(3));
       },
     );
   });
