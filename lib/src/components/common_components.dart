@@ -8,6 +8,7 @@ import '../calendar_event_data.dart';
 import '../constants.dart';
 import '../enumerations.dart';
 import '../extensions.dart';
+import '../painters.dart';
 import '../typedefs.dart';
 import 'components.dart';
 
@@ -112,5 +113,111 @@ class DefaultEventTile<T> extends StatelessWidget {
     } else {
       return SizedBox.shrink();
     }
+  }
+}
+
+/// Renders time-slot colored backgrounds for calendar views.
+///
+/// Accepts one or more [dates] (columns). For a single-day view pass a
+/// one-element list; for week/multi-day views pass all visible dates.
+/// Each column is painted with per-slot colors returned by
+/// [timeSlotColorBuilder] and wrapped in a [RepaintBoundary] so repaints
+/// are isolated to individual columns.
+class TimeSlotBackgrounds extends StatelessWidget {
+  /// Dates to render (one column per date).
+  final List<DateTime> dates;
+
+  /// Pixel width of each date column.
+  final double columnWidth;
+
+  /// Total pixel height of the scrollable area.
+  final double height;
+
+  /// Pixel height per minute used to compute slot height.
+  final double heightPerMinute;
+
+  /// Duration of each time slot.
+  final MinuteSlotSize minuteSlotSize;
+
+  /// First hour shown in the view.
+  final int startHour;
+
+  /// Last hour shown in the view.
+  final int endHour;
+
+  /// Callback that returns a background [Color] for each slot.
+  final TimeSlotColorBuilder timeSlotColorBuilder;
+
+  const TimeSlotBackgrounds({
+    Key? key,
+    required this.dates,
+    required this.columnWidth,
+    required this.height,
+    required this.heightPerMinute,
+    required this.minuteSlotSize,
+    required this.startHour,
+    required this.endHour,
+    required this.timeSlotColorBuilder,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Number of minutes each slot occupies (e.g. 15, 30, or 60).
+    final slotMinutes = minuteSlotSize.minutes;
+    // Pixel height of a single time slot rectangle.
+    final heightPerSlot = heightPerMinute * slotMinutes;
+    // Total number of slots that fit between startHour and endHour.
+    final totalSlots = ((endHour - startHour) * 60) ~/ slotMinutes;
+    // Convenience Duration used when computing slot start/end DateTimes.
+    final slotDuration = Duration(minutes: slotMinutes);
+    // Whether the ambient text direction is left-to-right.
+    // Used to align the background layer correctly in RTL layouts.
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
+
+    return Align(
+      alignment: isLtr ? Alignment.centerRight : Alignment.centerLeft,
+      child: SizedBox(
+        width: columnWidth * dates.length,
+        height: height,
+        child: Row(
+          children: List.generate(dates.length, (dayIndex) {
+            final dayDate = dates[dayIndex];
+            final dayStart = DateTime(
+              dayDate.year,
+              dayDate.month,
+              dayDate.day,
+              startHour,
+            );
+            final slotColors = List<Color>.generate(
+              totalSlots,
+              (slotIndex) {
+                final slotStartTime = dayStart.add(slotDuration * slotIndex);
+                final slotEndTime = slotStartTime.add(slotDuration);
+                return timeSlotColorBuilder(
+                  dayDate,
+                  slotStartTime,
+                  slotEndTime,
+                  slotIndex,
+                );
+              },
+            );
+            return ClipRect(
+              child: SizedBox(
+                width: columnWidth,
+                height: height,
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: TimeSlotBackgroundPainter(
+                      heightPerSlot: heightPerSlot,
+                      slotColors: slotColors,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
   }
 }

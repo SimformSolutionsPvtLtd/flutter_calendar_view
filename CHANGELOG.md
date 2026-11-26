@@ -2,7 +2,7 @@
 
 - Fixed `MonthViewBuilder` to be generic for improved type safety in `MonthView`. [#524](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/524)
 - Added `DividerSettings` to customize the dividers in `WeekView` and `MultiDayView`. [#374](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/374), [#430](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/430), [#498](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/498)
-- Added `timeSlotColorBuilder` in `DayView` and `WeekView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470)
+- Added `timeSlotColorBuilder` in `DayView`, `WeekView` and `MultiDayView` to customize background color. [#470](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/470), [#535](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/535)
 - Added `pageDate` parameter for timeline label customization with current timestamp fallback. [#527](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/527)
 - Added `selectedDate` control to `MonthView` for external date management. [#233](https://github.com/SimformSolutionsPvtLtd/flutter_calendar_view/issues/233)
 - [BREAKING] Added `isSelected` parameter to `CellBuilder` typedef in `MonthView`. Custom cell builders must be updated to accept this new parameter.
