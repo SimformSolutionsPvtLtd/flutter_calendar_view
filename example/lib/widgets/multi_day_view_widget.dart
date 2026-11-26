@@ -28,16 +28,18 @@ class MultiDayViewWidget extends StatelessWidget {
         thickness: 0.5,
         height: 0.5,
       ),
-      timeSlotColorBuilder: (_, slotStartTime, __, ___) {
+      timeSlotBuilder: (_, slotStartTime, __, ___) {
         final hour = slotStartTime.hour;
         final isBusinessHours = hour >= 9 && hour < 17;
         final isLunchBreak = hour == 12;
 
-        return isLunchBreak
+        final color = isLunchBreak
             ? Colors.orange.shade100
             : isBusinessHours
             ? Colors.green.shade50
-            : Colors.transparent;
+            : null;
+
+        return color == null ? null : ColoredBox(color: color);
       },
       onTimestampTap: (date) {
         SnackBar snackBar = SnackBar(

@@ -52,22 +52,9 @@ class DayViewWidget extends StatelessWidget {
       ),
       verticalLineOffset: 0,
       timeLineWidth: 65,
-      timeSlotColorBuilder: (_, slotStartTime, __, ___) {
-        final hour = slotStartTime.hour;
-        final isBusinessHours = hour >= 9 && hour < 17;
-        final isLunchBreak = hour == 12;
-        final isWeekend =
-            slotStartTime.weekday == DateTime.saturday ||
-            slotStartTime.weekday == DateTime.sunday;
-
-        return isWeekend
-            ? Colors.grey.shade100
-            : isLunchBreak
-            ? Colors.orange.shade100
-            : isBusinessHours
-            ? Colors.green.shade50
-            : Colors.transparent;
-      },
+      // Each slot can be any widget, not just a color.
+      timeSlotBuilder: (_, slotStartTime, __, ___) =>
+          _buildTimeSlot(slotStartTime.hour),
       showLiveTimeLineInAllDays: true,
       liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
         color: Colors.redAccent,
@@ -75,6 +62,45 @@ class DayViewWidget extends StatelessWidget {
         showTime: true,
         showTimeBackgroundView: true,
       ),
+    );
+  }
+
+  Widget _buildTimeSlot(int hour) {
+    // Lunch break: a photo with the label on top.
+    if (hour == 12) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset('assets/images/lunch.jpg', fit: BoxFit.cover),
+          const ColoredBox(color: Colors.black45),
+          const Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.restaurant, color: Colors.white, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Lunch break',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final isBusinessHours = hour >= 9 && hour < 17;
+    return ColoredBox(
+      color: isBusinessHours ? Colors.green.shade50 : Colors.grey.shade100,
     );
   }
 

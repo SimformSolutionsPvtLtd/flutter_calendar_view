@@ -304,6 +304,12 @@ DayView(
       decoration: BoxDecoration(color: Colors.blue),
     ),
     safeAreaOption: SafeAreaOption.all(),
+    // Time slot builder for highlighting business hours. It returns any
+    // widget (use ColoredBox for a plain color) or null to leave a slot empty.
+    timeSlotBuilder: (date, slotStartTime, slotEndTime, index) =>
+        slotStartTime.hour >= 9 && slotStartTime.hour < 17
+            ? ColoredBox(color: Colors.green.shade50)
+            : null,
     // Miscellaneous
     keepScrollOffset: true, // Maintain scroll offset when the page changes
 );
@@ -429,11 +435,12 @@ WeekView(
       decoration: BoxDecoration(color: Colors.blue),
     ),
     safeAreaOption: SafeAreaOption.all(),
-    // Time slot color builder for highlighting unavailable hours
-    timeSlotColorBuilder: (date, slotStartTime, slotEndTime, index) => 
-        slotStartTime.hour >= 9 && slotStartTime.hour < 17 
-            ? Colors.transparent 
-            : Colors.grey.shade200,
+    // Time slot builder for highlighting unavailable hours. It returns any
+    // widget (use ColoredBox for a plain color) or null to leave a slot empty.
+    timeSlotBuilder: (date, slotStartTime, slotEndTime, index) =>
+        slotStartTime.hour >= 9 && slotStartTime.hour < 17
+            ? null
+            : ColoredBox(color: Colors.grey.shade200),
     onPageChange: (date, pageIndex) => print("$date, Page: $pageIndex"),
 );
 ```
@@ -546,9 +553,52 @@ MultiDayView(
       decoration: BoxDecoration(color: Colors.blue),
     ),
     safeAreaOption: SafeAreaOption.all(),
+    // Time slot builder for highlighting business hours. It returns any
+    // widget (use ColoredBox for a plain color) or null to leave a slot empty.
+    timeSlotBuilder: (date, slotStartTime, slotEndTime, index) =>
+        slotStartTime.hour >= 9 && slotStartTime.hour < 17
+            ? ColoredBox(color: Colors.green.shade50)
+            : null,
     onPageChange: (date, pageIndex) => print("$date, Page: $pageIndex"),
 );
 ```
+
+## Custom Time Slot Backgrounds
+
+`DayView`, `WeekView` and `MultiDayView` accept a `timeSlotBuilder` that returns
+a widget for every visible time slot, or `null` to leave it empty. The widget
+fills the slot and is drawn behind the events, so it can be a plain color, an
+image, an icon, a label or any other widget.
+
+```dart
+DayView(
+  timeSlotBuilder: (date, slotStartTime, slotEndTime, index) {
+    // Lunch break: an image with a label on top.
+    if (slotStartTime.hour == 12) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset('assets/images/lunch.jpg', fit: BoxFit.cover),
+          const Center(child: Text('Lunch break')),
+        ],
+      );
+    }
+
+    // Plain color for business hours.
+    if (slotStartTime.hour >= 9 && slotStartTime.hour < 17) {
+      return ColoredBox(color: Colors.green.shade50);
+    }
+
+    // Leave all other slots empty.
+    return null;
+  },
+);
+```
+
+* One slot is generated per `minuteSlotSize`, so the builder is called for
+  every visible slot whenever the page builds. Keep it cheap.
+* Slots are not interactive. They sit behind the events and tap detectors and
+  never receive gestures.
 
 ## Show Only Working Days in `WeekView`
 

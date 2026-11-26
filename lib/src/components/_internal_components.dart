@@ -644,3 +644,115 @@ class PressDetector extends StatelessWidget {
     );
   }
 }
+
+/// Renders time-slot backgrounds for calendar views.
+///
+/// Accepts one or more [dates] (columns). For a single-day view pass a
+/// one-element list; for week/multi-day views pass all visible dates.
+/// Each column stacks the widgets returned by [timeSlotBuilder], one per
+/// slot, and is wrapped in a [RepaintBoundary] so repaints are isolated to
+/// individual columns.
+class TimeSlotBackgrounds extends StatelessWidget {
+  /// Dates to render (one column per date).
+  final List<DateTime> dates;
+
+  /// Pixel width of each date column.
+  final double columnWidth;
+
+  /// Total pixel height of the scrollable area.
+  final double height;
+
+  /// Pixel height per minute used to compute slot height.
+  final double heightPerMinute;
+
+  /// Duration of each time slot.
+  final MinuteSlotSize minuteSlotSize;
+
+  /// First hour shown in the view.
+  final int startHour;
+
+  /// Last hour shown in the view.
+  final int endHour;
+
+  /// Callback that returns the background [Widget] for each slot, or `null`
+  /// to leave the slot empty.
+  final TimeSlotBuilder timeSlotBuilder;
+
+  const TimeSlotBackgrounds({
+    Key? key,
+    required this.dates,
+    required this.columnWidth,
+    required this.height,
+    required this.heightPerMinute,
+    required this.minuteSlotSize,
+    required this.startHour,
+    required this.endHour,
+    required this.timeSlotBuilder,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Number of minutes each slot occupies (e.g. 15, 30, or 60).
+    final slotMinutes = minuteSlotSize.minutes;
+    // Pixel height of a single time slot rectangle.
+    final heightPerSlot = heightPerMinute * slotMinutes;
+    // Total number of slots that fit between startHour and endHour.
+    final totalSlots = ((endHour - startHour) * 60) ~/ slotMinutes;
+    // Whether the ambient text direction is left-to-right.
+    // Used to align the background layer correctly in RTL layouts.
+    final isLtr = Directionality.of(context) == TextDirection.ltr;
+
+    return Align(
+      alignment: isLtr ? Alignment.centerRight : Alignment.centerLeft,
+      child: SizedBox(
+        width: columnWidth * dates.length,
+        height: height,
+        child: Row(
+          children: List.generate(dates.length, (dayIndex) {
+            final dayDate = dates[dayIndex];
+            // Slot times are built from calendar fields instead of adding a
+            // Duration, so they stay correct across DST transitions.
+            DateTime slotTime(int slotIndex) => DateTime(
+                  dayDate.year,
+                  dayDate.month,
+                  dayDate.day,
+                  startHour,
+                  slotMinutes * slotIndex,
+                );
+            // Slots for which the builder returns null are skipped entirely.
+            final slots = <Widget>[];
+            for (var slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+              final slot = timeSlotBuilder(
+                dayDate,
+                slotTime(slotIndex),
+                slotTime(slotIndex + 1),
+                slotIndex,
+              );
+              if (slot == null) continue;
+
+              slots.add(
+                Positioned(
+                  top: heightPerSlot * slotIndex,
+                  left: 0,
+                  right: 0,
+                  height: heightPerSlot,
+                  child: slot,
+                ),
+              );
+            }
+
+            return ClipRect(
+              child: SizedBox(
+                width: columnWidth,
+                height: height,
+                child: RepaintBoundary(
+                  child: Stack(children: slots),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}

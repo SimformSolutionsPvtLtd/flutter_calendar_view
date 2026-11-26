@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../components/_internal_components.dart';
-import '../components/common_components.dart';
 import '../components/event_scroll_notifier.dart';
 import '../enumerations.dart';
 import '../event_arrangers/event_arrangers.dart';
@@ -140,8 +139,8 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
 
   final TimestampCallback? onTimestampTap;
 
-  /// A callback for rendering custom time slot background colors.
-  final TimeSlotColorBuilder? timeSlotColorBuilder;
+  /// {@macro calendar_view.time_slot_builder_doc}
+  final TimeSlotBuilder? timeSlotBuilder;
 
   /// Flag to display the 00:00 (midnight) hour in the timeline.
   ///
@@ -189,7 +188,7 @@ class InternalDayViewPage<T extends Object?> extends StatefulWidget {
     required this.emulateVerticalOffsetBy,
     required this.onTileDoubleTap,
     required this.onTimestampTap,
-    this.timeSlotColorBuilder,
+    this.timeSlotBuilder,
     this.lastScrollOffset = 0.0,
     this.keepScrollOffset = false,
     this.showMidnightHour = false,
@@ -239,12 +238,12 @@ class _InternalDayViewPageState<T extends Object?>
     widget.scrollListener(scrollController);
   }
 
-  /// Builds the background color layer for time slots in the day view.
+  /// Builds the background layer for time slots in the day view.
   ///
-  /// Uses the [timeSlotColorBuilder] callback to determine each slot's color,
-  /// creating a vertical grid of colored rectangles for the day.
+  /// Uses the [timeSlotBuilder] callback to build each slot's widget,
+  /// creating a vertical stack of slot widgets for the day.
   ///
-  /// Returns a [Widget] rendering the colored background for all time slots.
+  /// Returns a [Widget] rendering the background for all time slots.
   Widget _buildTimeSlotBackground() {
     // Calculate the width of the content area, excluding the time line and
     // hour indicator lines
@@ -260,7 +259,7 @@ class _InternalDayViewPageState<T extends Object?>
       minuteSlotSize: widget.minuteSlotSize,
       startHour: widget.startHour,
       endHour: widget.endHour,
-      timeSlotColorBuilder: widget.timeSlotColorBuilder!,
+      timeSlotBuilder: widget.timeSlotBuilder!,
     );
   }
 
@@ -296,8 +295,8 @@ class _InternalDayViewPageState<T extends Object?>
                   width: widget.width,
                   child: Stack(
                     children: [
-                      // Render time slot backgrounds if color builder is provided
-                      if (widget.timeSlotColorBuilder != null)
+                      // Render time slot backgrounds if a slot builder is provided
+                      if (widget.timeSlotBuilder != null)
                         _buildTimeSlotBackground(),
                       CustomPaint(
                         size: Size(widget.width, widget.height),
